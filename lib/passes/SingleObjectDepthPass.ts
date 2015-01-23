@@ -5,24 +5,26 @@ import LightBase						= require("awayjs-display/lib/base/LightBase");
 import TriangleSubGeometry				= require("awayjs-display/lib/base/TriangleSubGeometry");
 import Camera							= require("awayjs-display/lib/entities/Camera");
 import MaterialBase						= require("awayjs-display/lib/materials/MaterialBase");
+import IRenderObjectOwner				= require("awayjs-display/lib/base/IRenderObjectOwner");
 
 import ContextGLProgramType				= require("awayjs-stagegl/lib/base/ContextGLProgramType");
 import IContextGL						= require("awayjs-stagegl/lib/base/IContextGL");
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
 import RendererBase						= require("awayjs-renderergl/lib/base/RendererBase");
-import MaterialPassData					= require("awayjs-renderergl/lib/pool/MaterialPassData");
+import RenderObjectBase					= require("awayjs-renderergl/lib/compilation/RenderObjectBase");
 import RenderableBase					= require("awayjs-renderergl/lib/pool/RenderableBase");
 import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import MaterialPassGLBase				= require("awayjs-renderergl/lib/passes/MaterialPassGLBase");
+import IRenderableClass					= require("awayjs-renderergl/lib/pool/IRenderableClass");
+import RenderPassBase					= require("awayjs-renderergl/lib/passes/RenderPassBase");
 
 /**
  * The SingleObjectDepthPass provides a material pass that renders a single object to a depth map from the point
  * of view from a light.
  */
-class SingleObjectDepthPass extends MaterialPassGLBase
+class SingleObjectDepthPass extends RenderPassBase
 {
 	private _textures:Object;
 	private _projections:Object;
@@ -60,9 +62,9 @@ class SingleObjectDepthPass extends MaterialPassGLBase
 	/**
 	 * Creates a new SingleObjectDepthPass object.
 	 */
-	constructor()
+	constructor(renderObject:RenderObjectBase, renderObjectOwner:IRenderObjectOwner, renderableClass:IRenderableClass, stage:Stage)
 	{
-		super();
+		super(renderObject, renderObjectOwner, renderableClass, stage);
 
 		//this._pNumUsedStreams = 2;
 		//this._pNumUsedVertexConstants = 7;
@@ -148,7 +150,7 @@ class SingleObjectDepthPass extends MaterialPassGLBase
 	 */
 	public _iGetDepthMap(renderable:RenderableBase):RenderTexture
 	{
-		return this._textures[renderable.materialOwner.id];
+		return this._textures[renderable.renderableOwner.id];
 	}
 
 	/**
@@ -158,20 +160,20 @@ class SingleObjectDepthPass extends MaterialPassGLBase
 	 */
 	public _iGetProjection(renderable:RenderableBase):Matrix3D
 	{
-		return this._projections[renderable.materialOwner.id];
+		return this._projections[renderable.renderableOwner.id];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public _iRender(pass:MaterialPassData, renderable:RenderableBase, stage:Stage, camera:Camera, viewProjection:Matrix3D)
+	public _iRender(renderable:RenderableBase, camera:Camera, viewProjection:Matrix3D)
 	{
 		var matrix:Matrix3D;
-		var context:IContextGL = stage.context;
+		var context:IContextGL = this._stage.context;
 		var len:number /*uint*/;
 		var light:LightBase;
-		var lights:Array<LightBase> = this._pLightPicker.allPickedLights;
-		var rId:number = renderable.materialOwner.id;
+		var lights:Array<LightBase> = this._renderObjectOwner.lightPicker.allPickedLights;
+		var rId:number = renderable.renderableOwner.id;
 
 		if (!this._textures[rId])
 			this._textures[rId] = new RenderTexture(this._textureSize, this._textureSize);
@@ -186,28 +188,28 @@ class SingleObjectDepthPass extends MaterialPassGLBase
 
 		matrix = light.iGetObjectProjectionMatrix(renderable.sourceEntity, camera, this._projections[rId]);
 
-		stage.setRenderTarget(this._textures[rId], true);
+		this._stage.setRenderTarget(this._textures[rId], true);
 		context.clear(1.0, 1.0, 1.0);
 		context.setProgramConstantsFromMatrix(ContextGLProgramType.VERTEX, 0, matrix, true);
 		context.setProgramConstantsFromArray(ContextGLProgramType.FRAGMENT, 0, this._enc, 2);
 
-		stage.activateBuffer(0, renderable.getVertexData(TriangleSubGeometry.POSITION_DATA), renderable.getVertexOffset(TriangleSubGeometry.POSITION_DATA), TriangleSubGeometry.POSITION_FORMAT);
-		stage.activateBuffer(1, renderable.getVertexData(TriangleSubGeometry.NORMAL_DATA), renderable.getVertexOffset(TriangleSubGeometry.NORMAL_DATA), TriangleSubGeometry.NORMAL_FORMAT);
-		context.drawTriangles(stage.getIndexBuffer(renderable.getIndexData()), 0, renderable.numTriangles);
+		this._stage.activateBuffer(0, renderable.getVertexData(TriangleSubGeometry.POSITION_DATA), renderable.getVertexOffset(TriangleSubGeometry.POSITION_DATA), TriangleSubGeometry.POSITION_FORMAT);
+		this._stage.activateBuffer(1, renderable.getVertexData(TriangleSubGeometry.NORMAL_DATA), renderable.getVertexOffset(TriangleSubGeometry.NORMAL_DATA), TriangleSubGeometry.NORMAL_FORMAT);
+		context.drawTriangles(this._stage.getIndexBuffer(renderable.getIndexData()), 0, renderable.numTriangles);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public _iActivate(pass:MaterialPassData, renderer:RendererBase, camera:Camera)
+	public _iActivate(camera:Camera)
 	{
 		if (this._projectionTexturesInvalid)
 			this.updateProjectionTextures();
 
 		// never scale
-		super._iActivate(pass, renderer, camera);
+		super._iActivate(camera);
 
-		renderer.context.setProgramConstantsFromArray(ContextGLProgramType.VERTEX, 4, this._polyOffset, 1);
+		this._stage.context.setProgramConstantsFromArray(ContextGLProgramType.VERTEX, 4, this._polyOffset, 1);
 	}
 }
 

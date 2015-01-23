@@ -4,10 +4,15 @@ import Matrix3D							= require("awayjs-core/lib/geom/Matrix3D");
 import Matrix3DUtils					= require("awayjs-core/lib/geom/Matrix3DUtils");
 import Vector3D							= require("awayjs-core/lib/geom/Vector3D");
 import AbstractMethodError				= require("awayjs-core/lib/errors/AbstractMethodError");
+import Event							= require("awayjs-core/lib/events/Event");
+import MaterialBase						= require("awayjs-display/lib/materials/MaterialBase");
 import Texture2DBase					= require("awayjs-core/lib/textures/Texture2DBase");
 
 import TriangleSubGeometry				= require("awayjs-display/lib/base/TriangleSubGeometry");
 import Camera							= require("awayjs-display/lib/entities/Camera");
+import IRenderObjectOwner				= require("awayjs-display/lib/base/IRenderObjectOwner");
+import LightPickerBase					= require("awayjs-display/lib/materials/lightpickers/LightPickerBase");
+import LightSources						= require("awayjs-display/lib/materials/LightSources");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
@@ -18,11 +23,13 @@ import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderO
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
 import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import MaterialPassData					= require("awayjs-renderergl/lib/pool/MaterialPassData");
 import RenderableBase					= require("awayjs-renderergl/lib/pool/RenderableBase");
-import LightingPassGLBase				= require("awayjs-renderergl/lib/passes/LightingPassGLBase");
+import RenderPassBase					= require("awayjs-renderergl/lib/passes/RenderPassBase");
+import IRenderLightingPass				= require("awayjs-renderergl/lib/passes/IRenderLightingPass");
+import IRenderableClass					= require("awayjs-renderergl/lib/pool/IRenderableClass");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
+import RenderMethodMaterialObject		= require("awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject");
 import AmbientBasicMethod				= require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
 import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
 import EffectColorTransformMethod		= require("awayjs-methodmaterials/lib/methods/EffectColorTransformMethod");
@@ -31,20 +38,21 @@ import LightingMethodBase				= require("awayjs-methodmaterials/lib/methods/Light
 import NormalBasicMethod				= require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
 import ShadowMapMethodBase				= require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
 import SpecularBasicMethod				= require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
-import MaterialPassMode					= require("awayjs-methodmaterials/lib/passes/MaterialPassMode");
+import MethodPassMode					= require("awayjs-methodmaterials/lib/passes/MethodPassMode");
 
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
  * using material methods to define their appearance.
  */
-class TriangleMethodPass extends LightingPassGLBase
+class MethodPass extends RenderPassBase implements IRenderLightingPass
 {
-	public _pNumLights:number = 0;
+	private _maxLights:number = 3;
 
-	private _passMode:number;
+	private _mode:number = 0x03;
+	private _material:MaterialBase;
+	private _lightPicker:LightPickerBase;
 
 	private _includeCasters:boolean = true;
-	private _maxLights:number = 3;
 
 	public _iColorTransformMethodVO:MethodVO;
 	public _iNormalMethodVO:MethodVO;
@@ -56,21 +64,37 @@ class TriangleMethodPass extends LightingPassGLBase
 
 	public _numEffectDependencies:number = 0;
 
-	private _onShaderInvalidatedDelegate:(event:ShadingMethodEvent) => void;
+	private _onLightsChangeDelegate:(event:Event) => void;
+	private _onMethodInvalidatedDelegate:(event:ShadingMethodEvent) => void;
 
+	public numDirectionalLights:number = 0;
+
+	public numPointLights:number = 0;
+
+	public numLightProbes:number = 0;
+
+	public pointLightsOffset:number = 0;
+	
+	public directionalLightsOffset:number= 0;
+	
+	public lightProbesOffset:number = 0;
+	
 	/**
 	 *
 	 */
-	public get passMode():number
+	public get mode():number
 	{
-		return this._passMode;
+		return this._mode;
 	}
 
-	public set passMode(value:number)
+	public set mode(value:number)
 	{
-		this._passMode = value;
+		if (this._mode == value)
+			return;
+		
+		this._mode = value;
 
-		this._pInvalidatePass();
+		this._updateLights();
 	}
 
 	/**
@@ -88,7 +112,63 @@ class TriangleMethodPass extends LightingPassGLBase
 
 		this._includeCasters = value;
 
-		this._pInvalidatePass();
+		this._updateLights();
+	}
+
+	/**
+	 * 
+	 * @returns {LightPickerBase}
+	 */
+	public get lightPicker():LightPickerBase
+	{
+		return this._lightPicker;
+	}
+
+	public set lightPicker(value:LightPickerBase)
+	{
+		if (this._lightPicker == value)
+			return;
+
+		if (this._lightPicker)
+			this._lightPicker.removeEventListener(Event.CHANGE, this._onLightsChangeDelegate);
+
+		this._lightPicker = value;
+
+		if (this._lightPicker)
+			this._lightPicker.addEventListener(Event.CHANGE, this._onLightsChangeDelegate);
+
+		this._updateLights();
+	}
+	
+	/**
+	 * Whether or not to use fallOff and radius properties for lights. This can be used to improve performance and
+	 * compatibility for constrained mode.
+	 */
+	public get enableLightFallOff():boolean
+	{
+		return this._material.enableLightFallOff;
+	}
+
+	/**
+	 * Define which light source types to use for diffuse reflections. This allows choosing between regular lights
+	 * and/or light probes for diffuse reflections.
+	 *
+	 * @see away3d.materials.LightSources
+	 */
+	public get diffuseLightSources():number
+	{
+		return this._material.diffuseLightSources;
+	}
+
+	/**
+	 * Define which light source types to use for specular reflections. This allows choosing between regular lights
+	 * and/or light probes for specular reflections.
+	 *
+	 * @see away3d.materials.LightSources
+	 */
+	public get specularLightSources():number
+	{
+		return this._material.specularLightSources;
 	}
 
 	/**
@@ -96,26 +176,37 @@ class TriangleMethodPass extends LightingPassGLBase
 	 *
 	 * @param material The material to which this pass belongs.
 	 */
-	constructor(passMode:number = 0x03)
+	constructor(mode:number, renderObject:RenderMethodMaterialObject, renderObjectOwner:MaterialBase, renderableClass:IRenderableClass, stage:Stage)
 	{
-		super();
+		super(renderObject, renderObjectOwner, renderableClass, stage);
 
-		this._passMode = passMode;
+		this._mode = mode;
 
-		this._onShaderInvalidatedDelegate = (event:ShadingMethodEvent) => this.onShaderInvalidated(event);
+		this._material = renderObjectOwner;
+
+		this._onLightsChangeDelegate = (event:Event) => this.onLightsChange(event);
+		
+		this._onMethodInvalidatedDelegate = (event:ShadingMethodEvent) => this.onMethodInvalidated(event);
+
+		this.lightPicker = renderObjectOwner.lightPicker;
+
+		if (this._shader == null)
+			this._updateShader();
 	}
 
-	/**
-	 * Factory method to create a concrete shader object for this pass.
-	 *
-	 * @param profile The compatibility profile used by the renderer.
-	 */
-	public createShaderObject(profile:string):ShaderObjectBase
+	private _updateShader()
 	{
-		if (this._pLightPicker && (this.passMode & MaterialPassMode.LIGHTING))
-			return new ShaderLightingObject(profile);
+		if ((this.numDirectionalLights || this.numPointLights || this.numLightProbes) && !(this._shader instanceof ShaderLightingObject)) {
+			if (this._shader != null)
+				this._shader.dispose();
 
-		return new ShaderObjectBase(profile);
+			this._shader = new ShaderLightingObject(this._renderableClass, this, this._stage);
+		} else if (!(this._shader instanceof ShaderObjectBase)) {
+			if (this._shader != null)
+				this._shader.dispose();
+
+			this._shader = new ShaderObjectBase(this._renderableClass, this, this._stage);
+		}
 	}
 
 	/**
@@ -177,37 +268,6 @@ class TriangleMethodPass extends LightingPassGLBase
 		}
 	}
 
-	/**
-	 * Implemented by subclasses if the pass uses lights to update the shader.
-	 */
-	public pUpdateLights()
-	{
-		var numDirectionalLightsOld:number = this._pNumDirectionalLights;
-		var numPointLightsOld:number = this._pNumPointLights;
-		var numLightProbesOld:number = this._pNumLightProbes;
-
-		if (this._pLightPicker && (this._passMode & MaterialPassMode.LIGHTING)) {
-			this._pNumDirectionalLights = this.calculateNumDirectionalLights(this._pLightPicker.numDirectionalLights);
-			this._pNumPointLights = this.calculateNumPointLights(this._pLightPicker.numPointLights);
-			this._pNumLightProbes = this.calculateNumProbes(this._pLightPicker.numLightProbes);
-
-			if (this._includeCasters) {
-				this._pNumDirectionalLights += this._pLightPicker.numCastingDirectionalLights;
-				this._pNumPointLights += this._pLightPicker.numCastingPointLights;
-			}
-
-		} else {
-			this._pNumDirectionalLights = 0;
-			this._pNumPointLights = 0;
-			this._pNumLightProbes = 0;
-		}
-
-		this._pNumLights = this._pNumDirectionalLights + this._pNumPointLights;
-
-		if (numDirectionalLightsOld != this._pNumDirectionalLights || numPointLightsOld != this._pNumPointLights || numLightProbesOld != this._pNumLightProbes)
-			this._pInvalidatePass();
-	}
-	
 	private _removeDependency(methodVO:MethodVO, effectsDependency:boolean = false)
 	{
 		var index:number = this._iMethodVOs.indexOf(methodVO);
@@ -215,15 +275,15 @@ class TriangleMethodPass extends LightingPassGLBase
 		if (!effectsDependency)
 			this._numEffectDependencies--;
 
-		methodVO.method.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
+		methodVO.method.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
 		this._iMethodVOs.splice(index, 1);
 
-		this._pInvalidatePass();
+		this.invalidatePass();
 	}
 
 	private _addDependency(methodVO:MethodVO, effectsDependency:boolean = false, index:number = -1)
 	{
-		methodVO.method.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
+		methodVO.method.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
 
 		if (effectsDependency) {
 			if (index != -1)
@@ -235,7 +295,7 @@ class TriangleMethodPass extends LightingPassGLBase
 			this._iMethodVOs.splice(this._iMethodVOs.length - this._numEffectDependencies, 0, methodVO);
 		}
 
-		this._pInvalidatePass();
+		this.invalidatePass();
 	}
 
 	/**
@@ -297,6 +357,21 @@ class TriangleMethodPass extends LightingPassGLBase
 	public removeEffectMethod(method:EffectMethodBase)
 	{
 		var methodVO:MethodVO = this.getDependencyForMethod(method);
+
+		if (methodVO != null)
+			this._removeDependency(methodVO, true);
+	}
+
+
+	/**
+	 * remove an effect method at the specified index from the material.
+	 */
+	public removeEffectMethodAt(index:number)
+	{
+		if (index < 0 || index > this._numEffectDependencies - 1)
+			return;
+
+		var methodVO:MethodVO = this._iMethodVOs[index + this._iMethodVOs.length - this._numEffectDependencies];
 
 		if (methodVO != null)
 			this._removeDependency(methodVO, true);
@@ -440,6 +515,9 @@ class TriangleMethodPass extends LightingPassGLBase
 	{
 		super.dispose();
 
+		if (this._lightPicker)
+			this._lightPicker.removeEventListener(Event.CHANGE, this._onLightsChangeDelegate);
+		
 		while (this._iMethodVOs.length)
 			this._removeDependency(this._iMethodVOs[0]);
 
@@ -449,9 +527,9 @@ class TriangleMethodPass extends LightingPassGLBase
 	/**
 	 * Called when any method's shader code is invalidated.
 	 */
-	private onShaderInvalidated(event:ShadingMethodEvent)
+	private onMethodInvalidated(event:ShadingMethodEvent)
 	{
-		this._pInvalidatePass();
+		this.invalidatePass();
 	}
 
 	// RENDER LOOP
@@ -459,16 +537,16 @@ class TriangleMethodPass extends LightingPassGLBase
 	/**
 	 * @inheritDoc
 	 */
-	public _iActivate(pass:MaterialPassData, renderer:RendererBase, camera:Camera)
+	public _iActivate(camera:Camera)
 	{
-		super._iActivate(pass, renderer, camera);
+		super._iActivate(camera);
 
 		var methodVO:MethodVO;
 		var len:number = this._iMethodVOs.length;
 		for (var i:number = 0; i < len; ++i) {
 			methodVO = this._iMethodVOs[i];
 			if (methodVO.useMethod)
-				methodVO.method.iActivate(pass.shaderObject, methodVO, renderer.stage);
+				methodVO.method.iActivate(this._shader, methodVO, this._stage);
 		}
 	}
 
@@ -479,44 +557,46 @@ class TriangleMethodPass extends LightingPassGLBase
 	 * @param stage
 	 * @param camera
 	 */
-	public setRenderState(pass:MaterialPassData, renderable:RenderableBase, stage:Stage, camera:Camera, viewProjection:Matrix3D)
+	public _iRender(renderable:RenderableBase, camera:Camera, viewProjection:Matrix3D)
 	{
-		super.setRenderState(pass, renderable, stage, camera, viewProjection);
+		super._iRender(renderable, camera, viewProjection);
 
 		var methodVO:MethodVO;
 		var len:number = this._iMethodVOs.length;
 		for (var i:number = 0; i < len; ++i) {
 			methodVO = this._iMethodVOs[i];
 			if (methodVO.useMethod)
-				methodVO.method.iSetRenderState(pass.shaderObject, methodVO, renderable, stage, camera);
+				methodVO.method.iSetRenderState(this._shader, methodVO, renderable, this._stage, camera);
 		}
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public _iDeactivate(pass:MaterialPassData, renderer:RendererBase)
+	public _iDeactivate()
 	{
-		super._iDeactivate(pass, renderer);
+		super._iDeactivate();
 
 		var methodVO:MethodVO;
 		var len:number = this._iMethodVOs.length;
 		for (var i:number = 0; i < len; ++i) {
 			methodVO = this._iMethodVOs[i];
 			if (methodVO.useMethod)
-				methodVO.method.iDeactivate(pass.shaderObject, methodVO, renderer.stage);
+				methodVO.method.iDeactivate(this._shader, methodVO, this._stage);
 		}
 	}
 
 	public _iIncludeDependencies(shaderObject:ShaderLightingObject)
 	{
-		//TODO: fragment animtion should be compatible with lighting pass
-		shaderObject.usesFragmentAnimation = Boolean(this._passMode == MaterialPassMode.SUPER_SHADER);
+		super._iIncludeDependencies(shaderObject);
 
-		if (!shaderObject.usesTangentSpace && shaderObject.numPointLights > 0 && shaderObject.usesLights) {
+		//TODO: fragment animtion should be compatible with lighting pass
+		shaderObject.usesFragmentAnimation = Boolean(this._mode == MethodPassMode.SUPER_SHADER);
+
+		if (!shaderObject.usesTangentSpace && this.numPointLights > 0 && shaderObject.usesLights) {
 			shaderObject.globalPosDependencies++;
 
-			if (Boolean(this._passMode & MaterialPassMode.EFFECTS))
+			if (Boolean(this._mode & MethodPassMode.EFFECTS))
 				shaderObject.usesGlobalPosFragment = true;
 		}
 
@@ -527,8 +607,6 @@ class TriangleMethodPass extends LightingPassGLBase
 
 		for (i = 0; i < len; ++i)
 			this._iMethodVOs[i].useMethod = this._iMethodVOs[i].method.iIsUsed(shaderObject);
-
-		super._iIncludeDependencies(shaderObject);
 	}
 
 
@@ -649,9 +727,9 @@ class TriangleMethodPass extends LightingPassGLBase
 
 		if (shaderObject.useAlphaPremultiplied && this._pEnableBlending) {
 			code += "add " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.commons + ".z\n" +
-				"div " + sharedRegisters.shadedTarget + ".xyz, " + sharedRegisters.shadedTarget + ", " + sharedRegisters.shadedTarget + ".w\n" +
-				"sub " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.commons + ".z\n" +
-				"sat " + sharedRegisters.shadedTarget + ".xyz, " + sharedRegisters.shadedTarget + "\n";
+			"div " + sharedRegisters.shadedTarget + ".xyz, " + sharedRegisters.shadedTarget + ", " + sharedRegisters.shadedTarget + ".w\n" +
+			"sub " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.commons + ".z\n" +
+			"sat " + sharedRegisters.shadedTarget + ".xyz, " + sharedRegisters.shadedTarget + "\n";
 		}
 
 		if (this._iShadowMethodVO)
@@ -804,17 +882,52 @@ class TriangleMethodPass extends LightingPassGLBase
 	/**
 	 * Indicates whether the shader uses any shadows.
 	 */
-	public _iUsesShadows():boolean
+	public _iUsesShadows(shaderObject:ShaderObjectBase):boolean
 	{
-		return Boolean(this._iShadowMethodVO || this.lightPicker.castingDirectionalLights.length > 0 || this.lightPicker.castingPointLights.length > 0);
+		return Boolean(this._iShadowMethodVO && (this._lightPicker.castingDirectionalLights.length > 0 || this._lightPicker.castingPointLights.length > 0));
 	}
 
 	/**
 	 * Indicates whether the shader uses any specular component.
 	 */
-	public _iUsesSpecular():boolean
+	public _iUsesSpecular(shaderObject:ShaderObjectBase):boolean
 	{
 		return Boolean(this._iSpecularMethodVO);
+	}
+
+
+	private onLightsChange(event:Event)
+	{
+		this._updateLights();
+	}
+
+	private _updateLights()
+	{
+		var numDirectionalLightsOld:number = this.numDirectionalLights;
+		var numPointLightsOld:number = this.numPointLights;
+		var numLightProbesOld:number = this.numLightProbes;
+
+		if (this._lightPicker && (this._mode & MethodPassMode.LIGHTING)) {
+			this.numDirectionalLights = this.calculateNumDirectionalLights(this._lightPicker.numDirectionalLights);
+			this.numPointLights = this.calculateNumPointLights(this._lightPicker.numPointLights);
+			this.numLightProbes = this.calculateNumProbes(this._lightPicker.numLightProbes);
+
+			if (this._includeCasters) {
+				this.numDirectionalLights += this._lightPicker.numCastingDirectionalLights;
+				this.numPointLights += this._lightPicker.numCastingPointLights;
+			}
+
+		} else {
+			this.numDirectionalLights = 0;
+			this.numPointLights = 0;
+			this.numLightProbes = 0;
+		}
+
+		if (numDirectionalLightsOld != this.numDirectionalLights || numPointLightsOld != this.numPointLights || numLightProbesOld != this.numLightProbes) {
+			this._updateShader();
+
+			this.invalidatePass();
+		}
 	}
 
 	/**
@@ -834,7 +947,7 @@ class TriangleMethodPass extends LightingPassGLBase
 	 */
 	private calculateNumPointLights(numPointLights:number):number
 	{
-		var numFree:number = this._maxLights - this._pNumDirectionalLights;
+		var numFree:number = this._maxLights - this.numDirectionalLights;
 		return Math.min(numPointLights - this.pointLightsOffset, numFree);
 	}
 
@@ -846,15 +959,16 @@ class TriangleMethodPass extends LightingPassGLBase
 	private calculateNumProbes(numLightProbes:number):number
 	{
 		var numChannels:number = 0;
-		//			if ((this._pSpecularLightSources & LightSources.PROBES) != 0)
-		//				++numChannels;
-		//
-		//			if ((this._pDiffuseLightSources & LightSources.PROBES) != 0)
-		//				++numChannels;
+
+		if ((this.specularLightSources & LightSources.PROBES) != 0)
+			++numChannels;
+
+		if ((this.diffuseLightSources & LightSources.PROBES) != 0)
+			++numChannels;
 
 		// 4 channels available
 		return Math.min(numLightProbes - this.lightProbesOffset, (4/numChannels) | 0);
 	}
 }
 
-export = TriangleMethodPass;
+export = MethodPass;

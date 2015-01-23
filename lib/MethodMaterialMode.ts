@@ -1,4 +1,4 @@
-class TriangleMaterialMode
+class MethodMaterialMode
 {
 	/**
 	 *
@@ -11,4 +11,4 @@ class TriangleMaterialMode
 	public static MULTI_PASS:string = "multiPass";
 }
 
-export = TriangleMaterialMode;
+export = MethodMaterialMode;

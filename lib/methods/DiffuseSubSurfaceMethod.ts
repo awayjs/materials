@@ -7,7 +7,6 @@ import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderO
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
 import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import MaterialPassGLBase				= require("awayjs-renderergl/lib/passes/MaterialPassGLBase");
 import RenderableBase					= require("awayjs-renderergl/lib/pool/RenderableBase");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
@@ -50,9 +49,9 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 		this.pBaseMethod._iModulateMethod = (shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData) => this.scatterLight(shaderObject, methodVO, targetReg, registerCache, sharedRegisters);
 
 		//this._passes = new Array<MaterialPassGLBase>();
-		this._depthPass = new SingleObjectDepthPass();
-		this._depthPass.textureSize = depthMapSize;
-		this._depthPass.polyOffset = depthMapOffset;
+		//this._depthPass = new SingleObjectDepthPass();
+		//this._depthPass.textureSize = depthMapSize;
+		//this._depthPass.polyOffset = depthMapOffset;
 		//this._passes.push(this._depthPass);
 		this._scattering = 0.2;
 		this._translucency = 1;
