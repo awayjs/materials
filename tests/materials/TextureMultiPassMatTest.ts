@@ -12,9 +12,9 @@ import View							= require("awayjs-display/lib/containers/View");
 import Mesh							= require("awayjs-display/lib/entities/Mesh");
 import PointLight					= require("awayjs-display/lib/entities/PointLight");
 import PrimitiveTorusPrefab			= require("awayjs-display/lib/prefabs/PrimitiveTorusPrefab");
+import BasicMaterial				= require("awayjs-display/lib/materials/BasicMaterial");
 
 import DefaultRenderer				= require("awayjs-renderergl/lib/DefaultRenderer");
-import TriangleBasicMaterial		= require("awayjs-renderergl/lib/materials/TriangleBasicMaterial");
 
 class TextureMultiPassMatTest
 {
@@ -59,7 +59,7 @@ class TextureMultiPassMatTest
 		var radius:number = 500;
 
 		var ts:ImageTexture = new ImageTexture(this.image, false);
-		var mat:TriangleBasicMaterial = new TriangleBasicMaterial(ts);
+		var mat:BasicMaterial = new BasicMaterial(ts);
 
 		this.torus.material = mat;
 

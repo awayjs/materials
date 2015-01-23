@@ -17,7 +17,8 @@ import PrimitiveTorusPrefab			= require("awayjs-display/lib/prefabs/PrimitiveTor
 
 import DefaultRenderer				= require("awayjs-renderergl/lib/DefaultRenderer");
 
-import TriangleMethodMaterial		= require("awayjs-methodmaterials/lib/TriangleMethodMaterial");
+import MethodMaterial				= require("awayjs-methodmaterials/lib/MethodMaterial");
+import MethodRendererPool			= require("awayjs-methodmaterials/lib/pool/MethodRendererPool");
 
 class TorusLight
 {
@@ -33,7 +34,7 @@ class TorusLight
 		Debug.ENABLE_LOG = false;
 		Debug.LOG_PI_ERRORS = false;
 
-		this._view = new View(new DefaultRenderer());
+		this._view = new View(new DefaultRenderer(MethodRendererPool));
 		this._view.camera.projection = new PerspectiveProjection(60);
 		this._torus = new PrimitiveTorusPrefab(220, 80, 32, 16, false);
 
@@ -71,7 +72,7 @@ class TorusLight
 
 		var lightPicker:StaticLightPicker = new StaticLightPicker([light]);
 
-		var matTx:TriangleMethodMaterial = new TriangleMethodMaterial(ts, true, true, false);
+		var matTx:MethodMaterial = new MethodMaterial(ts, true, true, false);
 		matTx.lightPicker = lightPicker;
 
 		this._torus.material = matTx;

@@ -13,7 +13,8 @@ import PrimitiveTorusPrefab			= require("awayjs-display/lib/prefabs/PrimitiveTor
 
 import DefaultRenderer				= require("awayjs-renderergl/lib/DefaultRenderer");
 
-import TriangleMethodMaterial		= require("awayjs-methodmaterials/lib/TriangleMethodMaterial");
+import MethodMaterial				= require("awayjs-methodmaterials/lib/MethodMaterial");
+import MethodRendererPool			= require("awayjs-methodmaterials/lib/pool/MethodRendererPool");
 
 class ColorMultiPassMatTest
 {
@@ -30,7 +31,7 @@ class ColorMultiPassMatTest
 		Debug.LOG_PI_ERRORS = false;
 
 		this.light = new PointLight();
-		this.view = new View(new DefaultRenderer());
+		this.view = new View(new DefaultRenderer(MethodRendererPool));
 		this.view.camera.z = -1000;
 		this.view.backgroundColor = 0x000000;
 		this.torus = new PrimitiveTorusPrefab(50 , 10, 32 , 32 , false);
@@ -38,7 +39,7 @@ class ColorMultiPassMatTest
 		var l:number = 20;
 		var radius:number = 500;
 
-		var mat:TriangleMethodMaterial = new TriangleMethodMaterial(0xff0000);
+		var mat:MethodMaterial = new MethodMaterial(0xff0000);
 
 		mat.lightPicker = new StaticLightPicker([this.light]);
 

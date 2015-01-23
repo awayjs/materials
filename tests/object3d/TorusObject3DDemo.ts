@@ -16,7 +16,8 @@ import PrimitiveTorusPrefab			= require("awayjs-display/lib/prefabs/PrimitiveTor
 
 import DefaultRenderer				= require("awayjs-renderergl/lib/DefaultRenderer");
 
-import TriangleMethodMaterial		= require("awayjs-methodmaterials/lib/TriangleMethodMaterial");
+import MethodMaterial				= require("awayjs-methodmaterials/lib/MethodMaterial");
+import MethodRendererPool			= require("awayjs-methodmaterials/lib/pool/MethodRendererPool");
 
 class TorusObject3DDemo
 {
@@ -44,7 +45,7 @@ class TorusObject3DDemo
 
 		this.meshes = new Array<Mesh>();
 		this.light = new PointLight();
-		this.view = new View(new DefaultRenderer());
+		this.view = new View(new DefaultRenderer(MethodRendererPool));
 		this.pointLight = new PointLight();
 		this.lightPicker = new StaticLightPicker([this.pointLight]);
 
@@ -108,7 +109,7 @@ class TorusObject3DDemo
 
 	private onImageLoadComplete(event:Event)
 	{
-		var matTx: TriangleMethodMaterial = new TriangleMethodMaterial(new ImageTexture(this._image, false), true, true, false);
+		var matTx: MethodMaterial = new MethodMaterial(new ImageTexture(this._image, false), true, true, false);
 		matTx.lightPicker =  this.lightPicker;
 
 		for (var c:number = 0; c < this.meshes.length; c ++)
