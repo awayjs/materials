@@ -1,17 +1,3 @@
-declare module "awayjs-methodmaterials/lib/TriangleMaterialMode" {
-	class TriangleMaterialMode {
-	    /**
-	     *
-	     */
-	    static SINGLE_PASS: string;
-	    /**
-	     *
-	     */
-	    static MULTI_PASS: string;
-	}
-	export = TriangleMaterialMode;
-	
-}
 declare module "awayjs-methodmaterials/lib/methods/ShadingMethodBase" {
 	import NamedAssetBase = require("awayjs-core/lib/library/NamedAssetBase");
 	import Camera = require("awayjs-display/lib/entities/Camera");
@@ -603,8 +589,25 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularBasicMethod" {
 	export = SpecularBasicMethod;
 	
 }
-declare module "awayjs-methodmaterials/lib/passes/MaterialPassMode" {
-	class MaterialPassMode {
+declare module "awayjs-methodmaterials/lib/MethodMaterialMode" {
+	class MethodMaterialMode {
+	    /**
+	     *
+	     */
+	    static SINGLE_PASS: string;
+	    /**
+	     *
+	     */
+	    static MULTI_PASS: string;
+	}
+	export = MethodMaterialMode;
+	
+}
+declare module "awayjs-methodmaterials/lib/passes/MethodPassMode" {
+	class PassMode {
+	    /**
+	     *
+	     */
 	    static EFFECTS: number;
 	    /**
 	     *
@@ -615,7 +618,7 @@ declare module "awayjs-methodmaterials/lib/passes/MaterialPassMode" {
 	     */
 	    static SUPER_SHADER: number;
 	}
-	export = MaterialPassMode;
+	export = PassMode;
 	
 }
 declare module "awayjs-methodmaterials/lib/methods/EffectColorTransformMethod" {
@@ -653,21 +656,24 @@ declare module "awayjs-methodmaterials/lib/methods/EffectColorTransformMethod" {
 	export = EffectColorTransformMethod;
 	
 }
-declare module "awayjs-methodmaterials/lib/passes/TriangleMethodPass" {
+declare module "awayjs-methodmaterials/lib/passes/MethodPass" {
 	import ColorTransform = require("awayjs-core/lib/geom/ColorTransform");
 	import Matrix3D = require("awayjs-core/lib/geom/Matrix3D");
+	import MaterialBase = require("awayjs-display/lib/materials/MaterialBase");
 	import Camera = require("awayjs-display/lib/entities/Camera");
+	import LightPickerBase = require("awayjs-display/lib/materials/lightpickers/LightPickerBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RendererBase = require("awayjs-renderergl/lib/base/RendererBase");
 	import ShaderLightingObject = require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
 	import ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
 	import ShaderRegisterElement = require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-	import MaterialPassData = require("awayjs-renderergl/lib/pool/MaterialPassData");
 	import RenderableBase = require("awayjs-renderergl/lib/pool/RenderableBase");
-	import LightingPassGLBase = require("awayjs-renderergl/lib/passes/LightingPassGLBase");
+	import RenderPassBase = require("awayjs-renderergl/lib/passes/RenderPassBase");
+	import IRenderLightingPass = require("awayjs-renderergl/lib/passes/IRenderLightingPass");
+	import IRenderableClass = require("awayjs-renderergl/lib/pool/IRenderableClass");
 	import MethodVO = require("awayjs-methodmaterials/lib/data/MethodVO");
+	import RenderMethodMaterialObject = require("awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject");
 	import AmbientBasicMethod = require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
 	import DiffuseBasicMethod = require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
 	import EffectColorTransformMethod = require("awayjs-methodmaterials/lib/methods/EffectColorTransformMethod");
@@ -679,11 +685,12 @@ declare module "awayjs-methodmaterials/lib/passes/TriangleMethodPass" {
 	 * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
 	 * using material methods to define their appearance.
 	 */
-	class TriangleMethodPass extends LightingPassGLBase {
-	    _pNumLights: number;
-	    private _passMode;
-	    private _includeCasters;
+	class MethodPass extends RenderPassBase implements IRenderLightingPass {
 	    private _maxLights;
+	    private _mode;
+	    private _material;
+	    private _lightPicker;
+	    private _includeCasters;
 	    _iColorTransformMethodVO: MethodVO;
 	    _iNormalMethodVO: MethodVO;
 	    _iAmbientMethodVO: MethodVO;
@@ -692,27 +699,53 @@ declare module "awayjs-methodmaterials/lib/passes/TriangleMethodPass" {
 	    _iSpecularMethodVO: MethodVO;
 	    _iMethodVOs: MethodVO[];
 	    _numEffectDependencies: number;
-	    private _onShaderInvalidatedDelegate;
+	    private _onLightsChangeDelegate;
+	    private _onMethodInvalidatedDelegate;
+	    numDirectionalLights: number;
+	    numPointLights: number;
+	    numLightProbes: number;
+	    pointLightsOffset: number;
+	    directionalLightsOffset: number;
+	    lightProbesOffset: number;
 	    /**
 	     *
 	     */
-	    passMode: number;
+	    mode: number;
 	    /**
 	     * Indicates whether or not shadow casting lights need to be included.
 	     */
 	    includeCasters: boolean;
 	    /**
+	     *
+	     * @returns {LightPickerBase}
+	     */
+	    lightPicker: LightPickerBase;
+	    /**
+	     * Whether or not to use fallOff and radius properties for lights. This can be used to improve performance and
+	     * compatibility for constrained mode.
+	     */
+	    enableLightFallOff: boolean;
+	    /**
+	     * Define which light source types to use for diffuse reflections. This allows choosing between regular lights
+	     * and/or light probes for diffuse reflections.
+	     *
+	     * @see away3d.materials.LightSources
+	     */
+	    diffuseLightSources: number;
+	    /**
+	     * Define which light source types to use for specular reflections. This allows choosing between regular lights
+	     * and/or light probes for specular reflections.
+	     *
+	     * @see away3d.materials.LightSources
+	     */
+	    specularLightSources: number;
+	    /**
 	     * Creates a new CompiledPass object.
 	     *
 	     * @param material The material to which this pass belongs.
 	     */
-	    constructor(passMode?: number);
-	    /**
-	     * Factory method to create a concrete shader object for this pass.
-	     *
-	     * @param profile The compatibility profile used by the renderer.
-	     */
-	    createShaderObject(profile: string): ShaderObjectBase;
+	    constructor(mode: number, renderObject: RenderMethodMaterialObject, renderObjectOwner: MaterialBase, renderableClass: IRenderableClass, stage: Stage);
+	    private _updateShader();
 	    /**
 	     * Initializes the unchanging constant data for this material.
 	     */
@@ -725,10 +758,6 @@ declare module "awayjs-methodmaterials/lib/passes/TriangleMethodPass" {
 	     * The EffectColorTransformMethod object to transform the colour of the material with. Defaults to null.
 	     */
 	    colorTransformMethod: EffectColorTransformMethod;
-	    /**
-	     * Implemented by subclasses if the pass uses lights to update the shader.
-	     */
-	    pUpdateLights(): void;
 	    private _removeDependency(methodVO, effectsDependency?);
 	    private _addDependency(methodVO, effectsDependency?, index?);
 	    /**
@@ -765,6 +794,10 @@ declare module "awayjs-methodmaterials/lib/passes/TriangleMethodPass" {
 	     * @param method The method to be removed.
 	     */
 	    removeEffectMethod(method: EffectMethodBase): void;
+	    /**
+	     * remove an effect method at the specified index from the material.
+	     */
+	    removeEffectMethodAt(index: number): void;
 	    private getDependencyForMethod(method);
 	    /**
 	     * The method used to generate the per-pixel normals. Defaults to NormalBasicMethod.
@@ -793,11 +826,11 @@ declare module "awayjs-methodmaterials/lib/passes/TriangleMethodPass" {
 	    /**
 	     * Called when any method's shader code is invalidated.
 	     */
-	    private onShaderInvalidated(event);
+	    private onMethodInvalidated(event);
 	    /**
 	     * @inheritDoc
 	     */
-	    _iActivate(pass: MaterialPassData, renderer: RendererBase, camera: Camera): void;
+	    _iActivate(camera: Camera): void;
 	    /**
 	     *
 	     *
@@ -805,11 +838,11 @@ declare module "awayjs-methodmaterials/lib/passes/TriangleMethodPass" {
 	     * @param stage
 	     * @param camera
 	     */
-	    setRenderState(pass: MaterialPassData, renderable: RenderableBase, stage: Stage, camera: Camera, viewProjection: Matrix3D): void;
+	    _iRender(renderable: RenderableBase, camera: Camera, viewProjection: Matrix3D): void;
 	    /**
 	     * @inheritDoc
 	     */
-	    _iDeactivate(pass: MaterialPassData, renderer: RendererBase): void;
+	    _iDeactivate(): void;
 	    _iIncludeDependencies(shaderObject: ShaderLightingObject): void;
 	    /**
 	     * Counts the dependencies for a given method.
@@ -851,11 +884,13 @@ declare module "awayjs-methodmaterials/lib/passes/TriangleMethodPass" {
 	    /**
 	     * Indicates whether the shader uses any shadows.
 	     */
-	    _iUsesShadows(): boolean;
+	    _iUsesShadows(shaderObject: ShaderObjectBase): boolean;
 	    /**
 	     * Indicates whether the shader uses any specular component.
 	     */
-	    _iUsesSpecular(): boolean;
+	    _iUsesSpecular(shaderObject: ShaderObjectBase): boolean;
+	    private onLightsChange(event);
+	    private _updateLights();
 	    /**
 	     * Calculates the amount of directional lights this material will support.
 	     * @param numDirectionalLights The maximum amount of directional lights to support.
@@ -875,31 +910,120 @@ declare module "awayjs-methodmaterials/lib/passes/TriangleMethodPass" {
 	     */
 	    private calculateNumProbes(numLightProbes);
 	}
-	export = TriangleMethodPass;
+	export = MethodPass;
 	
 }
-declare module "awayjs-methodmaterials/lib/TriangleMethodMaterial" {
-	import ColorTransform = require("awayjs-core/lib/geom/ColorTransform");
+declare module "awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject" {
+	import Stage = require("awayjs-stagegl/lib/base/Stage");
+	import RenderObjectPool = require("awayjs-renderergl/lib/compilation/RenderObjectPool");
+	import RenderObjectBase = require("awayjs-renderergl/lib/compilation/RenderObjectBase");
+	import IRenderableClass = require("awayjs-renderergl/lib/pool/IRenderableClass");
+	import MethodMaterial = require("awayjs-methodmaterials/lib/MethodMaterial");
+	/**
+	 * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
+	 * using material methods to define their appearance.
+	 */
+	class RenderMethodMaterialObject extends RenderObjectBase {
+	    /**
+	     *
+	     */
+	    static id: string;
+	    private _material;
+	    private _screenPass;
+	    private _casterLightPass;
+	    private _nonCasterLightPasses;
+	    /**
+	     * The maximum total number of lights provided by the light picker.
+	     */
+	    private numLights;
+	    /**
+	     * The amount of lights that don't cast shadows.
+	     */
+	    private numNonCasters;
+	    /**
+	     * Creates a new CompiledPass object.
+	     *
+	     * @param material The material to which this pass belongs.
+	     */
+	    constructor(pool: RenderObjectPool, renderObjectOwner: MethodMaterial, renderableClass: IRenderableClass, stage: Stage);
+	    /**
+	     * @inheritDoc
+	     */
+	    _pUpdateRenderObject(): void;
+	    /**
+	     * Initializes all the passes and their dependent passes.
+	     */
+	    private initPasses();
+	    /**
+	     * Sets up the various blending modes for all screen passes, based on whether or not there are previous passes.
+	     */
+	    private setBlendAndCompareModes();
+	    private initCasterLightPass();
+	    private removeCasterLightPass();
+	    private initNonCasterLightPasses();
+	    private removeNonCasterLightPasses();
+	    private removeEffectPass();
+	    private initEffectPass();
+	    /**
+	     * @inheritDoc
+	     */
+	    dispose(): void;
+	}
+	export = RenderMethodMaterialObject;
+	
+}
+declare module "awayjs-methodmaterials/lib/pool/MethodRenderablePool" {
+	import IRenderObjectOwner = require("awayjs-display/lib/base/IRenderObjectOwner");
+	import Stage = require("awayjs-stagegl/lib/base/Stage");
+	import RenderablePoolBase = require("awayjs-renderergl/lib/pool/RenderablePoolBase");
+	import IRenderableClass = require("awayjs-renderergl/lib/pool/IRenderableClass");
+	import RenderObjectBase = require("awayjs-renderergl/lib/compilation/RenderObjectBase");
+	/**
+	 * @class away.pool.MethodRenderablePool
+	 */
+	class MethodRenderablePool extends RenderablePoolBase {
+	    private _methodMaterialRenderObjectPool;
+	    /**
+	     * //TODO
+	     *
+	     * @param renderableClass
+	     */
+	    constructor(renderableClass: IRenderableClass, stage: Stage);
+	    /**
+	     *
+	     * @param material
+	     * @param renderable
+	     */
+	    getMethodRenderObject(renderObjectOwner: IRenderObjectOwner): RenderObjectBase;
+	    /**
+	     * //TODO
+	     *
+	     * @param renderableClass
+	     * @returns MethodRenderablePool
+	     */
+	    static getPool(renderableClass: IRenderableClass, stage: Stage): MethodRenderablePool;
+	}
+	export = MethodRenderablePool;
+	
+}
+declare module "awayjs-methodmaterials/lib/MethodMaterial" {
 	import Texture2DBase = require("awayjs-core/lib/textures/Texture2DBase");
-	import TriangleMaterialBase = require("awayjs-renderergl/lib/materials/TriangleMaterialBase");
+	import MaterialBase = require("awayjs-display/lib/materials/MaterialBase");
+	import IRenderObject = require("awayjs-display/lib/pool/IRenderObject");
 	import AmbientBasicMethod = require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
 	import DiffuseBasicMethod = require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
 	import EffectMethodBase = require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
 	import NormalBasicMethod = require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
 	import ShadowMapMethodBase = require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
 	import SpecularBasicMethod = require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
+	import MethodRenderablePool = require("awayjs-methodmaterials/lib/pool/MethodRenderablePool");
 	/**
-	 * TriangleMethodMaterial forms an abstract base class for the default shaded materials provided by Stage,
+	 * MethodMaterial forms an abstract base class for the default shaded materials provided by Stage,
 	 * using material methods to define their appearance.
 	 */
-	class TriangleMethodMaterial extends TriangleMaterialBase {
-	    private _alphaBlending;
-	    private _alpha;
-	    private _colorTransform;
-	    private _materialMode;
-	    private _casterLightPass;
-	    private _nonCasterLightPasses;
-	    private _screenPass;
+	class MethodMaterial extends MaterialBase {
+	    private _effectMethods;
+	    private _mode;
 	    private _ambientMethod;
 	    private _shadowMethod;
 	    private _diffuseMethod;
@@ -907,7 +1031,7 @@ declare module "awayjs-methodmaterials/lib/TriangleMethodMaterial" {
 	    private _specularMethod;
 	    private _depthCompareMode;
 	    /**
-	     * Creates a new TriangleMethodMaterial object.
+	     * Creates a new MethodMaterial object.
 	     *
 	     * @param texture The texture used for the material's albedo color.
 	     * @param smooth Indicates whether the texture should be filtered when sampled. Defaults to true.
@@ -916,21 +1040,13 @@ declare module "awayjs-methodmaterials/lib/TriangleMethodMaterial" {
 	     */
 	    constructor(texture?: Texture2DBase, smooth?: boolean, repeat?: boolean, mipmap?: boolean);
 	    constructor(color?: number, alpha?: number);
-	    materialMode: string;
+	    mode: string;
 	    /**
 	     * The depth compare mode used to render the renderables using this material.
 	     *
 	     * @see away.stagegl.ContextGLCompareMode
 	     */
 	    depthCompareMode: string;
-	    /**
-	     * The alpha of the surface.
-	     */
-	    alpha: number;
-	    /**
-	     * The ColorTransform object to transform the colour of the material with. Defaults to null.
-	     */
-	    colorTransform: ColorTransform;
 	    /**
 	     * The texture object to use for the ambient colour.
 	     */
@@ -955,23 +1071,13 @@ declare module "awayjs-methodmaterials/lib/TriangleMethodMaterial" {
 	     * The method used to generate the per-pixel normals. Defaults to NormalBasicMethod.
 	     */
 	    normalMethod: NormalBasicMethod;
+	    numEffectMethods: number;
 	    /**
 	     * Appends an "effect" shading method to the shader. Effect methods are those that do not influence the lighting
 	     * but modulate the shaded colour, used for fog, outlines, etc. The method will be applied to the result of the
 	     * methods added prior.
 	     */
 	    addEffectMethod(method: EffectMethodBase): void;
-	    /**
-	     * The number of "effect" methods added to the material.
-	     */
-	    numEffectMethods: number;
-	    /**
-	     * Queries whether a given effect method was added to the material.
-	     *
-	     * @param method The method to be queried.
-	     * @return true if the method was added to the material, false otherwise.
-	     */
-	    hasEffectMethod(method: EffectMethodBase): boolean;
 	    /**
 	     * Returns the method added at the given index.
 	     * @param index The index of the method to retrieve.
@@ -1025,38 +1131,14 @@ declare module "awayjs-methodmaterials/lib/TriangleMethodMaterial" {
 	     */
 	    specularColor: number;
 	    /**
-	     * Indicates whether or not the material has transparency. If binary transparency is sufficient, for
-	     * example when using textures of foliage, consider using alphaThreshold instead.
+	     *
+	     * @param renderer
+	     *
+	     * @internal
 	     */
-	    alphaBlending: boolean;
-	    /**
-	     * @inheritDoc
-	     */
-	    _iUpdateMaterial(): void;
-	    /**
-	     * Initializes all the passes and their dependent passes.
-	     */
-	    private initPasses();
-	    /**
-	     * Sets up the various blending modes for all screen passes, based on whether or not there are previous passes.
-	     */
-	    private setBlendAndCompareModes();
-	    private initCasterLightPass();
-	    private removeCasterLightPass();
-	    private initNonCasterLightPasses();
-	    private removeNonCasterLightPasses();
-	    private removeEffectPass();
-	    private initEffectPass();
-	    /**
-	     * The maximum total number of lights provided by the light picker.
-	     */
-	    private numLights;
-	    /**
-	     * The amount of lights that don't cast shadows.
-	     */
-	    private numNonCasters;
+	    getRenderObject(renderablePool: MethodRenderablePool): IRenderObject;
 	}
-	export = TriangleMethodMaterial;
+	export = MethodMaterial;
 	
 }
 declare module "awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod" {
@@ -1419,19 +1501,20 @@ declare module "awayjs-methodmaterials/lib/passes/SingleObjectDepthPass" {
 	import Matrix3D = require("awayjs-core/lib/geom/Matrix3D");
 	import RenderTexture = require("awayjs-core/lib/textures/RenderTexture");
 	import Camera = require("awayjs-display/lib/entities/Camera");
+	import IRenderObjectOwner = require("awayjs-display/lib/base/IRenderObjectOwner");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RendererBase = require("awayjs-renderergl/lib/base/RendererBase");
-	import MaterialPassData = require("awayjs-renderergl/lib/pool/MaterialPassData");
+	import RenderObjectBase = require("awayjs-renderergl/lib/compilation/RenderObjectBase");
 	import RenderableBase = require("awayjs-renderergl/lib/pool/RenderableBase");
 	import ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-	import MaterialPassGLBase = require("awayjs-renderergl/lib/passes/MaterialPassGLBase");
+	import IRenderableClass = require("awayjs-renderergl/lib/pool/IRenderableClass");
+	import RenderPassBase = require("awayjs-renderergl/lib/passes/RenderPassBase");
 	/**
 	 * The SingleObjectDepthPass provides a material pass that renders a single object to a depth map from the point
 	 * of view from a light.
 	 */
-	class SingleObjectDepthPass extends MaterialPassGLBase {
+	class SingleObjectDepthPass extends RenderPassBase {
 	    private _textures;
 	    private _projections;
 	    private _textureSize;
@@ -1449,7 +1532,7 @@ declare module "awayjs-methodmaterials/lib/passes/SingleObjectDepthPass" {
 	    /**
 	     * Creates a new SingleObjectDepthPass object.
 	     */
-	    constructor();
+	    constructor(renderObject: RenderObjectBase, renderObjectOwner: IRenderObjectOwner, renderableClass: IRenderableClass, stage: Stage);
 	    /**
 	     * @inheritDoc
 	     */
@@ -1482,11 +1565,11 @@ declare module "awayjs-methodmaterials/lib/passes/SingleObjectDepthPass" {
 	    /**
 	     * @inheritDoc
 	     */
-	    _iRender(pass: MaterialPassData, renderable: RenderableBase, stage: Stage, camera: Camera, viewProjection: Matrix3D): void;
+	    _iRender(renderable: RenderableBase, camera: Camera, viewProjection: Matrix3D): void;
 	    /**
 	     * @inheritDoc
 	     */
-	    _iActivate(pass: MaterialPassData, renderer: RendererBase, camera: Camera): void;
+	    _iActivate(camera: Camera): void;
 	}
 	export = SingleObjectDepthPass;
 	
@@ -3006,5 +3089,24 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularPhongMethod" {
 	    iGetFragmentCodePerLight(shaderObject: ShaderLightingObject, methodVO: MethodVO, lightDirReg: ShaderRegisterElement, lightColReg: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 	}
 	export = SpecularPhongMethod;
+	
+}
+declare module "awayjs-methodmaterials/lib/pool/MethodRendererPool" {
+	import RendererPoolBase = require("awayjs-renderergl/lib/pool/RendererPoolBase");
+	import RendererBase = require("awayjs-renderergl/lib/base/RendererBase");
+	/**
+	 * MethodRendererPool forms an abstract base class for classes that are used in the rendering pipeline to render the
+	 * contents of a partition
+	 *
+	 * @class away.render.MethodRendererPool
+	 */
+	class MethodRendererPool extends RendererPoolBase {
+	    /**
+	     * Creates a new MethodRendererPool object.
+	     */
+	    constructor(renderer: RendererBase);
+	    _pUpdatePool(): void;
+	}
+	export = MethodRendererPool;
 	
 }

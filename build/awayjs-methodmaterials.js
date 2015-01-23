@@ -1,60 +1,54 @@
-require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"awayjs-methodmaterials/lib/TriangleMaterialMode":[function(require,module,exports){
-var TriangleMaterialMode = (function () {
-    function TriangleMaterialMode() {
+require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"awayjs-methodmaterials/lib/MethodMaterialMode":[function(require,module,exports){
+var MethodMaterialMode = (function () {
+    function MethodMaterialMode() {
     }
     /**
      *
      */
-    TriangleMaterialMode.SINGLE_PASS = "singlePass";
+    MethodMaterialMode.SINGLE_PASS = "singlePass";
     /**
      *
      */
-    TriangleMaterialMode.MULTI_PASS = "multiPass";
-    return TriangleMaterialMode;
+    MethodMaterialMode.MULTI_PASS = "multiPass";
+    return MethodMaterialMode;
 })();
-module.exports = TriangleMaterialMode;
+module.exports = MethodMaterialMode;
 
 
-},{}],"awayjs-methodmaterials/lib/TriangleMethodMaterial":[function(require,module,exports){
+},{}],"awayjs-methodmaterials/lib/MethodMaterial":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var ColorTransform = require("awayjs-core/lib/geom/ColorTransform");
 var Texture2DBase = require("awayjs-core/lib/textures/Texture2DBase");
-var BlendMode = require("awayjs-display/lib/base/BlendMode");
-var StaticLightPicker = require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
+var MaterialBase = require("awayjs-display/lib/materials/MaterialBase");
 var ContextGLCompareMode = require("awayjs-stagegl/lib/base/ContextGLCompareMode");
-var TriangleMaterialBase = require("awayjs-renderergl/lib/materials/TriangleMaterialBase");
-var TriangleMaterialMode = require("awayjs-methodmaterials/lib/TriangleMaterialMode");
 var AmbientBasicMethod = require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
 var DiffuseBasicMethod = require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
 var NormalBasicMethod = require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
 var SpecularBasicMethod = require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
-var MaterialPassMode = require("awayjs-methodmaterials/lib/passes/MaterialPassMode");
-var TriangleMethodPass = require("awayjs-methodmaterials/lib/passes/TriangleMethodPass");
+var MethodMaterialMode = require("awayjs-methodmaterials/lib/MethodMaterialMode");
 /**
- * TriangleMethodMaterial forms an abstract base class for the default shaded materials provided by Stage,
+ * MethodMaterial forms an abstract base class for the default shaded materials provided by Stage,
  * using material methods to define their appearance.
  */
-var TriangleMethodMaterial = (function (_super) {
-    __extends(TriangleMethodMaterial, _super);
-    function TriangleMethodMaterial(textureColor, smoothAlpha, repeat, mipmap) {
+var MethodMaterial = (function (_super) {
+    __extends(MethodMaterial, _super);
+    function MethodMaterial(textureColor, smoothAlpha, repeat, mipmap) {
         if (textureColor === void 0) { textureColor = null; }
         if (smoothAlpha === void 0) { smoothAlpha = null; }
         if (repeat === void 0) { repeat = false; }
         if (mipmap === void 0) { mipmap = false; }
         _super.call(this);
-        this._alphaBlending = false;
-        this._alpha = 1;
+        this._effectMethods = new Array();
         this._ambientMethod = new AmbientBasicMethod();
         this._diffuseMethod = new DiffuseBasicMethod();
         this._normalMethod = new NormalBasicMethod();
         this._specularMethod = new SpecularBasicMethod();
         this._depthCompareMode = ContextGLCompareMode.LESS_EQUAL;
-        this._materialMode = TriangleMaterialMode.SINGLE_PASS;
+        this._mode = MethodMaterialMode.SINGLE_PASS;
         if (textureColor instanceof Texture2DBase) {
             this.texture = textureColor;
             this.smooth = (smoothAlpha == null) ? true : false;
@@ -66,20 +60,20 @@ var TriangleMethodMaterial = (function (_super) {
             this.alpha = (smoothAlpha == null) ? 1 : Number(smoothAlpha);
         }
     }
-    Object.defineProperty(TriangleMethodMaterial.prototype, "materialMode", {
+    Object.defineProperty(MethodMaterial.prototype, "mode", {
         get: function () {
-            return this._materialMode;
+            return this._mode;
         },
         set: function (value) {
-            if (this._materialMode == value)
+            if (this._mode == value)
                 return;
-            this._materialMode = value;
-            this._pInvalidateScreenPasses();
+            this._mode = value;
+            this._pInvalidateRenderObject();
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TriangleMethodMaterial.prototype, "depthCompareMode", {
+    Object.defineProperty(MethodMaterial.prototype, "depthCompareMode", {
         /**
          * The depth compare mode used to render the renderables using this material.
          *
@@ -92,48 +86,12 @@ var TriangleMethodMaterial = (function (_super) {
             if (this._depthCompareMode == value)
                 return;
             this._depthCompareMode = value;
-            this._pInvalidateScreenPasses();
+            this._pInvalidateRenderObject();
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TriangleMethodMaterial.prototype, "alpha", {
-        /**
-         * The alpha of the surface.
-         */
-        get: function () {
-            return this._alpha;
-        },
-        set: function (value) {
-            if (value > 1)
-                value = 1;
-            else if (value < 0)
-                value = 0;
-            if (this._alpha == value)
-                return;
-            this._alpha = value;
-            if (this._colorTransform == null)
-                this._colorTransform = new ColorTransform();
-            this._colorTransform.alphaMultiplier = value;
-            this._pInvalidatePasses();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TriangleMethodMaterial.prototype, "colorTransform", {
-        /**
-         * The ColorTransform object to transform the colour of the material with. Defaults to null.
-         */
-        get: function () {
-            return this._screenPass.colorTransform;
-        },
-        set: function (value) {
-            this._screenPass.colorTransform = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TriangleMethodMaterial.prototype, "diffuseTexture", {
+    Object.defineProperty(MethodMaterial.prototype, "diffuseTexture", {
         /**
          * The texture object to use for the ambient colour.
          */
@@ -146,7 +104,7 @@ var TriangleMethodMaterial = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TriangleMethodMaterial.prototype, "ambientMethod", {
+    Object.defineProperty(MethodMaterial.prototype, "ambientMethod", {
         /**
          * The method that provides the ambient lighting contribution. Defaults to AmbientBasicMethod.
          */
@@ -159,12 +117,12 @@ var TriangleMethodMaterial = (function (_super) {
             if (value && this._ambientMethod)
                 value.copyFrom(this._ambientMethod);
             this._ambientMethod = value;
-            this._pInvalidateScreenPasses();
+            this._pInvalidateRenderObject();
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TriangleMethodMaterial.prototype, "shadowMethod", {
+    Object.defineProperty(MethodMaterial.prototype, "shadowMethod", {
         /**
          * The method used to render shadows cast on this surface, or null if no shadows are to be rendered. Defaults to null.
          */
@@ -177,12 +135,12 @@ var TriangleMethodMaterial = (function (_super) {
             if (value && this._shadowMethod)
                 value.copyFrom(this._shadowMethod);
             this._shadowMethod = value;
-            this._pInvalidateScreenPasses();
+            this._pInvalidateRenderObject();
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TriangleMethodMaterial.prototype, "diffuseMethod", {
+    Object.defineProperty(MethodMaterial.prototype, "diffuseMethod", {
         /**
          * The method that provides the diffuse lighting contribution. Defaults to DiffuseBasicMethod.
          */
@@ -195,12 +153,12 @@ var TriangleMethodMaterial = (function (_super) {
             if (value && this._diffuseMethod)
                 value.copyFrom(this._diffuseMethod);
             this._diffuseMethod = value;
-            this._pInvalidateScreenPasses();
+            this._pInvalidateRenderObject();
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TriangleMethodMaterial.prototype, "specularMethod", {
+    Object.defineProperty(MethodMaterial.prototype, "specularMethod", {
         /**
          * The method that provides the specular lighting contribution. Defaults to SpecularBasicMethod.
          */
@@ -213,12 +171,12 @@ var TriangleMethodMaterial = (function (_super) {
             if (value && this._specularMethod)
                 value.copyFrom(this._specularMethod);
             this._specularMethod = value;
-            this._pInvalidateScreenPasses();
+            this._pInvalidateRenderObject();
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TriangleMethodMaterial.prototype, "normalMethod", {
+    Object.defineProperty(MethodMaterial.prototype, "normalMethod", {
         /**
          * The method used to generate the per-pixel normals. Defaults to NormalBasicMethod.
          */
@@ -231,7 +189,14 @@ var TriangleMethodMaterial = (function (_super) {
             if (value && this._normalMethod)
                 value.copyFrom(this._normalMethod);
             this._normalMethod = value;
-            this._pInvalidateScreenPasses();
+            this._pInvalidateRenderObject();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MethodMaterial.prototype, "numEffectMethods", {
+        get: function () {
+            return this._effectMethods.length;
         },
         enumerable: true,
         configurable: true
@@ -241,65 +206,36 @@ var TriangleMethodMaterial = (function (_super) {
      * but modulate the shaded colour, used for fog, outlines, etc. The method will be applied to the result of the
      * methods added prior.
      */
-    TriangleMethodMaterial.prototype.addEffectMethod = function (method) {
-        if (this._screenPass == null)
-            this._screenPass = new TriangleMethodPass();
-        this._screenPass.addEffectMethod(method);
-        this._pInvalidateScreenPasses();
-    };
-    Object.defineProperty(TriangleMethodMaterial.prototype, "numEffectMethods", {
-        /**
-         * The number of "effect" methods added to the material.
-         */
-        get: function () {
-            return this._screenPass ? this._screenPass.numEffectMethods : 0;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    /**
-     * Queries whether a given effect method was added to the material.
-     *
-     * @param method The method to be queried.
-     * @return true if the method was added to the material, false otherwise.
-     */
-    TriangleMethodMaterial.prototype.hasEffectMethod = function (method) {
-        return this._screenPass ? this._screenPass.hasEffectMethod(method) : false;
+    MethodMaterial.prototype.addEffectMethod = function (method) {
+        this._effectMethods.push(method);
+        this._pInvalidateRenderObject();
     };
     /**
      * Returns the method added at the given index.
      * @param index The index of the method to retrieve.
      * @return The method at the given index.
      */
-    TriangleMethodMaterial.prototype.getEffectMethodAt = function (index) {
-        if (this._screenPass == null)
-            return null;
-        return this._screenPass.getEffectMethodAt(index);
+    MethodMaterial.prototype.getEffectMethodAt = function (index) {
+        return this._effectMethods[index];
     };
     /**
      * Adds an effect method at the specified index amongst the methods already added to the material. Effect
      * methods are those that do not influence the lighting but modulate the shaded colour, used for fog, outlines,
      * etc. The method will be applied to the result of the methods with a lower index.
      */
-    TriangleMethodMaterial.prototype.addEffectMethodAt = function (method, index) {
-        if (this._screenPass == null)
-            this._screenPass = new TriangleMethodPass();
-        this._screenPass.addEffectMethodAt(method, index);
-        this._pInvalidatePasses();
+    MethodMaterial.prototype.addEffectMethodAt = function (method, index) {
+        this._effectMethods.splice(index, 0, method);
+        this._pInvalidateRenderObject();
     };
     /**
      * Removes an effect method from the material.
      * @param method The method to be removed.
      */
-    TriangleMethodMaterial.prototype.removeEffectMethod = function (method) {
-        if (this._screenPass == null)
-            return;
-        this._screenPass.removeEffectMethod(method);
-        // reconsider
-        if (this._screenPass.numEffectMethods == 0)
-            this._pInvalidatePasses();
+    MethodMaterial.prototype.removeEffectMethod = function (method) {
+        this._effectMethods.splice(this._effectMethods.indexOf(method), 1);
+        this._pInvalidateRenderObject();
     };
-    Object.defineProperty(TriangleMethodMaterial.prototype, "normalMap", {
+    Object.defineProperty(MethodMaterial.prototype, "normalMap", {
         /**
          * The normal map to modulate the direction of the surface for each texel. The default normal method expects
          * tangent-space normal maps, but others could expect object-space maps.
@@ -313,7 +249,7 @@ var TriangleMethodMaterial = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TriangleMethodMaterial.prototype, "specularMap", {
+    Object.defineProperty(MethodMaterial.prototype, "specularMap", {
         /**
          * A specular map that defines the strength of specular reflections for each texel in the red channel,
          * and the gloss factor in the green channel. You can use SpecularBitmapTexture if you want to easily set
@@ -328,7 +264,7 @@ var TriangleMethodMaterial = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TriangleMethodMaterial.prototype, "gloss", {
+    Object.defineProperty(MethodMaterial.prototype, "gloss", {
         /**
          * The glossiness of the material (sharpness of the specular highlight).
          */
@@ -341,7 +277,7 @@ var TriangleMethodMaterial = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TriangleMethodMaterial.prototype, "ambient", {
+    Object.defineProperty(MethodMaterial.prototype, "ambient", {
         /**
          * The strength of the ambient reflection.
          */
@@ -354,7 +290,7 @@ var TriangleMethodMaterial = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TriangleMethodMaterial.prototype, "specular", {
+    Object.defineProperty(MethodMaterial.prototype, "specular", {
         /**
          * The overall strength of the specular reflection.
          */
@@ -367,7 +303,7 @@ var TriangleMethodMaterial = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TriangleMethodMaterial.prototype, "ambientColor", {
+    Object.defineProperty(MethodMaterial.prototype, "ambientColor", {
         /**
          * The colour of the ambient reflection.
          */
@@ -380,7 +316,7 @@ var TriangleMethodMaterial = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TriangleMethodMaterial.prototype, "diffuseColor", {
+    Object.defineProperty(MethodMaterial.prototype, "diffuseColor", {
         /**
          * The colour of the diffuse reflection.
          */
@@ -393,7 +329,7 @@ var TriangleMethodMaterial = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TriangleMethodMaterial.prototype, "specularColor", {
+    Object.defineProperty(MethodMaterial.prototype, "specularColor", {
         /**
          * The colour of the specular reflection.
          */
@@ -406,19 +342,65 @@ var TriangleMethodMaterial = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TriangleMethodMaterial.prototype, "alphaBlending", {
+    /**
+     *
+     * @param renderer
+     *
+     * @internal
+     */
+    MethodMaterial.prototype.getRenderObject = function (renderablePool) {
+        return renderablePool.getMethodRenderObject(this);
+    };
+    return MethodMaterial;
+})(MaterialBase);
+module.exports = MethodMaterial;
+
+
+},{"awayjs-core/lib/textures/Texture2DBase":undefined,"awayjs-display/lib/materials/MaterialBase":undefined,"awayjs-methodmaterials/lib/MethodMaterialMode":undefined,"awayjs-methodmaterials/lib/methods/AmbientBasicMethod":undefined,"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":undefined,"awayjs-methodmaterials/lib/methods/NormalBasicMethod":undefined,"awayjs-methodmaterials/lib/methods/SpecularBasicMethod":undefined,"awayjs-stagegl/lib/base/ContextGLCompareMode":undefined}],"awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject":[function(require,module,exports){
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var BlendMode = require("awayjs-display/lib/base/BlendMode");
+var StaticLightPicker = require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
+var ContextGLCompareMode = require("awayjs-stagegl/lib/base/ContextGLCompareMode");
+var RenderObjectBase = require("awayjs-renderergl/lib/compilation/RenderObjectBase");
+var MethodPassMode = require("awayjs-methodmaterials/lib/passes/MethodPassMode");
+var MethodPass = require("awayjs-methodmaterials/lib/passes/MethodPass");
+var MethodMaterialMode = require("awayjs-methodmaterials/lib/MethodMaterialMode");
+/**
+ * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
+ * using material methods to define their appearance.
+ */
+var RenderMethodMaterialObject = (function (_super) {
+    __extends(RenderMethodMaterialObject, _super);
+    /**
+     * Creates a new CompiledPass object.
+     *
+     * @param material The material to which this pass belongs.
+     */
+    function RenderMethodMaterialObject(pool, renderObjectOwner, renderableClass, stage) {
+        _super.call(this, pool, renderObjectOwner, renderableClass, stage);
+        this._material = renderObjectOwner;
+    }
+    Object.defineProperty(RenderMethodMaterialObject.prototype, "numLights", {
         /**
-         * Indicates whether or not the material has transparency. If binary transparency is sufficient, for
-         * example when using textures of foliage, consider using alphaThreshold instead.
+         * The maximum total number of lights provided by the light picker.
          */
         get: function () {
-            return this._alphaBlending;
+            return this._material.lightPicker ? this._material.lightPicker.numLightProbes + this._material.lightPicker.numDirectionalLights + this._material.lightPicker.numPointLights + this._material.lightPicker.numCastingDirectionalLights + this._material.lightPicker.numCastingPointLights : 0;
         },
-        set: function (value) {
-            if (this._alphaBlending == value)
-                return;
-            this._alphaBlending = value;
-            this._pInvalidatePasses();
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(RenderMethodMaterialObject.prototype, "numNonCasters", {
+        /**
+         * The amount of lights that don't cast shadows.
+         */
+        get: function () {
+            return this._material.lightPicker ? this._material.lightPicker.numLightProbes + this._material.lightPicker.numDirectionalLights + this._material.lightPicker.numPointLights : 0;
         },
         enumerable: true,
         configurable: true
@@ -426,41 +408,38 @@ var TriangleMethodMaterial = (function (_super) {
     /**
      * @inheritDoc
      */
-    TriangleMethodMaterial.prototype._iUpdateMaterial = function () {
-        if (this._pScreenPassesInvalid) {
-            //Updates screen passes when they were found to be invalid.
-            this._pScreenPassesInvalid = false;
-            this.initPasses();
-            this.setBlendAndCompareModes();
-            this._pClearScreenPasses();
-            if (this._materialMode == TriangleMaterialMode.MULTI_PASS) {
-                if (this._casterLightPass)
-                    this._pAddScreenPass(this._casterLightPass);
-                if (this._nonCasterLightPasses)
-                    for (var i = 0; i < this._nonCasterLightPasses.length; ++i)
-                        this._pAddScreenPass(this._nonCasterLightPasses[i]);
-            }
-            if (this._screenPass)
-                this._pAddScreenPass(this._screenPass);
+    RenderMethodMaterialObject.prototype._pUpdateRenderObject = function () {
+        _super.prototype._pUpdateRenderObject.call(this);
+        this.initPasses();
+        this.setBlendAndCompareModes();
+        this._pClearScreenPasses();
+        if (this._material.mode == MethodMaterialMode.MULTI_PASS) {
+            if (this._casterLightPass)
+                this._pAddScreenPass(this._casterLightPass);
+            if (this._nonCasterLightPasses)
+                for (var i = 0; i < this._nonCasterLightPasses.length; ++i)
+                    this._pAddScreenPass(this._nonCasterLightPasses[i]);
         }
+        if (this._screenPass)
+            this._pAddScreenPass(this._screenPass);
     };
     /**
      * Initializes all the passes and their dependent passes.
      */
-    TriangleMethodMaterial.prototype.initPasses = function () {
+    RenderMethodMaterialObject.prototype.initPasses = function () {
         // let the effects pass handle everything if there are no lights, when there are effect methods applied
         // after shading, or when the material mode is single pass.
-        if (this.numLights == 0 || this.numEffectMethods > 0 || this._materialMode == TriangleMaterialMode.SINGLE_PASS)
+        if (this.numLights == 0 || this._material.numEffectMethods > 0 || this._material.mode == MethodMaterialMode.SINGLE_PASS)
             this.initEffectPass();
         else if (this._screenPass)
             this.removeEffectPass();
         // only use a caster light pass if shadows need to be rendered
-        if (this._shadowMethod && this._materialMode == TriangleMaterialMode.MULTI_PASS)
+        if (this._material.shadowMethod && this._material.mode == MethodMaterialMode.MULTI_PASS)
             this.initCasterLightPass();
         else if (this._casterLightPass)
             this.removeCasterLightPass();
         // only use non caster light passes if there are lights that don't cast
-        if (this.numNonCasters > 0 && this._materialMode == TriangleMaterialMode.MULTI_PASS)
+        if (this.numNonCasters > 0 && this._material.mode == MethodMaterialMode.MULTI_PASS)
             this.initNonCasterLightPasses();
         else if (this._nonCasterLightPasses)
             this.removeNonCasterLightPasses();
@@ -468,13 +447,13 @@ var TriangleMethodMaterial = (function (_super) {
     /**
      * Sets up the various blending modes for all screen passes, based on whether or not there are previous passes.
      */
-    TriangleMethodMaterial.prototype.setBlendAndCompareModes = function () {
+    RenderMethodMaterialObject.prototype.setBlendAndCompareModes = function () {
         var forceSeparateMVP = Boolean(this._casterLightPass || this._screenPass);
         // caster light pass is always first if it exists, hence it uses normal blending
         if (this._casterLightPass) {
             this._casterLightPass.forceSeparateMVP = forceSeparateMVP;
             this._casterLightPass.setBlendMode(BlendMode.NORMAL);
-            this._casterLightPass.depthCompareMode = this._depthCompareMode;
+            this._casterLightPass.depthCompareMode = this._material.depthCompareMode;
         }
         if (this._nonCasterLightPasses) {
             var firstAdditiveIndex = 0;
@@ -483,7 +462,7 @@ var TriangleMethodMaterial = (function (_super) {
             if (!this._casterLightPass) {
                 this._nonCasterLightPasses[0].forceSeparateMVP = forceSeparateMVP;
                 this._nonCasterLightPasses[0].setBlendMode(BlendMode.NORMAL);
-                this._nonCasterLightPasses[0].depthCompareMode = this._depthCompareMode;
+                this._nonCasterLightPasses[0].depthCompareMode = this._material.depthCompareMode;
                 firstAdditiveIndex = 1;
             }
             for (var i = firstAdditiveIndex; i < this._nonCasterLightPasses.length; ++i) {
@@ -497,135 +476,143 @@ var TriangleMethodMaterial = (function (_super) {
             this._pRequiresBlending = false;
             // there are light passes, so this should be blended in
             if (this._screenPass) {
-                this._screenPass.passMode = MaterialPassMode.EFFECTS;
+                this._screenPass.mode = MethodPassMode.EFFECTS;
                 this._screenPass.depthCompareMode = ContextGLCompareMode.LESS_EQUAL;
                 this._screenPass.setBlendMode(BlendMode.LAYER);
                 this._screenPass.forceSeparateMVP = forceSeparateMVP;
             }
         }
         else if (this._screenPass) {
-            this._pRequiresBlending = (this._pBlendMode != BlendMode.NORMAL || this._alphaBlending || (this._colorTransform && this._colorTransform.alphaMultiplier < 1));
+            this._pRequiresBlending = (this._material.blendMode != BlendMode.NORMAL || this._material.alphaBlending || (this._material.colorTransform && this._material.colorTransform.alphaMultiplier < 1));
             // effects pass is the only pass, so it should just blend normally
-            this._screenPass.passMode = MaterialPassMode.SUPER_SHADER;
-            this._screenPass.depthCompareMode = this._depthCompareMode;
+            this._screenPass.mode = MethodPassMode.SUPER_SHADER;
+            this._screenPass.depthCompareMode = this._material.depthCompareMode;
             this._screenPass.preserveAlpha = this._pRequiresBlending;
-            this._screenPass.colorTransform = this._colorTransform;
-            this._screenPass.setBlendMode((this._pBlendMode == BlendMode.NORMAL && this._pRequiresBlending) ? BlendMode.LAYER : this._pBlendMode);
+            this._screenPass.colorTransform = this._material.colorTransform;
+            this._screenPass.setBlendMode((this._material.blendMode == BlendMode.NORMAL && this._pRequiresBlending) ? BlendMode.LAYER : this._material.blendMode);
             this._screenPass.forceSeparateMVP = false;
         }
     };
-    TriangleMethodMaterial.prototype.initCasterLightPass = function () {
+    RenderMethodMaterialObject.prototype.initCasterLightPass = function () {
         if (this._casterLightPass == null)
-            this._casterLightPass = new TriangleMethodPass(MaterialPassMode.LIGHTING);
-        this._casterLightPass.lightPicker = new StaticLightPicker([this._shadowMethod.castingLight]);
-        this._casterLightPass.shadowMethod = this._shadowMethod;
-        this._casterLightPass.diffuseMethod = this._diffuseMethod;
-        this._casterLightPass.ambientMethod = this._ambientMethod;
-        this._casterLightPass.normalMethod = this._normalMethod;
-        this._casterLightPass.specularMethod = this._specularMethod;
+            this._casterLightPass = new MethodPass(MethodPassMode.LIGHTING, this, this._material, this._renderableClass, this._stage);
+        this._casterLightPass.lightPicker = new StaticLightPicker([this._material.shadowMethod.castingLight]);
+        this._casterLightPass.shadowMethod = this._material.shadowMethod;
+        this._casterLightPass.diffuseMethod = this._material.diffuseMethod;
+        this._casterLightPass.ambientMethod = this._material.ambientMethod;
+        this._casterLightPass.normalMethod = this._material.normalMethod;
+        this._casterLightPass.specularMethod = this._material.specularMethod;
     };
-    TriangleMethodMaterial.prototype.removeCasterLightPass = function () {
+    RenderMethodMaterialObject.prototype.removeCasterLightPass = function () {
         this._casterLightPass.dispose();
         this._pRemoveScreenPass(this._casterLightPass);
         this._casterLightPass = null;
     };
-    TriangleMethodMaterial.prototype.initNonCasterLightPasses = function () {
+    RenderMethodMaterialObject.prototype.initNonCasterLightPasses = function () {
         this.removeNonCasterLightPasses();
         var pass;
-        var numDirLights = this._pLightPicker.numDirectionalLights;
-        var numPointLights = this._pLightPicker.numPointLights;
-        var numLightProbes = this._pLightPicker.numLightProbes;
+        var numDirLights = this._material.lightPicker.numDirectionalLights;
+        var numPointLights = this._material.lightPicker.numPointLights;
+        var numLightProbes = this._material.lightPicker.numLightProbes;
         var dirLightOffset = 0;
         var pointLightOffset = 0;
         var probeOffset = 0;
         if (!this._casterLightPass) {
-            numDirLights += this._pLightPicker.numCastingDirectionalLights;
-            numPointLights += this._pLightPicker.numCastingPointLights;
+            numDirLights += this._material.lightPicker.numCastingDirectionalLights;
+            numPointLights += this._material.lightPicker.numCastingPointLights;
         }
         this._nonCasterLightPasses = new Array();
         while (dirLightOffset < numDirLights || pointLightOffset < numPointLights || probeOffset < numLightProbes) {
-            pass = new TriangleMethodPass(MaterialPassMode.LIGHTING);
-            pass.includeCasters = this._shadowMethod == null;
+            pass = new MethodPass(MethodPassMode.LIGHTING, this, this._material, this._renderableClass, this._stage);
+            pass.includeCasters = this._material.shadowMethod == null;
             pass.directionalLightsOffset = dirLightOffset;
             pass.pointLightsOffset = pointLightOffset;
             pass.lightProbesOffset = probeOffset;
-            pass.lightPicker = this._pLightPicker;
-            pass.diffuseMethod = this._diffuseMethod;
-            pass.ambientMethod = this._ambientMethod;
-            pass.normalMethod = this._normalMethod;
-            pass.specularMethod = this._specularMethod;
+            pass.lightPicker = this._material.lightPicker;
+            pass.diffuseMethod = this._material.diffuseMethod;
+            pass.ambientMethod = this._material.ambientMethod;
+            pass.normalMethod = this._material.normalMethod;
+            pass.specularMethod = this._material.specularMethod;
             this._nonCasterLightPasses.push(pass);
-            dirLightOffset += pass.iNumDirectionalLights;
-            pointLightOffset += pass.iNumPointLights;
-            probeOffset += pass.iNumLightProbes;
+            dirLightOffset += pass.numDirectionalLights;
+            pointLightOffset += pass.numPointLights;
+            probeOffset += pass.numLightProbes;
         }
     };
-    TriangleMethodMaterial.prototype.removeNonCasterLightPasses = function () {
+    RenderMethodMaterialObject.prototype.removeNonCasterLightPasses = function () {
         if (!this._nonCasterLightPasses)
             return;
         for (var i = 0; i < this._nonCasterLightPasses.length; ++i)
             this._pRemoveScreenPass(this._nonCasterLightPasses[i]);
         this._nonCasterLightPasses = null;
     };
-    TriangleMethodMaterial.prototype.removeEffectPass = function () {
-        if (this._screenPass.ambientMethod != this._ambientMethod)
+    RenderMethodMaterialObject.prototype.removeEffectPass = function () {
+        if (this._screenPass.ambientMethod != this._material.ambientMethod)
             this._screenPass.ambientMethod.dispose();
-        if (this._screenPass.diffuseMethod != this._diffuseMethod)
+        if (this._screenPass.diffuseMethod != this._material.diffuseMethod)
             this._screenPass.diffuseMethod.dispose();
-        if (this._screenPass.specularMethod != this._specularMethod)
+        if (this._screenPass.specularMethod != this._material.specularMethod)
             this._screenPass.specularMethod.dispose();
-        if (this._screenPass.normalMethod != this._normalMethod)
+        if (this._screenPass.normalMethod != this._material.normalMethod)
             this._screenPass.normalMethod.dispose();
         this._pRemoveScreenPass(this._screenPass);
         this._screenPass = null;
     };
-    TriangleMethodMaterial.prototype.initEffectPass = function () {
+    RenderMethodMaterialObject.prototype.initEffectPass = function () {
         if (this._screenPass == null)
-            this._screenPass = new TriangleMethodPass();
-        if (this._materialMode == TriangleMaterialMode.SINGLE_PASS) {
-            this._screenPass.ambientMethod = this._ambientMethod;
-            this._screenPass.diffuseMethod = this._diffuseMethod;
-            this._screenPass.specularMethod = this._specularMethod;
-            this._screenPass.normalMethod = this._normalMethod;
-            this._screenPass.shadowMethod = this._shadowMethod;
+            this._screenPass = new MethodPass(MethodPassMode.SUPER_SHADER, this, this._material, this._renderableClass, this._stage);
+        if (this._material.mode == MethodMaterialMode.SINGLE_PASS) {
+            this._screenPass.ambientMethod = this._material.ambientMethod;
+            this._screenPass.diffuseMethod = this._material.diffuseMethod;
+            this._screenPass.specularMethod = this._material.specularMethod;
+            this._screenPass.normalMethod = this._material.normalMethod;
+            this._screenPass.shadowMethod = this._material.shadowMethod;
         }
-        else if (this._materialMode == TriangleMaterialMode.MULTI_PASS) {
+        else if (this._material.mode == MethodMaterialMode.MULTI_PASS) {
             if (this.numLights == 0) {
-                this._screenPass.ambientMethod = this._ambientMethod;
+                this._screenPass.ambientMethod = this._material.ambientMethod;
             }
             else {
                 this._screenPass.ambientMethod = null;
             }
             this._screenPass.preserveAlpha = false;
-            this._screenPass.normalMethod = this._normalMethod;
+            this._screenPass.normalMethod = this._material.normalMethod;
+        }
+        //update effect methods
+        var i = 0;
+        var effectMethod;
+        var len = Math.max(this._material.numEffectMethods, this._screenPass.numEffectMethods);
+        while (i < len) {
+            effectMethod = this._material.getEffectMethodAt(i);
+            if (effectMethod != this._screenPass.getEffectMethodAt(i)) {
+                this._screenPass.removeEffectMethodAt(i);
+                if (effectMethod != null) {
+                    if (i < this._screenPass.numEffectMethods)
+                        this._screenPass.addEffectMethodAt(effectMethod, i);
+                    else
+                        this._screenPass.addEffectMethod(effectMethod);
+                }
+            }
+            i++;
         }
     };
-    Object.defineProperty(TriangleMethodMaterial.prototype, "numLights", {
-        /**
-         * The maximum total number of lights provided by the light picker.
-         */
-        get: function () {
-            return this._pLightPicker ? this._pLightPicker.numLightProbes + this._pLightPicker.numDirectionalLights + this._pLightPicker.numPointLights + this._pLightPicker.numCastingDirectionalLights + this._pLightPicker.numCastingPointLights : 0;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TriangleMethodMaterial.prototype, "numNonCasters", {
-        /**
-         * The amount of lights that don't cast shadows.
-         */
-        get: function () {
-            return this._pLightPicker ? this._pLightPicker.numLightProbes + this._pLightPicker.numDirectionalLights + this._pLightPicker.numPointLights : 0;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    return TriangleMethodMaterial;
-})(TriangleMaterialBase);
-module.exports = TriangleMethodMaterial;
+    /**
+     * @inheritDoc
+     */
+    RenderMethodMaterialObject.prototype.dispose = function () {
+        _super.prototype.dispose.call(this);
+        //TODO
+    };
+    /**
+     *
+     */
+    RenderMethodMaterialObject.id = "method";
+    return RenderMethodMaterialObject;
+})(RenderObjectBase);
+module.exports = RenderMethodMaterialObject;
 
 
-},{"awayjs-core/lib/geom/ColorTransform":undefined,"awayjs-core/lib/textures/Texture2DBase":undefined,"awayjs-display/lib/base/BlendMode":undefined,"awayjs-display/lib/materials/lightpickers/StaticLightPicker":undefined,"awayjs-methodmaterials/lib/TriangleMaterialMode":undefined,"awayjs-methodmaterials/lib/methods/AmbientBasicMethod":undefined,"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":undefined,"awayjs-methodmaterials/lib/methods/NormalBasicMethod":undefined,"awayjs-methodmaterials/lib/methods/SpecularBasicMethod":undefined,"awayjs-methodmaterials/lib/passes/MaterialPassMode":undefined,"awayjs-methodmaterials/lib/passes/TriangleMethodPass":undefined,"awayjs-renderergl/lib/materials/TriangleMaterialBase":undefined,"awayjs-stagegl/lib/base/ContextGLCompareMode":undefined}],"awayjs-methodmaterials/lib/data/MethodVO":[function(require,module,exports){
+},{"awayjs-display/lib/base/BlendMode":undefined,"awayjs-display/lib/materials/lightpickers/StaticLightPicker":undefined,"awayjs-methodmaterials/lib/MethodMaterialMode":undefined,"awayjs-methodmaterials/lib/passes/MethodPass":undefined,"awayjs-methodmaterials/lib/passes/MethodPassMode":undefined,"awayjs-renderergl/lib/compilation/RenderObjectBase":undefined,"awayjs-stagegl/lib/base/ContextGLCompareMode":undefined}],"awayjs-methodmaterials/lib/data/MethodVO":[function(require,module,exports){
 /**
  * MethodVO contains data for a given shader object for the use within a single material.
  * This allows shader methods to be shared across materials while their non-public state differs.
@@ -1747,7 +1734,6 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 var DiffuseCompositeMethod = require("awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod");
-var SingleObjectDepthPass = require("awayjs-methodmaterials/lib/passes/SingleObjectDepthPass");
 /**
  * DiffuseSubSurfaceMethod provides a depth map-based diffuse shading method that mimics the scattering of
  * light inside translucent surfaces. It allows light to shine through an object and to soften the diffuse shading.
@@ -1775,9 +1761,9 @@ var DiffuseSubSurfaceMethod = (function (_super) {
         this._scatterB = 1.0;
         this.pBaseMethod._iModulateMethod = function (shaderObject, methodVO, targetReg, registerCache, sharedRegisters) { return _this.scatterLight(shaderObject, methodVO, targetReg, registerCache, sharedRegisters); };
         //this._passes = new Array<MaterialPassGLBase>();
-        this._depthPass = new SingleObjectDepthPass();
-        this._depthPass.textureSize = depthMapSize;
-        this._depthPass.polyOffset = depthMapOffset;
+        //this._depthPass = new SingleObjectDepthPass();
+        //this._depthPass.textureSize = depthMapSize;
+        //this._depthPass.polyOffset = depthMapOffset;
         //this._passes.push(this._depthPass);
         this._scattering = 0.2;
         this._translucency = 1;
@@ -1951,7 +1937,7 @@ var DiffuseSubSurfaceMethod = (function (_super) {
 module.exports = DiffuseSubSurfaceMethod;
 
 
-},{"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod":undefined,"awayjs-methodmaterials/lib/passes/SingleObjectDepthPass":undefined}],"awayjs-methodmaterials/lib/methods/DiffuseWrapMethod":[function(require,module,exports){
+},{"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod":undefined}],"awayjs-methodmaterials/lib/methods/DiffuseWrapMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -5749,25 +5735,777 @@ var SpecularPhongMethod = (function (_super) {
 module.exports = SpecularPhongMethod;
 
 
-},{"awayjs-methodmaterials/lib/methods/SpecularBasicMethod":undefined}],"awayjs-methodmaterials/lib/passes/MaterialPassMode":[function(require,module,exports){
-var MaterialPassMode = (function () {
-    function MaterialPassMode() {
+},{"awayjs-methodmaterials/lib/methods/SpecularBasicMethod":undefined}],"awayjs-methodmaterials/lib/passes/MethodPassMode":[function(require,module,exports){
+var PassMode = (function () {
+    function PassMode() {
     }
-    MaterialPassMode.EFFECTS = 0x01;
     /**
      *
      */
-    MaterialPassMode.LIGHTING = 0x02;
+    PassMode.EFFECTS = 0x01;
     /**
      *
      */
-    MaterialPassMode.SUPER_SHADER = 0x03;
-    return MaterialPassMode;
+    PassMode.LIGHTING = 0x02;
+    /**
+     *
+     */
+    PassMode.SUPER_SHADER = 0x03;
+    return PassMode;
 })();
-module.exports = MaterialPassMode;
+module.exports = PassMode;
 
 
-},{}],"awayjs-methodmaterials/lib/passes/SingleObjectDepthPass":[function(require,module,exports){
+},{}],"awayjs-methodmaterials/lib/passes/MethodPass":[function(require,module,exports){
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var Event = require("awayjs-core/lib/events/Event");
+var LightSources = require("awayjs-display/lib/materials/LightSources");
+var ShaderLightingObject = require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
+var ShadingMethodEvent = require("awayjs-renderergl/lib/events/ShadingMethodEvent");
+var ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
+var RenderPassBase = require("awayjs-renderergl/lib/passes/RenderPassBase");
+var MethodVO = require("awayjs-methodmaterials/lib/data/MethodVO");
+var EffectColorTransformMethod = require("awayjs-methodmaterials/lib/methods/EffectColorTransformMethod");
+var MethodPassMode = require("awayjs-methodmaterials/lib/passes/MethodPassMode");
+/**
+ * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
+ * using material methods to define their appearance.
+ */
+var MethodPass = (function (_super) {
+    __extends(MethodPass, _super);
+    /**
+     * Creates a new CompiledPass object.
+     *
+     * @param material The material to which this pass belongs.
+     */
+    function MethodPass(mode, renderObject, renderObjectOwner, renderableClass, stage) {
+        var _this = this;
+        _super.call(this, renderObject, renderObjectOwner, renderableClass, stage);
+        this._maxLights = 3;
+        this._mode = 0x03;
+        this._includeCasters = true;
+        this._iMethodVOs = new Array();
+        this._numEffectDependencies = 0;
+        this.numDirectionalLights = 0;
+        this.numPointLights = 0;
+        this.numLightProbes = 0;
+        this.pointLightsOffset = 0;
+        this.directionalLightsOffset = 0;
+        this.lightProbesOffset = 0;
+        this._mode = mode;
+        this._material = renderObjectOwner;
+        this._onLightsChangeDelegate = function (event) { return _this.onLightsChange(event); };
+        this._onMethodInvalidatedDelegate = function (event) { return _this.onMethodInvalidated(event); };
+        this.lightPicker = renderObjectOwner.lightPicker;
+        if (this._shader == null)
+            this._updateShader();
+    }
+    Object.defineProperty(MethodPass.prototype, "mode", {
+        /**
+         *
+         */
+        get: function () {
+            return this._mode;
+        },
+        set: function (value) {
+            if (this._mode == value)
+                return;
+            this._mode = value;
+            this._updateLights();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MethodPass.prototype, "includeCasters", {
+        /**
+         * Indicates whether or not shadow casting lights need to be included.
+         */
+        get: function () {
+            return this._includeCasters;
+        },
+        set: function (value) {
+            if (this._includeCasters == value)
+                return;
+            this._includeCasters = value;
+            this._updateLights();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MethodPass.prototype, "lightPicker", {
+        /**
+         *
+         * @returns {LightPickerBase}
+         */
+        get: function () {
+            return this._lightPicker;
+        },
+        set: function (value) {
+            if (this._lightPicker == value)
+                return;
+            if (this._lightPicker)
+                this._lightPicker.removeEventListener(Event.CHANGE, this._onLightsChangeDelegate);
+            this._lightPicker = value;
+            if (this._lightPicker)
+                this._lightPicker.addEventListener(Event.CHANGE, this._onLightsChangeDelegate);
+            this._updateLights();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MethodPass.prototype, "enableLightFallOff", {
+        /**
+         * Whether or not to use fallOff and radius properties for lights. This can be used to improve performance and
+         * compatibility for constrained mode.
+         */
+        get: function () {
+            return this._material.enableLightFallOff;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MethodPass.prototype, "diffuseLightSources", {
+        /**
+         * Define which light source types to use for diffuse reflections. This allows choosing between regular lights
+         * and/or light probes for diffuse reflections.
+         *
+         * @see away3d.materials.LightSources
+         */
+        get: function () {
+            return this._material.diffuseLightSources;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MethodPass.prototype, "specularLightSources", {
+        /**
+         * Define which light source types to use for specular reflections. This allows choosing between regular lights
+         * and/or light probes for specular reflections.
+         *
+         * @see away3d.materials.LightSources
+         */
+        get: function () {
+            return this._material.specularLightSources;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    MethodPass.prototype._updateShader = function () {
+        if ((this.numDirectionalLights || this.numPointLights || this.numLightProbes) && !(this._shader instanceof ShaderLightingObject)) {
+            if (this._shader != null)
+                this._shader.dispose();
+            this._shader = new ShaderLightingObject(this._renderableClass, this, this._stage);
+        }
+        else if (!(this._shader instanceof ShaderObjectBase)) {
+            if (this._shader != null)
+                this._shader.dispose();
+            this._shader = new ShaderObjectBase(this._renderableClass, this, this._stage);
+        }
+    };
+    /**
+     * Initializes the unchanging constant data for this material.
+     */
+    MethodPass.prototype._iInitConstantData = function (shaderObject) {
+        _super.prototype._iInitConstantData.call(this, shaderObject);
+        //Updates method constants if they have changed.
+        var len = this._iMethodVOs.length;
+        for (var i = 0; i < len; ++i)
+            this._iMethodVOs[i].method.iInitConstants(shaderObject, this._iMethodVOs[i]);
+    };
+    Object.defineProperty(MethodPass.prototype, "colorTransform", {
+        /**
+         * The ColorTransform object to transform the colour of the material with. Defaults to null.
+         */
+        get: function () {
+            return this.colorTransformMethod ? this.colorTransformMethod.colorTransform : null;
+        },
+        set: function (value) {
+            if (value) {
+                if (this.colorTransformMethod == null)
+                    this.colorTransformMethod = new EffectColorTransformMethod();
+                this.colorTransformMethod.colorTransform = value;
+            }
+            else if (!value) {
+                if (this.colorTransformMethod)
+                    this.colorTransformMethod = null;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MethodPass.prototype, "colorTransformMethod", {
+        /**
+         * The EffectColorTransformMethod object to transform the colour of the material with. Defaults to null.
+         */
+        get: function () {
+            return this._iColorTransformMethodVO ? this._iColorTransformMethodVO.method : null;
+        },
+        set: function (value) {
+            if (this._iColorTransformMethodVO && this._iColorTransformMethodVO.method == value)
+                return;
+            if (this._iColorTransformMethodVO) {
+                this._removeDependency(this._iColorTransformMethodVO);
+                this._iColorTransformMethodVO = null;
+            }
+            if (value) {
+                this._iColorTransformMethodVO = new MethodVO(value);
+                this._addDependency(this._iColorTransformMethodVO);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    MethodPass.prototype._removeDependency = function (methodVO, effectsDependency) {
+        if (effectsDependency === void 0) { effectsDependency = false; }
+        var index = this._iMethodVOs.indexOf(methodVO);
+        if (!effectsDependency)
+            this._numEffectDependencies--;
+        methodVO.method.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
+        this._iMethodVOs.splice(index, 1);
+        this.invalidatePass();
+    };
+    MethodPass.prototype._addDependency = function (methodVO, effectsDependency, index) {
+        if (effectsDependency === void 0) { effectsDependency = false; }
+        if (index === void 0) { index = -1; }
+        methodVO.method.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
+        if (effectsDependency) {
+            if (index != -1)
+                this._iMethodVOs.splice(index + this._iMethodVOs.length - this._numEffectDependencies, 0, methodVO);
+            else
+                this._iMethodVOs.push(methodVO);
+            this._numEffectDependencies++;
+        }
+        else {
+            this._iMethodVOs.splice(this._iMethodVOs.length - this._numEffectDependencies, 0, methodVO);
+        }
+        this.invalidatePass();
+    };
+    /**
+     * Appends an "effect" shading method to the shader. Effect methods are those that do not influence the lighting
+     * but modulate the shaded colour, used for fog, outlines, etc. The method will be applied to the result of the
+     * methods added prior.
+     */
+    MethodPass.prototype.addEffectMethod = function (method) {
+        this._addDependency(new MethodVO(method), true);
+    };
+    Object.defineProperty(MethodPass.prototype, "numEffectMethods", {
+        /**
+         * The number of "effect" methods added to the material.
+         */
+        get: function () {
+            return this._numEffectDependencies;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * Queries whether a given effects method was added to the material.
+     *
+     * @param method The method to be queried.
+     * @return true if the method was added to the material, false otherwise.
+     */
+    MethodPass.prototype.hasEffectMethod = function (method) {
+        return this.getDependencyForMethod(method) != null;
+    };
+    /**
+     * Returns the method added at the given index.
+     * @param index The index of the method to retrieve.
+     * @return The method at the given index.
+     */
+    MethodPass.prototype.getEffectMethodAt = function (index) {
+        if (index < 0 || index > this._numEffectDependencies - 1)
+            return null;
+        return this._iMethodVOs[index + this._iMethodVOs.length - this._numEffectDependencies].method;
+    };
+    /**
+     * Adds an effect method at the specified index amongst the methods already added to the material. Effect
+     * methods are those that do not influence the lighting but modulate the shaded colour, used for fog, outlines,
+     * etc. The method will be applied to the result of the methods with a lower index.
+     */
+    MethodPass.prototype.addEffectMethodAt = function (method, index) {
+        this._addDependency(new MethodVO(method), true, index);
+    };
+    /**
+     * Removes an effect method from the material.
+     * @param method The method to be removed.
+     */
+    MethodPass.prototype.removeEffectMethod = function (method) {
+        var methodVO = this.getDependencyForMethod(method);
+        if (methodVO != null)
+            this._removeDependency(methodVO, true);
+    };
+    /**
+     * remove an effect method at the specified index from the material.
+     */
+    MethodPass.prototype.removeEffectMethodAt = function (index) {
+        if (index < 0 || index > this._numEffectDependencies - 1)
+            return;
+        var methodVO = this._iMethodVOs[index + this._iMethodVOs.length - this._numEffectDependencies];
+        if (methodVO != null)
+            this._removeDependency(methodVO, true);
+    };
+    MethodPass.prototype.getDependencyForMethod = function (method) {
+        var len = this._iMethodVOs.length;
+        for (var i = 0; i < len; ++i)
+            if (this._iMethodVOs[i].method == method)
+                return this._iMethodVOs[i];
+        return null;
+    };
+    Object.defineProperty(MethodPass.prototype, "normalMethod", {
+        /**
+         * The method used to generate the per-pixel normals. Defaults to NormalBasicMethod.
+         */
+        get: function () {
+            return this._iNormalMethodVO ? this._iNormalMethodVO.method : null;
+        },
+        set: function (value) {
+            if (this._iNormalMethodVO && this._iNormalMethodVO.method == value)
+                return;
+            if (this._iNormalMethodVO) {
+                this._removeDependency(this._iNormalMethodVO);
+                this._iNormalMethodVO = null;
+            }
+            if (value) {
+                this._iNormalMethodVO = new MethodVO(value);
+                this._addDependency(this._iNormalMethodVO);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MethodPass.prototype, "ambientMethod", {
+        /**
+         * The method that provides the ambient lighting contribution. Defaults to AmbientBasicMethod.
+         */
+        get: function () {
+            return this._iAmbientMethodVO ? this._iAmbientMethodVO.method : null;
+        },
+        set: function (value) {
+            if (this._iAmbientMethodVO && this._iAmbientMethodVO.method == value)
+                return;
+            if (this._iAmbientMethodVO) {
+                this._removeDependency(this._iAmbientMethodVO);
+                this._iAmbientMethodVO = null;
+            }
+            if (value) {
+                this._iAmbientMethodVO = new MethodVO(value);
+                this._addDependency(this._iAmbientMethodVO);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MethodPass.prototype, "shadowMethod", {
+        /**
+         * The method used to render shadows cast on this surface, or null if no shadows are to be rendered. Defaults to null.
+         */
+        get: function () {
+            return this._iShadowMethodVO ? this._iShadowMethodVO.method : null;
+        },
+        set: function (value) {
+            if (this._iShadowMethodVO && this._iShadowMethodVO.method == value)
+                return;
+            if (this._iShadowMethodVO) {
+                this._removeDependency(this._iShadowMethodVO);
+                this._iShadowMethodVO = null;
+            }
+            if (value) {
+                this._iShadowMethodVO = new MethodVO(value);
+                this._addDependency(this._iShadowMethodVO);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MethodPass.prototype, "diffuseMethod", {
+        /**
+         * The method that provides the diffuse lighting contribution. Defaults to DiffuseBasicMethod.
+         */
+        get: function () {
+            return this._iDiffuseMethodVO ? this._iDiffuseMethodVO.method : null;
+        },
+        set: function (value) {
+            if (this._iDiffuseMethodVO && this._iDiffuseMethodVO.method == value)
+                return;
+            if (this._iDiffuseMethodVO) {
+                this._removeDependency(this._iDiffuseMethodVO);
+                this._iDiffuseMethodVO = null;
+            }
+            if (value) {
+                this._iDiffuseMethodVO = new MethodVO(value);
+                this._addDependency(this._iDiffuseMethodVO);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MethodPass.prototype, "specularMethod", {
+        /**
+         * The method that provides the specular lighting contribution. Defaults to SpecularBasicMethod.
+         */
+        get: function () {
+            return this._iSpecularMethodVO ? this._iSpecularMethodVO.method : null;
+        },
+        set: function (value) {
+            if (this._iSpecularMethodVO && this._iSpecularMethodVO.method == value)
+                return;
+            if (this._iSpecularMethodVO) {
+                this._removeDependency(this._iSpecularMethodVO);
+                this._iSpecularMethodVO = null;
+            }
+            if (value) {
+                this._iSpecularMethodVO = new MethodVO(value);
+                this._addDependency(this._iSpecularMethodVO);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * @inheritDoc
+     */
+    MethodPass.prototype.dispose = function () {
+        _super.prototype.dispose.call(this);
+        if (this._lightPicker)
+            this._lightPicker.removeEventListener(Event.CHANGE, this._onLightsChangeDelegate);
+        while (this._iMethodVOs.length)
+            this._removeDependency(this._iMethodVOs[0]);
+        this._iMethodVOs = null;
+    };
+    /**
+     * Called when any method's shader code is invalidated.
+     */
+    MethodPass.prototype.onMethodInvalidated = function (event) {
+        this.invalidatePass();
+    };
+    // RENDER LOOP
+    /**
+     * @inheritDoc
+     */
+    MethodPass.prototype._iActivate = function (camera) {
+        _super.prototype._iActivate.call(this, camera);
+        var methodVO;
+        var len = this._iMethodVOs.length;
+        for (var i = 0; i < len; ++i) {
+            methodVO = this._iMethodVOs[i];
+            if (methodVO.useMethod)
+                methodVO.method.iActivate(this._shader, methodVO, this._stage);
+        }
+    };
+    /**
+     *
+     *
+     * @param renderable
+     * @param stage
+     * @param camera
+     */
+    MethodPass.prototype._iRender = function (renderable, camera, viewProjection) {
+        _super.prototype._iRender.call(this, renderable, camera, viewProjection);
+        var methodVO;
+        var len = this._iMethodVOs.length;
+        for (var i = 0; i < len; ++i) {
+            methodVO = this._iMethodVOs[i];
+            if (methodVO.useMethod)
+                methodVO.method.iSetRenderState(this._shader, methodVO, renderable, this._stage, camera);
+        }
+    };
+    /**
+     * @inheritDoc
+     */
+    MethodPass.prototype._iDeactivate = function () {
+        _super.prototype._iDeactivate.call(this);
+        var methodVO;
+        var len = this._iMethodVOs.length;
+        for (var i = 0; i < len; ++i) {
+            methodVO = this._iMethodVOs[i];
+            if (methodVO.useMethod)
+                methodVO.method.iDeactivate(this._shader, methodVO, this._stage);
+        }
+    };
+    MethodPass.prototype._iIncludeDependencies = function (shaderObject) {
+        _super.prototype._iIncludeDependencies.call(this, shaderObject);
+        //TODO: fragment animtion should be compatible with lighting pass
+        shaderObject.usesFragmentAnimation = Boolean(this._mode == MethodPassMode.SUPER_SHADER);
+        if (!shaderObject.usesTangentSpace && this.numPointLights > 0 && shaderObject.usesLights) {
+            shaderObject.globalPosDependencies++;
+            if (Boolean(this._mode & MethodPassMode.EFFECTS))
+                shaderObject.usesGlobalPosFragment = true;
+        }
+        var i;
+        var len = this._iMethodVOs.length;
+        for (i = 0; i < len; ++i)
+            this.setupAndCountDependencies(shaderObject, this._iMethodVOs[i]);
+        for (i = 0; i < len; ++i)
+            this._iMethodVOs[i].useMethod = this._iMethodVOs[i].method.iIsUsed(shaderObject);
+    };
+    /**
+     * Counts the dependencies for a given method.
+     * @param method The method to count the dependencies for.
+     * @param methodVO The method's data for this material.
+     */
+    MethodPass.prototype.setupAndCountDependencies = function (shaderObject, methodVO) {
+        methodVO.reset();
+        methodVO.method.iInitVO(shaderObject, methodVO);
+        if (methodVO.needsProjection)
+            shaderObject.projectionDependencies++;
+        if (methodVO.needsGlobalVertexPos) {
+            shaderObject.globalPosDependencies++;
+            if (methodVO.needsGlobalFragmentPos)
+                shaderObject.usesGlobalPosFragment = true;
+        }
+        else if (methodVO.needsGlobalFragmentPos) {
+            shaderObject.globalPosDependencies++;
+            shaderObject.usesGlobalPosFragment = true;
+        }
+        if (methodVO.needsNormals)
+            shaderObject.normalDependencies++;
+        if (methodVO.needsTangents)
+            shaderObject.tangentDependencies++;
+        if (methodVO.needsView)
+            shaderObject.viewDirDependencies++;
+        if (methodVO.needsUV)
+            shaderObject.uvDependencies++;
+        if (methodVO.needsSecondaryUV)
+            shaderObject.secondaryUVDependencies++;
+    };
+    MethodPass.prototype._iGetPreLightingVertexCode = function (shaderObject, registerCache, sharedRegisters) {
+        var code = "";
+        if (this._iAmbientMethodVO && this._iAmbientMethodVO.useMethod)
+            code += this._iAmbientMethodVO.method.iGetVertexCode(shaderObject, this._iAmbientMethodVO, registerCache, sharedRegisters);
+        if (this._iDiffuseMethodVO && this._iDiffuseMethodVO.useMethod)
+            code += this._iDiffuseMethodVO.method.iGetVertexCode(shaderObject, this._iDiffuseMethodVO, registerCache, sharedRegisters);
+        if (this._iSpecularMethodVO && this._iSpecularMethodVO.useMethod)
+            code += this._iSpecularMethodVO.method.iGetVertexCode(shaderObject, this._iSpecularMethodVO, registerCache, sharedRegisters);
+        return code;
+    };
+    MethodPass.prototype._iGetPreLightingFragmentCode = function (shaderObject, registerCache, sharedRegisters) {
+        var code = "";
+        if (this._iAmbientMethodVO && this._iAmbientMethodVO.useMethod) {
+            code += this._iAmbientMethodVO.method.iGetFragmentCode(shaderObject, this._iAmbientMethodVO, sharedRegisters.shadedTarget, registerCache, sharedRegisters);
+            if (this._iAmbientMethodVO.needsNormals)
+                registerCache.removeFragmentTempUsage(sharedRegisters.normalFragment);
+            if (this._iAmbientMethodVO.needsView)
+                registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
+        }
+        if (this._iDiffuseMethodVO && this._iDiffuseMethodVO.useMethod)
+            code += this._iDiffuseMethodVO.method.iGetFragmentPreLightingCode(shaderObject, this._iDiffuseMethodVO, registerCache, sharedRegisters);
+        if (this._iSpecularMethodVO && this._iSpecularMethodVO.useMethod)
+            code += this._iSpecularMethodVO.method.iGetFragmentPreLightingCode(shaderObject, this._iSpecularMethodVO, registerCache, sharedRegisters);
+        return code;
+    };
+    MethodPass.prototype._iGetPerLightDiffuseFragmentCode = function (shaderObject, lightDirReg, diffuseColorReg, registerCache, sharedRegisters) {
+        return this._iDiffuseMethodVO.method.iGetFragmentCodePerLight(shaderObject, this._iDiffuseMethodVO, lightDirReg, diffuseColorReg, registerCache, sharedRegisters);
+    };
+    MethodPass.prototype._iGetPerLightSpecularFragmentCode = function (shaderObject, lightDirReg, specularColorReg, registerCache, sharedRegisters) {
+        return this._iSpecularMethodVO.method.iGetFragmentCodePerLight(shaderObject, this._iSpecularMethodVO, lightDirReg, specularColorReg, registerCache, sharedRegisters);
+    };
+    MethodPass.prototype._iGetPerProbeDiffuseFragmentCode = function (shaderObject, texReg, weightReg, registerCache, sharedRegisters) {
+        return this._iDiffuseMethodVO.method.iGetFragmentCodePerProbe(shaderObject, this._iDiffuseMethodVO, texReg, weightReg, registerCache, sharedRegisters);
+    };
+    MethodPass.prototype._iGetPerProbeSpecularFragmentCode = function (shaderObject, texReg, weightReg, registerCache, sharedRegisters) {
+        return this._iSpecularMethodVO.method.iGetFragmentCodePerProbe(shaderObject, this._iSpecularMethodVO, texReg, weightReg, registerCache, sharedRegisters);
+    };
+    MethodPass.prototype._iGetPostLightingVertexCode = function (shaderObject, registerCache, sharedRegisters) {
+        var code = "";
+        if (this._iShadowMethodVO)
+            code += this._iShadowMethodVO.method.iGetVertexCode(shaderObject, this._iShadowMethodVO, registerCache, sharedRegisters);
+        return code;
+    };
+    MethodPass.prototype._iGetPostLightingFragmentCode = function (shaderObject, registerCache, sharedRegisters) {
+        var code = "";
+        if (shaderObject.useAlphaPremultiplied && this._pEnableBlending) {
+            code += "add " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.commons + ".z\n" + "div " + sharedRegisters.shadedTarget + ".xyz, " + sharedRegisters.shadedTarget + ", " + sharedRegisters.shadedTarget + ".w\n" + "sub " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.commons + ".z\n" + "sat " + sharedRegisters.shadedTarget + ".xyz, " + sharedRegisters.shadedTarget + "\n";
+        }
+        if (this._iShadowMethodVO)
+            code += this._iShadowMethodVO.method.iGetFragmentCode(shaderObject, this._iShadowMethodVO, sharedRegisters.shadowTarget, registerCache, sharedRegisters);
+        if (this._iDiffuseMethodVO && this._iDiffuseMethodVO.useMethod) {
+            code += this._iDiffuseMethodVO.method.iGetFragmentPostLightingCode(shaderObject, this._iDiffuseMethodVO, sharedRegisters.shadedTarget, registerCache, sharedRegisters);
+            // resolve other dependencies as well?
+            if (this._iDiffuseMethodVO.needsNormals)
+                registerCache.removeFragmentTempUsage(sharedRegisters.normalFragment);
+            if (this._iDiffuseMethodVO.needsView)
+                registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
+        }
+        if (this._iSpecularMethodVO && this._iSpecularMethodVO.useMethod) {
+            code += this._iSpecularMethodVO.method.iGetFragmentPostLightingCode(shaderObject, this._iSpecularMethodVO, sharedRegisters.shadedTarget, registerCache, sharedRegisters);
+            if (this._iSpecularMethodVO.needsNormals)
+                registerCache.removeFragmentTempUsage(sharedRegisters.normalFragment);
+            if (this._iSpecularMethodVO.needsView)
+                registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
+        }
+        if (this._iShadowMethodVO)
+            registerCache.removeFragmentTempUsage(sharedRegisters.shadowTarget);
+        return code;
+    };
+    /**
+     * Indicates whether or not normals are allowed in tangent space. This is only the case if no object-space
+     * dependencies exist.
+     */
+    MethodPass.prototype._pUsesTangentSpace = function (shaderObject) {
+        if (shaderObject.usesProbes)
+            return false;
+        var methodVO;
+        var len = this._iMethodVOs.length;
+        for (var i = 0; i < len; ++i) {
+            methodVO = this._iMethodVOs[i];
+            if (methodVO.useMethod && !methodVO.method.iUsesTangentSpace())
+                return false;
+        }
+        return true;
+    };
+    /**
+     * Indicates whether or not normals are output in tangent space.
+     */
+    MethodPass.prototype._pOutputsTangentNormals = function (shaderObject) {
+        return this._iNormalMethodVO.method.iOutputsTangentNormals();
+    };
+    /**
+     * Indicates whether or not normals are output by the pass.
+     */
+    MethodPass.prototype._pOutputsNormals = function (shaderObject) {
+        return this._iNormalMethodVO && this._iNormalMethodVO.useMethod;
+    };
+    MethodPass.prototype._iGetNormalVertexCode = function (shaderObject, registerCache, sharedRegisters) {
+        return this._iNormalMethodVO.method.iGetVertexCode(shaderObject, this._iNormalMethodVO, registerCache, sharedRegisters);
+    };
+    MethodPass.prototype._iGetNormalFragmentCode = function (shaderObject, registerCache, sharedRegisters) {
+        var code = this._iNormalMethodVO.method.iGetFragmentCode(shaderObject, this._iNormalMethodVO, sharedRegisters.normalFragment, registerCache, sharedRegisters);
+        if (this._iNormalMethodVO.needsView)
+            registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
+        if (this._iNormalMethodVO.needsGlobalFragmentPos || this._iNormalMethodVO.needsGlobalVertexPos)
+            registerCache.removeVertexTempUsage(sharedRegisters.globalPositionVertex);
+        return code;
+    };
+    /**
+     * @inheritDoc
+     */
+    MethodPass.prototype._iGetVertexCode = function (shaderObject, regCache, sharedReg) {
+        var code = "";
+        var methodVO;
+        var len = this._iMethodVOs.length;
+        for (var i = len - this._numEffectDependencies; i < len; i++) {
+            methodVO = this._iMethodVOs[i];
+            if (methodVO.useMethod) {
+                code += methodVO.method.iGetVertexCode(shaderObject, methodVO, regCache, sharedReg);
+                if (methodVO.needsGlobalVertexPos || methodVO.needsGlobalFragmentPos)
+                    regCache.removeVertexTempUsage(sharedReg.globalPositionVertex);
+            }
+        }
+        if (this._iColorTransformMethodVO && this._iColorTransformMethodVO.useMethod)
+            code += this._iColorTransformMethodVO.method.iGetVertexCode(shaderObject, this._iColorTransformMethodVO, regCache, sharedReg);
+        return code;
+    };
+    /**
+     * @inheritDoc
+     */
+    MethodPass.prototype._iGetFragmentCode = function (shaderObject, regCache, sharedReg) {
+        var code = "";
+        var alphaReg;
+        if (this.preserveAlpha && this._numEffectDependencies > 0) {
+            alphaReg = regCache.getFreeFragmentSingleTemp();
+            regCache.addFragmentTempUsages(alphaReg, 1);
+            code += "mov " + alphaReg + ", " + sharedReg.shadedTarget + ".w\n";
+        }
+        var methodVO;
+        var len = this._iMethodVOs.length;
+        for (var i = len - this._numEffectDependencies; i < len; i++) {
+            methodVO = this._iMethodVOs[i];
+            if (methodVO.useMethod) {
+                code += methodVO.method.iGetFragmentCode(shaderObject, methodVO, sharedReg.shadedTarget, regCache, sharedReg);
+                if (methodVO.needsNormals)
+                    regCache.removeFragmentTempUsage(sharedReg.normalFragment);
+                if (methodVO.needsView)
+                    regCache.removeFragmentTempUsage(sharedReg.viewDirFragment);
+            }
+        }
+        if (this.preserveAlpha && this._numEffectDependencies > 0) {
+            code += "mov " + sharedReg.shadedTarget + ".w, " + alphaReg + "\n";
+            regCache.removeFragmentTempUsage(alphaReg);
+        }
+        if (this._iColorTransformMethodVO && this._iColorTransformMethodVO.useMethod)
+            code += this._iColorTransformMethodVO.method.iGetFragmentCode(shaderObject, this._iColorTransformMethodVO, sharedReg.shadedTarget, regCache, sharedReg);
+        return code;
+    };
+    /**
+     * Indicates whether the shader uses any shadows.
+     */
+    MethodPass.prototype._iUsesShadows = function (shaderObject) {
+        return Boolean(this._iShadowMethodVO && (this._lightPicker.castingDirectionalLights.length > 0 || this._lightPicker.castingPointLights.length > 0));
+    };
+    /**
+     * Indicates whether the shader uses any specular component.
+     */
+    MethodPass.prototype._iUsesSpecular = function (shaderObject) {
+        return Boolean(this._iSpecularMethodVO);
+    };
+    MethodPass.prototype.onLightsChange = function (event) {
+        this._updateLights();
+    };
+    MethodPass.prototype._updateLights = function () {
+        var numDirectionalLightsOld = this.numDirectionalLights;
+        var numPointLightsOld = this.numPointLights;
+        var numLightProbesOld = this.numLightProbes;
+        if (this._lightPicker && (this._mode & MethodPassMode.LIGHTING)) {
+            this.numDirectionalLights = this.calculateNumDirectionalLights(this._lightPicker.numDirectionalLights);
+            this.numPointLights = this.calculateNumPointLights(this._lightPicker.numPointLights);
+            this.numLightProbes = this.calculateNumProbes(this._lightPicker.numLightProbes);
+            if (this._includeCasters) {
+                this.numDirectionalLights += this._lightPicker.numCastingDirectionalLights;
+                this.numPointLights += this._lightPicker.numCastingPointLights;
+            }
+        }
+        else {
+            this.numDirectionalLights = 0;
+            this.numPointLights = 0;
+            this.numLightProbes = 0;
+        }
+        if (numDirectionalLightsOld != this.numDirectionalLights || numPointLightsOld != this.numPointLights || numLightProbesOld != this.numLightProbes) {
+            this._updateShader();
+            this.invalidatePass();
+        }
+    };
+    /**
+     * Calculates the amount of directional lights this material will support.
+     * @param numDirectionalLights The maximum amount of directional lights to support.
+     * @return The amount of directional lights this material will support, bounded by the amount necessary.
+     */
+    MethodPass.prototype.calculateNumDirectionalLights = function (numDirectionalLights) {
+        return Math.min(numDirectionalLights - this.directionalLightsOffset, this._maxLights);
+    };
+    /**
+     * Calculates the amount of point lights this material will support.
+     * @param numDirectionalLights The maximum amount of point lights to support.
+     * @return The amount of point lights this material will support, bounded by the amount necessary.
+     */
+    MethodPass.prototype.calculateNumPointLights = function (numPointLights) {
+        var numFree = this._maxLights - this.numDirectionalLights;
+        return Math.min(numPointLights - this.pointLightsOffset, numFree);
+    };
+    /**
+     * Calculates the amount of light probes this material will support.
+     * @param numDirectionalLights The maximum amount of light probes to support.
+     * @return The amount of light probes this material will support, bounded by the amount necessary.
+     */
+    MethodPass.prototype.calculateNumProbes = function (numLightProbes) {
+        var numChannels = 0;
+        if ((this.specularLightSources & LightSources.PROBES) != 0)
+            ++numChannels;
+        if ((this.diffuseLightSources & LightSources.PROBES) != 0)
+            ++numChannels;
+        // 4 channels available
+        return Math.min(numLightProbes - this.lightProbesOffset, (4 / numChannels) | 0);
+    };
+    return MethodPass;
+})(RenderPassBase);
+module.exports = MethodPass;
+
+
+},{"awayjs-core/lib/events/Event":undefined,"awayjs-display/lib/materials/LightSources":undefined,"awayjs-methodmaterials/lib/data/MethodVO":undefined,"awayjs-methodmaterials/lib/methods/EffectColorTransformMethod":undefined,"awayjs-methodmaterials/lib/passes/MethodPassMode":undefined,"awayjs-renderergl/lib/compilation/ShaderLightingObject":undefined,"awayjs-renderergl/lib/compilation/ShaderObjectBase":undefined,"awayjs-renderergl/lib/events/ShadingMethodEvent":undefined,"awayjs-renderergl/lib/passes/RenderPassBase":undefined}],"awayjs-methodmaterials/lib/passes/SingleObjectDepthPass":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -5778,7 +6516,7 @@ var Matrix3D = require("awayjs-core/lib/geom/Matrix3D");
 var RenderTexture = require("awayjs-core/lib/textures/RenderTexture");
 var TriangleSubGeometry = require("awayjs-display/lib/base/TriangleSubGeometry");
 var ContextGLProgramType = require("awayjs-stagegl/lib/base/ContextGLProgramType");
-var MaterialPassGLBase = require("awayjs-renderergl/lib/passes/MaterialPassGLBase");
+var RenderPassBase = require("awayjs-renderergl/lib/passes/RenderPassBase");
 /**
  * The SingleObjectDepthPass provides a material pass that renders a single object to a depth map from the point
  * of view from a light.
@@ -5788,8 +6526,8 @@ var SingleObjectDepthPass = (function (_super) {
     /**
      * Creates a new SingleObjectDepthPass object.
      */
-    function SingleObjectDepthPass() {
-        _super.call(this);
+    function SingleObjectDepthPass(renderObject, renderObjectOwner, renderableClass, stage) {
+        _super.call(this, renderObject, renderObjectOwner, renderableClass, stage);
         this._textureSize = 512;
         this._polyOffset = Array(15, 0, 0, 0);
         this._projectionTexturesInvalid = true;
@@ -5881,7 +6619,7 @@ var SingleObjectDepthPass = (function (_super) {
      * @return A list of depth map textures for all supported lights.
      */
     SingleObjectDepthPass.prototype._iGetDepthMap = function (renderable) {
-        return this._textures[renderable.materialOwner.id];
+        return this._textures[renderable.renderableOwner.id];
     };
     /**
      * Retrieves the depth map projection maps for all lights.
@@ -5889,18 +6627,18 @@ var SingleObjectDepthPass = (function (_super) {
      * @return A list of projection maps for all supported lights.
      */
     SingleObjectDepthPass.prototype._iGetProjection = function (renderable) {
-        return this._projections[renderable.materialOwner.id];
+        return this._projections[renderable.renderableOwner.id];
     };
     /**
      * @inheritDoc
      */
-    SingleObjectDepthPass.prototype._iRender = function (pass, renderable, stage, camera, viewProjection) {
+    SingleObjectDepthPass.prototype._iRender = function (renderable, camera, viewProjection) {
         var matrix;
-        var context = stage.context;
+        var context = this._stage.context;
         var len /*uint*/;
         var light;
-        var lights = this._pLightPicker.allPickedLights;
-        var rId = renderable.materialOwner.id;
+        var lights = this._renderObjectOwner.lightPicker.allPickedLights;
+        var rId = renderable.renderableOwner.id;
         if (!this._textures[rId])
             this._textures[rId] = new RenderTexture(this._textureSize, this._textureSize);
         if (!this._projections[rId])
@@ -5909,693 +6647,113 @@ var SingleObjectDepthPass = (function (_super) {
         // local position = enough
         light = lights[0];
         matrix = light.iGetObjectProjectionMatrix(renderable.sourceEntity, camera, this._projections[rId]);
-        stage.setRenderTarget(this._textures[rId], true);
+        this._stage.setRenderTarget(this._textures[rId], true);
         context.clear(1.0, 1.0, 1.0);
         context.setProgramConstantsFromMatrix(ContextGLProgramType.VERTEX, 0, matrix, true);
         context.setProgramConstantsFromArray(ContextGLProgramType.FRAGMENT, 0, this._enc, 2);
-        stage.activateBuffer(0, renderable.getVertexData(TriangleSubGeometry.POSITION_DATA), renderable.getVertexOffset(TriangleSubGeometry.POSITION_DATA), TriangleSubGeometry.POSITION_FORMAT);
-        stage.activateBuffer(1, renderable.getVertexData(TriangleSubGeometry.NORMAL_DATA), renderable.getVertexOffset(TriangleSubGeometry.NORMAL_DATA), TriangleSubGeometry.NORMAL_FORMAT);
-        context.drawTriangles(stage.getIndexBuffer(renderable.getIndexData()), 0, renderable.numTriangles);
+        this._stage.activateBuffer(0, renderable.getVertexData(TriangleSubGeometry.POSITION_DATA), renderable.getVertexOffset(TriangleSubGeometry.POSITION_DATA), TriangleSubGeometry.POSITION_FORMAT);
+        this._stage.activateBuffer(1, renderable.getVertexData(TriangleSubGeometry.NORMAL_DATA), renderable.getVertexOffset(TriangleSubGeometry.NORMAL_DATA), TriangleSubGeometry.NORMAL_FORMAT);
+        context.drawTriangles(this._stage.getIndexBuffer(renderable.getIndexData()), 0, renderable.numTriangles);
     };
     /**
      * @inheritDoc
      */
-    SingleObjectDepthPass.prototype._iActivate = function (pass, renderer, camera) {
+    SingleObjectDepthPass.prototype._iActivate = function (camera) {
         if (this._projectionTexturesInvalid)
             this.updateProjectionTextures();
         // never scale
-        _super.prototype._iActivate.call(this, pass, renderer, camera);
-        renderer.context.setProgramConstantsFromArray(ContextGLProgramType.VERTEX, 4, this._polyOffset, 1);
+        _super.prototype._iActivate.call(this, camera);
+        this._stage.context.setProgramConstantsFromArray(ContextGLProgramType.VERTEX, 4, this._polyOffset, 1);
     };
     return SingleObjectDepthPass;
-})(MaterialPassGLBase);
+})(RenderPassBase);
 module.exports = SingleObjectDepthPass;
 
 
-},{"awayjs-core/lib/geom/Matrix3D":undefined,"awayjs-core/lib/textures/RenderTexture":undefined,"awayjs-display/lib/base/TriangleSubGeometry":undefined,"awayjs-renderergl/lib/passes/MaterialPassGLBase":undefined,"awayjs-stagegl/lib/base/ContextGLProgramType":undefined}],"awayjs-methodmaterials/lib/passes/TriangleMethodPass":[function(require,module,exports){
+},{"awayjs-core/lib/geom/Matrix3D":undefined,"awayjs-core/lib/textures/RenderTexture":undefined,"awayjs-display/lib/base/TriangleSubGeometry":undefined,"awayjs-renderergl/lib/passes/RenderPassBase":undefined,"awayjs-stagegl/lib/base/ContextGLProgramType":undefined}],"awayjs-methodmaterials/lib/pool/MethodRenderablePool":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var ShaderLightingObject = require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
-var ShadingMethodEvent = require("awayjs-renderergl/lib/events/ShadingMethodEvent");
-var ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-var LightingPassGLBase = require("awayjs-renderergl/lib/passes/LightingPassGLBase");
-var MethodVO = require("awayjs-methodmaterials/lib/data/MethodVO");
-var EffectColorTransformMethod = require("awayjs-methodmaterials/lib/methods/EffectColorTransformMethod");
-var MaterialPassMode = require("awayjs-methodmaterials/lib/passes/MaterialPassMode");
+var RenderablePoolBase = require("awayjs-renderergl/lib/pool/RenderablePoolBase");
+var RenderObjectPool = require("awayjs-renderergl/lib/compilation/RenderObjectPool");
+var RenderMethodMaterialObject = require("awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject");
 /**
- * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
- * using material methods to define their appearance.
+ * @class away.pool.MethodRenderablePool
  */
-var TriangleMethodPass = (function (_super) {
-    __extends(TriangleMethodPass, _super);
+var MethodRenderablePool = (function (_super) {
+    __extends(MethodRenderablePool, _super);
     /**
-     * Creates a new CompiledPass object.
+     * //TODO
      *
-     * @param material The material to which this pass belongs.
+     * @param renderableClass
      */
-    function TriangleMethodPass(passMode) {
-        var _this = this;
-        if (passMode === void 0) { passMode = 0x03; }
-        _super.call(this);
-        this._pNumLights = 0;
-        this._includeCasters = true;
-        this._maxLights = 3;
-        this._iMethodVOs = new Array();
-        this._numEffectDependencies = 0;
-        this._passMode = passMode;
-        this._onShaderInvalidatedDelegate = function (event) { return _this.onShaderInvalidated(event); };
+    function MethodRenderablePool(renderableClass, stage) {
+        _super.call(this, renderableClass, stage);
+        this._methodMaterialRenderObjectPool = new RenderObjectPool(RenderMethodMaterialObject, this._renderableClass, this._stage);
     }
-    Object.defineProperty(TriangleMethodPass.prototype, "passMode", {
-        /**
-         *
-         */
-        get: function () {
-            return this._passMode;
-        },
-        set: function (value) {
-            this._passMode = value;
-            this._pInvalidatePass();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TriangleMethodPass.prototype, "includeCasters", {
-        /**
-         * Indicates whether or not shadow casting lights need to be included.
-         */
-        get: function () {
-            return this._includeCasters;
-        },
-        set: function (value) {
-            if (this._includeCasters == value)
-                return;
-            this._includeCasters = value;
-            this._pInvalidatePass();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    /**
-     * Factory method to create a concrete shader object for this pass.
-     *
-     * @param profile The compatibility profile used by the renderer.
-     */
-    TriangleMethodPass.prototype.createShaderObject = function (profile) {
-        if (this._pLightPicker && (this.passMode & MaterialPassMode.LIGHTING))
-            return new ShaderLightingObject(profile);
-        return new ShaderObjectBase(profile);
-    };
-    /**
-     * Initializes the unchanging constant data for this material.
-     */
-    TriangleMethodPass.prototype._iInitConstantData = function (shaderObject) {
-        _super.prototype._iInitConstantData.call(this, shaderObject);
-        //Updates method constants if they have changed.
-        var len = this._iMethodVOs.length;
-        for (var i = 0; i < len; ++i)
-            this._iMethodVOs[i].method.iInitConstants(shaderObject, this._iMethodVOs[i]);
-    };
-    Object.defineProperty(TriangleMethodPass.prototype, "colorTransform", {
-        /**
-         * The ColorTransform object to transform the colour of the material with. Defaults to null.
-         */
-        get: function () {
-            return this.colorTransformMethod ? this.colorTransformMethod.colorTransform : null;
-        },
-        set: function (value) {
-            if (value) {
-                if (this.colorTransformMethod == null)
-                    this.colorTransformMethod = new EffectColorTransformMethod();
-                this.colorTransformMethod.colorTransform = value;
-            }
-            else if (!value) {
-                if (this.colorTransformMethod)
-                    this.colorTransformMethod = null;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TriangleMethodPass.prototype, "colorTransformMethod", {
-        /**
-         * The EffectColorTransformMethod object to transform the colour of the material with. Defaults to null.
-         */
-        get: function () {
-            return this._iColorTransformMethodVO ? this._iColorTransformMethodVO.method : null;
-        },
-        set: function (value) {
-            if (this._iColorTransformMethodVO && this._iColorTransformMethodVO.method == value)
-                return;
-            if (this._iColorTransformMethodVO) {
-                this._removeDependency(this._iColorTransformMethodVO);
-                this._iColorTransformMethodVO = null;
-            }
-            if (value) {
-                this._iColorTransformMethodVO = new MethodVO(value);
-                this._addDependency(this._iColorTransformMethodVO);
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    /**
-     * Implemented by subclasses if the pass uses lights to update the shader.
-     */
-    TriangleMethodPass.prototype.pUpdateLights = function () {
-        var numDirectionalLightsOld = this._pNumDirectionalLights;
-        var numPointLightsOld = this._pNumPointLights;
-        var numLightProbesOld = this._pNumLightProbes;
-        if (this._pLightPicker && (this._passMode & MaterialPassMode.LIGHTING)) {
-            this._pNumDirectionalLights = this.calculateNumDirectionalLights(this._pLightPicker.numDirectionalLights);
-            this._pNumPointLights = this.calculateNumPointLights(this._pLightPicker.numPointLights);
-            this._pNumLightProbes = this.calculateNumProbes(this._pLightPicker.numLightProbes);
-            if (this._includeCasters) {
-                this._pNumDirectionalLights += this._pLightPicker.numCastingDirectionalLights;
-                this._pNumPointLights += this._pLightPicker.numCastingPointLights;
-            }
-        }
-        else {
-            this._pNumDirectionalLights = 0;
-            this._pNumPointLights = 0;
-            this._pNumLightProbes = 0;
-        }
-        this._pNumLights = this._pNumDirectionalLights + this._pNumPointLights;
-        if (numDirectionalLightsOld != this._pNumDirectionalLights || numPointLightsOld != this._pNumPointLights || numLightProbesOld != this._pNumLightProbes)
-            this._pInvalidatePass();
-    };
-    TriangleMethodPass.prototype._removeDependency = function (methodVO, effectsDependency) {
-        if (effectsDependency === void 0) { effectsDependency = false; }
-        var index = this._iMethodVOs.indexOf(methodVO);
-        if (!effectsDependency)
-            this._numEffectDependencies--;
-        methodVO.method.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
-        this._iMethodVOs.splice(index, 1);
-        this._pInvalidatePass();
-    };
-    TriangleMethodPass.prototype._addDependency = function (methodVO, effectsDependency, index) {
-        if (effectsDependency === void 0) { effectsDependency = false; }
-        if (index === void 0) { index = -1; }
-        methodVO.method.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
-        if (effectsDependency) {
-            if (index != -1)
-                this._iMethodVOs.splice(index + this._iMethodVOs.length - this._numEffectDependencies, 0, methodVO);
-            else
-                this._iMethodVOs.push(methodVO);
-            this._numEffectDependencies++;
-        }
-        else {
-            this._iMethodVOs.splice(this._iMethodVOs.length - this._numEffectDependencies, 0, methodVO);
-        }
-        this._pInvalidatePass();
-    };
-    /**
-     * Appends an "effect" shading method to the shader. Effect methods are those that do not influence the lighting
-     * but modulate the shaded colour, used for fog, outlines, etc. The method will be applied to the result of the
-     * methods added prior.
-     */
-    TriangleMethodPass.prototype.addEffectMethod = function (method) {
-        this._addDependency(new MethodVO(method), true);
-    };
-    Object.defineProperty(TriangleMethodPass.prototype, "numEffectMethods", {
-        /**
-         * The number of "effect" methods added to the material.
-         */
-        get: function () {
-            return this._numEffectDependencies;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    /**
-     * Queries whether a given effects method was added to the material.
-     *
-     * @param method The method to be queried.
-     * @return true if the method was added to the material, false otherwise.
-     */
-    TriangleMethodPass.prototype.hasEffectMethod = function (method) {
-        return this.getDependencyForMethod(method) != null;
-    };
-    /**
-     * Returns the method added at the given index.
-     * @param index The index of the method to retrieve.
-     * @return The method at the given index.
-     */
-    TriangleMethodPass.prototype.getEffectMethodAt = function (index) {
-        if (index < 0 || index > this._numEffectDependencies - 1)
-            return null;
-        return this._iMethodVOs[index + this._iMethodVOs.length - this._numEffectDependencies].method;
-    };
-    /**
-     * Adds an effect method at the specified index amongst the methods already added to the material. Effect
-     * methods are those that do not influence the lighting but modulate the shaded colour, used for fog, outlines,
-     * etc. The method will be applied to the result of the methods with a lower index.
-     */
-    TriangleMethodPass.prototype.addEffectMethodAt = function (method, index) {
-        this._addDependency(new MethodVO(method), true, index);
-    };
-    /**
-     * Removes an effect method from the material.
-     * @param method The method to be removed.
-     */
-    TriangleMethodPass.prototype.removeEffectMethod = function (method) {
-        var methodVO = this.getDependencyForMethod(method);
-        if (methodVO != null)
-            this._removeDependency(methodVO, true);
-    };
-    TriangleMethodPass.prototype.getDependencyForMethod = function (method) {
-        var len = this._iMethodVOs.length;
-        for (var i = 0; i < len; ++i)
-            if (this._iMethodVOs[i].method == method)
-                return this._iMethodVOs[i];
-        return null;
-    };
-    Object.defineProperty(TriangleMethodPass.prototype, "normalMethod", {
-        /**
-         * The method used to generate the per-pixel normals. Defaults to NormalBasicMethod.
-         */
-        get: function () {
-            return this._iNormalMethodVO ? this._iNormalMethodVO.method : null;
-        },
-        set: function (value) {
-            if (this._iNormalMethodVO && this._iNormalMethodVO.method == value)
-                return;
-            if (this._iNormalMethodVO) {
-                this._removeDependency(this._iNormalMethodVO);
-                this._iNormalMethodVO = null;
-            }
-            if (value) {
-                this._iNormalMethodVO = new MethodVO(value);
-                this._addDependency(this._iNormalMethodVO);
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TriangleMethodPass.prototype, "ambientMethod", {
-        /**
-         * The method that provides the ambient lighting contribution. Defaults to AmbientBasicMethod.
-         */
-        get: function () {
-            return this._iAmbientMethodVO ? this._iAmbientMethodVO.method : null;
-        },
-        set: function (value) {
-            if (this._iAmbientMethodVO && this._iAmbientMethodVO.method == value)
-                return;
-            if (this._iAmbientMethodVO) {
-                this._removeDependency(this._iAmbientMethodVO);
-                this._iAmbientMethodVO = null;
-            }
-            if (value) {
-                this._iAmbientMethodVO = new MethodVO(value);
-                this._addDependency(this._iAmbientMethodVO);
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TriangleMethodPass.prototype, "shadowMethod", {
-        /**
-         * The method used to render shadows cast on this surface, or null if no shadows are to be rendered. Defaults to null.
-         */
-        get: function () {
-            return this._iShadowMethodVO ? this._iShadowMethodVO.method : null;
-        },
-        set: function (value) {
-            if (this._iShadowMethodVO && this._iShadowMethodVO.method == value)
-                return;
-            if (this._iShadowMethodVO) {
-                this._removeDependency(this._iShadowMethodVO);
-                this._iShadowMethodVO = null;
-            }
-            if (value) {
-                this._iShadowMethodVO = new MethodVO(value);
-                this._addDependency(this._iShadowMethodVO);
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TriangleMethodPass.prototype, "diffuseMethod", {
-        /**
-         * The method that provides the diffuse lighting contribution. Defaults to DiffuseBasicMethod.
-         */
-        get: function () {
-            return this._iDiffuseMethodVO ? this._iDiffuseMethodVO.method : null;
-        },
-        set: function (value) {
-            if (this._iDiffuseMethodVO && this._iDiffuseMethodVO.method == value)
-                return;
-            if (this._iDiffuseMethodVO) {
-                this._removeDependency(this._iDiffuseMethodVO);
-                this._iDiffuseMethodVO = null;
-            }
-            if (value) {
-                this._iDiffuseMethodVO = new MethodVO(value);
-                this._addDependency(this._iDiffuseMethodVO);
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TriangleMethodPass.prototype, "specularMethod", {
-        /**
-         * The method that provides the specular lighting contribution. Defaults to SpecularBasicMethod.
-         */
-        get: function () {
-            return this._iSpecularMethodVO ? this._iSpecularMethodVO.method : null;
-        },
-        set: function (value) {
-            if (this._iSpecularMethodVO && this._iSpecularMethodVO.method == value)
-                return;
-            if (this._iSpecularMethodVO) {
-                this._removeDependency(this._iSpecularMethodVO);
-                this._iSpecularMethodVO = null;
-            }
-            if (value) {
-                this._iSpecularMethodVO = new MethodVO(value);
-                this._addDependency(this._iSpecularMethodVO);
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    /**
-     * @inheritDoc
-     */
-    TriangleMethodPass.prototype.dispose = function () {
-        _super.prototype.dispose.call(this);
-        while (this._iMethodVOs.length)
-            this._removeDependency(this._iMethodVOs[0]);
-        this._iMethodVOs = null;
-    };
-    /**
-     * Called when any method's shader code is invalidated.
-     */
-    TriangleMethodPass.prototype.onShaderInvalidated = function (event) {
-        this._pInvalidatePass();
-    };
-    // RENDER LOOP
-    /**
-     * @inheritDoc
-     */
-    TriangleMethodPass.prototype._iActivate = function (pass, renderer, camera) {
-        _super.prototype._iActivate.call(this, pass, renderer, camera);
-        var methodVO;
-        var len = this._iMethodVOs.length;
-        for (var i = 0; i < len; ++i) {
-            methodVO = this._iMethodVOs[i];
-            if (methodVO.useMethod)
-                methodVO.method.iActivate(pass.shaderObject, methodVO, renderer.stage);
-        }
-    };
     /**
      *
-     *
+     * @param material
      * @param renderable
-     * @param stage
-     * @param camera
      */
-    TriangleMethodPass.prototype.setRenderState = function (pass, renderable, stage, camera, viewProjection) {
-        _super.prototype.setRenderState.call(this, pass, renderable, stage, camera, viewProjection);
-        var methodVO;
-        var len = this._iMethodVOs.length;
-        for (var i = 0; i < len; ++i) {
-            methodVO = this._iMethodVOs[i];
-            if (methodVO.useMethod)
-                methodVO.method.iSetRenderState(pass.shaderObject, methodVO, renderable, stage, camera);
-        }
+    MethodRenderablePool.prototype.getMethodRenderObject = function (renderObjectOwner) {
+        return this._methodMaterialRenderObjectPool.getItem(renderObjectOwner);
     };
     /**
-     * @inheritDoc
+     * //TODO
+     *
+     * @param renderableClass
+     * @returns MethodRenderablePool
      */
-    TriangleMethodPass.prototype._iDeactivate = function (pass, renderer) {
-        _super.prototype._iDeactivate.call(this, pass, renderer);
-        var methodVO;
-        var len = this._iMethodVOs.length;
-        for (var i = 0; i < len; ++i) {
-            methodVO = this._iMethodVOs[i];
-            if (methodVO.useMethod)
-                methodVO.method.iDeactivate(pass.shaderObject, methodVO, renderer.stage);
-        }
+    MethodRenderablePool.getPool = function (renderableClass, stage) {
+        var pools = (RenderablePoolBase._pools[stage.stageIndex] || (RenderablePoolBase._pools[stage.stageIndex] = new Object()));
+        return (pools[renderableClass.id] || (pools[renderableClass.id] = new MethodRenderablePool(renderableClass, stage)));
     };
-    TriangleMethodPass.prototype._iIncludeDependencies = function (shaderObject) {
-        //TODO: fragment animtion should be compatible with lighting pass
-        shaderObject.usesFragmentAnimation = Boolean(this._passMode == MaterialPassMode.SUPER_SHADER);
-        if (!shaderObject.usesTangentSpace && shaderObject.numPointLights > 0 && shaderObject.usesLights) {
-            shaderObject.globalPosDependencies++;
-            if (Boolean(this._passMode & MaterialPassMode.EFFECTS))
-                shaderObject.usesGlobalPosFragment = true;
-        }
-        var i;
-        var len = this._iMethodVOs.length;
-        for (i = 0; i < len; ++i)
-            this.setupAndCountDependencies(shaderObject, this._iMethodVOs[i]);
-        for (i = 0; i < len; ++i)
-            this._iMethodVOs[i].useMethod = this._iMethodVOs[i].method.iIsUsed(shaderObject);
-        _super.prototype._iIncludeDependencies.call(this, shaderObject);
-    };
-    /**
-     * Counts the dependencies for a given method.
-     * @param method The method to count the dependencies for.
-     * @param methodVO The method's data for this material.
-     */
-    TriangleMethodPass.prototype.setupAndCountDependencies = function (shaderObject, methodVO) {
-        methodVO.reset();
-        methodVO.method.iInitVO(shaderObject, methodVO);
-        if (methodVO.needsProjection)
-            shaderObject.projectionDependencies++;
-        if (methodVO.needsGlobalVertexPos) {
-            shaderObject.globalPosDependencies++;
-            if (methodVO.needsGlobalFragmentPos)
-                shaderObject.usesGlobalPosFragment = true;
-        }
-        else if (methodVO.needsGlobalFragmentPos) {
-            shaderObject.globalPosDependencies++;
-            shaderObject.usesGlobalPosFragment = true;
-        }
-        if (methodVO.needsNormals)
-            shaderObject.normalDependencies++;
-        if (methodVO.needsTangents)
-            shaderObject.tangentDependencies++;
-        if (methodVO.needsView)
-            shaderObject.viewDirDependencies++;
-        if (methodVO.needsUV)
-            shaderObject.uvDependencies++;
-        if (methodVO.needsSecondaryUV)
-            shaderObject.secondaryUVDependencies++;
-    };
-    TriangleMethodPass.prototype._iGetPreLightingVertexCode = function (shaderObject, registerCache, sharedRegisters) {
-        var code = "";
-        if (this._iAmbientMethodVO && this._iAmbientMethodVO.useMethod)
-            code += this._iAmbientMethodVO.method.iGetVertexCode(shaderObject, this._iAmbientMethodVO, registerCache, sharedRegisters);
-        if (this._iDiffuseMethodVO && this._iDiffuseMethodVO.useMethod)
-            code += this._iDiffuseMethodVO.method.iGetVertexCode(shaderObject, this._iDiffuseMethodVO, registerCache, sharedRegisters);
-        if (this._iSpecularMethodVO && this._iSpecularMethodVO.useMethod)
-            code += this._iSpecularMethodVO.method.iGetVertexCode(shaderObject, this._iSpecularMethodVO, registerCache, sharedRegisters);
-        return code;
-    };
-    TriangleMethodPass.prototype._iGetPreLightingFragmentCode = function (shaderObject, registerCache, sharedRegisters) {
-        var code = "";
-        if (this._iAmbientMethodVO && this._iAmbientMethodVO.useMethod) {
-            code += this._iAmbientMethodVO.method.iGetFragmentCode(shaderObject, this._iAmbientMethodVO, sharedRegisters.shadedTarget, registerCache, sharedRegisters);
-            if (this._iAmbientMethodVO.needsNormals)
-                registerCache.removeFragmentTempUsage(sharedRegisters.normalFragment);
-            if (this._iAmbientMethodVO.needsView)
-                registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
-        }
-        if (this._iDiffuseMethodVO && this._iDiffuseMethodVO.useMethod)
-            code += this._iDiffuseMethodVO.method.iGetFragmentPreLightingCode(shaderObject, this._iDiffuseMethodVO, registerCache, sharedRegisters);
-        if (this._iSpecularMethodVO && this._iSpecularMethodVO.useMethod)
-            code += this._iSpecularMethodVO.method.iGetFragmentPreLightingCode(shaderObject, this._iSpecularMethodVO, registerCache, sharedRegisters);
-        return code;
-    };
-    TriangleMethodPass.prototype._iGetPerLightDiffuseFragmentCode = function (shaderObject, lightDirReg, diffuseColorReg, registerCache, sharedRegisters) {
-        return this._iDiffuseMethodVO.method.iGetFragmentCodePerLight(shaderObject, this._iDiffuseMethodVO, lightDirReg, diffuseColorReg, registerCache, sharedRegisters);
-    };
-    TriangleMethodPass.prototype._iGetPerLightSpecularFragmentCode = function (shaderObject, lightDirReg, specularColorReg, registerCache, sharedRegisters) {
-        return this._iSpecularMethodVO.method.iGetFragmentCodePerLight(shaderObject, this._iSpecularMethodVO, lightDirReg, specularColorReg, registerCache, sharedRegisters);
-    };
-    TriangleMethodPass.prototype._iGetPerProbeDiffuseFragmentCode = function (shaderObject, texReg, weightReg, registerCache, sharedRegisters) {
-        return this._iDiffuseMethodVO.method.iGetFragmentCodePerProbe(shaderObject, this._iDiffuseMethodVO, texReg, weightReg, registerCache, sharedRegisters);
-    };
-    TriangleMethodPass.prototype._iGetPerProbeSpecularFragmentCode = function (shaderObject, texReg, weightReg, registerCache, sharedRegisters) {
-        return this._iSpecularMethodVO.method.iGetFragmentCodePerProbe(shaderObject, this._iSpecularMethodVO, texReg, weightReg, registerCache, sharedRegisters);
-    };
-    TriangleMethodPass.prototype._iGetPostLightingVertexCode = function (shaderObject, registerCache, sharedRegisters) {
-        var code = "";
-        if (this._iShadowMethodVO)
-            code += this._iShadowMethodVO.method.iGetVertexCode(shaderObject, this._iShadowMethodVO, registerCache, sharedRegisters);
-        return code;
-    };
-    TriangleMethodPass.prototype._iGetPostLightingFragmentCode = function (shaderObject, registerCache, sharedRegisters) {
-        var code = "";
-        if (shaderObject.useAlphaPremultiplied && this._pEnableBlending) {
-            code += "add " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.commons + ".z\n" + "div " + sharedRegisters.shadedTarget + ".xyz, " + sharedRegisters.shadedTarget + ", " + sharedRegisters.shadedTarget + ".w\n" + "sub " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.commons + ".z\n" + "sat " + sharedRegisters.shadedTarget + ".xyz, " + sharedRegisters.shadedTarget + "\n";
-        }
-        if (this._iShadowMethodVO)
-            code += this._iShadowMethodVO.method.iGetFragmentCode(shaderObject, this._iShadowMethodVO, sharedRegisters.shadowTarget, registerCache, sharedRegisters);
-        if (this._iDiffuseMethodVO && this._iDiffuseMethodVO.useMethod) {
-            code += this._iDiffuseMethodVO.method.iGetFragmentPostLightingCode(shaderObject, this._iDiffuseMethodVO, sharedRegisters.shadedTarget, registerCache, sharedRegisters);
-            // resolve other dependencies as well?
-            if (this._iDiffuseMethodVO.needsNormals)
-                registerCache.removeFragmentTempUsage(sharedRegisters.normalFragment);
-            if (this._iDiffuseMethodVO.needsView)
-                registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
-        }
-        if (this._iSpecularMethodVO && this._iSpecularMethodVO.useMethod) {
-            code += this._iSpecularMethodVO.method.iGetFragmentPostLightingCode(shaderObject, this._iSpecularMethodVO, sharedRegisters.shadedTarget, registerCache, sharedRegisters);
-            if (this._iSpecularMethodVO.needsNormals)
-                registerCache.removeFragmentTempUsage(sharedRegisters.normalFragment);
-            if (this._iSpecularMethodVO.needsView)
-                registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
-        }
-        if (this._iShadowMethodVO)
-            registerCache.removeFragmentTempUsage(sharedRegisters.shadowTarget);
-        return code;
-    };
-    /**
-     * Indicates whether or not normals are allowed in tangent space. This is only the case if no object-space
-     * dependencies exist.
-     */
-    TriangleMethodPass.prototype._pUsesTangentSpace = function (shaderObject) {
-        if (shaderObject.usesProbes)
-            return false;
-        var methodVO;
-        var len = this._iMethodVOs.length;
-        for (var i = 0; i < len; ++i) {
-            methodVO = this._iMethodVOs[i];
-            if (methodVO.useMethod && !methodVO.method.iUsesTangentSpace())
-                return false;
-        }
-        return true;
-    };
-    /**
-     * Indicates whether or not normals are output in tangent space.
-     */
-    TriangleMethodPass.prototype._pOutputsTangentNormals = function (shaderObject) {
-        return this._iNormalMethodVO.method.iOutputsTangentNormals();
-    };
-    /**
-     * Indicates whether or not normals are output by the pass.
-     */
-    TriangleMethodPass.prototype._pOutputsNormals = function (shaderObject) {
-        return this._iNormalMethodVO && this._iNormalMethodVO.useMethod;
-    };
-    TriangleMethodPass.prototype._iGetNormalVertexCode = function (shaderObject, registerCache, sharedRegisters) {
-        return this._iNormalMethodVO.method.iGetVertexCode(shaderObject, this._iNormalMethodVO, registerCache, sharedRegisters);
-    };
-    TriangleMethodPass.prototype._iGetNormalFragmentCode = function (shaderObject, registerCache, sharedRegisters) {
-        var code = this._iNormalMethodVO.method.iGetFragmentCode(shaderObject, this._iNormalMethodVO, sharedRegisters.normalFragment, registerCache, sharedRegisters);
-        if (this._iNormalMethodVO.needsView)
-            registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
-        if (this._iNormalMethodVO.needsGlobalFragmentPos || this._iNormalMethodVO.needsGlobalVertexPos)
-            registerCache.removeVertexTempUsage(sharedRegisters.globalPositionVertex);
-        return code;
-    };
-    /**
-     * @inheritDoc
-     */
-    TriangleMethodPass.prototype._iGetVertexCode = function (shaderObject, regCache, sharedReg) {
-        var code = "";
-        var methodVO;
-        var len = this._iMethodVOs.length;
-        for (var i = len - this._numEffectDependencies; i < len; i++) {
-            methodVO = this._iMethodVOs[i];
-            if (methodVO.useMethod) {
-                code += methodVO.method.iGetVertexCode(shaderObject, methodVO, regCache, sharedReg);
-                if (methodVO.needsGlobalVertexPos || methodVO.needsGlobalFragmentPos)
-                    regCache.removeVertexTempUsage(sharedReg.globalPositionVertex);
-            }
-        }
-        if (this._iColorTransformMethodVO && this._iColorTransformMethodVO.useMethod)
-            code += this._iColorTransformMethodVO.method.iGetVertexCode(shaderObject, this._iColorTransformMethodVO, regCache, sharedReg);
-        return code;
-    };
-    /**
-     * @inheritDoc
-     */
-    TriangleMethodPass.prototype._iGetFragmentCode = function (shaderObject, regCache, sharedReg) {
-        var code = "";
-        var alphaReg;
-        if (this.preserveAlpha && this._numEffectDependencies > 0) {
-            alphaReg = regCache.getFreeFragmentSingleTemp();
-            regCache.addFragmentTempUsages(alphaReg, 1);
-            code += "mov " + alphaReg + ", " + sharedReg.shadedTarget + ".w\n";
-        }
-        var methodVO;
-        var len = this._iMethodVOs.length;
-        for (var i = len - this._numEffectDependencies; i < len; i++) {
-            methodVO = this._iMethodVOs[i];
-            if (methodVO.useMethod) {
-                code += methodVO.method.iGetFragmentCode(shaderObject, methodVO, sharedReg.shadedTarget, regCache, sharedReg);
-                if (methodVO.needsNormals)
-                    regCache.removeFragmentTempUsage(sharedReg.normalFragment);
-                if (methodVO.needsView)
-                    regCache.removeFragmentTempUsage(sharedReg.viewDirFragment);
-            }
-        }
-        if (this.preserveAlpha && this._numEffectDependencies > 0) {
-            code += "mov " + sharedReg.shadedTarget + ".w, " + alphaReg + "\n";
-            regCache.removeFragmentTempUsage(alphaReg);
-        }
-        if (this._iColorTransformMethodVO && this._iColorTransformMethodVO.useMethod)
-            code += this._iColorTransformMethodVO.method.iGetFragmentCode(shaderObject, this._iColorTransformMethodVO, sharedReg.shadedTarget, regCache, sharedReg);
-        return code;
-    };
-    /**
-     * Indicates whether the shader uses any shadows.
-     */
-    TriangleMethodPass.prototype._iUsesShadows = function () {
-        return Boolean(this._iShadowMethodVO || this.lightPicker.castingDirectionalLights.length > 0 || this.lightPicker.castingPointLights.length > 0);
-    };
-    /**
-     * Indicates whether the shader uses any specular component.
-     */
-    TriangleMethodPass.prototype._iUsesSpecular = function () {
-        return Boolean(this._iSpecularMethodVO);
-    };
-    /**
-     * Calculates the amount of directional lights this material will support.
-     * @param numDirectionalLights The maximum amount of directional lights to support.
-     * @return The amount of directional lights this material will support, bounded by the amount necessary.
-     */
-    TriangleMethodPass.prototype.calculateNumDirectionalLights = function (numDirectionalLights) {
-        return Math.min(numDirectionalLights - this.directionalLightsOffset, this._maxLights);
-    };
-    /**
-     * Calculates the amount of point lights this material will support.
-     * @param numDirectionalLights The maximum amount of point lights to support.
-     * @return The amount of point lights this material will support, bounded by the amount necessary.
-     */
-    TriangleMethodPass.prototype.calculateNumPointLights = function (numPointLights) {
-        var numFree = this._maxLights - this._pNumDirectionalLights;
-        return Math.min(numPointLights - this.pointLightsOffset, numFree);
-    };
-    /**
-     * Calculates the amount of light probes this material will support.
-     * @param numDirectionalLights The maximum amount of light probes to support.
-     * @return The amount of light probes this material will support, bounded by the amount necessary.
-     */
-    TriangleMethodPass.prototype.calculateNumProbes = function (numLightProbes) {
-        var numChannels = 0;
-        //			if ((this._pSpecularLightSources & LightSources.PROBES) != 0)
-        //				++numChannels;
-        //
-        //			if ((this._pDiffuseLightSources & LightSources.PROBES) != 0)
-        //				++numChannels;
-        // 4 channels available
-        return Math.min(numLightProbes - this.lightProbesOffset, (4 / numChannels) | 0);
-    };
-    return TriangleMethodPass;
-})(LightingPassGLBase);
-module.exports = TriangleMethodPass;
+    return MethodRenderablePool;
+})(RenderablePoolBase);
+module.exports = MethodRenderablePool;
 
 
-},{"awayjs-methodmaterials/lib/data/MethodVO":undefined,"awayjs-methodmaterials/lib/methods/EffectColorTransformMethod":undefined,"awayjs-methodmaterials/lib/passes/MaterialPassMode":undefined,"awayjs-renderergl/lib/compilation/ShaderLightingObject":undefined,"awayjs-renderergl/lib/compilation/ShaderObjectBase":undefined,"awayjs-renderergl/lib/events/ShadingMethodEvent":undefined,"awayjs-renderergl/lib/passes/LightingPassGLBase":undefined}]},{},[])
+},{"awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject":undefined,"awayjs-renderergl/lib/compilation/RenderObjectPool":undefined,"awayjs-renderergl/lib/pool/RenderablePoolBase":undefined}],"awayjs-methodmaterials/lib/pool/MethodRendererPool":[function(require,module,exports){
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var BillboardRenderable = require("awayjs-renderergl/lib/pool/BillboardRenderable");
+var LineSubMeshRenderable = require("awayjs-renderergl/lib/pool/LineSubMeshRenderable");
+var TriangleSubMeshRenderable = require("awayjs-renderergl/lib/pool/TriangleSubMeshRenderable");
+var RendererPoolBase = require("awayjs-renderergl/lib/pool/RendererPoolBase");
+var MethodRenderablePool = require("awayjs-methodmaterials/lib/pool/MethodRenderablePool");
+/**
+ * MethodRendererPool forms an abstract base class for classes that are used in the rendering pipeline to render the
+ * contents of a partition
+ *
+ * @class away.render.MethodRendererPool
+ */
+var MethodRendererPool = (function (_super) {
+    __extends(MethodRendererPool, _super);
+    /**
+     * Creates a new MethodRendererPool object.
+     */
+    function MethodRendererPool(renderer) {
+        _super.call(this, renderer);
+    }
+    MethodRendererPool.prototype._pUpdatePool = function () {
+        this._billboardRenderablePool = MethodRenderablePool.getPool(BillboardRenderable, this._pStage);
+        this._triangleSubMeshRenderablePool = MethodRenderablePool.getPool(TriangleSubMeshRenderable, this._pStage);
+        this._lineSubMeshRenderablePool = MethodRenderablePool.getPool(LineSubMeshRenderable, this._pStage);
+    };
+    return MethodRendererPool;
+})(RendererPoolBase);
+module.exports = MethodRendererPool;
+
+
+},{"awayjs-methodmaterials/lib/pool/MethodRenderablePool":undefined,"awayjs-renderergl/lib/pool/BillboardRenderable":undefined,"awayjs-renderergl/lib/pool/LineSubMeshRenderable":undefined,"awayjs-renderergl/lib/pool/RendererPoolBase":undefined,"awayjs-renderergl/lib/pool/TriangleSubMeshRenderable":undefined}]},{},[])
 
 
 //# sourceMappingURL=awayjs-methodmaterials.js.map
