@@ -381,9 +381,9 @@ var RenderMethodMaterialObject = (function (_super) {
      *
      * @param material The material to which this pass belongs.
      */
-    function RenderMethodMaterialObject(pool, renderObjectOwner, renderableClass, stage) {
-        _super.call(this, pool, renderObjectOwner, renderableClass, stage);
-        this._material = renderObjectOwner;
+    function RenderMethodMaterialObject(pool, material, renderableClass, stage) {
+        _super.call(this, pool, material, renderableClass, stage);
+        this._material = material;
     }
     Object.defineProperty(RenderMethodMaterialObject.prototype, "numLights", {
         /**

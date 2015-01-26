@@ -949,7 +949,7 @@ declare module "awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObjec
 	     *
 	     * @param material The material to which this pass belongs.
 	     */
-	    constructor(pool: RenderObjectPool, renderObjectOwner: MethodMaterial, renderableClass: IRenderableClass, stage: Stage);
+	    constructor(pool: RenderObjectPool, material: MethodMaterial, renderableClass: IRenderableClass, stage: Stage);
 	    /**
 	     * @inheritDoc
 	     */
@@ -1143,83 +1143,6 @@ declare module "awayjs-methodmaterials/lib/MethodMaterial" {
 	    getRenderObject(renderablePool: MethodRenderablePool): IRenderObject;
 	}
 	export = MethodMaterial;
-	
-}
-declare module "awayjs-methodmaterials/lib/passes/SingleObjectDepthPass" {
-	import Matrix3D = require("awayjs-core/lib/geom/Matrix3D");
-	import RenderTexture = require("awayjs-core/lib/textures/RenderTexture");
-	import Camera = require("awayjs-display/lib/entities/Camera");
-	import IRenderObjectOwner = require("awayjs-display/lib/base/IRenderObjectOwner");
-	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderObjectBase = require("awayjs-renderergl/lib/compilation/RenderObjectBase");
-	import RenderableBase = require("awayjs-renderergl/lib/pool/RenderableBase");
-	import ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-	import ShaderRegisterData = require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-	import IRenderableClass = require("awayjs-renderergl/lib/pool/IRenderableClass");
-	import RenderPassBase = require("awayjs-renderergl/lib/passes/RenderPassBase");
-	/**
-	 * The SingleObjectDepthPass provides a material pass that renders a single object to a depth map from the point
-	 * of view from a light.
-	 */
-	class SingleObjectDepthPass extends RenderPassBase {
-	    private _textures;
-	    private _projections;
-	    private _textureSize;
-	    private _polyOffset;
-	    private _enc;
-	    private _projectionTexturesInvalid;
-	    /**
-	     * The size of the depth map texture to render to.
-	     */
-	    textureSize: number;
-	    /**
-	     * The amount by which the rendered object will be inflated, to prevent depth map rounding errors.
-	     */
-	    polyOffset: number;
-	    /**
-	     * Creates a new SingleObjectDepthPass object.
-	     */
-	    constructor(renderObject: RenderObjectBase, renderObjectOwner: IRenderObjectOwner, renderableClass: IRenderableClass, stage: Stage);
-	    /**
-	     * @inheritDoc
-	     */
-	    dispose(): void;
-	    /**
-	     * Updates the projection textures used to contain the depth renders.
-	     */
-	    private updateProjectionTextures();
-	    /**
-	     * @inheritDoc
-	     */
-	    _iGetVertexCode(): string;
-	    /**
-	     * @inheritDoc
-	     */
-	    _iGetFragmentCode(shaderObject: ShaderObjectBase, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
-	    /**
-	     * Gets the depth maps rendered for this object from all lights.
-	     * @param renderable The renderable for which to retrieve the depth maps.
-	     * @param stage3DProxy The Stage3DProxy object currently used for rendering.
-	     * @return A list of depth map textures for all supported lights.
-	     */
-	    _iGetDepthMap(renderable: RenderableBase): RenderTexture;
-	    /**
-	     * Retrieves the depth map projection maps for all lights.
-	     * @param renderable The renderable for which to retrieve the projection maps.
-	     * @return A list of projection maps for all supported lights.
-	     */
-	    _iGetProjection(renderable: RenderableBase): Matrix3D;
-	    /**
-	     * @inheritDoc
-	     */
-	    _iRender(renderable: RenderableBase, camera: Camera, viewProjection: Matrix3D): void;
-	    /**
-	     * @inheritDoc
-	     */
-	    _iActivate(camera: Camera): void;
-	}
-	export = SingleObjectDepthPass;
 	
 }
 declare module "awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod" {
@@ -1576,6 +1499,83 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseLightMapMethod" {
 	    iGetFragmentPostLightingCode(shaderObject: ShaderLightingObject, methodVO: MethodVO, targetReg: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 	}
 	export = DiffuseLightMapMethod;
+	
+}
+declare module "awayjs-methodmaterials/lib/passes/SingleObjectDepthPass" {
+	import Matrix3D = require("awayjs-core/lib/geom/Matrix3D");
+	import RenderTexture = require("awayjs-core/lib/textures/RenderTexture");
+	import Camera = require("awayjs-display/lib/entities/Camera");
+	import IRenderObjectOwner = require("awayjs-display/lib/base/IRenderObjectOwner");
+	import Stage = require("awayjs-stagegl/lib/base/Stage");
+	import RenderObjectBase = require("awayjs-renderergl/lib/compilation/RenderObjectBase");
+	import RenderableBase = require("awayjs-renderergl/lib/pool/RenderableBase");
+	import ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
+	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
+	import ShaderRegisterData = require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
+	import IRenderableClass = require("awayjs-renderergl/lib/pool/IRenderableClass");
+	import RenderPassBase = require("awayjs-renderergl/lib/passes/RenderPassBase");
+	/**
+	 * The SingleObjectDepthPass provides a material pass that renders a single object to a depth map from the point
+	 * of view from a light.
+	 */
+	class SingleObjectDepthPass extends RenderPassBase {
+	    private _textures;
+	    private _projections;
+	    private _textureSize;
+	    private _polyOffset;
+	    private _enc;
+	    private _projectionTexturesInvalid;
+	    /**
+	     * The size of the depth map texture to render to.
+	     */
+	    textureSize: number;
+	    /**
+	     * The amount by which the rendered object will be inflated, to prevent depth map rounding errors.
+	     */
+	    polyOffset: number;
+	    /**
+	     * Creates a new SingleObjectDepthPass object.
+	     */
+	    constructor(renderObject: RenderObjectBase, renderObjectOwner: IRenderObjectOwner, renderableClass: IRenderableClass, stage: Stage);
+	    /**
+	     * @inheritDoc
+	     */
+	    dispose(): void;
+	    /**
+	     * Updates the projection textures used to contain the depth renders.
+	     */
+	    private updateProjectionTextures();
+	    /**
+	     * @inheritDoc
+	     */
+	    _iGetVertexCode(): string;
+	    /**
+	     * @inheritDoc
+	     */
+	    _iGetFragmentCode(shaderObject: ShaderObjectBase, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
+	    /**
+	     * Gets the depth maps rendered for this object from all lights.
+	     * @param renderable The renderable for which to retrieve the depth maps.
+	     * @param stage3DProxy The Stage3DProxy object currently used for rendering.
+	     * @return A list of depth map textures for all supported lights.
+	     */
+	    _iGetDepthMap(renderable: RenderableBase): RenderTexture;
+	    /**
+	     * Retrieves the depth map projection maps for all lights.
+	     * @param renderable The renderable for which to retrieve the projection maps.
+	     * @return A list of projection maps for all supported lights.
+	     */
+	    _iGetProjection(renderable: RenderableBase): Matrix3D;
+	    /**
+	     * @inheritDoc
+	     */
+	    _iRender(renderable: RenderableBase, camera: Camera, viewProjection: Matrix3D): void;
+	    /**
+	     * @inheritDoc
+	     */
+	    _iActivate(camera: Camera): void;
+	}
+	export = SingleObjectDepthPass;
 	
 }
 declare module "awayjs-methodmaterials/lib/methods/DiffuseSubSurfaceMethod" {
