@@ -73,11 +73,11 @@ class RenderMethodMaterialObject extends RenderObjectBase
 	 *
 	 * @param material The material to which this pass belongs.
 	 */
-	constructor(pool:RenderObjectPool, renderObjectOwner:MethodMaterial, renderableClass:IRenderableClass, stage:Stage)
+	constructor(pool:RenderObjectPool, material:MethodMaterial, renderableClass:IRenderableClass, stage:Stage)
 	{
-		super(pool, renderObjectOwner, renderableClass, stage);
+		super(pool, material, renderableClass, stage);
 
-		this._material = renderObjectOwner;
+		this._material = material;
 	}
 
 	/**
