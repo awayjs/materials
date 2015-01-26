@@ -126,8 +126,8 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 
 	public set lightPicker(value:LightPickerBase)
 	{
-		if (this._lightPicker == value)
-			return;
+		//if (this._lightPicker == value)
+		//	return;
 
 		if (this._lightPicker)
 			this._lightPicker.removeEventListener(Event.CHANGE, this._onLightsChangeDelegate);
@@ -893,6 +893,14 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 	public _iUsesSpecular(shaderObject:ShaderObjectBase):boolean
 	{
 		return Boolean(this._iSpecularMethodVO);
+	}
+
+	/**
+	 * Indicates whether the shader uses any specular component.
+	 */
+	public _iUsesDiffuse(shaderObject:ShaderObjectBase):boolean
+	{
+		return Boolean(this._iDiffuseMethodVO);
 	}
 
 
