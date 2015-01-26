@@ -7,7 +7,6 @@ import IRenderObjectOwner			= require("awayjs-display/lib/base/IRenderObjectOwne
 import MaterialBase					= require("awayjs-display/lib/materials/MaterialBase");
 import IRenderObject				= require("awayjs-display/lib/pool/IRenderObject");
 
-import Stage						= require("awayjs-stagegl/lib/base/Stage");
 import ContextGLCompareMode			= require("awayjs-stagegl/lib/base/ContextGLCompareMode");
 
 import AmbientBasicMethod			= require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");

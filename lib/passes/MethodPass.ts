@@ -6,7 +6,6 @@ import Vector3D							= require("awayjs-core/lib/geom/Vector3D");
 import AbstractMethodError				= require("awayjs-core/lib/errors/AbstractMethodError");
 import Event							= require("awayjs-core/lib/events/Event");
 import MaterialBase						= require("awayjs-display/lib/materials/MaterialBase");
-import Texture2DBase					= require("awayjs-core/lib/textures/Texture2DBase");
 
 import TriangleSubGeometry				= require("awayjs-display/lib/base/TriangleSubGeometry");
 import Camera							= require("awayjs-display/lib/entities/Camera");
