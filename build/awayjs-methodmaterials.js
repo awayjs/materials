@@ -5846,8 +5846,8 @@ var MethodPass = (function (_super) {
             return this._lightPicker;
         },
         set: function (value) {
-            if (this._lightPicker == value)
-                return;
+            //if (this._lightPicker == value)
+            //	return;
             if (this._lightPicker)
                 this._lightPicker.removeEventListener(Event.CHANGE, this._onLightsChangeDelegate);
             this._lightPicker = value;
@@ -6442,6 +6442,12 @@ var MethodPass = (function (_super) {
      */
     MethodPass.prototype._iUsesSpecular = function (shaderObject) {
         return Boolean(this._iSpecularMethodVO);
+    };
+    /**
+     * Indicates whether the shader uses any specular component.
+     */
+    MethodPass.prototype._iUsesDiffuse = function (shaderObject) {
+        return Boolean(this._iDiffuseMethodVO);
     };
     MethodPass.prototype.onLightsChange = function (event) {
         this._updateLights();
