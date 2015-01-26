@@ -6,7 +6,7 @@
   "dependencies": {
     "awayjs-core": "^0.2.4",
     "awayjs-display": "^0.4.2",
-    "awayjs-renderergl": "^0.7.1"
+    "awayjs-renderergl": "^0.7.2"
   },
   "devDependencies": {
     "awayjs-stagegl": "^0.5.2",
