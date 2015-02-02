@@ -1,4 +1,5 @@
 import BillboardRenderable			= require("awayjs-renderergl/lib/pool/BillboardRenderable");
+import LineSegmentRenderable		= require("awayjs-renderergl/lib/pool/LineSegmentRenderable");
 import LineSubMeshRenderable		= require("awayjs-renderergl/lib/pool/LineSubMeshRenderable");
 import TriangleSubMeshRenderable	= require("awayjs-renderergl/lib/pool/TriangleSubMeshRenderable");
 import RendererPoolBase				= require("awayjs-renderergl/lib/pool/RendererPoolBase");
@@ -25,6 +26,7 @@ class MethodRendererPool extends RendererPoolBase
 	public _pUpdatePool()
 	{
 		this._billboardRenderablePool = MethodRenderablePool.getPool(BillboardRenderable, this._pStage);
+		this._lineSegmentRenderablePool = MethodRenderablePool.getPool(LineSegmentRenderable, this._pStage);
 		this._triangleSubMeshRenderablePool = MethodRenderablePool.getPool(TriangleSubMeshRenderable, this._pStage);
 		this._lineSubMeshRenderablePool = MethodRenderablePool.getPool(LineSubMeshRenderable, this._pStage);
 	}
