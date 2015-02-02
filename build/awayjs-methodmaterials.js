@@ -6731,6 +6731,7 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 var BillboardRenderable = require("awayjs-renderergl/lib/pool/BillboardRenderable");
+var LineSegmentRenderable = require("awayjs-renderergl/lib/pool/LineSegmentRenderable");
 var LineSubMeshRenderable = require("awayjs-renderergl/lib/pool/LineSubMeshRenderable");
 var TriangleSubMeshRenderable = require("awayjs-renderergl/lib/pool/TriangleSubMeshRenderable");
 var RendererPoolBase = require("awayjs-renderergl/lib/pool/RendererPoolBase");
@@ -6751,6 +6752,7 @@ var MethodRendererPool = (function (_super) {
     }
     MethodRendererPool.prototype._pUpdatePool = function () {
         this._billboardRenderablePool = MethodRenderablePool.getPool(BillboardRenderable, this._pStage);
+        this._lineSegmentRenderablePool = MethodRenderablePool.getPool(LineSegmentRenderable, this._pStage);
         this._triangleSubMeshRenderablePool = MethodRenderablePool.getPool(TriangleSubMeshRenderable, this._pStage);
         this._lineSubMeshRenderablePool = MethodRenderablePool.getPool(LineSubMeshRenderable, this._pStage);
     };
@@ -6759,7 +6761,7 @@ var MethodRendererPool = (function (_super) {
 module.exports = MethodRendererPool;
 
 
-},{"awayjs-methodmaterials/lib/pool/MethodRenderablePool":undefined,"awayjs-renderergl/lib/pool/BillboardRenderable":undefined,"awayjs-renderergl/lib/pool/LineSubMeshRenderable":undefined,"awayjs-renderergl/lib/pool/RendererPoolBase":undefined,"awayjs-renderergl/lib/pool/TriangleSubMeshRenderable":undefined}]},{},[])
+},{"awayjs-methodmaterials/lib/pool/MethodRenderablePool":undefined,"awayjs-renderergl/lib/pool/BillboardRenderable":undefined,"awayjs-renderergl/lib/pool/LineSegmentRenderable":undefined,"awayjs-renderergl/lib/pool/LineSubMeshRenderable":undefined,"awayjs-renderergl/lib/pool/RendererPoolBase":undefined,"awayjs-renderergl/lib/pool/TriangleSubMeshRenderable":undefined}]},{},[])
 
 
 //# sourceMappingURL=awayjs-methodmaterials.js.map
