@@ -128,7 +128,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 			vec[i] = (Math.floor((r*.5 + .5)*0xff) << 16) | (Math.floor((g*.5 + .5)*0xff) << 8);
 		}
 
-		ShadowDitheredMethod._grainBitmapData.setVector(ShadowDitheredMethod._grainBitmapData.rect, vec);
+		ShadowDitheredMethod._grainBitmapData.setArray(ShadowDitheredMethod._grainBitmapData.rect, vec);
 		ShadowDitheredMethod._grainTexture = new BitmapTexture(ShadowDitheredMethod._grainBitmapData);
 	}
 
@@ -157,7 +157,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 		data[index + 10] = (stage.height - 1)/63;
 		data[index + 11] = 2*this._range/this._depthMapSize;
 
-		stage.activateTexture(methodVO.texturesIndex + 1, ShadowDitheredMethod._grainTexture);
+		stage.activateTexture(methodVO.texturesIndex + 1, ShadowDitheredMethod._grainTexture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
 	}
 
 	/**
@@ -279,7 +279,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 		data[index + 2] = (stage.height - 1)/63;
 		data[index + 3] = 2*this._range/this._depthMapSize;
 
-		stage.activateTexture(methodVO.texturesIndex + 1, ShadowDitheredMethod._grainTexture);
+		stage.activateTexture(methodVO.texturesIndex + 1, ShadowDitheredMethod._grainTexture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
 	}
 
 	/**

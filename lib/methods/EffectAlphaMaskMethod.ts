@@ -81,7 +81,7 @@ class EffectAlphaMaskMethod extends EffectMethodBase
 	 */
 	public iActivate(shaderObject:ShaderLightingObject, methodVO:MethodVO, stage:Stage)
 	{
-		stage.activateTexture(methodVO.texturesIndex, this._texture);
+		stage.activateTexture(methodVO.texturesIndex, this._texture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
 	}
 
 	/**

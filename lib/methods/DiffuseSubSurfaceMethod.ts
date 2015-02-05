@@ -228,7 +228,7 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	 */
 	public iSetRenderState(shaderObject:ShaderObjectBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
-		stage.activateTexture(methodVO.secondaryTexturesIndex, this._depthPass._iGetDepthMap(renderable));
+		stage.activateTexture(methodVO.secondaryTexturesIndex, this._depthPass._iGetDepthMap(renderable), shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
 
 		this._depthPass._iGetProjection(renderable).copyRawDataTo(shaderObject.vertexConstantData, methodVO.secondaryVertexConstantsIndex + 4, true);
 	}

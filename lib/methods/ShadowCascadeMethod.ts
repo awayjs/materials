@@ -220,7 +220,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	 */
 	public iActivate(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
 	{
-		stage.activateTexture(methodVO.texturesIndex, <Texture2DBase> this._pCastingLight.shadowMapper.depthMap);
+		stage.activateTexture(methodVO.texturesIndex, <Texture2DBase> this._pCastingLight.shadowMapper.depthMap, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
 
 		var vertexData:Array<number> = shaderObject.vertexConstantData;
 		var vertexIndex:number = methodVO.vertexConstantsIndex;

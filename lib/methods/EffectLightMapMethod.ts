@@ -91,7 +91,7 @@ class EffectLightMapMethod extends EffectMethodBase
 
 	public set texture(value:Texture2DBase)
 	{
-		if (value.hasMipmaps != this._texture.hasMipmaps || value.format != this._texture.format)
+		if (value.format != this._texture.format)
 			this.iInvalidateShaderProgram();
 
 		this._texture = value;
@@ -102,7 +102,7 @@ class EffectLightMapMethod extends EffectMethodBase
 	 */
 	public iActivate(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
 	{
-		stage.activateTexture(methodVO.texturesIndex, this._texture);
+		stage.activateTexture(methodVO.texturesIndex, this._texture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
 
 		super.iActivate(shaderObject, methodVO, stage);
 	}

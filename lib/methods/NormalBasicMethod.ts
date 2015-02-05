@@ -1,9 +1,6 @@
 import Texture2DBase				= require("awayjs-core/lib/textures/Texture2DBase");
 
 import Stage						= require("awayjs-stagegl/lib/base/Stage");
-import ContextGLMipFilter			= require("awayjs-stagegl/lib/base/ContextGLMipFilter");
-import ContextGLTextureFilter		= require("awayjs-stagegl/lib/base/ContextGLTextureFilter");
-import ContextGLWrapMode			= require("awayjs-stagegl/lib/base/ContextGLWrapMode");
 
 import ShaderObjectBase				= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
 import ShaderRegisterCache			= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
@@ -79,7 +76,7 @@ class NormalBasicMethod extends ShadingMethodBase
 	{
 		var b:boolean = (value != null);
 
-		if (b != this._useTexture || (value && this._texture && (value.hasMipmaps != this._texture.hasMipmaps || value.format != this._texture.format)))
+		if (b != this._useTexture || (value && this._texture && (value.format != this._texture.format)))
 			this.iInvalidateShaderProgram();
 
 		this._useTexture = b;
@@ -110,10 +107,8 @@ class NormalBasicMethod extends ShadingMethodBase
 	 */
 	public iActivate(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
 	{
-		if (methodVO.texturesIndex >= 0) {
-			stage.context.setSamplerStateAt(methodVO.texturesIndex, shaderObject.repeatTextures? ContextGLWrapMode.REPEAT:ContextGLWrapMode.CLAMP, shaderObject.useSmoothTextures? ContextGLTextureFilter.LINEAR : ContextGLTextureFilter.NEAREST, shaderObject.useMipmapping? ContextGLMipFilter.MIPLINEAR : ContextGLMipFilter.MIPNONE);
-			stage.activateTexture(methodVO.texturesIndex, this._texture);
-		}
+		if (methodVO.texturesIndex >= 0)
+			stage.activateTexture(methodVO.texturesIndex, this._texture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
 	}
 
 	/**

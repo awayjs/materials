@@ -45,7 +45,7 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 
 	public set gradient(value:Texture2DBase)
 	{
-		if (value.hasMipmaps != this._gradient.hasMipmaps || value.format != this._gradient.format)
+		if (value.format != this._gradient.format)
 			this.iInvalidateShaderProgram();
 		this._gradient = value;
 	}
@@ -131,7 +131,7 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 	{
 		super.iActivate(shaderObject, methodVO, stage);
 
-		stage.activateTexture(methodVO.secondaryTexturesIndex, this._gradient);
+		stage.activateTexture(methodVO.secondaryTexturesIndex, this._gradient, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
 	}
 }
 

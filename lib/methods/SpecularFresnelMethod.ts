@@ -122,8 +122,6 @@ class SpecularFresnelMethod extends SpecularCompositeMethod
 	{
 		this._dataReg = registerCache.getFreeFragmentConstant();
 
-		console.log('SpecularFresnelMethod', 'iGetFragmentPreLightingCode', this._dataReg);
-
 		methodVO.secondaryFragmentConstantsIndex = this._dataReg.index*4;
 
 		return super.iGetFragmentPreLightingCode(shaderObject, methodVO, registerCache, sharedRegisters);
@@ -149,9 +147,6 @@ class SpecularFresnelMethod extends SpecularCompositeMethod
 			"mul " + targetReg + ".y, " + this._dataReg + ".x, " + targetReg + ".y\n" +             // f0*(1 - exp)
 			"add " + targetReg + ".y, " + targetReg + ".x, " + targetReg + ".y\n" +          // exp + f0*(1 - exp)
 			"mul " + targetReg + ".w, " + targetReg + ".w, " + targetReg + ".y\n";
-
-
-		console.log('SpecularFresnelMethod', 'modulateSpecular', code);
 
 		return code;
 	}

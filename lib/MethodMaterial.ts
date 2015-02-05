@@ -1,6 +1,6 @@
 ﻿import Texture2DBase				= require("awayjs-core/lib/textures/Texture2DBase");
 
-import BlendMode					= require("awayjs-display/lib/base/BlendMode");
+import BlendMode					= require("awayjs-core/lib/base/BlendMode");
 import Camera						= require("awayjs-display/lib/entities/Camera");
 import StaticLightPicker			= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
 import IRenderObjectOwner			= require("awayjs-display/lib/base/IRenderObjectOwner");

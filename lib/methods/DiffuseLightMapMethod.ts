@@ -103,7 +103,7 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	 */
 	public iActivate(shaderObject:ShaderLightingObject, methodVO:MethodVO, stage:Stage)
 	{
-		stage.activateTexture(methodVO.secondaryTexturesIndex, this._lightMapTexture);
+		stage.activateTexture(methodVO.secondaryTexturesIndex, this._lightMapTexture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
 
 		super.iActivate(shaderObject, methodVO, stage);
 	}

@@ -1,8 +1,5 @@
 import Texture2DBase				= require("awayjs-core/lib/textures/Texture2DBase");
 
-import ContextGLMipFilter			= require("awayjs-stagegl/lib/base/ContextGLMipFilter");
-import ContextGLTextureFilter		= require("awayjs-stagegl/lib/base/ContextGLTextureFilter");
-import ContextGLWrapMode			= require("awayjs-stagegl/lib/base/ContextGLWrapMode");
 import Stage						= require("awayjs-stagegl/lib/base/Stage");
 
 import ShaderObjectBase				= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
@@ -113,7 +110,7 @@ class AmbientBasicMethod extends ShadingMethodBase
 
 			methodVO.texturesIndex = ambientInputRegister.index;
 
-			code += ShaderCompilerHelper.getTex2DSampleCode(targetReg, sharedRegisters, ambientInputRegister, shaderObject.texture, shaderObject.useSmoothTextures, shaderObject.repeatTextures, shaderObject.useMipmapping);
+			code += ShaderCompilerHelper.getTex2DSampleCode(targetReg, sharedRegisters, ambientInputRegister, shaderObject.texture, shaderObject.useSmoothTextures, shaderObject.repeatTextures, false);
 
 			if (shaderObject.alphaThreshold > 0) {
 				var cutOffReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
@@ -140,8 +137,7 @@ class AmbientBasicMethod extends ShadingMethodBase
 	public iActivate(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
 	{
 		if (methodVO.needsUV) {
-			stage.context.setSamplerStateAt(methodVO.texturesIndex, shaderObject.repeatTextures? ContextGLWrapMode.REPEAT:ContextGLWrapMode.CLAMP, shaderObject.useSmoothTextures? ContextGLTextureFilter.LINEAR:ContextGLTextureFilter.NEAREST, shaderObject.useMipmapping? ContextGLMipFilter.MIPLINEAR:ContextGLMipFilter.MIPNONE);
-			stage.activateTexture(methodVO.texturesIndex, shaderObject.texture);
+			stage.activateTexture(methodVO.texturesIndex, shaderObject.texture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
 
 			if (shaderObject.alphaThreshold > 0)
 				shaderObject.fragmentConstantData[methodVO.fragmentConstantsIndex] = shaderObject.alphaThreshold;

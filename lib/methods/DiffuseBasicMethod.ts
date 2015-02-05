@@ -3,9 +3,6 @@ import Texture2DBase				= require("awayjs-core/lib/textures/Texture2DBase");
 import Camera						= require("awayjs-display/lib/entities/Camera");
 
 import Stage						= require("awayjs-stagegl/lib/base/Stage");
-import ContextGLMipFilter			= require("awayjs-stagegl/lib/base/ContextGLMipFilter");
-import ContextGLTextureFilter		= require("awayjs-stagegl/lib/base/ContextGLTextureFilter");
-import ContextGLWrapMode			= require("awayjs-stagegl/lib/base/ContextGLWrapMode");
 
 import ShaderLightingObject			= require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
 import ShaderRegisterCache			= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
@@ -82,13 +79,13 @@ class DiffuseBasicMethod extends LightingMethodBase
 	}
 
 	/**
-	 * Forces the creation of the texture.
+	 * Forces the creation of the texture's mipmaps.
 	 * @param stage The Stage used by the renderer
 	 */
 	public generateMip(stage:Stage)
 	{
 		if (this._pUseTexture)
-			stage.activateTexture(0, this._texture);
+			stage.activateTexture(0, this._texture, true, true, true);
 	}
 
 	/**
@@ -140,7 +137,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 	{
 		var b:boolean = (value != null);
 
-		if (b != this._pUseTexture || (value && this._texture && (value.hasMipmaps != this._texture.hasMipmaps || value.format != this._texture.format)))
+		if (b != this._pUseTexture || (value && this._texture && (value.format != this._texture.format)))
 			this.iInvalidateShaderProgram();
 
 		this._pUseTexture = b;
@@ -331,8 +328,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 	public iActivate(shaderObject:ShaderLightingObject, methodVO:MethodVO, stage:Stage)
 	{
 		if (this._pUseTexture) {
-			stage.context.setSamplerStateAt(methodVO.texturesIndex, shaderObject.repeatTextures? ContextGLWrapMode.REPEAT:ContextGLWrapMode.CLAMP, shaderObject.useSmoothTextures? ContextGLTextureFilter.LINEAR : ContextGLTextureFilter.NEAREST, shaderObject.useMipmapping? ContextGLMipFilter.MIPLINEAR : ContextGLMipFilter.MIPNONE);
-			stage.activateTexture(methodVO.texturesIndex, this._texture);
+			stage.activateTexture(methodVO.texturesIndex, this._texture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
 		} else {
 			var index:number = methodVO.fragmentConstantsIndex;
 			var data:Array<number> = shaderObject.fragmentConstantData;

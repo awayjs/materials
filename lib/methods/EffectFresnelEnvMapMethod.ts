@@ -67,7 +67,7 @@ class EffectFresnelEnvMapMethod extends EffectMethodBase
 	public set mask(value:Texture2DBase)
 	{
 		if (Boolean(value) != Boolean(this._mask) ||
-			(value && this._mask && (value.hasMipmaps != this._mask.hasMipmaps || value.format != this._mask.format))) {
+			(value && this._mask && (value.format != this._mask.format))) {
 			this.iInvalidateShaderProgram();
 		}
 		this._mask = value;
@@ -136,10 +136,10 @@ class EffectFresnelEnvMapMethod extends EffectMethodBase
 		data[index + 1] = this._normalReflectance;
 		data[index + 2] = this._fresnelPower;
 
-		stage.activateCubeTexture(methodVO.texturesIndex, this._cubeTexture);
+		stage.activateCubeTexture(methodVO.texturesIndex, this._cubeTexture, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
 
 		if (this._mask)
-			stage.activateTexture(methodVO.texturesIndex + 1, this._mask);
+			stage.activateTexture(methodVO.texturesIndex + 1, this._mask, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
 	}
 
 	/**

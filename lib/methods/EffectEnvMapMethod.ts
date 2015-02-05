@@ -44,7 +44,7 @@ class EffectEnvMapMethod extends EffectMethodBase
 
 	public set mask(value:Texture2DBase)
 	{
-		if (value != this._mask || (value && this._mask && (value.hasMipmaps != this._mask.hasMipmaps || value.format != this._mask.format)))
+		if (value != this._mask || (value && this._mask && (value.format != this._mask.format)))
 			this.iInvalidateShaderProgram();
 
 		this._mask = value;
@@ -100,9 +100,10 @@ class EffectEnvMapMethod extends EffectMethodBase
 	{
 		shaderObject.fragmentConstantData[methodVO.fragmentConstantsIndex] = this._alpha;
 
-		stage.activateCubeTexture(methodVO.texturesIndex, this._cubeTexture);
+		stage.activateCubeTexture(methodVO.texturesIndex, this._cubeTexture, shaderObject.useSmoothTextures,shaderObject.useMipmapping);
+
 		if (this._mask)
-			stage.activateTexture(methodVO.texturesIndex + 1, this._mask);
+			stage.activateTexture(methodVO.texturesIndex + 1, this._mask,  shaderObject.repeatTextures, shaderObject.useSmoothTextures,shaderObject.useMipmapping);
 	}
 
 	/**

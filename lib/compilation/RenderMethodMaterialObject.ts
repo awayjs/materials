@@ -6,7 +6,7 @@ import Vector3D							= require("awayjs-core/lib/geom/Vector3D");
 import AbstractMethodError				= require("awayjs-core/lib/errors/AbstractMethodError");
 import Texture2DBase					= require("awayjs-core/lib/textures/Texture2DBase");
 
-import BlendMode						= require("awayjs-display/lib/base/BlendMode");
+import BlendMode						= require("awayjs-core/lib/base/BlendMode");
 import TriangleSubGeometry				= require("awayjs-display/lib/base/TriangleSubGeometry");
 import Camera							= require("awayjs-display/lib/entities/Camera");
 import IRenderObjectOwner				= require("awayjs-display/lib/base/IRenderObjectOwner");
