@@ -363,7 +363,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var BlendMode = require("awayjs-display/lib/base/BlendMode");
+var BlendMode = require("awayjs-core/lib/base/BlendMode");
 var StaticLightPicker = require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
 var ContextGLCompareMode = require("awayjs-stagegl/lib/base/ContextGLCompareMode");
 var RenderObjectBase = require("awayjs-renderergl/lib/compilation/RenderObjectBase");
@@ -612,7 +612,7 @@ var RenderMethodMaterialObject = (function (_super) {
 module.exports = RenderMethodMaterialObject;
 
 
-},{"awayjs-display/lib/base/BlendMode":undefined,"awayjs-display/lib/materials/lightpickers/StaticLightPicker":undefined,"awayjs-methodmaterials/lib/MethodMaterialMode":undefined,"awayjs-methodmaterials/lib/passes/MethodPass":undefined,"awayjs-methodmaterials/lib/passes/MethodPassMode":undefined,"awayjs-renderergl/lib/compilation/RenderObjectBase":undefined,"awayjs-stagegl/lib/base/ContextGLCompareMode":undefined}],"awayjs-methodmaterials/lib/data/MethodVO":[function(require,module,exports){
+},{"awayjs-core/lib/base/BlendMode":undefined,"awayjs-display/lib/materials/lightpickers/StaticLightPicker":undefined,"awayjs-methodmaterials/lib/MethodMaterialMode":undefined,"awayjs-methodmaterials/lib/passes/MethodPass":undefined,"awayjs-methodmaterials/lib/passes/MethodPassMode":undefined,"awayjs-renderergl/lib/compilation/RenderObjectBase":undefined,"awayjs-stagegl/lib/base/ContextGLCompareMode":undefined}],"awayjs-methodmaterials/lib/data/MethodVO":[function(require,module,exports){
 /**
  * MethodVO contains data for a given shader object for the use within a single material.
  * This allows shader methods to be shared across materials while their non-public state differs.
@@ -654,9 +654,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var ContextGLMipFilter = require("awayjs-stagegl/lib/base/ContextGLMipFilter");
-var ContextGLTextureFilter = require("awayjs-stagegl/lib/base/ContextGLTextureFilter");
-var ContextGLWrapMode = require("awayjs-stagegl/lib/base/ContextGLWrapMode");
 var ShaderCompilerHelper = require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 var ShadingMethodBase = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
 /**
@@ -739,7 +736,7 @@ var AmbientBasicMethod = (function (_super) {
         if (methodVO.needsUV) {
             ambientInputRegister = registerCache.getFreeTextureReg();
             methodVO.texturesIndex = ambientInputRegister.index;
-            code += ShaderCompilerHelper.getTex2DSampleCode(targetReg, sharedRegisters, ambientInputRegister, shaderObject.texture, shaderObject.useSmoothTextures, shaderObject.repeatTextures, shaderObject.useMipmapping);
+            code += ShaderCompilerHelper.getTex2DSampleCode(targetReg, sharedRegisters, ambientInputRegister, shaderObject.texture, shaderObject.useSmoothTextures, shaderObject.repeatTextures, false);
             if (shaderObject.alphaThreshold > 0) {
                 var cutOffReg = registerCache.getFreeFragmentConstant();
                 methodVO.fragmentConstantsIndex = cutOffReg.index * 4;
@@ -758,8 +755,7 @@ var AmbientBasicMethod = (function (_super) {
      */
     AmbientBasicMethod.prototype.iActivate = function (shaderObject, methodVO, stage) {
         if (methodVO.needsUV) {
-            stage.context.setSamplerStateAt(methodVO.texturesIndex, shaderObject.repeatTextures ? ContextGLWrapMode.REPEAT : ContextGLWrapMode.CLAMP, shaderObject.useSmoothTextures ? ContextGLTextureFilter.LINEAR : ContextGLTextureFilter.NEAREST, shaderObject.useMipmapping ? ContextGLMipFilter.MIPLINEAR : ContextGLMipFilter.MIPNONE);
-            stage.activateTexture(methodVO.texturesIndex, shaderObject.texture);
+            stage.activateTexture(methodVO.texturesIndex, shaderObject.texture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
             if (shaderObject.alphaThreshold > 0)
                 shaderObject.fragmentConstantData[methodVO.fragmentConstantsIndex] = shaderObject.alphaThreshold;
         }
@@ -785,7 +781,7 @@ var AmbientBasicMethod = (function (_super) {
 module.exports = AmbientBasicMethod;
 
 
-},{"awayjs-methodmaterials/lib/methods/ShadingMethodBase":undefined,"awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined,"awayjs-stagegl/lib/base/ContextGLMipFilter":undefined,"awayjs-stagegl/lib/base/ContextGLTextureFilter":undefined,"awayjs-stagegl/lib/base/ContextGLWrapMode":undefined}],"awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod":[function(require,module,exports){
+},{"awayjs-methodmaterials/lib/methods/ShadingMethodBase":undefined,"awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined}],"awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -834,7 +830,7 @@ var AmbientEnvMapMethod = (function (_super) {
      */
     AmbientEnvMapMethod.prototype.iActivate = function (shaderObject, methodVO, stage) {
         _super.prototype.iActivate.call(this, shaderObject, methodVO, stage);
-        stage.activateCubeTexture(methodVO.texturesIndex, this._cubeTexture);
+        stage.activateCubeTexture(methodVO.texturesIndex, this._cubeTexture, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
     };
     /**
      * @inheritDoc
@@ -862,9 +858,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var ContextGLMipFilter = require("awayjs-stagegl/lib/base/ContextGLMipFilter");
-var ContextGLTextureFilter = require("awayjs-stagegl/lib/base/ContextGLTextureFilter");
-var ContextGLWrapMode = require("awayjs-stagegl/lib/base/ContextGLWrapMode");
 var ShaderCompilerHelper = require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 var LightingMethodBase = require("awayjs-methodmaterials/lib/methods/LightingMethodBase");
 /**
@@ -913,12 +906,12 @@ var DiffuseBasicMethod = (function (_super) {
         methodVO.needsNormals = shaderObject.numLights > 0;
     };
     /**
-     * Forces the creation of the texture.
+     * Forces the creation of the texture's mipmaps.
      * @param stage The Stage used by the renderer
      */
     DiffuseBasicMethod.prototype.generateMip = function (stage) {
         if (this._pUseTexture)
-            stage.activateTexture(0, this._texture);
+            stage.activateTexture(0, this._texture, true, true, true);
     };
     Object.defineProperty(DiffuseBasicMethod.prototype, "diffuseColor", {
         /**
@@ -961,7 +954,7 @@ var DiffuseBasicMethod = (function (_super) {
         },
         set: function (value) {
             var b = (value != null);
-            if (b != this._pUseTexture || (value && this._texture && (value.hasMipmaps != this._texture.hasMipmaps || value.format != this._texture.format)))
+            if (b != this._pUseTexture || (value && this._texture && (value.format != this._texture.format)))
                 this.iInvalidateShaderProgram();
             this._pUseTexture = b;
             this._texture = value;
@@ -1101,8 +1094,7 @@ var DiffuseBasicMethod = (function (_super) {
      */
     DiffuseBasicMethod.prototype.iActivate = function (shaderObject, methodVO, stage) {
         if (this._pUseTexture) {
-            stage.context.setSamplerStateAt(methodVO.texturesIndex, shaderObject.repeatTextures ? ContextGLWrapMode.REPEAT : ContextGLWrapMode.CLAMP, shaderObject.useSmoothTextures ? ContextGLTextureFilter.LINEAR : ContextGLTextureFilter.NEAREST, shaderObject.useMipmapping ? ContextGLMipFilter.MIPLINEAR : ContextGLMipFilter.MIPNONE);
-            stage.activateTexture(methodVO.texturesIndex, this._texture);
+            stage.activateTexture(methodVO.texturesIndex, this._texture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
         }
         else {
             var index = methodVO.fragmentConstantsIndex;
@@ -1148,7 +1140,7 @@ var DiffuseBasicMethod = (function (_super) {
 module.exports = DiffuseBasicMethod;
 
 
-},{"awayjs-methodmaterials/lib/methods/LightingMethodBase":undefined,"awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined,"awayjs-stagegl/lib/base/ContextGLMipFilter":undefined,"awayjs-stagegl/lib/base/ContextGLTextureFilter":undefined,"awayjs-stagegl/lib/base/ContextGLWrapMode":undefined}],"awayjs-methodmaterials/lib/methods/DiffuseCelMethod":[function(require,module,exports){
+},{"awayjs-methodmaterials/lib/methods/LightingMethodBase":undefined,"awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined}],"awayjs-methodmaterials/lib/methods/DiffuseCelMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1541,7 +1533,7 @@ var DiffuseGradientMethod = (function (_super) {
             return this._gradient;
         },
         set: function (value) {
-            if (value.hasMipmaps != this._gradient.hasMipmaps || value.format != this._gradient.format)
+            if (value.format != this._gradient.format)
                 this.iInvalidateShaderProgram();
             this._gradient = value;
         },
@@ -1603,7 +1595,7 @@ var DiffuseGradientMethod = (function (_super) {
      */
     DiffuseGradientMethod.prototype.iActivate = function (shaderObject, methodVO, stage) {
         _super.prototype.iActivate.call(this, shaderObject, methodVO, stage);
-        stage.activateTexture(methodVO.secondaryTexturesIndex, this._gradient);
+        stage.activateTexture(methodVO.secondaryTexturesIndex, this._gradient, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
     };
     return DiffuseGradientMethod;
 })(DiffuseBasicMethod);
@@ -1688,7 +1680,7 @@ var DiffuseLightMapMethod = (function (_super) {
      * @inheritDoc
      */
     DiffuseLightMapMethod.prototype.iActivate = function (shaderObject, methodVO, stage) {
-        stage.activateTexture(methodVO.secondaryTexturesIndex, this._lightMapTexture);
+        stage.activateTexture(methodVO.secondaryTexturesIndex, this._lightMapTexture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
         _super.prototype.iActivate.call(this, shaderObject, methodVO, stage);
     };
     /**
@@ -1905,7 +1897,7 @@ var DiffuseSubSurfaceMethod = (function (_super) {
      * @inheritDoc
      */
     DiffuseSubSurfaceMethod.prototype.iSetRenderState = function (shaderObject, methodVO, renderable, stage, camera) {
-        stage.activateTexture(methodVO.secondaryTexturesIndex, this._depthPass._iGetDepthMap(renderable));
+        stage.activateTexture(methodVO.secondaryTexturesIndex, this._depthPass._iGetDepthMap(renderable), shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
         this._depthPass._iGetProjection(renderable).copyRawDataTo(shaderObject.vertexConstantData, methodVO.secondaryVertexConstantsIndex + 4, true);
     };
     /**
@@ -2101,7 +2093,7 @@ var EffectAlphaMaskMethod = (function (_super) {
      * @inheritDoc
      */
     EffectAlphaMaskMethod.prototype.iActivate = function (shaderObject, methodVO, stage) {
-        stage.activateTexture(methodVO.texturesIndex, this._texture);
+        stage.activateTexture(methodVO.texturesIndex, this._texture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
     };
     /**
      * @inheritDoc
@@ -2307,7 +2299,7 @@ var EffectEnvMapMethod = (function (_super) {
             return this._mask;
         },
         set: function (value) {
-            if (value != this._mask || (value && this._mask && (value.hasMipmaps != this._mask.hasMipmaps || value.format != this._mask.format)))
+            if (value != this._mask || (value && this._mask && (value.format != this._mask.format)))
                 this.iInvalidateShaderProgram();
             this._mask = value;
         },
@@ -2358,9 +2350,9 @@ var EffectEnvMapMethod = (function (_super) {
      */
     EffectEnvMapMethod.prototype.iActivate = function (shaderObject, methodVO, stage) {
         shaderObject.fragmentConstantData[methodVO.fragmentConstantsIndex] = this._alpha;
-        stage.activateCubeTexture(methodVO.texturesIndex, this._cubeTexture);
+        stage.activateCubeTexture(methodVO.texturesIndex, this._cubeTexture, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
         if (this._mask)
-            stage.activateTexture(methodVO.texturesIndex + 1, this._mask);
+            stage.activateTexture(methodVO.texturesIndex + 1, this._mask, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
     };
     /**
      * @inheritDoc
@@ -2556,7 +2548,7 @@ var EffectFresnelEnvMapMethod = (function (_super) {
             return this._mask;
         },
         set: function (value) {
-            if (Boolean(value) != Boolean(this._mask) || (value && this._mask && (value.hasMipmaps != this._mask.hasMipmaps || value.format != this._mask.format))) {
+            if (Boolean(value) != Boolean(this._mask) || (value && this._mask && (value.format != this._mask.format))) {
                 this.iInvalidateShaderProgram();
             }
             this._mask = value;
@@ -2625,9 +2617,9 @@ var EffectFresnelEnvMapMethod = (function (_super) {
         data[index] = this._alpha;
         data[index + 1] = this._normalReflectance;
         data[index + 2] = this._fresnelPower;
-        stage.activateCubeTexture(methodVO.texturesIndex, this._cubeTexture);
+        stage.activateCubeTexture(methodVO.texturesIndex, this._cubeTexture, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
         if (this._mask)
-            stage.activateTexture(methodVO.texturesIndex + 1, this._mask);
+            stage.activateTexture(methodVO.texturesIndex + 1, this._mask, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
     };
     /**
      * @inheritDoc
@@ -2728,7 +2720,7 @@ var EffectLightMapMethod = (function (_super) {
             return this._texture;
         },
         set: function (value) {
-            if (value.hasMipmaps != this._texture.hasMipmaps || value.format != this._texture.format)
+            if (value.format != this._texture.format)
                 this.iInvalidateShaderProgram();
             this._texture = value;
         },
@@ -2739,7 +2731,7 @@ var EffectLightMapMethod = (function (_super) {
      * @inheritDoc
      */
     EffectLightMapMethod.prototype.iActivate = function (shaderObject, methodVO, stage) {
-        stage.activateTexture(methodVO.texturesIndex, this._texture);
+        stage.activateTexture(methodVO.texturesIndex, this._texture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
         _super.prototype.iActivate.call(this, shaderObject, methodVO, stage);
     };
     /**
@@ -2982,7 +2974,7 @@ var EffectRefractionEnvMapMethod = (function (_super) {
             data[index + 2] = this._dispersionB + this._refractionIndex;
         }
         data[index + 3] = this._alpha;
-        stage.activateCubeTexture(methodVO.texturesIndex, this._envMap);
+        stage.activateCubeTexture(methodVO.texturesIndex, this._envMap, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
     };
     /**
      * @inheritDoc
@@ -3250,9 +3242,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var ContextGLMipFilter = require("awayjs-stagegl/lib/base/ContextGLMipFilter");
-var ContextGLTextureFilter = require("awayjs-stagegl/lib/base/ContextGLTextureFilter");
-var ContextGLWrapMode = require("awayjs-stagegl/lib/base/ContextGLWrapMode");
 var ShaderCompilerHelper = require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 var ShadingMethodBase = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
 /**
@@ -3301,7 +3290,7 @@ var NormalBasicMethod = (function (_super) {
         },
         set: function (value) {
             var b = (value != null);
-            if (b != this._useTexture || (value && this._texture && (value.hasMipmaps != this._texture.hasMipmaps || value.format != this._texture.format)))
+            if (b != this._useTexture || (value && this._texture && (value.format != this._texture.format)))
                 this.iInvalidateShaderProgram();
             this._useTexture = b;
             this._texture = value;
@@ -3327,10 +3316,8 @@ var NormalBasicMethod = (function (_super) {
      * @inheritDoc
      */
     NormalBasicMethod.prototype.iActivate = function (shaderObject, methodVO, stage) {
-        if (methodVO.texturesIndex >= 0) {
-            stage.context.setSamplerStateAt(methodVO.texturesIndex, shaderObject.repeatTextures ? ContextGLWrapMode.REPEAT : ContextGLWrapMode.CLAMP, shaderObject.useSmoothTextures ? ContextGLTextureFilter.LINEAR : ContextGLTextureFilter.NEAREST, shaderObject.useMipmapping ? ContextGLMipFilter.MIPLINEAR : ContextGLMipFilter.MIPNONE);
-            stage.activateTexture(methodVO.texturesIndex, this._texture);
-        }
+        if (methodVO.texturesIndex >= 0)
+            stage.activateTexture(methodVO.texturesIndex, this._texture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
     };
     /**
      * @inheritDoc
@@ -3345,7 +3332,7 @@ var NormalBasicMethod = (function (_super) {
 module.exports = NormalBasicMethod;
 
 
-},{"awayjs-methodmaterials/lib/methods/ShadingMethodBase":undefined,"awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined,"awayjs-stagegl/lib/base/ContextGLMipFilter":undefined,"awayjs-stagegl/lib/base/ContextGLTextureFilter":undefined,"awayjs-stagegl/lib/base/ContextGLWrapMode":undefined}],"awayjs-methodmaterials/lib/methods/NormalHeightMapMethod":[function(require,module,exports){
+},{"awayjs-methodmaterials/lib/methods/ShadingMethodBase":undefined,"awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined}],"awayjs-methodmaterials/lib/methods/NormalHeightMapMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -3560,7 +3547,7 @@ var NormalSimpleWaterMethod = (function (_super) {
         data[index + 7] = this._water2OffsetY;
         //if (this._useSecondNormalMap >= 0)
         if (this._useSecondNormalMap)
-            stage.activateTexture(methodVO.texturesIndex + 1, this._texture2);
+            stage.activateTexture(methodVO.texturesIndex + 1, this._texture2, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
     };
     /**
      * @inheritDoc
@@ -3873,7 +3860,7 @@ var ShadowCascadeMethod = (function (_super) {
      * @inheritDoc
      */
     ShadowCascadeMethod.prototype.iActivate = function (shaderObject, methodVO, stage) {
-        stage.activateTexture(methodVO.texturesIndex, this._pCastingLight.shadowMapper.depthMap);
+        stage.activateTexture(methodVO.texturesIndex, this._pCastingLight.shadowMapper.depthMap, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
         var vertexData = shaderObject.vertexConstantData;
         var vertexIndex = methodVO.vertexConstantsIndex;
         shaderObject.vertexConstantData[methodVO.vertexConstantsIndex + 3] = -1 / (this._cascadeShadowMapper.depth * this._pEpsilon);
@@ -4023,7 +4010,7 @@ var ShadowDitheredMethod = (function (_super) {
                 g = -1;
             vec[i] = (Math.floor((r * .5 + .5) * 0xff) << 16) | (Math.floor((g * .5 + .5) * 0xff) << 8);
         }
-        ShadowDitheredMethod._grainBitmapData.setVector(ShadowDitheredMethod._grainBitmapData.rect, vec);
+        ShadowDitheredMethod._grainBitmapData.setArray(ShadowDitheredMethod._grainBitmapData.rect, vec);
         ShadowDitheredMethod._grainTexture = new BitmapTexture(ShadowDitheredMethod._grainBitmapData);
     };
     /**
@@ -4046,7 +4033,7 @@ var ShadowDitheredMethod = (function (_super) {
         data[index + 9] = (stage.width - 1) / 63;
         data[index + 10] = (stage.height - 1) / 63;
         data[index + 11] = 2 * this._range / this._depthMapSize;
-        stage.activateTexture(methodVO.texturesIndex + 1, ShadowDitheredMethod._grainTexture);
+        stage.activateTexture(methodVO.texturesIndex + 1, ShadowDitheredMethod._grainTexture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
     };
     /**
      * @inheritDoc
@@ -4135,7 +4122,7 @@ var ShadowDitheredMethod = (function (_super) {
         data[index + 1] = (stage.width - 1) / 63;
         data[index + 2] = (stage.height - 1) / 63;
         data[index + 3] = 2 * this._range / this._depthMapSize;
-        stage.activateTexture(methodVO.texturesIndex + 1, ShadowDitheredMethod._grainTexture);
+        stage.activateTexture(methodVO.texturesIndex + 1, ShadowDitheredMethod._grainTexture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
     };
     /**
      * @inheritDoc
@@ -5021,9 +5008,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var ContextGLMipFilter = require("awayjs-stagegl/lib/base/ContextGLMipFilter");
-var ContextGLTextureFilter = require("awayjs-stagegl/lib/base/ContextGLTextureFilter");
-var ContextGLWrapMode = require("awayjs-stagegl/lib/base/ContextGLWrapMode");
 var ShaderCompilerHelper = require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 var LightingMethodBase = require("awayjs-methodmaterials/lib/methods/LightingMethodBase");
 /**
@@ -5116,7 +5100,7 @@ var SpecularBasicMethod = (function (_super) {
         },
         set: function (value) {
             var b = (value != null);
-            if (b != this._pUseTexture || (value && this._texture && (value.hasMipmaps != this._texture.hasMipmaps || value.format != this._texture.format)))
+            if (b != this._pUseTexture || (value && this._texture && (value.format != this._texture.format)))
                 this.iInvalidateShaderProgram();
             this._pUseTexture = b;
             this._texture = value;
@@ -5252,10 +5236,8 @@ var SpecularBasicMethod = (function (_super) {
      * @inheritDoc
      */
     SpecularBasicMethod.prototype.iActivate = function (shaderObject, methodVO, stage) {
-        if (this._pUseTexture) {
-            stage.context.setSamplerStateAt(methodVO.texturesIndex, shaderObject.repeatTextures ? ContextGLWrapMode.REPEAT : ContextGLWrapMode.CLAMP, shaderObject.useSmoothTextures ? ContextGLTextureFilter.LINEAR : ContextGLTextureFilter.NEAREST, shaderObject.useMipmapping ? ContextGLMipFilter.MIPLINEAR : ContextGLMipFilter.MIPNONE);
-            stage.activateTexture(methodVO.texturesIndex, this._texture);
-        }
+        if (methodVO.texturesIndex >= 0)
+            stage.activateTexture(methodVO.texturesIndex, this._texture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
         var index = methodVO.fragmentConstantsIndex;
         var data = shaderObject.fragmentConstantData;
         data[index] = this._iSpecularR;
@@ -5276,7 +5258,7 @@ var SpecularBasicMethod = (function (_super) {
 module.exports = SpecularBasicMethod;
 
 
-},{"awayjs-methodmaterials/lib/methods/LightingMethodBase":undefined,"awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined,"awayjs-stagegl/lib/base/ContextGLMipFilter":undefined,"awayjs-stagegl/lib/base/ContextGLTextureFilter":undefined,"awayjs-stagegl/lib/base/ContextGLWrapMode":undefined}],"awayjs-methodmaterials/lib/methods/SpecularCelMethod":[function(require,module,exports){
+},{"awayjs-methodmaterials/lib/methods/LightingMethodBase":undefined,"awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined}],"awayjs-methodmaterials/lib/methods/SpecularCelMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -5651,7 +5633,6 @@ var SpecularFresnelMethod = (function (_super) {
      */
     SpecularFresnelMethod.prototype.iGetFragmentPreLightingCode = function (shaderObject, methodVO, registerCache, sharedRegisters) {
         this._dataReg = registerCache.getFreeFragmentConstant();
-        console.log('SpecularFresnelMethod', 'iGetFragmentPreLightingCode', this._dataReg);
         methodVO.secondaryFragmentConstantsIndex = this._dataReg.index * 4;
         return _super.prototype.iGetFragmentPreLightingCode.call(this, shaderObject, methodVO, registerCache, sharedRegisters);
     };
@@ -5667,7 +5648,6 @@ var SpecularFresnelMethod = (function (_super) {
     SpecularFresnelMethod.prototype.modulateSpecular = function (shaderObject, methodVO, targetReg, registerCache, sharedRegisters) {
         var code;
         code = "dp3 " + targetReg + ".y, " + sharedRegisters.viewDirFragment + ".xyz, " + (this._incidentLight ? targetReg : sharedRegisters.normalFragment) + ".xyz\n" + "sub " + targetReg + ".y, " + this._dataReg + ".z, " + targetReg + ".y\n" + "pow " + targetReg + ".x, " + targetReg + ".y, " + this._dataReg + ".y\n" + "sub " + targetReg + ".y, " + this._dataReg + ".z, " + targetReg + ".y\n" + "mul " + targetReg + ".y, " + this._dataReg + ".x, " + targetReg + ".y\n" + "add " + targetReg + ".y, " + targetReg + ".x, " + targetReg + ".y\n" + "mul " + targetReg + ".w, " + targetReg + ".w, " + targetReg + ".y\n";
-        console.log('SpecularFresnelMethod', 'modulateSpecular', code);
         return code;
     };
     return SpecularFresnelMethod;
