@@ -47,7 +47,7 @@ class MethodMaterial extends MaterialBase
 	 */
 	constructor(texture?:Texture2DBase, smooth?:boolean, repeat?:boolean, mipmap?:boolean);
 	constructor(color?:number, alpha?:number);
-	constructor(textureColor:any = null, smoothAlpha:any = null, repeat:boolean = false, mipmap:boolean = false)
+	constructor(textureColor:any = null, smoothAlpha:any = null, repeat:boolean = false, mipmap:boolean = true)
 	{
 		super();
 
