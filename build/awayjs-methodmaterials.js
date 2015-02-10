@@ -40,7 +40,7 @@ var MethodMaterial = (function (_super) {
         if (textureColor === void 0) { textureColor = null; }
         if (smoothAlpha === void 0) { smoothAlpha = null; }
         if (repeat === void 0) { repeat = false; }
-        if (mipmap === void 0) { mipmap = false; }
+        if (mipmap === void 0) { mipmap = true; }
         _super.call(this);
         this._effectMethods = new Array();
         this._ambientMethod = new AmbientBasicMethod();
