@@ -58,7 +58,7 @@ class TextureMultiPassMatTest
 		var l:number = 20;
 		var radius:number = 500;
 
-		var ts:ImageTexture = new ImageTexture(this.image, false);
+		var ts:ImageTexture = new ImageTexture(this.image);
 		var mat:BasicMaterial = new BasicMaterial(ts);
 
 		this.torus.material = mat;
