@@ -1,8 +1,8 @@
+import TriangleSubGeometry				= require("awayjs-core/lib/data/TriangleSubGeometry");
 import Matrix3D							= require("awayjs-core/lib/geom/Matrix3D");
 import RenderTexture					= require("awayjs-core/lib/textures/RenderTexture");
 
 import LightBase						= require("awayjs-display/lib/base/LightBase");
-import TriangleSubGeometry				= require("awayjs-display/lib/base/TriangleSubGeometry");
 import Camera							= require("awayjs-display/lib/entities/Camera");
 import MaterialBase						= require("awayjs-display/lib/materials/MaterialBase");
 import IRenderObjectOwner				= require("awayjs-display/lib/base/IRenderObjectOwner");

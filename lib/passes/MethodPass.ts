@@ -1,3 +1,4 @@
+import TriangleSubGeometry				= require("awayjs-core/lib/data/TriangleSubGeometry");
 import ColorTransform					= require("awayjs-core/lib/geom/ColorTransform");
 import Matrix							= require("awayjs-core/lib/geom/Matrix");
 import Matrix3D							= require("awayjs-core/lib/geom/Matrix3D");
@@ -7,7 +8,6 @@ import AbstractMethodError				= require("awayjs-core/lib/errors/AbstractMethodEr
 import Event							= require("awayjs-core/lib/events/Event");
 import MaterialBase						= require("awayjs-display/lib/materials/MaterialBase");
 
-import TriangleSubGeometry				= require("awayjs-display/lib/base/TriangleSubGeometry");
 import Camera							= require("awayjs-display/lib/entities/Camera");
 import IRenderObjectOwner				= require("awayjs-display/lib/base/IRenderObjectOwner");
 import LightPickerBase					= require("awayjs-display/lib/materials/lightpickers/LightPickerBase");

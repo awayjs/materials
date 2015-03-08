@@ -1,4 +1,4 @@
-import BitmapData						= require("awayjs-core/lib/base/BitmapData");
+import BitmapData						= require("awayjs-core/lib/data/BitmapData");
 import BitmapTexture					= require("awayjs-core/lib/textures/BitmapTexture");
 
 import DirectionalLight					= require("awayjs-display/lib/entities/DirectionalLight");
