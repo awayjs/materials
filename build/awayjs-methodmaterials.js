@@ -2773,7 +2773,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var AssetType = require("awayjs-core/lib/library/AssetType");
 var AbstractMethodError = require("awayjs-core/lib/errors/AbstractMethodError");
 var ShadingMethodBase = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
 /**
@@ -2790,7 +2789,7 @@ var EffectMethodBase = (function (_super) {
          * @inheritDoc
          */
         get: function () {
-            return AssetType.EFFECTS_METHOD;
+            return EffectMethodBase.assetType;
         },
         enumerable: true,
         configurable: true
@@ -2806,12 +2805,13 @@ var EffectMethodBase = (function (_super) {
         throw new AbstractMethodError();
         return "";
     };
+    EffectMethodBase.assetType = "[asset EffectMethod]";
     return EffectMethodBase;
 })(ShadingMethodBase);
 module.exports = EffectMethodBase;
 
 
-},{"awayjs-core/lib/errors/AbstractMethodError":undefined,"awayjs-core/lib/library/AssetType":undefined,"awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectRefractionEnvMapMethod":[function(require,module,exports){
+},{"awayjs-core/lib/errors/AbstractMethodError":undefined,"awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectRefractionEnvMapMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -3574,7 +3574,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var NamedAssetBase = require("awayjs-core/lib/library/NamedAssetBase");
+var AssetBase = require("awayjs-core/lib/library/AssetBase");
 var ShadingMethodEvent = require("awayjs-renderergl/lib/events/ShadingMethodEvent");
 /**
  * ShadingMethodBase provides an abstract base method for shading methods, used by compiled passes to compile
@@ -3588,6 +3588,16 @@ var ShadingMethodBase = (function (_super) {
     function ShadingMethodBase() {
         _super.call(this);
     }
+    Object.defineProperty(ShadingMethodBase.prototype, "assetType", {
+        /**
+         * @inheritDoc
+         */
+        get: function () {
+            return ShadingMethodBase.assetType;
+        },
+        enumerable: true,
+        configurable: true
+    });
     ShadingMethodBase.prototype.iIsUsed = function (shaderObject) {
         return true;
     };
@@ -3695,12 +3705,13 @@ var ShadingMethodBase = (function (_super) {
      */
     ShadingMethodBase.prototype.copyFrom = function (method) {
     };
+    ShadingMethodBase.assetType = "[asset ShadingMethod]";
     return ShadingMethodBase;
-})(NamedAssetBase);
+})(AssetBase);
 module.exports = ShadingMethodBase;
 
 
-},{"awayjs-core/lib/library/NamedAssetBase":undefined,"awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/ShadowCascadeMethod":[function(require,module,exports){
+},{"awayjs-core/lib/library/AssetBase":undefined,"awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/ShadowCascadeMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -4302,7 +4313,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var AssetType = require("awayjs-core/lib/library/AssetType");
 var ShadingMethodBase = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
 /**
  * ShadowMapMethodBase provides an abstract base method for shadow map methods.
@@ -4326,7 +4336,7 @@ var ShadowMapMethodBase = (function (_super) {
          * @inheritDoc
          */
         get: function () {
-            return AssetType.SHADOW_MAP_METHOD;
+            return ShadowMapMethodBase.assetType;
         },
         enumerable: true,
         configurable: true
@@ -4368,12 +4378,13 @@ var ShadowMapMethodBase = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    ShadowMapMethodBase.assetType = "[asset ShadowMapMethod]";
     return ShadowMapMethodBase;
 })(ShadingMethodBase);
 module.exports = ShadowMapMethodBase;
 
 
-},{"awayjs-core/lib/library/AssetType":undefined,"awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowMethodBase":[function(require,module,exports){
+},{"awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowMethodBase":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
