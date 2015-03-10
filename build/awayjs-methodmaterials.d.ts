@@ -697,7 +697,7 @@ declare module "awayjs-methodmaterials/lib/passes/MethodPass" {
 	    _iShadowMethodVO: MethodVO;
 	    _iDiffuseMethodVO: MethodVO;
 	    _iSpecularMethodVO: MethodVO;
-	    _iMethodVOs: MethodVO[];
+	    _iMethodVOs: Array<MethodVO>;
 	    _numEffectDependencies: number;
 	    private _onLightsChangeDelegate;
 	    private _onMethodInvalidatedDelegate;
@@ -1145,6 +1145,102 @@ declare module "awayjs-methodmaterials/lib/MethodMaterial" {
 	export = MethodMaterial;
 	
 }
+declare module "awayjs-methodmaterials/lib/passes/SingleObjectDepthPass" {
+	import Matrix3D = require("awayjs-core/lib/geom/Matrix3D");
+	import RenderTexture = require("awayjs-core/lib/textures/RenderTexture");
+	import Camera = require("awayjs-display/lib/entities/Camera");
+	import IRenderObjectOwner = require("awayjs-display/lib/base/IRenderObjectOwner");
+	import Stage = require("awayjs-stagegl/lib/base/Stage");
+	import RenderObjectBase = require("awayjs-renderergl/lib/compilation/RenderObjectBase");
+	import RenderableBase = require("awayjs-renderergl/lib/pool/RenderableBase");
+	import ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
+	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
+	import ShaderRegisterData = require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
+	import IRenderableClass = require("awayjs-renderergl/lib/pool/IRenderableClass");
+	import RenderPassBase = require("awayjs-renderergl/lib/passes/RenderPassBase");
+	/**
+	 * The SingleObjectDepthPass provides a material pass that renders a single object to a depth map from the point
+	 * of view from a light.
+	 */
+	class SingleObjectDepthPass extends RenderPassBase {
+	    private _textures;
+	    private _projections;
+	    private _textureSize;
+	    private _polyOffset;
+	    private _enc;
+	    private _projectionTexturesInvalid;
+	    /**
+	     * The size of the depth map texture to render to.
+	     */
+	    textureSize: number;
+	    /**
+	     * The amount by which the rendered object will be inflated, to prevent depth map rounding errors.
+	     */
+	    polyOffset: number;
+	    /**
+	     * Creates a new SingleObjectDepthPass object.
+	     */
+	    constructor(renderObject: RenderObjectBase, renderObjectOwner: IRenderObjectOwner, renderableClass: IRenderableClass, stage: Stage);
+	    /**
+	     * @inheritDoc
+	     */
+	    dispose(): void;
+	    /**
+	     * Updates the projection textures used to contain the depth renders.
+	     */
+	    private updateProjectionTextures();
+	    /**
+	     * @inheritDoc
+	     */
+	    _iGetVertexCode(): string;
+	    /**
+	     * @inheritDoc
+	     */
+	    _iGetFragmentCode(shaderObject: ShaderObjectBase, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
+	    /**
+	     * Gets the depth maps rendered for this object from all lights.
+	     * @param renderable The renderable for which to retrieve the depth maps.
+	     * @param stage3DProxy The Stage3DProxy object currently used for rendering.
+	     * @return A list of depth map textures for all supported lights.
+	     */
+	    _iGetDepthMap(renderable: RenderableBase): RenderTexture;
+	    /**
+	     * Retrieves the depth map projection maps for all lights.
+	     * @param renderable The renderable for which to retrieve the projection maps.
+	     * @return A list of projection maps for all supported lights.
+	     */
+	    _iGetProjection(renderable: RenderableBase): Matrix3D;
+	    /**
+	     * @inheritDoc
+	     */
+	    _iRender(renderable: RenderableBase, camera: Camera, viewProjection: Matrix3D): void;
+	    /**
+	     * @inheritDoc
+	     */
+	    _iActivate(camera: Camera): void;
+	}
+	export = SingleObjectDepthPass;
+	
+}
+declare module "awayjs-methodmaterials/lib/pool/MethodRendererPool" {
+	import RendererPoolBase = require("awayjs-renderergl/lib/pool/RendererPoolBase");
+	import RendererBase = require("awayjs-renderergl/lib/base/RendererBase");
+	/**
+	 * MethodRendererPool forms an abstract base class for classes that are used in the rendering pipeline to render the
+	 * contents of a partition
+	 *
+	 * @class away.render.MethodRendererPool
+	 */
+	class MethodRendererPool extends RendererPoolBase {
+	    /**
+	     * Creates a new MethodRendererPool object.
+	     */
+	    constructor(renderer: RendererBase);
+	    _pUpdatePool(): void;
+	}
+	export = MethodRendererPool;
+	
+}
 declare module "awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod" {
 	import CubeTextureBase = require("awayjs-core/lib/textures/CubeTextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
@@ -1184,6 +1280,64 @@ declare module "awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod" {
 	    iGetFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, targetReg: ShaderRegisterElement, regCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 	}
 	export = AmbientEnvMapMethod;
+	
+}
+declare module "awayjs-methodmaterials/lib/methods/CurveBasicMethod" {
+	import Stage = require("awayjs-stagegl/lib/base/Stage");
+	import ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
+	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
+	import ShaderRegisterData = require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
+	import ShaderRegisterElement = require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
+	import MethodVO = require("awayjs-methodmaterials/lib/data/MethodVO");
+	import ShadingMethodBase = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
+	/**
+	 * AmbientBasicMethod provides the default shading method for uniform ambient lighting.
+	 */
+	class CurveBasicMethod extends ShadingMethodBase {
+	    private _color;
+	    private _alpha;
+	    private _colorR;
+	    private _colorG;
+	    private _colorB;
+	    private _ambient;
+	    /**
+	     * Creates a new AmbientBasicMethod object.
+	     */
+	    constructor();
+	    /**
+	     * @inheritDoc
+	     */
+	    iInitVO(shaderObject: ShaderObjectBase, methodVO: MethodVO): void;
+	    /**
+	     * @inheritDoc
+	     */
+	    iInitConstants(shaderObject: ShaderObjectBase, methodVO: MethodVO): void;
+	    /**
+	     * The strength of the ambient reflection of the surface.
+	     */
+	    ambient: number;
+	    /**
+	     * The alpha component of the surface.
+	     */
+	    alpha: number;
+	    /**
+	     * @inheritDoc
+	     */
+	    copyFrom(method: ShadingMethodBase): void;
+	    /**
+	     * @inheritDoc
+	     */
+	    iGetFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, targetReg: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
+	    /**
+	     * @inheritDoc
+	     */
+	    iActivate(shaderObject: ShaderObjectBase, methodVO: MethodVO, stage: Stage): void;
+	    /**
+	     * Updates the ambient color data used by the render state.
+	     */
+	    private updateColor();
+	}
+	export = CurveBasicMethod;
 	
 }
 declare module "awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod" {
@@ -1501,83 +1655,6 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseLightMapMethod" {
 	export = DiffuseLightMapMethod;
 	
 }
-declare module "awayjs-methodmaterials/lib/passes/SingleObjectDepthPass" {
-	import Matrix3D = require("awayjs-core/lib/geom/Matrix3D");
-	import RenderTexture = require("awayjs-core/lib/textures/RenderTexture");
-	import Camera = require("awayjs-display/lib/entities/Camera");
-	import IRenderObjectOwner = require("awayjs-display/lib/base/IRenderObjectOwner");
-	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderObjectBase = require("awayjs-renderergl/lib/compilation/RenderObjectBase");
-	import RenderableBase = require("awayjs-renderergl/lib/pool/RenderableBase");
-	import ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-	import ShaderRegisterData = require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-	import IRenderableClass = require("awayjs-renderergl/lib/pool/IRenderableClass");
-	import RenderPassBase = require("awayjs-renderergl/lib/passes/RenderPassBase");
-	/**
-	 * The SingleObjectDepthPass provides a material pass that renders a single object to a depth map from the point
-	 * of view from a light.
-	 */
-	class SingleObjectDepthPass extends RenderPassBase {
-	    private _textures;
-	    private _projections;
-	    private _textureSize;
-	    private _polyOffset;
-	    private _enc;
-	    private _projectionTexturesInvalid;
-	    /**
-	     * The size of the depth map texture to render to.
-	     */
-	    textureSize: number;
-	    /**
-	     * The amount by which the rendered object will be inflated, to prevent depth map rounding errors.
-	     */
-	    polyOffset: number;
-	    /**
-	     * Creates a new SingleObjectDepthPass object.
-	     */
-	    constructor(renderObject: RenderObjectBase, renderObjectOwner: IRenderObjectOwner, renderableClass: IRenderableClass, stage: Stage);
-	    /**
-	     * @inheritDoc
-	     */
-	    dispose(): void;
-	    /**
-	     * Updates the projection textures used to contain the depth renders.
-	     */
-	    private updateProjectionTextures();
-	    /**
-	     * @inheritDoc
-	     */
-	    _iGetVertexCode(): string;
-	    /**
-	     * @inheritDoc
-	     */
-	    _iGetFragmentCode(shaderObject: ShaderObjectBase, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
-	    /**
-	     * Gets the depth maps rendered for this object from all lights.
-	     * @param renderable The renderable for which to retrieve the depth maps.
-	     * @param stage3DProxy The Stage3DProxy object currently used for rendering.
-	     * @return A list of depth map textures for all supported lights.
-	     */
-	    _iGetDepthMap(renderable: RenderableBase): RenderTexture;
-	    /**
-	     * Retrieves the depth map projection maps for all lights.
-	     * @param renderable The renderable for which to retrieve the projection maps.
-	     * @return A list of projection maps for all supported lights.
-	     */
-	    _iGetProjection(renderable: RenderableBase): Matrix3D;
-	    /**
-	     * @inheritDoc
-	     */
-	    _iRender(renderable: RenderableBase, camera: Camera, viewProjection: Matrix3D): void;
-	    /**
-	     * @inheritDoc
-	     */
-	    _iActivate(camera: Camera): void;
-	}
-	export = SingleObjectDepthPass;
-	
-}
 declare module "awayjs-methodmaterials/lib/methods/DiffuseSubSurfaceMethod" {
 	import Camera = require("awayjs-display/lib/entities/Camera");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
@@ -1780,11 +1857,11 @@ declare module "awayjs-methodmaterials/lib/methods/EffectColorMatrixMethod" {
 	     *
 	     * @param matrix An array of 20 items for 4 x 5 color transform.
 	     */
-	    constructor(matrix: number[]);
+	    constructor(matrix: Array<number>);
 	    /**
 	     * The 4 x 5 matrix to transform the color of the material.
 	     */
-	    colorMatrix: number[];
+	    colorMatrix: Array<number>;
 	    /**
 	     * @inheritDoc
 	     */
@@ -3093,24 +3170,5 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularPhongMethod" {
 	    iGetFragmentCodePerLight(shaderObject: ShaderLightingObject, methodVO: MethodVO, lightDirReg: ShaderRegisterElement, lightColReg: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 	}
 	export = SpecularPhongMethod;
-	
-}
-declare module "awayjs-methodmaterials/lib/pool/MethodRendererPool" {
-	import RendererPoolBase = require("awayjs-renderergl/lib/pool/RendererPoolBase");
-	import RendererBase = require("awayjs-renderergl/lib/base/RendererBase");
-	/**
-	 * MethodRendererPool forms an abstract base class for classes that are used in the rendering pipeline to render the
-	 * contents of a partition
-	 *
-	 * @class away.render.MethodRendererPool
-	 */
-	class MethodRendererPool extends RendererPoolBase {
-	    /**
-	     * Creates a new MethodRendererPool object.
-	     */
-	    constructor(renderer: RendererBase);
-	    _pUpdatePool(): void;
-	}
-	export = MethodRendererPool;
 	
 }
