@@ -1,4 +1,3 @@
-import AssetType					= require("awayjs-core/lib/library/AssetType");
 import IAsset						= require("awayjs-core/lib/library/IAsset");
 import AbstractMethodError			= require("awayjs-core/lib/errors/AbstractMethodError");
 
@@ -16,6 +15,8 @@ import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/Shading
  */
 class EffectMethodBase extends ShadingMethodBase implements IAsset
 {
+	public static assetType:string = "[asset EffectMethod]";
+
 	constructor()
 	{
 		super();
@@ -26,7 +27,7 @@ class EffectMethodBase extends ShadingMethodBase implements IAsset
 	 */
 	public get assetType():string
 	{
-		return AssetType.EFFECTS_METHOD;
+		return EffectMethodBase.assetType;
 	}
 
 	/**
