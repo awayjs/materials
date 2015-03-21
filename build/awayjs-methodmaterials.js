@@ -14,7 +14,6 @@ var MethodMaterialMode = (function () {
 })();
 module.exports = MethodMaterialMode;
 
-
 },{}],"awayjs-methodmaterials/lib/MethodMaterial":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -355,7 +354,6 @@ var MethodMaterial = (function (_super) {
 })(MaterialBase);
 module.exports = MethodMaterial;
 
-
 },{"awayjs-core/lib/textures/Texture2DBase":undefined,"awayjs-display/lib/materials/MaterialBase":undefined,"awayjs-methodmaterials/lib/MethodMaterialMode":"awayjs-methodmaterials/lib/MethodMaterialMode","awayjs-methodmaterials/lib/methods/AmbientBasicMethod":"awayjs-methodmaterials/lib/methods/AmbientBasicMethod","awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod","awayjs-methodmaterials/lib/methods/NormalBasicMethod":"awayjs-methodmaterials/lib/methods/NormalBasicMethod","awayjs-methodmaterials/lib/methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod","awayjs-stagegl/lib/base/ContextGLCompareMode":undefined}],"awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -611,7 +609,6 @@ var RenderMethodMaterialObject = (function (_super) {
 })(RenderObjectBase);
 module.exports = RenderMethodMaterialObject;
 
-
 },{"awayjs-core/lib/data/BlendMode":undefined,"awayjs-display/lib/materials/lightpickers/StaticLightPicker":undefined,"awayjs-methodmaterials/lib/MethodMaterialMode":"awayjs-methodmaterials/lib/MethodMaterialMode","awayjs-methodmaterials/lib/passes/MethodPass":"awayjs-methodmaterials/lib/passes/MethodPass","awayjs-methodmaterials/lib/passes/MethodPassMode":"awayjs-methodmaterials/lib/passes/MethodPassMode","awayjs-renderergl/lib/compilation/RenderObjectBase":undefined,"awayjs-stagegl/lib/base/ContextGLCompareMode":undefined}],"awayjs-methodmaterials/lib/data/MethodVO":[function(require,module,exports){
 /**
  * MethodVO contains data for a given shader object for the use within a single material.
@@ -645,7 +642,6 @@ var MethodVO = (function () {
     return MethodVO;
 })();
 module.exports = MethodVO;
-
 
 },{}],"awayjs-methodmaterials/lib/methods/AmbientBasicMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -780,7 +776,6 @@ var AmbientBasicMethod = (function (_super) {
 })(ShadingMethodBase);
 module.exports = AmbientBasicMethod;
 
-
 },{"awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase","awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined}],"awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -849,7 +844,6 @@ var AmbientEnvMapMethod = (function (_super) {
     return AmbientEnvMapMethod;
 })(AmbientBasicMethod);
 module.exports = AmbientEnvMapMethod;
-
 
 },{"awayjs-methodmaterials/lib/methods/AmbientBasicMethod":"awayjs-methodmaterials/lib/methods/AmbientBasicMethod","awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined}],"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -1139,7 +1133,6 @@ var DiffuseBasicMethod = (function (_super) {
 })(LightingMethodBase);
 module.exports = DiffuseBasicMethod;
 
-
 },{"awayjs-methodmaterials/lib/methods/LightingMethodBase":"awayjs-methodmaterials/lib/methods/LightingMethodBase","awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined}],"awayjs-methodmaterials/lib/methods/DiffuseCelMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -1242,7 +1235,6 @@ var DiffuseCelMethod = (function (_super) {
     return DiffuseCelMethod;
 })(DiffuseCompositeMethod);
 module.exports = DiffuseCelMethod;
-
 
 },{"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod":"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod"}],"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -1434,7 +1426,6 @@ var DiffuseCompositeMethod = (function (_super) {
 })(DiffuseBasicMethod);
 module.exports = DiffuseCompositeMethod;
 
-
 },{"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod","awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/DiffuseDepthMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -1496,7 +1487,6 @@ var DiffuseDepthMethod = (function (_super) {
     return DiffuseDepthMethod;
 })(DiffuseBasicMethod);
 module.exports = DiffuseDepthMethod;
-
 
 },{"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod","awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined}],"awayjs-methodmaterials/lib/methods/DiffuseGradientMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -1600,7 +1590,6 @@ var DiffuseGradientMethod = (function (_super) {
     return DiffuseGradientMethod;
 })(DiffuseBasicMethod);
 module.exports = DiffuseGradientMethod;
-
 
 },{"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod","awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined}],"awayjs-methodmaterials/lib/methods/DiffuseLightMapMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -1716,7 +1705,6 @@ var DiffuseLightMapMethod = (function (_super) {
     return DiffuseLightMapMethod;
 })(DiffuseCompositeMethod);
 module.exports = DiffuseLightMapMethod;
-
 
 },{"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod":"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod","awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined}],"awayjs-methodmaterials/lib/methods/DiffuseSubSurfaceMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -1928,7 +1916,6 @@ var DiffuseSubSurfaceMethod = (function (_super) {
 })(DiffuseCompositeMethod);
 module.exports = DiffuseSubSurfaceMethod;
 
-
 },{"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod":"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod"}],"awayjs-methodmaterials/lib/methods/DiffuseWrapMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -2022,7 +2009,6 @@ var DiffuseWrapMethod = (function (_super) {
 })(DiffuseBasicMethod);
 module.exports = DiffuseWrapMethod;
 
-
 },{"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod"}],"awayjs-methodmaterials/lib/methods/EffectAlphaMaskMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -2108,7 +2094,6 @@ var EffectAlphaMaskMethod = (function (_super) {
     return EffectAlphaMaskMethod;
 })(EffectMethodBase);
 module.exports = EffectAlphaMaskMethod;
-
 
 },{"awayjs-methodmaterials/lib/methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase","awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined}],"awayjs-methodmaterials/lib/methods/EffectColorMatrixMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -2199,7 +2184,6 @@ var EffectColorMatrixMethod = (function (_super) {
 })(EffectMethodBase);
 module.exports = EffectColorMatrixMethod;
 
-
 },{"awayjs-methodmaterials/lib/methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectColorTransformMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -2264,7 +2248,6 @@ var EffectColorTransformMethod = (function (_super) {
     return EffectColorTransformMethod;
 })(EffectMethodBase);
 module.exports = EffectColorTransformMethod;
-
 
 },{"awayjs-methodmaterials/lib/methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectEnvMapMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -2377,7 +2360,6 @@ var EffectEnvMapMethod = (function (_super) {
     return EffectEnvMapMethod;
 })(EffectMethodBase);
 module.exports = EffectEnvMapMethod;
-
 
 },{"awayjs-methodmaterials/lib/methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase","awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined}],"awayjs-methodmaterials/lib/methods/EffectFogMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -2495,7 +2477,6 @@ var EffectFogMethod = (function (_super) {
     return EffectFogMethod;
 })(EffectMethodBase);
 module.exports = EffectFogMethod;
-
 
 },{"awayjs-methodmaterials/lib/methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectFresnelEnvMapMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -2652,7 +2633,6 @@ var EffectFresnelEnvMapMethod = (function (_super) {
 })(EffectMethodBase);
 module.exports = EffectFresnelEnvMapMethod;
 
-
 },{"awayjs-methodmaterials/lib/methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase","awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined}],"awayjs-methodmaterials/lib/methods/EffectLightMapMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -2765,7 +2745,6 @@ var EffectLightMapMethod = (function (_super) {
 })(EffectMethodBase);
 module.exports = EffectLightMapMethod;
 
-
 },{"awayjs-methodmaterials/lib/methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase","awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined}],"awayjs-methodmaterials/lib/methods/EffectMethodBase":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -2809,7 +2788,6 @@ var EffectMethodBase = (function (_super) {
     return EffectMethodBase;
 })(ShadingMethodBase);
 module.exports = EffectMethodBase;
-
 
 },{"awayjs-core/lib/errors/AbstractMethodError":undefined,"awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectRefractionEnvMapMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -3019,7 +2997,6 @@ var EffectRefractionEnvMapMethod = (function (_super) {
 })(EffectMethodBase);
 module.exports = EffectRefractionEnvMapMethod;
 
-
 },{"awayjs-methodmaterials/lib/methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase","awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined}],"awayjs-methodmaterials/lib/methods/EffectRimLightMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -3167,7 +3144,6 @@ var EffectRimLightMethod = (function (_super) {
 })(EffectMethodBase);
 module.exports = EffectRimLightMethod;
 
-
 },{"awayjs-methodmaterials/lib/methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/LightingMethodBase":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -3233,7 +3209,6 @@ var LightingMethodBase = (function (_super) {
     return LightingMethodBase;
 })(ShadingMethodBase);
 module.exports = LightingMethodBase;
-
 
 },{"awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/NormalBasicMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -3331,7 +3306,6 @@ var NormalBasicMethod = (function (_super) {
 })(ShadingMethodBase);
 module.exports = NormalBasicMethod;
 
-
 },{"awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase","awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined}],"awayjs-methodmaterials/lib/methods/NormalHeightMapMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -3406,7 +3380,6 @@ var NormalHeightMapMethod = (function (_super) {
     return NormalHeightMapMethod;
 })(NormalBasicMethod);
 module.exports = NormalHeightMapMethod;
-
 
 },{"awayjs-methodmaterials/lib/methods/NormalBasicMethod":"awayjs-methodmaterials/lib/methods/NormalBasicMethod","awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined}],"awayjs-methodmaterials/lib/methods/NormalSimpleWaterMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -3566,7 +3539,6 @@ var NormalSimpleWaterMethod = (function (_super) {
 })(NormalBasicMethod);
 module.exports = NormalSimpleWaterMethod;
 
-
 },{"awayjs-methodmaterials/lib/methods/NormalBasicMethod":"awayjs-methodmaterials/lib/methods/NormalBasicMethod","awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined}],"awayjs-methodmaterials/lib/methods/ShadingMethodBase":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -3709,7 +3681,6 @@ var ShadingMethodBase = (function (_super) {
     return ShadingMethodBase;
 })(AssetBase);
 module.exports = ShadingMethodBase;
-
 
 },{"awayjs-core/lib/library/AssetBase":undefined,"awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/ShadowCascadeMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -3910,7 +3881,6 @@ var ShadowCascadeMethod = (function (_super) {
     return ShadowCascadeMethod;
 })(ShadowMapMethodBase);
 module.exports = ShadowCascadeMethod;
-
 
 },{"awayjs-core/lib/events/Event":undefined,"awayjs-display/lib/entities/DirectionalLight":undefined,"awayjs-methodmaterials/lib/data/MethodVO":"awayjs-methodmaterials/lib/data/MethodVO","awayjs-methodmaterials/lib/methods/ShadowMapMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase","awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/ShadowDitheredMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -4148,7 +4118,6 @@ var ShadowDitheredMethod = (function (_super) {
 })(ShadowMethodBase);
 module.exports = ShadowDitheredMethod;
 
-
 },{"awayjs-core/lib/data/BitmapData":undefined,"awayjs-core/lib/textures/BitmapTexture":undefined,"awayjs-methodmaterials/lib/methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowFilteredMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -4236,7 +4205,6 @@ var ShadowFilteredMethod = (function (_super) {
 })(ShadowMethodBase);
 module.exports = ShadowFilteredMethod;
 
-
 },{"awayjs-methodmaterials/lib/methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowHardMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -4304,7 +4272,6 @@ var ShadowHardMethod = (function (_super) {
     return ShadowHardMethod;
 })(ShadowMethodBase);
 module.exports = ShadowHardMethod;
-
 
 },{"awayjs-methodmaterials/lib/methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -4382,7 +4349,6 @@ var ShadowMapMethodBase = (function (_super) {
     return ShadowMapMethodBase;
 })(ShadingMethodBase);
 module.exports = ShadowMapMethodBase;
-
 
 },{"awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowMethodBase":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -4585,7 +4551,6 @@ var ShadowMethodBase = (function (_super) {
 })(ShadowMapMethodBase);
 module.exports = ShadowMethodBase;
 
-
 },{"awayjs-core/lib/errors/AbstractMethodError":undefined,"awayjs-display/lib/entities/PointLight":undefined,"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowNearMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -4771,7 +4736,6 @@ var ShadowNearMethod = (function (_super) {
 })(ShadowMethodBase);
 module.exports = ShadowNearMethod;
 
-
 },{"awayjs-methodmaterials/lib/methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase","awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/ShadowSoftMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -4944,7 +4908,6 @@ var ShadowSoftMethod = (function (_super) {
 })(ShadowMethodBase);
 module.exports = ShadowSoftMethod;
 
-
 },{"awayjs-core/lib/geom/PoissonLookup":undefined,"awayjs-methodmaterials/lib/methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase"}],"awayjs-methodmaterials/lib/methods/SpecularAnisotropicMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -5010,7 +4973,6 @@ var SpecularAnisotropicMethod = (function (_super) {
     return SpecularAnisotropicMethod;
 })(SpecularBasicMethod);
 module.exports = SpecularAnisotropicMethod;
-
 
 },{"awayjs-methodmaterials/lib/methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod"}],"awayjs-methodmaterials/lib/methods/SpecularBasicMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -5268,7 +5230,6 @@ var SpecularBasicMethod = (function (_super) {
 })(LightingMethodBase);
 module.exports = SpecularBasicMethod;
 
-
 },{"awayjs-methodmaterials/lib/methods/LightingMethodBase":"awayjs-methodmaterials/lib/methods/LightingMethodBase","awayjs-renderergl/lib/utils/ShaderCompilerHelper":undefined}],"awayjs-methodmaterials/lib/methods/SpecularCelMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -5362,7 +5323,6 @@ var SpecularCelMethod = (function (_super) {
     return SpecularCelMethod;
 })(SpecularCompositeMethod);
 module.exports = SpecularCelMethod;
-
 
 },{"awayjs-methodmaterials/lib/methods/SpecularCompositeMethod":"awayjs-methodmaterials/lib/methods/SpecularCompositeMethod"}],"awayjs-methodmaterials/lib/methods/SpecularCompositeMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -5542,7 +5502,6 @@ var SpecularCompositeMethod = (function (_super) {
 })(SpecularBasicMethod);
 module.exports = SpecularCompositeMethod;
 
-
 },{"awayjs-methodmaterials/lib/methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod","awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/SpecularFresnelMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -5665,7 +5624,6 @@ var SpecularFresnelMethod = (function (_super) {
 })(SpecularCompositeMethod);
 module.exports = SpecularFresnelMethod;
 
-
 },{"awayjs-methodmaterials/lib/methods/SpecularCompositeMethod":"awayjs-methodmaterials/lib/methods/SpecularCompositeMethod"}],"awayjs-methodmaterials/lib/methods/SpecularPhongMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -5725,7 +5683,6 @@ var SpecularPhongMethod = (function (_super) {
 })(SpecularBasicMethod);
 module.exports = SpecularPhongMethod;
 
-
 },{"awayjs-methodmaterials/lib/methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod"}],"awayjs-methodmaterials/lib/passes/MethodPassMode":[function(require,module,exports){
 var PassMode = (function () {
     function PassMode() {
@@ -5745,7 +5702,6 @@ var PassMode = (function () {
     return PassMode;
 })();
 module.exports = PassMode;
-
 
 },{}],"awayjs-methodmaterials/lib/passes/MethodPass":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
@@ -6501,7 +6457,6 @@ var MethodPass = (function (_super) {
 })(RenderPassBase);
 module.exports = MethodPass;
 
-
 },{"awayjs-core/lib/events/Event":undefined,"awayjs-display/lib/materials/LightSources":undefined,"awayjs-methodmaterials/lib/data/MethodVO":"awayjs-methodmaterials/lib/data/MethodVO","awayjs-methodmaterials/lib/methods/EffectColorTransformMethod":"awayjs-methodmaterials/lib/methods/EffectColorTransformMethod","awayjs-methodmaterials/lib/passes/MethodPassMode":"awayjs-methodmaterials/lib/passes/MethodPassMode","awayjs-renderergl/lib/compilation/ShaderLightingObject":undefined,"awayjs-renderergl/lib/compilation/ShaderObjectBase":undefined,"awayjs-renderergl/lib/events/ShadingMethodEvent":undefined,"awayjs-renderergl/lib/passes/RenderPassBase":undefined}],"awayjs-methodmaterials/lib/passes/SingleObjectDepthPass":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -6666,7 +6621,6 @@ var SingleObjectDepthPass = (function (_super) {
 })(RenderPassBase);
 module.exports = SingleObjectDepthPass;
 
-
 },{"awayjs-core/lib/data/TriangleSubGeometry":undefined,"awayjs-core/lib/geom/Matrix3D":undefined,"awayjs-core/lib/textures/RenderTexture":undefined,"awayjs-renderergl/lib/passes/RenderPassBase":undefined,"awayjs-stagegl/lib/base/ContextGLProgramType":undefined}],"awayjs-methodmaterials/lib/pool/MethodRenderablePool":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -6713,7 +6667,6 @@ var MethodRenderablePool = (function (_super) {
 })(RenderablePoolBase);
 module.exports = MethodRenderablePool;
 
-
 },{"awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject":"awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject","awayjs-renderergl/lib/compilation/RenderObjectPool":undefined,"awayjs-renderergl/lib/pool/RenderablePoolBase":undefined}],"awayjs-methodmaterials/lib/pool/MethodRendererPool":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -6752,7 +6705,6 @@ var MethodRendererPool = (function (_super) {
     return MethodRendererPool;
 })(RendererPoolBase);
 module.exports = MethodRendererPool;
-
 
 },{"awayjs-methodmaterials/lib/pool/MethodRenderablePool":"awayjs-methodmaterials/lib/pool/MethodRenderablePool","awayjs-renderergl/lib/pool/BillboardRenderable":undefined,"awayjs-renderergl/lib/pool/CurveSubMeshRenderable":undefined,"awayjs-renderergl/lib/pool/LineSegmentRenderable":undefined,"awayjs-renderergl/lib/pool/LineSubMeshRenderable":undefined,"awayjs-renderergl/lib/pool/RendererPoolBase":undefined,"awayjs-renderergl/lib/pool/TriangleSubMeshRenderable":undefined}]},{},[])
 
