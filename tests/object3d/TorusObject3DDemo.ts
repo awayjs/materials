@@ -109,7 +109,7 @@ class TorusObject3DDemo
 
 	private onImageLoadComplete(event:Event)
 	{
-		var matTx: MethodMaterial = new MethodMaterial(new ImageTexture(this._image, false), true, true, false);
+		var matTx: MethodMaterial = new MethodMaterial(new ImageTexture(this._image), true, true, false);
 		matTx.lightPicker =  this.lightPicker;
 
 		for (var c:number = 0; c < this.meshes.length; c ++)

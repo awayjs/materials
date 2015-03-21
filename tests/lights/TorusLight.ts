@@ -61,7 +61,7 @@ class TorusLight
 
 	private onLoadComplete(event:Event)
 	{
-		var ts:ImageTexture = new ImageTexture(this._image, false);
+		var ts:ImageTexture = new ImageTexture(this._image);
 
 		var light:DirectionalLight = new DirectionalLight();
 		light.direction = new Vector3D(0, 0, 1);

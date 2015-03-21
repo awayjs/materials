@@ -1,4 +1,3 @@
-import AssetType					= require("awayjs-core/lib/library/AssetType");
 import IAsset						= require("awayjs-core/lib/library/IAsset");
 
 import LightBase					= require("awayjs-display/lib/base/LightBase");
@@ -11,6 +10,8 @@ import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/Shading
  */
 class ShadowMapMethodBase extends ShadingMethodBase implements IAsset
 {
+	public static assetType:string = "[asset ShadowMapMethod]";
+
 	public _pCastingLight:LightBase;
 	public _pShadowMapper:ShadowMapperBase;
 
@@ -35,7 +36,7 @@ class ShadowMapMethodBase extends ShadingMethodBase implements IAsset
 	 */
 	public get assetType():string
 	{
-		return AssetType.SHADOW_MAP_METHOD;
+		return ShadowMapMethodBase.assetType;
 	}
 
 	/**

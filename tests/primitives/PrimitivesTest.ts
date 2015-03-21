@@ -6,6 +6,7 @@ import Debug						= require("awayjs-core/lib/utils/Debug");
 import View							= require("awayjs-display/lib/containers/View");
 import Mesh							= require("awayjs-display/lib/entities/Mesh");
 import DirectionalLight				= require("awayjs-display/lib/entities/DirectionalLight");
+import DefaultMaterialManager		= require("awayjs-display/lib/managers/DefaultMaterialManager");
 import StaticLightPicker			= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
 import PrimitivePrefabBase			= require("awayjs-display/lib/prefabs/PrimitivePrefabBase");
 import PrimitiveCapsulePrefab		= require("awayjs-display/lib/prefabs/PrimitiveCapsulePrefab");
@@ -17,7 +18,6 @@ import PrimitiveSpherePrefab		= require("awayjs-display/lib/prefabs/PrimitiveSph
 import PrimitiveTorusPrefab			= require("awayjs-display/lib/prefabs/PrimitiveTorusPrefab");
 
 import DefaultRenderer				= require("awayjs-renderergl/lib/DefaultRenderer");
-import DefaultMaterialManager		= require("awayjs-renderergl/lib/managers/DefaultMaterialManager");
 
 import MethodMaterial				= require("awayjs-methodmaterials/lib/MethodMaterial");
 import MethodRendererPool			= require("awayjs-methodmaterials/lib/pool/MethodRendererPool");

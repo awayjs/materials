@@ -1,5 +1,5 @@
 declare module "awayjs-methodmaterials/lib/methods/ShadingMethodBase" {
-	import NamedAssetBase = require("awayjs-core/lib/library/NamedAssetBase");
+	import AssetBase = require("awayjs-core/lib/library/AssetBase");
 	import Camera = require("awayjs-display/lib/entities/Camera");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import RenderableBase = require("awayjs-renderergl/lib/pool/RenderableBase");
@@ -12,7 +12,12 @@ declare module "awayjs-methodmaterials/lib/methods/ShadingMethodBase" {
 	 * ShadingMethodBase provides an abstract base method for shading methods, used by compiled passes to compile
 	 * the final shading program.
 	 */
-	class ShadingMethodBase extends NamedAssetBase {
+	class ShadingMethodBase extends AssetBase {
+	    static assetType: string;
+	    /**
+	     * @inheritDoc
+	     */
+	    assetType: string;
 	    /**
 	     * Create a new ShadingMethodBase object.
 	     */
@@ -385,6 +390,7 @@ declare module "awayjs-methodmaterials/lib/methods/EffectMethodBase" {
 	 * and are in essence post-process effects on the materials.
 	 */
 	class EffectMethodBase extends ShadingMethodBase implements IAsset {
+	    static assetType: string;
 	    constructor();
 	    /**
 	     * @inheritDoc
@@ -468,6 +474,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowMapMethodBase" {
 	 * ShadowMapMethodBase provides an abstract base method for shadow map methods.
 	 */
 	class ShadowMapMethodBase extends ShadingMethodBase implements IAsset {
+	    static assetType: string;
 	    _pCastingLight: LightBase;
 	    _pShadowMapper: ShadowMapperBase;
 	    _pEpsilon: number;

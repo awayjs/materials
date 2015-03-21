@@ -1,4 +1,4 @@
-import NamedAssetBase				= require("awayjs-core/lib/library/NamedAssetBase");
+import AssetBase					= require("awayjs-core/lib/library/AssetBase");
 
 import Camera						= require("awayjs-display/lib/entities/Camera");
 
@@ -18,8 +18,18 @@ import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
  * ShadingMethodBase provides an abstract base method for shading methods, used by compiled passes to compile
  * the final shading program.
  */
-class ShadingMethodBase extends NamedAssetBase
+class ShadingMethodBase extends AssetBase
 {
+	public static assetType:string = "[asset ShadingMethod]";
+
+	/**
+	 * @inheritDoc
+	 */
+	public get assetType():string
+	{
+		return ShadingMethodBase.assetType;
+	}
+
 	/**
 	 * Create a new ShadingMethodBase object.
 	 */
