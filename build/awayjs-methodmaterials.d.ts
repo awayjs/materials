@@ -1,7 +1,8 @@
 declare module "awayjs-methodmaterials/lib/MethodMaterial" {
-	import Texture2DBase = require("awayjs-core/lib/textures/Texture2DBase");
+	import Image2D = require("awayjs-core/lib/data/Image2D");
 	import MaterialBase = require("awayjs-display/lib/materials/MaterialBase");
 	import IRenderObject = require("awayjs-display/lib/pool/IRenderObject");
+	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import AmbientBasicMethod = require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
 	import DiffuseBasicMethod = require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
 	import EffectMethodBase = require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
@@ -30,7 +31,8 @@ declare module "awayjs-methodmaterials/lib/MethodMaterial" {
 	     * @param repeat Indicates whether the texture should be tiled when sampled. Defaults to false.
 	     * @param mipmap Indicates whether or not any used textures should use mipmapping. Defaults to false.
 	     */
-	    constructor(texture?: Texture2DBase, smooth?: boolean, repeat?: boolean, mipmap?: boolean);
+	    constructor(texture?: Image2D, smooth?: boolean, repeat?: boolean, mipmap?: boolean);
+	    constructor(texture?: TextureBase, smooth?: boolean, repeat?: boolean, mipmap?: boolean);
 	    constructor(color?: number, alpha?: number);
 	    mode: string;
 	    /**
@@ -42,7 +44,7 @@ declare module "awayjs-methodmaterials/lib/MethodMaterial" {
 	    /**
 	     * The texture object to use for the ambient colour.
 	     */
-	    diffuseTexture: Texture2DBase;
+	    diffuseTexture: TextureBase;
 	    /**
 	     * The method that provides the ambient lighting contribution. Defaults to AmbientBasicMethod.
 	     */
@@ -91,13 +93,13 @@ declare module "awayjs-methodmaterials/lib/MethodMaterial" {
 	     * The normal map to modulate the direction of the surface for each texel. The default normal method expects
 	     * tangent-space normal maps, but others could expect object-space maps.
 	     */
-	    normalMap: Texture2DBase;
+	    normalMap: TextureBase;
 	    /**
 	     * A specular map that defines the strength of specular reflections for each texel in the red channel,
-	     * and the gloss factor in the green channel. You can use SpecularBitmapTexture if you want to easily set
+	     * and the gloss factor in the green channel. You can use Specular2DTexture if you want to easily set
 	     * specular and gloss maps from grayscale images, but correctly authored images are preferred.
 	     */
-	    specularMap: Texture2DBase;
+	    specularMap: TextureBase;
 	    /**
 	     * The glossiness of the material (sharpness of the specular highlight).
 	     */
@@ -210,6 +212,7 @@ declare module "awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObjec
 }
 
 declare module "awayjs-methodmaterials/lib/data/MethodVO" {
+	import TextureObjectBase = require("awayjs-renderergl/lib/pool/TextureObjectBase");
 	import ShadingMethodBase = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
 	/**
 	 * MethodVO contains data for a given shader object for the use within a single material.
@@ -218,8 +221,8 @@ declare module "awayjs-methodmaterials/lib/data/MethodVO" {
 	class MethodVO {
 	    useMethod: boolean;
 	    method: ShadingMethodBase;
-	    texturesIndex: number;
-	    secondaryTexturesIndex: number;
+	    textureObject: TextureObjectBase;
+	    secondaryTextureObject: TextureObjectBase;
 	    vertexConstantsIndex: number;
 	    secondaryVertexConstantsIndex: number;
 	    fragmentConstantsIndex: number;
@@ -228,11 +231,8 @@ declare module "awayjs-methodmaterials/lib/data/MethodVO" {
 	    needsView: boolean;
 	    needsNormals: boolean;
 	    needsTangents: boolean;
-	    needsUV: boolean;
-	    needsSecondaryUV: boolean;
 	    needsGlobalVertexPos: boolean;
 	    needsGlobalFragmentPos: boolean;
-	    usesTexture: boolean;
 	    /**
 	     * Creates a new MethodVO object.
 	     */
@@ -306,8 +306,6 @@ declare module "awayjs-methodmaterials/lib/methods/AmbientBasicMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod" {
-	import CubeTextureBase = require("awayjs-core/lib/textures/CubeTextureBase");
-	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
@@ -319,25 +317,16 @@ declare module "awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod" {
 	 * approximate global lighting rather than lights.
 	 */
 	class AmbientEnvMapMethod extends AmbientBasicMethod {
-	    private _cubeTexture;
 	    /**
 	     * Creates a new <code>AmbientEnvMapMethod</code> object.
 	     *
 	     * @param envMap The cube environment map to use for the ambient lighting.
 	     */
-	    constructor(envMap: CubeTextureBase);
+	    constructor();
 	    /**
 	     * @inheritDoc
 	     */
 	    iInitVO(shaderObject: ShaderObjectBase, methodVO: MethodVO): void;
-	    /**
-	     * The cube environment map to use for the diffuse lighting.
-	     */
-	    envMap: CubeTextureBase;
-	    /**
-	     * @inheritDoc
-	     */
-	    iActivate(shaderObject: ShaderObjectBase, methodVO: MethodVO, stage: Stage): void;
 	    /**
 	     * @inheritDoc
 	     */
@@ -347,9 +336,68 @@ declare module "awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod" {
 	
 }
 
+declare module "awayjs-methodmaterials/lib/methods/CurveBasicMethod" {
+	import Stage = require("awayjs-stagegl/lib/base/Stage");
+	import ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
+	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
+	import ShaderRegisterData = require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
+	import ShaderRegisterElement = require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
+	import MethodVO = require("awayjs-methodmaterials/lib/data/MethodVO");
+	import ShadingMethodBase = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
+	/**
+	 * AmbientBasicMethod provides the default shading method for uniform ambient lighting.
+	 */
+	class CurveBasicMethod extends ShadingMethodBase {
+	    private _color;
+	    private _alpha;
+	    private _colorR;
+	    private _colorG;
+	    private _colorB;
+	    private _ambient;
+	    /**
+	     * Creates a new AmbientBasicMethod object.
+	     */
+	    constructor();
+	    /**
+	     * @inheritDoc
+	     */
+	    iInitVO(shaderObject: ShaderObjectBase, methodVO: MethodVO): void;
+	    /**
+	     * @inheritDoc
+	     */
+	    iInitConstants(shaderObject: ShaderObjectBase, methodVO: MethodVO): void;
+	    /**
+	     * The strength of the ambient reflection of the surface.
+	     */
+	    ambient: number;
+	    /**
+	     * The alpha component of the surface.
+	     */
+	    alpha: number;
+	    /**
+	     * @inheritDoc
+	     */
+	    copyFrom(method: ShadingMethodBase): void;
+	    /**
+	     * @inheritDoc
+	     */
+	    iGetFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, targetReg: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
+	    /**
+	     * @inheritDoc
+	     */
+	    iActivate(shaderObject: ShaderObjectBase, methodVO: MethodVO, stage: Stage): void;
+	    /**
+	     * Updates the ambient color data used by the render state.
+	     */
+	    private updateColor();
+	}
+	export = CurveBasicMethod;
+	
+}
+
 declare module "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod" {
-	import Texture2DBase = require("awayjs-core/lib/textures/Texture2DBase");
 	import Camera = require("awayjs-display/lib/entities/Camera");
+	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import ShaderLightingObject = require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
@@ -364,10 +412,8 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod" {
 	 */
 	class DiffuseBasicMethod extends LightingMethodBase {
 	    private _multiply;
-	    _pUseTexture: boolean;
 	    _pTotalLightColorReg: ShaderRegisterElement;
-	    _pDiffuseInputRegister: ShaderRegisterElement;
-	    private _texture;
+	    _texture: TextureBase;
 	    private _diffuseColor;
 	    private _ambientColor;
 	    private _diffuseR;
@@ -388,11 +434,6 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod" {
 	    multiply: boolean;
 	    iInitVO(shaderObject: ShaderLightingObject, methodVO: MethodVO): void;
 	    /**
-	     * Forces the creation of the texture's mipmaps.
-	     * @param stage The Stage used by the renderer
-	     */
-	    generateMip(stage: Stage): void;
-	    /**
 	     * The color of the diffuse reflection when not using a texture.
 	     */
 	    diffuseColor: number;
@@ -403,7 +444,7 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod" {
 	    /**
 	     * The bitmapData to use to define the diffuse reflection color per texel.
 	     */
-	    texture: Texture2DBase;
+	    texture: TextureBase;
 	    /**
 	     * @inheritDoc
 	     */
@@ -519,8 +560,8 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseCelMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod" {
-	import Texture2DBase = require("awayjs-core/lib/textures/Texture2DBase");
 	import Camera = require("awayjs-display/lib/entities/Camera");
+	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import ShaderLightingObject = require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
 	import ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
@@ -566,7 +607,7 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    texture: Texture2DBase;
+	    texture: TextureBase;
 	    /**
 	     * @inheritDoc
 	     */
@@ -660,7 +701,7 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseDepthMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/DiffuseGradientMethod" {
-	import Texture2DBase = require("awayjs-core/lib/textures/Texture2DBase");
+	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import ShaderLightingObject = require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
@@ -675,19 +716,19 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseGradientMethod" {
 	 * scattered light within the skin attributing to the final colour)
 	 */
 	class DiffuseGradientMethod extends DiffuseBasicMethod {
-	    private _gradientTextureRegister;
 	    private _gradient;
 	    /**
 	     * Creates a new DiffuseGradientMethod object.
 	     * @param gradient A texture that contains the light colour based on the angle. This can be used to change
 	     * the light colour due to subsurface scattering when the surface faces away from the light.
 	     */
-	    constructor(gradient: Texture2DBase);
+	    constructor(gradient: TextureBase);
+	    iInitVO(shaderObject: ShaderLightingObject, methodVO: MethodVO): void;
 	    /**
 	     * A texture that contains the light colour based on the angle. This can be used to change the light colour
 	     * due to subsurface scattering when the surface faces away from the light.
 	     */
-	    gradient: Texture2DBase;
+	    gradient: TextureBase;
 	    /**
 	     * @inheritDoc
 	     */
@@ -714,7 +755,7 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseGradientMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/DiffuseLightMapMethod" {
-	import Texture2DBase = require("awayjs-core/lib/textures/Texture2DBase");
+	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import ShaderLightingObject = require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
@@ -739,7 +780,7 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseLightMapMethod" {
 	     * This can be used to add pre-calculated lighting or global illumination.
 	     */
 	    static ADD: string;
-	    private _lightMapTexture;
+	    private _lightMap;
 	    private _blendMode;
 	    private _useSecondaryUV;
 	    /**
@@ -750,7 +791,7 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseLightMapMethod" {
 	     * @param useSecondaryUV Indicates whether the secondary UV set should be used to map the light map.
 	     * @param baseMethod The diffuse method used to calculate the regular diffuse-based lighting.
 	     */
-	    constructor(lightMap: Texture2DBase, blendMode?: string, useSecondaryUV?: boolean, baseMethod?: DiffuseBasicMethod);
+	    constructor(lightMap: TextureBase, blendMode?: string, useSecondaryUV?: boolean, baseMethod?: DiffuseBasicMethod);
 	    /**
 	     * @inheritDoc
 	     */
@@ -765,15 +806,19 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseLightMapMethod" {
 	    /**
 	     * The texture containing the light map data.
 	     */
-	    lightMapTexture: Texture2DBase;
+	    lightMap: TextureBase;
 	    /**
-	     * @inheritDoc
+	     * Indicates whether the secondary UV set should be used to map the light map.
 	     */
-	    iActivate(shaderObject: ShaderLightingObject, methodVO: MethodVO, stage: Stage): void;
+	    useSecondaryUV: boolean;
 	    /**
 	     * @inheritDoc
 	     */
 	    iGetFragmentPostLightingCode(shaderObject: ShaderLightingObject, methodVO: MethodVO, targetReg: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
+	    /**
+	     * @inheritDoc
+	     */
+	    iActivate(shaderObject: ShaderLightingObject, methodVO: MethodVO, stage: Stage): void;
 	}
 	export = DiffuseLightMapMethod;
 	
@@ -915,7 +960,7 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseWrapMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/EffectAlphaMaskMethod" {
-	import Texture2DBase = require("awayjs-core/lib/textures/Texture2DBase");
+	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import ShaderLightingObject = require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
 	import ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
@@ -938,7 +983,7 @@ declare module "awayjs-methodmaterials/lib/methods/EffectAlphaMaskMethod" {
 	     * @param texture The texture to use as the alpha mask.
 	     * @param useSecondaryUV Indicated whether or not the secondary uv set for the mask. This allows mapping alpha independently.
 	     */
-	    constructor(texture: Texture2DBase, useSecondaryUV?: boolean);
+	    constructor(texture: TextureBase, useSecondaryUV?: boolean);
 	    /**
 	     * @inheritDoc
 	     */
@@ -952,15 +997,15 @@ declare module "awayjs-methodmaterials/lib/methods/EffectAlphaMaskMethod" {
 	    /**
 	     * The texture to use as the alpha mask.
 	     */
-	    texture: Texture2DBase;
-	    /**
-	     * @inheritDoc
-	     */
-	    iActivate(shaderObject: ShaderLightingObject, methodVO: MethodVO, stage: Stage): void;
+	    texture: TextureBase;
 	    /**
 	     * @inheritDoc
 	     */
 	    iGetFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, targetReg: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
+	    /**
+	     * @inheritDoc
+	     */
+	    iActivate(shaderObject: ShaderLightingObject, methodVO: MethodVO, stage: Stage): void;
 	}
 	export = EffectAlphaMaskMethod;
 	
@@ -1039,8 +1084,7 @@ declare module "awayjs-methodmaterials/lib/methods/EffectColorTransformMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/EffectEnvMapMethod" {
-	import CubeTextureBase = require("awayjs-core/lib/textures/CubeTextureBase");
-	import Texture2DBase = require("awayjs-core/lib/textures/Texture2DBase");
+	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
@@ -1052,7 +1096,7 @@ declare module "awayjs-methodmaterials/lib/methods/EffectEnvMapMethod" {
 	 * EffectEnvMapMethod provides a material method to perform reflection mapping using cube maps.
 	 */
 	class EffectEnvMapMethod extends EffectMethodBase {
-	    private _cubeTexture;
+	    private _envMap;
 	    private _alpha;
 	    private _mask;
 	    /**
@@ -1060,11 +1104,11 @@ declare module "awayjs-methodmaterials/lib/methods/EffectEnvMapMethod" {
 	     * @param envMap The environment map containing the reflected scene.
 	     * @param alpha The reflectivity of the surface.
 	     */
-	    constructor(envMap: CubeTextureBase, alpha?: number);
+	    constructor(envMap: TextureBase, alpha?: number);
 	    /**
 	     * An optional texture to modulate the reflectivity of the surface.
 	     */
-	    mask: Texture2DBase;
+	    mask: TextureBase;
 	    /**
 	     * @inheritDoc
 	     */
@@ -1072,7 +1116,7 @@ declare module "awayjs-methodmaterials/lib/methods/EffectEnvMapMethod" {
 	    /**
 	     * The cubic environment map containing the reflected scene.
 	     */
-	    envMap: CubeTextureBase;
+	    envMap: TextureBase;
 	    /**
 	     * @inheritDoc
 	     */
@@ -1154,8 +1198,7 @@ declare module "awayjs-methodmaterials/lib/methods/EffectFogMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/EffectFresnelEnvMapMethod" {
-	import CubeTextureBase = require("awayjs-core/lib/textures/CubeTextureBase");
-	import Texture2DBase = require("awayjs-core/lib/textures/Texture2DBase");
+	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
@@ -1168,7 +1211,7 @@ declare module "awayjs-methodmaterials/lib/methods/EffectFresnelEnvMapMethod" {
 	 * stronger as the viewing angle becomes more grazing.
 	 */
 	class EffectFresnelEnvMapMethod extends EffectMethodBase {
-	    private _cubeTexture;
+	    private _envMap;
 	    private _fresnelPower;
 	    private _normalReflectance;
 	    private _alpha;
@@ -1179,7 +1222,7 @@ declare module "awayjs-methodmaterials/lib/methods/EffectFresnelEnvMapMethod" {
 	     * @param envMap The environment map containing the reflected scene.
 	     * @param alpha The reflectivity of the material.
 	     */
-	    constructor(envMap: CubeTextureBase, alpha?: number);
+	    constructor(envMap: TextureBase, alpha?: number);
 	    /**
 	     * @inheritDoc
 	     */
@@ -1191,7 +1234,7 @@ declare module "awayjs-methodmaterials/lib/methods/EffectFresnelEnvMapMethod" {
 	    /**
 	     * An optional texture to modulate the reflectivity of the surface.
 	     */
-	    mask: Texture2DBase;
+	    mask: TextureBase;
 	    /**
 	     * The power used in the Fresnel equation. Higher values make the fresnel effect more pronounced. Defaults to 5.
 	     */
@@ -1199,7 +1242,7 @@ declare module "awayjs-methodmaterials/lib/methods/EffectFresnelEnvMapMethod" {
 	    /**
 	     * The cubic environment map containing the reflected scene.
 	     */
-	    envMap: CubeTextureBase;
+	    envMap: TextureBase;
 	    /**
 	     * The reflectivity of the surface.
 	     */
@@ -1222,7 +1265,7 @@ declare module "awayjs-methodmaterials/lib/methods/EffectFresnelEnvMapMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/EffectLightMapMethod" {
-	import Texture2DBase = require("awayjs-core/lib/textures/Texture2DBase");
+	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
@@ -1244,17 +1287,17 @@ declare module "awayjs-methodmaterials/lib/methods/EffectLightMapMethod" {
 	     * Indicates the light map should be added into the calculated shading result.
 	     */
 	    static ADD: string;
-	    private _texture;
+	    private _lightMap;
 	    private _blendMode;
 	    private _useSecondaryUV;
 	    /**
 	     * Creates a new EffectLightMapMethod object.
 	     *
-	     * @param texture The texture containing the light map.
+	     * @param lightMap The texture containing the light map.
 	     * @param blendMode The blend mode with which the light map should be applied to the lighting result.
 	     * @param useSecondaryUV Indicates whether the secondary UV set should be used to map the light map.
 	     */
-	    constructor(texture: Texture2DBase, blendMode?: string, useSecondaryUV?: boolean);
+	    constructor(lightMap: TextureBase, blendMode?: string, useSecondaryUV?: boolean);
 	    /**
 	     * @inheritDoc
 	     */
@@ -1267,17 +1310,21 @@ declare module "awayjs-methodmaterials/lib/methods/EffectLightMapMethod" {
 	     */
 	    blendMode: string;
 	    /**
-	     * The texture containing the light map.
+	     * The lightMap containing the light map.
 	     */
-	    texture: Texture2DBase;
+	    lightMap: TextureBase;
 	    /**
-	     * @inheritDoc
+	     * Indicates whether the secondary UV set should be used to map the light map.
 	     */
-	    iActivate(shaderObject: ShaderObjectBase, methodVO: MethodVO, stage: Stage): void;
+	    useSecondaryUV: boolean;
 	    /**
 	     * @inheritDoc
 	     */
 	    iGetFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, targetReg: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
+	    /**
+	     * @inheritDoc
+	     */
+	    iActivate(shaderObject: ShaderObjectBase, methodVO: MethodVO, stage: Stage): void;
 	}
 	export = EffectLightMapMethod;
 	
@@ -1316,7 +1363,7 @@ declare module "awayjs-methodmaterials/lib/methods/EffectMethodBase" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/EffectRefractionEnvMapMethod" {
-	import CubeTextureBase = require("awayjs-core/lib/textures/CubeTextureBase");
+	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
@@ -1344,7 +1391,7 @@ declare module "awayjs-methodmaterials/lib/methods/EffectRefractionEnvMapMethod"
 	     * @param dispersionG The amount of chromatic dispersion of the green channel. Defaults to 0 (none).
 	     * @param dispersionB The amount of chromatic dispersion of the blue channel. Defaults to 0 (none).
 	     */
-	    constructor(envMap: CubeTextureBase, refractionIndex?: number, dispersionR?: number, dispersionG?: number, dispersionB?: number);
+	    constructor(envMap: TextureBase, refractionIndex?: number, dispersionR?: number, dispersionG?: number, dispersionB?: number);
 	    /**
 	     * @inheritDoc
 	     */
@@ -1356,7 +1403,7 @@ declare module "awayjs-methodmaterials/lib/methods/EffectRefractionEnvMapMethod"
 	    /**
 	     * The cube environment map to use for the refraction.
 	     */
-	    envMap: CubeTextureBase;
+	    envMap: TextureBase;
 	    /**
 	     * The refractive index of the material.
 	     */
@@ -1524,7 +1571,7 @@ declare module "awayjs-methodmaterials/lib/methods/LightingMethodBase" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/NormalBasicMethod" {
-	import Texture2DBase = require("awayjs-core/lib/textures/Texture2DBase");
+	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
@@ -1536,13 +1583,11 @@ declare module "awayjs-methodmaterials/lib/methods/NormalBasicMethod" {
 	 * NormalBasicMethod is the default method for standard tangent-space normal mapping.
 	 */
 	class NormalBasicMethod extends ShadingMethodBase {
-	    private _texture;
-	    private _useTexture;
-	    _pNormalTextureRegister: ShaderRegisterElement;
+	    private _normalMap;
 	    /**
 	     * Creates a new NormalBasicMethod object.
 	     */
-	    constructor();
+	    constructor(normalMap?: TextureBase);
 	    iIsUsed(shaderObject: ShaderObjectBase): boolean;
 	    /**
 	     * @inheritDoc
@@ -1559,11 +1604,7 @@ declare module "awayjs-methodmaterials/lib/methods/NormalBasicMethod" {
 	    /**
 	     * The texture containing the normals per pixel.
 	     */
-	    normalMap: Texture2DBase;
-	    /**
-	     * @inheritDoc
-	     */
-	    iCleanCompilationData(): void;
+	    normalMap: TextureBase;
 	    /**
 	     * @inheritDoc
 	     */
@@ -1582,7 +1623,7 @@ declare module "awayjs-methodmaterials/lib/methods/NormalBasicMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/NormalHeightMapMethod" {
-	import Texture2DBase = require("awayjs-core/lib/textures/Texture2DBase");
+	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
@@ -1604,7 +1645,7 @@ declare module "awayjs-methodmaterials/lib/methods/NormalHeightMapMethod" {
 	     * @param worldHeight The height of the 'world'. This is used to map the height map values to scene dimensions.
 	     * @param worldDepth The depth of the 'world'. This is used to map uv coordinates' v component to scene dimensions.
 	     */
-	    constructor(heightMap: Texture2DBase, worldWidth: number, worldHeight: number, worldDepth: number);
+	    constructor(heightMap: TextureBase, worldWidth: number, worldHeight: number, worldDepth: number);
 	    /**
 	     * @inheritDoc
 	     */
@@ -1627,7 +1668,7 @@ declare module "awayjs-methodmaterials/lib/methods/NormalHeightMapMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/NormalSimpleWaterMethod" {
-	import Texture2DBase = require("awayjs-core/lib/textures/Texture2DBase");
+	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import ShaderObjectBase = require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
@@ -1639,9 +1680,7 @@ declare module "awayjs-methodmaterials/lib/methods/NormalSimpleWaterMethod" {
 	 * NormalSimpleWaterMethod provides a basic normal map method to create water ripples by translating two wave normal maps.
 	 */
 	class NormalSimpleWaterMethod extends NormalBasicMethod {
-	    private _texture2;
-	    private _normalTextureRegister2;
-	    private _useSecondNormalMap;
+	    private _secondaryNormalMap;
 	    private _water1OffsetX;
 	    private _water1OffsetY;
 	    private _water2OffsetX;
@@ -1651,7 +1690,7 @@ declare module "awayjs-methodmaterials/lib/methods/NormalSimpleWaterMethod" {
 	     * @param waveMap1 A normal map containing one layer of a wave structure.
 	     * @param waveMap2 A normal map containing a second layer of a wave structure.
 	     */
-	    constructor(waveMap1: Texture2DBase, waveMap2: Texture2DBase);
+	    constructor(normalMap?: TextureBase, secondaryNormalMap?: TextureBase);
 	    /**
 	     * @inheritDoc
 	     */
@@ -1679,11 +1718,7 @@ declare module "awayjs-methodmaterials/lib/methods/NormalSimpleWaterMethod" {
 	    /**
 	     * A second normal map that will be combined with the first to create a wave-like animation pattern.
 	     */
-	    secondaryNormalMap: Texture2DBase;
-	    /**
-	     * @inheritDoc
-	     */
-	    iCleanCompilationData(): void;
+	    secondaryNormalMap: TextureBase;
 	    /**
 	     * @inheritDoc
 	     */
@@ -1915,7 +1950,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowDitheredMethod" {
 	class ShadowDitheredMethod extends ShadowMethodBase {
 	    private static _grainTexture;
 	    private static _grainUsages;
-	    private static _grainBitmapData;
+	    private static _grainBitmapImage2D;
 	    private _depthMapSize;
 	    private _range;
 	    private _numSamples;
@@ -1957,7 +1992,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowDitheredMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    _pGetPlanarFragmentCode(methodVO: MethodVO, targetReg: ShaderRegisterElement, regCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
+	    _pGetPlanarFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, targetReg: ShaderRegisterElement, regCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 	    /**
 	     * Get the actual shader code for shadow mapping
 	     * @param regCache The register cache managing the registers.
@@ -1965,7 +2000,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowDitheredMethod" {
 	     * @param decReg The register containing the depth map decoding data.
 	     * @param targetReg The target register to add the shadow coverage.
 	     */
-	    private getSampleCode(customDataReg, depthMapRegister, decReg, targetReg, regCache, sharedRegisters);
+	    private getSampleCode(shaderObject, methodVO, customDataReg, decReg, targetReg, regCache, sharedRegisters);
 	    /**
 	     * Adds the code for another tap to the shader code.
 	     * @param uvReg The uv register for the tap.
@@ -1975,7 +2010,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowDitheredMethod" {
 	     * @param regCache The register cache managing the registers.
 	     * @return
 	     */
-	    private addSample(uvReg, depthMapRegister, decReg, targetReg, regCache);
+	    private addSample(shaderObject, methodVO, uvReg, decReg, targetReg, regCache);
 	    /**
 	     * @inheritDoc
 	     */
@@ -1983,7 +2018,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowDitheredMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    _iGetCascadeFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, decodeRegister: ShaderRegisterElement, depthTexture: ShaderRegisterElement, depthProjection: ShaderRegisterElement, targetRegister: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
+	    _iGetCascadeFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, decodeRegister: ShaderRegisterElement, depthProjection: ShaderRegisterElement, targetRegister: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 	}
 	export = ShadowDitheredMethod;
 	
@@ -2017,7 +2052,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowFilteredMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    _pGetPlanarFragmentCode(methodVO: MethodVO, targetReg: ShaderRegisterElement, regCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
+	    _pGetPlanarFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, targetReg: ShaderRegisterElement, regCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 	    /**
 	     * @inheritDoc
 	     */
@@ -2025,7 +2060,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowFilteredMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    _iGetCascadeFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, decodeRegister: ShaderRegisterElement, depthTexture: ShaderRegisterElement, depthProjection: ShaderRegisterElement, targetRegister: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
+	    _iGetCascadeFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, decodeRegister: ShaderRegisterElement, depthProjection: ShaderRegisterElement, targetRegister: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 	}
 	export = ShadowFilteredMethod;
 	
@@ -2051,15 +2086,15 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowHardMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    _pGetPlanarFragmentCode(methodVO: MethodVO, targetReg: ShaderRegisterElement, regCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
+	    _pGetPlanarFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, targetReg: ShaderRegisterElement, regCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 	    /**
 	     * @inheritDoc
 	     */
-	    _pGetPointFragmentCode(methodVO: MethodVO, targetReg: ShaderRegisterElement, regCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
+	    _pGetPointFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, targetReg: ShaderRegisterElement, regCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 	    /**
 	     * @inheritDoc
 	     */
-	    _iGetCascadeFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, decodeRegister: ShaderRegisterElement, depthTexture: ShaderRegisterElement, depthProjection: ShaderRegisterElement, targetRegister: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
+	    _iGetCascadeFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, decodeRegister: ShaderRegisterElement, depthProjection: ShaderRegisterElement, targetRegister: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 	    /**
 	     * @inheritDoc
 	     */
@@ -2178,7 +2213,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowMethodBase" {
 	     * @param targetReg The register to contain the shadow coverage
 	     * @return
 	     */
-	    _pGetPlanarFragmentCode(methodVO: MethodVO, targetReg: ShaderRegisterElement, regCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
+	    _pGetPlanarFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, targetReg: ShaderRegisterElement, regCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 	    /**
 	     * Gets the fragment code for shadow mapping with a point light.
 	     * @param methodVO The MethodVO object linking this method with the pass currently being compiled.
@@ -2186,7 +2221,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowMethodBase" {
 	     * @param targetReg The register to contain the shadow coverage
 	     * @return
 	     */
-	    _pGetPointFragmentCode(methodVO: MethodVO, targetReg: ShaderRegisterElement, regCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
+	    _pGetPointFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, targetReg: ShaderRegisterElement, regCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 	    /**
 	     * @inheritDoc
 	     */
@@ -2201,7 +2236,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowMethodBase" {
 	     * @param targetRegister The register to contain the shadow coverage
 	     * @return
 	     */
-	    _iGetCascadeFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, decodeRegister: ShaderRegisterElement, depthTexture: ShaderRegisterElement, depthProjection: ShaderRegisterElement, targetRegister: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
+	    _iGetCascadeFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, decodeRegister: ShaderRegisterElement, depthProjection: ShaderRegisterElement, targetRegister: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 	    /**
 	     * @inheritDoc
 	     */
@@ -2351,7 +2386,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowSoftMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    _pGetPlanarFragmentCode(methodVO: MethodVO, targetReg: ShaderRegisterElement, regCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
+	    _pGetPlanarFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, targetReg: ShaderRegisterElement, regCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 	    /**
 	     * Adds the code for another tap to the shader code.
 	     * @param uv The uv register for the tap.
@@ -2361,7 +2396,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowSoftMethod" {
 	     * @param regCache The register cache managing the registers.
 	     * @return
 	     */
-	    private addSample(uv, texture, decode, target, regCache);
+	    private addSample(shaderObject, methodVO, decodeRegister, targetRegister, registerCache, uvReg);
 	    /**
 	     * @inheritDoc
 	     */
@@ -2369,7 +2404,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowSoftMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    _iGetCascadeFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, decodeRegister: ShaderRegisterElement, depthTexture: ShaderRegisterElement, depthProjection: ShaderRegisterElement, targetRegister: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
+	    _iGetCascadeFragmentCode(shaderObject: ShaderObjectBase, methodVO: MethodVO, decodeRegister: ShaderRegisterElement, depthProjection: ShaderRegisterElement, targetRegister: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 	    /**
 	     * Get the actual shader code for shadow mapping
 	     * @param regCache The register cache managing the registers.
@@ -2378,7 +2413,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowSoftMethod" {
 	     * @param targetReg The target register to add the shadow coverage.
 	     * @param dataReg The register containing additional data.
 	     */
-	    private getSampleCode(regCache, depthTexture, decodeRegister, targetRegister, dataReg);
+	    private getSampleCode(shaderObject, methodVO, decodeRegister, targetRegister, registerCache, dataReg);
 	}
 	export = ShadowSoftMethod;
 	
@@ -2415,7 +2450,7 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularAnisotropicMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/SpecularBasicMethod" {
-	import Texture2DBase = require("awayjs-core/lib/textures/Texture2DBase");
+	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import ShaderLightingObject = require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
@@ -2429,9 +2464,7 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularBasicMethod" {
 	 * version of Phong specularity).
 	 */
 	class SpecularBasicMethod extends LightingMethodBase {
-	    _pUseTexture: boolean;
 	    _pTotalLightColorReg: ShaderRegisterElement;
-	    _pSpecularTextureRegister: ShaderRegisterElement;
 	    _pSpecularTexData: ShaderRegisterElement;
 	    _pSpecularDataRegister: ShaderRegisterElement;
 	    private _texture;
@@ -2465,10 +2498,10 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularBasicMethod" {
 	    specularColor: number;
 	    /**
 	     * The bitmapData that encodes the specular highlight strength per texel in the red channel, and the sharpness
-	     * in the green channel. You can use SpecularBitmapTexture if you want to easily set specular and gloss maps
+	     * in the green channel. You can use SpecularTextureBase if you want to easily set specular and gloss maps
 	     * from grayscale images, but prepared images are preferred.
 	     */
-	    texture: Texture2DBase;
+	    texture: TextureBase;
 	    /**
 	     * @inheritDoc
 	     */
@@ -2563,7 +2596,7 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularCelMethod" {
 
 declare module "awayjs-methodmaterials/lib/methods/SpecularCompositeMethod" {
 	import Camera = require("awayjs-display/lib/entities/Camera");
-	import Texture2DBase = require("awayjs-core/lib/textures/Texture2DBase");
+	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import RenderableBase = require("awayjs-renderergl/lib/pool/RenderableBase");
 	import ShaderLightingObject = require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
@@ -2614,7 +2647,7 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularCompositeMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    texture: Texture2DBase;
+	    texture: TextureBase;
 	    /**
 	     * @inheritDoc
 	     */
@@ -3038,9 +3071,9 @@ declare module "awayjs-methodmaterials/lib/passes/MethodPassMode" {
 
 declare module "awayjs-methodmaterials/lib/passes/SingleObjectDepthPass" {
 	import Matrix3D = require("awayjs-core/lib/geom/Matrix3D");
-	import RenderTexture = require("awayjs-core/lib/textures/RenderTexture");
 	import Camera = require("awayjs-display/lib/entities/Camera");
 	import IRenderObjectOwner = require("awayjs-display/lib/base/IRenderObjectOwner");
+	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import RenderObjectBase = require("awayjs-renderergl/lib/compilation/RenderObjectBase");
 	import RenderableBase = require("awayjs-renderergl/lib/pool/RenderableBase");
@@ -3094,7 +3127,7 @@ declare module "awayjs-methodmaterials/lib/passes/SingleObjectDepthPass" {
 	     * @param stage3DProxy The Stage3DProxy object currently used for rendering.
 	     * @return A list of depth map textures for all supported lights.
 	     */
-	    _iGetDepthMap(renderable: RenderableBase): RenderTexture;
+	    _iGetDepthMap(renderable: RenderableBase): TextureBase;
 	    /**
 	     * Retrieves the depth map projection maps for all lights.
 	     * @param renderable The renderable for which to retrieve the projection maps.
@@ -3150,8 +3183,8 @@ declare module "awayjs-methodmaterials/lib/pool/MethodRenderablePool" {
 }
 
 declare module "awayjs-methodmaterials/lib/pool/MethodRendererPool" {
+	import RendererBase = require("awayjs-renderergl/lib/RendererBase");
 	import RendererPoolBase = require("awayjs-renderergl/lib/pool/RendererPoolBase");
-	import RendererBase = require("awayjs-renderergl/lib/base/RendererBase");
 	/**
 	 * MethodRendererPool forms an abstract base class for classes that are used in the rendering pipeline to render the
 	 * contents of a partition
