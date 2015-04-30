@@ -1,3 +1,4 @@
+import BitmapImage2D				= require("awayjs-core/lib/data/BitmapImage2D");
 import Vector3D						= require("awayjs-core/lib/geom/Vector3D");
 import URLLoader					= require("awayjs-core/lib/net/URLLoader");
 import URLLoaderDataFormat			= require("awayjs-core/lib/net/URLLoaderDataFormat");
@@ -5,7 +6,6 @@ import URLRequest					= require("awayjs-core/lib/net/URLRequest");
 import AwayEvent					= require("awayjs-core/lib/events/Event");
 import ParserUtils					= require("awayjs-core/lib/parsers/ParserUtils");
 import PerspectiveProjection		= require("awayjs-core/lib/projections/PerspectiveProjection");
-import ImageTexture					= require("awayjs-core/lib/textures/ImageTexture");
 import RequestAnimationFrame		= require("awayjs-core/lib/utils/RequestAnimationFrame");
 import Debug						= require("awayjs-core/lib/utils/Debug");
 
@@ -61,8 +61,6 @@ class TorusLight
 
 	private onLoadComplete(event:Event)
 	{
-		var ts:ImageTexture = new ImageTexture(this._image);
-
 		var light:DirectionalLight = new DirectionalLight();
 		light.direction = new Vector3D(0, 0, 1);
 		light.diffuse = .7;
@@ -72,7 +70,7 @@ class TorusLight
 
 		var lightPicker:StaticLightPicker = new StaticLightPicker([light]);
 
-		var matTx:MethodMaterial = new MethodMaterial(ts, true, true, false);
+		var matTx:MethodMaterial = new MethodMaterial(ParserUtils.imageToBitmapImage2D(this._image), true, true, false);
 		matTx.lightPicker = lightPicker;
 
 		this._torus.material = matTx;

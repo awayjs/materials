@@ -1,10 +1,11 @@
+import BitmapImage2D				= require("awayjs-core/lib/data/BitmapImage2D");
 import URLLoader					= require("awayjs-core/lib/net/URLLoader");
 import URLLoaderDataFormat			= require("awayjs-core/lib/net/URLLoaderDataFormat");
 import URLRequest					= require("awayjs-core/lib/net/URLRequest");
 import AwayEvent					= require("awayjs-core/lib/events/Event");
 import ParserUtils					= require("awayjs-core/lib/parsers/ParserUtils");
 import PerspectiveProjection		= require("awayjs-core/lib/projections/PerspectiveProjection");
-import ImageTexture					= require("awayjs-core/lib/textures/ImageTexture");
+import Single2DTexture				= require("awayjs-core/lib/textures/Single2DTexture");
 import RequestAnimationFrame		= require("awayjs-core/lib/utils/RequestAnimationFrame");
 import Debug						= require("awayjs-core/lib/utils/Debug");
 
@@ -109,7 +110,7 @@ class TorusObject3DDemo
 
 	private onImageLoadComplete(event:Event)
 	{
-		var matTx: MethodMaterial = new MethodMaterial(new ImageTexture(this._image), true, true, false);
+		var matTx: MethodMaterial = new MethodMaterial(ParserUtils.imageToBitmapImage2D(this._image), true, true, false);
 		matTx.lightPicker =  this.lightPicker;
 
 		for (var c:number = 0; c < this.meshes.length; c ++)

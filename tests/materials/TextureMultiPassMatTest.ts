@@ -1,10 +1,10 @@
+import BitmapImage2D				= require("awayjs-core/lib/data/BitmapImage2D");
 import Vector3D						= require("awayjs-core/lib/geom/Vector3D");
 import URLLoader					= require("awayjs-core/lib/net/URLLoader");
 import URLLoaderDataFormat			= require("awayjs-core/lib/net/URLLoaderDataFormat");
 import URLRequest					= require("awayjs-core/lib/net/URLRequest");
 import Event						= require("awayjs-core/lib/events/Event");
 import ParserUtils					= require("awayjs-core/lib/parsers/ParserUtils");
-import ImageTexture					= require("awayjs-core/lib/textures/ImageTexture");
 import RequestAnimationFrame		= require("awayjs-core/lib/utils/RequestAnimationFrame");
 import Debug						= require("awayjs-core/lib/utils/Debug");
 
@@ -58,8 +58,7 @@ class TextureMultiPassMatTest
 		var l:number = 20;
 		var radius:number = 500;
 
-		var ts:ImageTexture = new ImageTexture(this.image);
-		var mat:BasicMaterial = new BasicMaterial(ts);
+		var mat:BasicMaterial = new BasicMaterial(ParserUtils.imageToBitmapImage2D(this.image));
 
 		this.torus.material = mat;
 
