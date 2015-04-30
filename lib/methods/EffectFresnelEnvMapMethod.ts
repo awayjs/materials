@@ -1,5 +1,4 @@
-import CubeTextureBase					= require("awayjs-core/lib/textures/CubeTextureBase");
-import Texture2DBase					= require("awayjs-core/lib/textures/Texture2DBase");
+import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
@@ -7,7 +6,6 @@ import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderO
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
 import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import ShaderCompilerHelper				= require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import EffectMethodBase					= require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
@@ -18,11 +16,11 @@ import EffectMethodBase					= require("awayjs-methodmaterials/lib/methods/Effect
  */
 class EffectFresnelEnvMapMethod extends EffectMethodBase
 {
-	private _cubeTexture:CubeTextureBase;
+	private _envMap:TextureBase;
 	private _fresnelPower:number = 5;
 	private _normalReflectance:number = 0;
 	private _alpha:number;
-	private _mask:Texture2DBase;
+	private _mask:TextureBase;
 
 	/**
 	 * Creates a new <code>EffectFresnelEnvMapMethod</code> object.
@@ -30,11 +28,11 @@ class EffectFresnelEnvMapMethod extends EffectMethodBase
 	 * @param envMap The environment map containing the reflected scene.
 	 * @param alpha The reflectivity of the material.
 	 */
-	constructor(envMap:CubeTextureBase, alpha:number = 1)
+	constructor(envMap:TextureBase, alpha:number = 1)
 	{
 		super();
 
-		this._cubeTexture = envMap;
+		this._envMap = envMap;
 		this._alpha = alpha;
 	}
 
@@ -45,7 +43,13 @@ class EffectFresnelEnvMapMethod extends EffectMethodBase
 	{
 		methodVO.needsNormals = true;
 		methodVO.needsView = true;
-		methodVO.needsUV = this._mask != null;
+
+		methodVO.textureObject = shaderObject.getTextureObject(this._envMap);
+
+		if (this._mask != null) {
+			methodVO.secondaryTextureObject = shaderObject.getTextureObject(this._mask);
+			shaderObject.uvDependencies++;
+		}
 	}
 
 	/**
@@ -59,18 +63,19 @@ class EffectFresnelEnvMapMethod extends EffectMethodBase
 	/**
 	 * An optional texture to modulate the reflectivity of the surface.
 	 */
-	public get mask():Texture2DBase
+	public get mask():TextureBase
 	{
 		return this._mask;
 	}
 
-	public set mask(value:Texture2DBase)
+	public set mask(value:TextureBase)
 	{
-		if (Boolean(value) != Boolean(this._mask) ||
-			(value && this._mask && (value.format != this._mask.format))) {
-			this.iInvalidateShaderProgram();
-		}
+		if (this._mask == value)
+			return;
+		
 		this._mask = value;
+
+		this.iInvalidateShaderProgram();
 	}
 
 	/**
@@ -89,14 +94,14 @@ class EffectFresnelEnvMapMethod extends EffectMethodBase
 	/**
 	 * The cubic environment map containing the reflected scene.
 	 */
-	public get envMap():CubeTextureBase
+	public get envMap():TextureBase
 	{
-		return this._cubeTexture;
+		return this._envMap;
 	}
 
-	public set envMap(value:CubeTextureBase)
+	public set envMap(value:TextureBase)
 	{
-		this._cubeTexture = value;
+		this._envMap = value;
 	}
 
 	/**
@@ -136,10 +141,10 @@ class EffectFresnelEnvMapMethod extends EffectMethodBase
 		data[index + 1] = this._normalReflectance;
 		data[index + 2] = this._fresnelPower;
 
-		stage.activateCubeTexture(methodVO.texturesIndex, this._cubeTexture, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
+		methodVO.textureObject.activate(shaderObject);
 
 		if (this._mask)
-			stage.activateTexture(methodVO.texturesIndex + 1, this._mask, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
+			methodVO.secondaryTextureObject.activate(shaderObject);
 	}
 
 	/**
@@ -148,24 +153,25 @@ class EffectFresnelEnvMapMethod extends EffectMethodBase
 	public iGetFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var dataRegister:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
-		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 		var code:string = "";
-		var cubeMapReg:ShaderRegisterElement = registerCache.getFreeTextureReg();
 		var viewDirReg:ShaderRegisterElement = sharedRegisters.viewDirFragment;
 		var normalReg:ShaderRegisterElement = sharedRegisters.normalFragment;
 
-		methodVO.texturesIndex = cubeMapReg.index;
 		methodVO.fragmentConstantsIndex = dataRegister.index*4;
 
+		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 		registerCache.addFragmentTempUsages(temp, 1);
 		var temp2:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
+		registerCache.addFragmentTempUsages(temp2, 1);
+
+		methodVO.textureObject._iInitRegisters(shaderObject, registerCache);
 
 		// r = V - 2(V.N)*N
 		code += "dp3 " + temp + ".w, " + viewDirReg + ".xyz, " + normalReg + ".xyz\n" +
 				"add " + temp + ".w, " + temp + ".w, " + temp + ".w\n" +
 				"mul " + temp + ".xyz, " + normalReg + ".xyz, " + temp + ".w\n" +
 				"sub " + temp + ".xyz, " + temp + ".xyz, " + viewDirReg + ".xyz\n" +
-			ShaderCompilerHelper.getTexCubeSampleCode(temp, cubeMapReg, this._cubeTexture, shaderObject.useSmoothTextures, shaderObject.useMipmapping, temp) +
+			methodVO.textureObject._iGetFragmentCode(shaderObject, temp, registerCache, temp) +
 				"sub " + temp2 + ".w, " + temp + ".w, fc0.x\n" +               	// -.5
 				"kil " + temp2 + ".w\n" +	// used for real time reflection mapping - if alpha is not 1 (mock texture) kil output
 				"sub " + temp + ", " + temp + ", " + targetReg + "\n";
@@ -182,8 +188,9 @@ class EffectFresnelEnvMapMethod extends EffectMethodBase
 				"mul " + viewDirReg + ".w, " + dataRegister + ".x, " + viewDirReg + ".w\n";
 
 		if (this._mask) {
-			var maskReg:ShaderRegisterElement = registerCache.getFreeTextureReg();
-			code += ShaderCompilerHelper.getTex2DSampleCode(temp2, sharedRegisters, maskReg, this._mask, shaderObject.useSmoothTextures, shaderObject.repeatTextures, shaderObject.useMipmapping) +
+			methodVO.secondaryTextureObject._iInitRegisters(shaderObject, registerCache);
+
+			code += methodVO.secondaryTextureObject._iGetFragmentCode(shaderObject, temp2, registerCache, sharedRegisters.uvVarying) +
 				"mul " + viewDirReg + ".w, " + temp2 + ".x, " + viewDirReg + ".w\n";
 		}
 
@@ -192,6 +199,7 @@ class EffectFresnelEnvMapMethod extends EffectMethodBase
 				"add " + targetReg + ", " + targetReg + ", " + temp + "\n";
 
 		registerCache.removeFragmentTempUsage(temp);
+		registerCache.removeFragmentTempUsage(temp2);
 
 		return code;
 	}

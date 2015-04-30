@@ -1,4 +1,4 @@
-import Texture2DBase					= require("awayjs-core/lib/textures/Texture2DBase");
+import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
@@ -7,7 +7,6 @@ import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderO
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
 import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import ShaderCompilerHelper				= require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import EffectMethodBase					= require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
@@ -19,7 +18,7 @@ import EffectMethodBase					= require("awayjs-methodmaterials/lib/methods/Effect
  */
 class EffectAlphaMaskMethod extends EffectMethodBase
 {
-	private _texture:Texture2DBase;
+	private _texture:TextureBase;
 	private _useSecondaryUV:boolean;
 
 	/**
@@ -28,7 +27,7 @@ class EffectAlphaMaskMethod extends EffectMethodBase
 	 * @param texture The texture to use as the alpha mask.
 	 * @param useSecondaryUV Indicated whether or not the secondary uv set for the mask. This allows mapping alpha independently.
 	 */
-	constructor(texture:Texture2DBase, useSecondaryUV:boolean = false)
+	constructor(texture:TextureBase, useSecondaryUV:boolean = false)
 	{
 		super();
 
@@ -41,8 +40,12 @@ class EffectAlphaMaskMethod extends EffectMethodBase
 	 */
 	public iInitVO(shaderObject:ShaderObjectBase, methodVO:MethodVO)
 	{
-		methodVO.needsSecondaryUV = this._useSecondaryUV;
-		methodVO.needsUV = !this._useSecondaryUV;
+		methodVO.textureObject = shaderObject.getTextureObject(this._texture);
+
+		if (this._useSecondaryUV)
+			shaderObject.secondaryUVDependencies++;
+		else
+			shaderObject.uvDependencies++;
 	}
 
 	/**
@@ -59,29 +62,28 @@ class EffectAlphaMaskMethod extends EffectMethodBase
 	{
 		if (this._useSecondaryUV == value)
 			return;
+
 		this._useSecondaryUV = value;
+
 		this.iInvalidateShaderProgram();
 	}
 
 	/**
 	 * The texture to use as the alpha mask.
 	 */
-	public get texture():Texture2DBase
+	public get texture():TextureBase
 	{
 		return this._texture;
 	}
 
-	public set texture(value:Texture2DBase)
+	public set texture(value:TextureBase)
 	{
-		this._texture = value;
-	}
+		if (this._texture == value)
+			return;
 
-	/**
-	 * @inheritDoc
-	 */
-	public iActivate(shaderObject:ShaderLightingObject, methodVO:MethodVO, stage:Stage)
-	{
-		stage.activateTexture(methodVO.texturesIndex, this._texture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
+		this._texture = value;
+
+		this.iInvalidateShaderProgram();
 	}
 
 	/**
@@ -89,13 +91,21 @@ class EffectAlphaMaskMethod extends EffectMethodBase
 	 */
 	public iGetFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		var textureReg:ShaderRegisterElement = registerCache.getFreeTextureReg();
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
-		var uvReg:ShaderRegisterElement = this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying;
-		methodVO.texturesIndex = textureReg.index;
 
-		return ShaderCompilerHelper.getTex2DSampleCode(temp, sharedRegisters, textureReg, this._texture, shaderObject.useSmoothTextures, shaderObject.repeatTextures, shaderObject.useMipmapping, uvReg) +
+		return methodVO.textureObject._iGetFragmentCode(shaderObject, temp, registerCache, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying) +
 			"mul " + targetReg + ", " + targetReg + ", " + temp + ".x\n";
+	}
+
+
+	/**
+	 * @inheritDoc
+	 */
+	public iActivate(shaderObject:ShaderLightingObject, methodVO:MethodVO, stage:Stage)
+	{
+		super.iActivate(shaderObject, methodVO, stage);
+
+		methodVO.textureObject.activate(shaderObject);
 	}
 }
 

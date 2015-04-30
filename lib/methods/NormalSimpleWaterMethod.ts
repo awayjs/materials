@@ -1,4 +1,4 @@
-import Texture2DBase					= require("awayjs-core/lib/textures/Texture2DBase");
+import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
@@ -6,7 +6,6 @@ import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderO
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
 import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import ShaderCompilerHelper				= require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import NormalBasicMethod				= require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
@@ -16,9 +15,7 @@ import NormalBasicMethod				= require("awayjs-methodmaterials/lib/methods/Normal
  */
 class NormalSimpleWaterMethod extends NormalBasicMethod
 {
-	private _texture2:Texture2DBase;
-	private _normalTextureRegister2:ShaderRegisterElement;
-	private _useSecondNormalMap:boolean = false;
+	private _secondaryNormalMap:TextureBase;
 	private _water1OffsetX:number = 0;
 	private _water1OffsetY:number = 0;
 	private _water2OffsetX:number = 0;
@@ -29,11 +26,11 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 	 * @param waveMap1 A normal map containing one layer of a wave structure.
 	 * @param waveMap2 A normal map containing a second layer of a wave structure.
 	 */
-	constructor(waveMap1:Texture2DBase, waveMap2:Texture2DBase)
+	constructor(normalMap:TextureBase = null, secondaryNormalMap:TextureBase = null)
 	{
-		super();
-		this.normalMap = waveMap1;
-		this.secondaryNormalMap = waveMap2;
+		super(normalMap);
+
+		this._secondaryNormalMap = secondaryNormalMap;
 	}
 
 	/**
@@ -55,8 +52,11 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 	public iInitVO(shaderObject:ShaderObjectBase, methodVO:MethodVO)
 	{
 		super.iInitVO(shaderObject, methodVO);
-
-		this._useSecondNormalMap = this.normalMap != this.secondaryNormalMap;
+		
+		if (this._secondaryNormalMap) {
+			methodVO.secondaryTextureObject = shaderObject.getTextureObject(this._secondaryNormalMap);
+			shaderObject.uvDependencies++;
+		}
 	}
 
 	/**
@@ -114,23 +114,19 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 	/**
 	 * A second normal map that will be combined with the first to create a wave-like animation pattern.
 	 */
-	public get secondaryNormalMap():Texture2DBase
+	public get secondaryNormalMap():TextureBase
 	{
-		return this._texture2;
+		return this._secondaryNormalMap;
 	}
 
-	public set secondaryNormalMap(value:Texture2DBase)
+	public set secondaryNormalMap(value:TextureBase)
 	{
-		this._texture2 = value;
-	}
+		if (this._secondaryNormalMap == value)
+			return;
 
-	/**
-	 * @inheritDoc
-	 */
-	public iCleanCompilationData()
-	{
-		super.iCleanCompilationData();
-		this._normalTextureRegister2 = null;
+		this._secondaryNormalMap = value;
+
+		this.iInvalidateShaderProgram();
 	}
 
 	/**
@@ -139,7 +135,8 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 	public dispose()
 	{
 		super.dispose();
-		this._texture2 = null;
+
+		this._secondaryNormalMap = null;
 	}
 
 	/**
@@ -157,9 +154,8 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 		data[index + 6] = this._water2OffsetX;
 		data[index + 7] = this._water2OffsetY;
 
-		//if (this._useSecondNormalMap >= 0)
-		if (this._useSecondNormalMap)
-			stage.activateTexture(methodVO.texturesIndex + 1, this._texture2, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
+		if (this._secondaryNormalMap)
+			methodVO.secondaryTextureObject.activate(shaderObject);
 	}
 
 	/**
@@ -167,23 +163,36 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 	 */
 	public iGetFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
+		var code:string = "";
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
+		registerCache.addFragmentTempUsages(temp, 1);
+
 		var dataReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 		var dataReg2:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
-		this._pNormalTextureRegister = registerCache.getFreeTextureReg();
-		this._normalTextureRegister2 = this._useSecondNormalMap? registerCache.getFreeTextureReg():this._pNormalTextureRegister;
-		methodVO.texturesIndex = this._pNormalTextureRegister.index;
-
 		methodVO.fragmentConstantsIndex = dataReg.index*4;
 
-		return "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg2 + ".xyxy\n" +
-			ShaderCompilerHelper.getTex2DSampleCode(targetReg, sharedRegisters, this._pNormalTextureRegister, this.normalMap, shaderObject.useSmoothTextures, shaderObject.repeatTextures, shaderObject.useMipmapping, temp) +
-			"add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg2 + ".zwzw\n" +
-			ShaderCompilerHelper.getTex2DSampleCode(temp, sharedRegisters, this._normalTextureRegister2, this._texture2, shaderObject.useSmoothTextures, shaderObject.repeatTextures, shaderObject.useMipmapping, temp) +
-			"add " + targetReg + ", " + targetReg + ", " + temp + "		\n" +
+		code += "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg2 + ".xyxy\n";
+
+		if (this.normalMap) {
+			methodVO.textureObject._iInitRegisters(shaderObject, registerCache);
+
+			code += methodVO.textureObject._iGetFragmentCode(shaderObject, targetReg, registerCache, temp);
+		}
+
+		code += "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg2 + ".zwzw\n";
+
+		if (this._secondaryNormalMap) {
+			methodVO.secondaryTextureObject._iInitRegisters(shaderObject, registerCache);
+
+			code += methodVO.secondaryTextureObject._iGetFragmentCode(shaderObject, temp, registerCache, temp);
+		}
+
+		code +=	"add " + targetReg + ", " + targetReg + ", " + temp + "		\n" +
 			"mul " + targetReg + ", " + targetReg + ", " + dataReg + ".x	\n" +
 			"sub " + targetReg + ".xyz, " + targetReg + ".xyz, " + sharedRegisters.commons + ".xxx	\n" +
 			"nrm " + targetReg + ".xyz, " + targetReg + ".xyz							\n";
+
+		return code;
 	}
 }
 

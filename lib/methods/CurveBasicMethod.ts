@@ -1,12 +1,9 @@
-import Texture2DBase				= require("awayjs-core/lib/textures/Texture2DBase");
-
 import Stage						= require("awayjs-stagegl/lib/base/Stage");
 
 import ShaderObjectBase				= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
 import ShaderRegisterCache			= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 import ShaderRegisterData			= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
 import ShaderRegisterElement		= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import ShaderCompilerHelper			= require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 
 import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
 import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
@@ -38,7 +35,8 @@ class CurveBasicMethod extends ShadingMethodBase
 	 */
 	public iInitVO(shaderObject:ShaderObjectBase, methodVO:MethodVO)
 	{
-		methodVO.needsUV = true;// Boolean(shaderObject.texture != null);
+		if (shaderObject.texture)
+			shaderObject.uvDependencies++;
 	}
 
 	/**
@@ -46,7 +44,7 @@ class CurveBasicMethod extends ShadingMethodBase
 	 */
 	public iInitConstants(shaderObject:ShaderObjectBase, methodVO:MethodVO)
 	{
-		if (!methodVO.needsUV) {
+		if (!shaderObject.texture) {
 			this._color = shaderObject.color;
 			this.updateColor();
 		}
@@ -110,12 +108,10 @@ class CurveBasicMethod extends ShadingMethodBase
 		var code:string = "";
 		var ambientInputRegister:ShaderRegisterElement;
 
-		if (methodVO.needsUV) {
-			ambientInputRegister = registerCache.getFreeTextureReg();
+		if (shaderObject.texture) {
+			shaderObject.texture._iInitRegisters(shaderObject, registerCache);
 
-			methodVO.texturesIndex = ambientInputRegister.index;
-
-			code += ShaderCompilerHelper.getTex2DSampleCode(targetReg, sharedRegisters, ambientInputRegister, shaderObject.texture, shaderObject.useSmoothTextures, shaderObject.repeatTextures, false);
+			code += shaderObject.texture._iGetFragmentCode(shaderObject, targetReg, registerCache, sharedRegisters.uvVarying);
 
 			if (shaderObject.alphaThreshold > 0) {
 				var cutOffReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
@@ -141,8 +137,8 @@ class CurveBasicMethod extends ShadingMethodBase
 	 */
 	public iActivate(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
 	{
-		if (methodVO.needsUV) {
-			stage.activateTexture(methodVO.texturesIndex, shaderObject.texture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
+		if (shaderObject.texture) {
+			shaderObject.texture.activate(shaderObject);
 
 			if (shaderObject.alphaThreshold > 0)
 				shaderObject.fragmentConstantData[methodVO.fragmentConstantsIndex] = shaderObject.alphaThreshold;

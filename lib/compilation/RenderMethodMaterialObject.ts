@@ -6,7 +6,6 @@ import Matrix3D							= require("awayjs-core/lib/geom/Matrix3D");
 import Matrix3DUtils					= require("awayjs-core/lib/geom/Matrix3DUtils");
 import Vector3D							= require("awayjs-core/lib/geom/Vector3D");
 import AbstractMethodError				= require("awayjs-core/lib/errors/AbstractMethodError");
-import Texture2DBase					= require("awayjs-core/lib/textures/Texture2DBase");
 
 import Camera							= require("awayjs-display/lib/entities/Camera");
 import IRenderObjectOwner				= require("awayjs-display/lib/base/IRenderObjectOwner");
@@ -15,7 +14,7 @@ import StaticLightPicker				= require("awayjs-display/lib/materials/lightpickers
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 import ContextGLCompareMode				= require("awayjs-stagegl/lib/base/ContextGLCompareMode");
 
-import RendererBase						= require("awayjs-renderergl/lib/base/RendererBase");
+import RendererBase						= require("awayjs-renderergl/lib/RendererBase");
 import RenderObjectPool					= require("awayjs-renderergl/lib/compilation/RenderObjectPool");
 import ShadingMethodEvent				= require("awayjs-renderergl/lib/events/ShadingMethodEvent");
 import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");

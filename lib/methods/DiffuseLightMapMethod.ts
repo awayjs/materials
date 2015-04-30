@@ -1,4 +1,4 @@
-import Texture2DBase					= require("awayjs-core/lib/textures/Texture2DBase");
+import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
@@ -6,7 +6,6 @@ import ShaderLightingObject				= require("awayjs-renderergl/lib/compilation/Shad
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
 import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import ShaderCompilerHelper				= require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
@@ -31,7 +30,7 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	 */
 	public static ADD:string = "add";
 
-	private _lightMapTexture:Texture2DBase;
+	private _lightMap:TextureBase;
 	private _blendMode:string;
 	private _useSecondaryUV:boolean;
 
@@ -43,12 +42,12 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	 * @param useSecondaryUV Indicates whether the secondary UV set should be used to map the light map.
 	 * @param baseMethod The diffuse method used to calculate the regular diffuse-based lighting.
 	 */
-	constructor(lightMap:Texture2DBase, blendMode:string = "multiply", useSecondaryUV:boolean = false, baseMethod:DiffuseBasicMethod = null)
+	constructor(lightMap:TextureBase, blendMode:string = "multiply", useSecondaryUV:boolean = false, baseMethod:DiffuseBasicMethod = null)
 	{
 		super(null, baseMethod);
 
 		this._useSecondaryUV = useSecondaryUV;
-		this._lightMapTexture = lightMap;
+		this._lightMap = lightMap;
 		this.blendMode = blendMode;
 	}
 
@@ -57,8 +56,12 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	 */
 	public iInitVO(shaderObject:ShaderLightingObject, methodVO:MethodVO)
 	{
-		methodVO.needsSecondaryUV = this._useSecondaryUV;
-		methodVO.needsUV = !this._useSecondaryUV;
+		methodVO.secondaryTextureObject = shaderObject.getTextureObject(this._lightMap);
+
+		if (this._useSecondaryUV)
+			shaderObject.secondaryUVDependencies++;
+		else
+			shaderObject.uvDependencies++;
 	}
 
 	/**
@@ -88,24 +91,37 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	/**
 	 * The texture containing the light map data.
 	 */
-	public get lightMapTexture():Texture2DBase
+	public get lightMap():TextureBase
 	{
-		return this._lightMapTexture;
+		return this._lightMap;
 	}
 
-	public set lightMapTexture(value:Texture2DBase)
+	public set lightMap(value:TextureBase)
 	{
-		this._lightMapTexture = value;
+		if (this._lightMap == value)
+			return;
+
+		this._lightMap = value;
+
+		this.iInvalidateShaderProgram();
 	}
 
 	/**
-	 * @inheritDoc
+	 * Indicates whether the secondary UV set should be used to map the light map.
 	 */
-	public iActivate(shaderObject:ShaderLightingObject, methodVO:MethodVO, stage:Stage)
+	public get useSecondaryUV():boolean
 	{
-		stage.activateTexture(methodVO.secondaryTexturesIndex, this._lightMapTexture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
+		return this._useSecondaryUV;
+	}
 
-		super.iActivate(shaderObject, methodVO, stage);
+	public set useSecondaryUV(value:boolean)
+	{
+		if (this._useSecondaryUV == value)
+			return;
+
+		this._useSecondaryUV = value;
+
+		this.iInvalidateShaderProgram();
 	}
 
 	/**
@@ -114,11 +130,11 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	public iGetFragmentPostLightingCode(shaderObject:ShaderLightingObject, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string;
-		var lightMapReg:ShaderRegisterElement = registerCache.getFreeTextureReg();
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
-		methodVO.secondaryTexturesIndex = lightMapReg.index;
 
-		code = ShaderCompilerHelper.getTex2DSampleCode(temp, sharedRegisters, lightMapReg, this._lightMapTexture, shaderObject.useSmoothTextures, shaderObject.repeatTextures, shaderObject.useMipmapping, sharedRegisters.secondaryUVVarying);
+		methodVO.secondaryTextureObject._iInitRegisters(shaderObject, registerCache);
+
+		code = methodVO.secondaryTextureObject._iGetFragmentCode(shaderObject, temp, registerCache, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
 
 		switch (this._blendMode) {
 			case DiffuseLightMapMethod.MULTIPLY:
@@ -132,6 +148,16 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 		code += super.iGetFragmentPostLightingCode(shaderObject, methodVO, targetReg, registerCache, sharedRegisters);
 
 		return code;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public iActivate(shaderObject:ShaderLightingObject, methodVO:MethodVO, stage:Stage)
+	{
+		super.iActivate(shaderObject, methodVO, stage);
+
+		methodVO.secondaryTextureObject.activate(shaderObject);
 	}
 }
 

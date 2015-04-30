@@ -1,17 +1,19 @@
+import Image2D							= require("awayjs-core/lib/data/Image2D");
 import TriangleSubGeometry				= require("awayjs-core/lib/data/TriangleSubGeometry");
 import Matrix3D							= require("awayjs-core/lib/geom/Matrix3D");
-import RenderTexture					= require("awayjs-core/lib/textures/RenderTexture");
 
 import LightBase						= require("awayjs-display/lib/base/LightBase");
 import Camera							= require("awayjs-display/lib/entities/Camera");
 import MaterialBase						= require("awayjs-display/lib/materials/MaterialBase");
 import IRenderObjectOwner				= require("awayjs-display/lib/base/IRenderObjectOwner");
+import Single2DTexture					= require("awayjs-display/lib/textures/Single2DTexture");
+import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import ContextGLProgramType				= require("awayjs-stagegl/lib/base/ContextGLProgramType");
 import IContextGL						= require("awayjs-stagegl/lib/base/IContextGL");
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import RendererBase						= require("awayjs-renderergl/lib/base/RendererBase");
+import RendererBase						= require("awayjs-renderergl/lib/RendererBase");
 import RenderObjectBase					= require("awayjs-renderergl/lib/compilation/RenderObjectBase");
 import RenderableBase					= require("awayjs-renderergl/lib/pool/RenderableBase");
 import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
@@ -81,7 +83,7 @@ class SingleObjectDepthPass extends RenderPassBase
 	{
 		if (this._textures) {
 			for (var key in this._textures) {
-				var texture:RenderTexture = this._textures[key];
+				var texture:TextureBase = this._textures[key];
 				texture.dispose();
 			}
 			this._textures = null;
@@ -95,7 +97,7 @@ class SingleObjectDepthPass extends RenderPassBase
 	{
 		if (this._textures) {
 			for (var key in this._textures) {
-				var texture:RenderTexture = this._textures[key];
+				var texture:TextureBase = this._textures[key];
 				texture.dispose();
 			}
 		}
@@ -148,7 +150,7 @@ class SingleObjectDepthPass extends RenderPassBase
 	 * @param stage3DProxy The Stage3DProxy object currently used for rendering.
 	 * @return A list of depth map textures for all supported lights.
 	 */
-	public _iGetDepthMap(renderable:RenderableBase):RenderTexture
+	public _iGetDepthMap(renderable:RenderableBase):TextureBase
 	{
 		return this._textures[renderable.renderableOwner.id];
 	}
@@ -176,7 +178,7 @@ class SingleObjectDepthPass extends RenderPassBase
 		var rId:number = renderable.renderableOwner.id;
 
 		if (!this._textures[rId])
-			this._textures[rId] = new RenderTexture(this._textureSize, this._textureSize);
+			this._textures[rId] = new Single2DTexture(new Image2D(this._textureSize, this._textureSize));
 
 		if (!this._projections[rId])
 			this._projections[rId] = new Matrix3D();

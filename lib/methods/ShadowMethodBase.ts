@@ -1,13 +1,12 @@
 import Vector3D						= require("awayjs-core/lib/geom/Vector3D");
 import AbstractMethodError			= require("awayjs-core/lib/errors/AbstractMethodError");
-import CubeTextureBase				= require("awayjs-core/lib/textures/CubeTextureBase");
-import Texture2DBase				= require("awayjs-core/lib/textures/Texture2DBase");
 
 import LightBase					= require("awayjs-display/lib/base/LightBase");
 import Camera						= require("awayjs-display/lib/entities/Camera");
 import DirectionalLight				= require("awayjs-display/lib/entities/DirectionalLight");
 import PointLight					= require("awayjs-display/lib/entities/PointLight");
 import DirectionalShadowMapper		= require("awayjs-display/lib/materials/shadowmappers/DirectionalShadowMapper");
+import TextureBase					= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage						= require("awayjs-stagegl/lib/base/Stage");
 
@@ -49,6 +48,8 @@ class ShadowMethodBase extends ShadowMapMethodBase
 		methodVO.needsGlobalVertexPos = true;
 		methodVO.needsGlobalFragmentPos = this._pUsePoint;
 		methodVO.needsNormals = shaderObject.numLights > 0;
+
+		methodVO.textureObject = shaderObject.getTextureObject(this._pCastingLight.shadowMapper.depthMap);
 	}
 
 	/**
@@ -146,7 +147,10 @@ class ShadowMethodBase extends ShadowMapMethodBase
 
 		// todo: can epsilon be applied here instead of fragment shader?
 
-		code += "m44 " + temp + ", " + sharedRegisters.globalPositionVertex + ", " + depthMapProj + "\n" + "div " + temp + ", " + temp + ", " + temp + ".w\n" + "mul " + temp + ".xy, " + temp + ".xy, " + dataReg + ".xy\n" + "add " + this._pDepthMapCoordReg + ", " + temp + ", " + dataReg + ".xxwz\n";
+		code += "m44 " + temp + ", " + sharedRegisters.globalPositionVertex + ", " + depthMapProj + "\n" +
+			"div " + temp + ", " + temp + ", " + temp + ".w\n" +
+			"mul " + temp + ".xy, " + temp + ".xy, " + dataReg + ".xy\n" +
+			"add " + this._pDepthMapCoordReg + ", " + temp + ", " + dataReg + ".xxwz\n";
 		//"sub " + this._pDepthMapCoordReg + ".z, " + this._pDepthMapCoordReg + ".z, " + this._pDepthMapCoordReg + ".w\n";
 
 		return code;
@@ -157,8 +161,9 @@ class ShadowMethodBase extends ShadowMapMethodBase
 	 */
 	public iGetFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		var code:string = this._pUsePoint? this._pGetPointFragmentCode(methodVO, targetReg, registerCache, sharedRegisters):this._pGetPlanarFragmentCode(methodVO, targetReg, registerCache, sharedRegisters);
-		code += "add " + targetReg + ".w, " + targetReg + ".w, fc" + (methodVO.fragmentConstantsIndex/4 + 1) + ".y\n" + "sat " + targetReg + ".w, " + targetReg + ".w\n";
+		var code:string = this._pUsePoint? this._pGetPointFragmentCode(shaderObject, methodVO, targetReg, registerCache, sharedRegisters) : this._pGetPlanarFragmentCode(shaderObject, methodVO, targetReg, registerCache, sharedRegisters);
+		code += "add " + targetReg + ".w, " + targetReg + ".w, fc" + (methodVO.fragmentConstantsIndex/4 + 1) + ".y\n" +
+			"sat " + targetReg + ".w, " + targetReg + ".w\n";
 		return code;
 	}
 
@@ -169,7 +174,7 @@ class ShadowMethodBase extends ShadowMapMethodBase
 	 * @param targetReg The register to contain the shadow coverage
 	 * @return
 	 */
-	public _pGetPlanarFragmentCode(methodVO:MethodVO, targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _pGetPlanarFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		throw new AbstractMethodError();
 		return "";
@@ -182,7 +187,7 @@ class ShadowMethodBase extends ShadowMapMethodBase
 	 * @param targetReg The register to contain the shadow coverage
 	 * @return
 	 */
-	public _pGetPointFragmentCode(methodVO:MethodVO, targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _pGetPointFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		throw new AbstractMethodError();
 		return "";
@@ -207,7 +212,7 @@ class ShadowMethodBase extends ShadowMapMethodBase
 	 * @param targetRegister The register to contain the shadow coverage
 	 * @return
 	 */
-	public _iGetCascadeFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, decodeRegister:ShaderRegisterElement, depthTexture:ShaderRegisterElement, depthProjection:ShaderRegisterElement, targetRegister:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _iGetCascadeFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, decodeRegister:ShaderRegisterElement, depthProjection:ShaderRegisterElement, targetRegister:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		throw new Error("This shadow method is incompatible with cascade shadows");
 	}
@@ -237,10 +242,7 @@ class ShadowMethodBase extends ShadowMapMethodBase
 			fragmentData[index + 11] = 1/(2*f*f);
 		}
 
-		if (!this._pUsePoint)
-			stage.activateRenderTexture(methodVO.texturesIndex, <Texture2DBase> this._pCastingLight.shadowMapper.depthMap);
-		//else
-		//	stage.activateCubeRenderTexture(methodVO.texturesIndex, <CubeTextureBase> this._pCastingLight.shadowMapper.depthMap);
+		methodVO.textureObject.activate(shaderObject);
 	}
 
 	/**

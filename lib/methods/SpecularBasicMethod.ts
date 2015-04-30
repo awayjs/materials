@@ -1,4 +1,4 @@
-import Texture2DBase				= require("awayjs-core/lib/textures/Texture2DBase");
+import TextureBase					= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage						= require("awayjs-stagegl/lib/base/Stage");
 
@@ -6,7 +6,6 @@ import ShaderLightingObject			= require("awayjs-renderergl/lib/compilation/Shade
 import ShaderRegisterCache			= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 import ShaderRegisterData			= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
 import ShaderRegisterElement		= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import ShaderCompilerHelper			= require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 
 import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
 import LightingMethodBase			= require("awayjs-methodmaterials/lib/methods/LightingMethodBase");
@@ -18,13 +17,11 @@ import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/Shading
  */
 class SpecularBasicMethod extends LightingMethodBase
 {
-	public _pUseTexture:boolean;
 	public _pTotalLightColorReg:ShaderRegisterElement;
-	public _pSpecularTextureRegister:ShaderRegisterElement;
 	public _pSpecularTexData:ShaderRegisterElement;
 	public _pSpecularDataRegister:ShaderRegisterElement;
 
-	private _texture:Texture2DBase;
+	private _texture:TextureBase;
 
 	private _gloss:number = 50;
 	private _specular:number = 1;
@@ -55,9 +52,16 @@ class SpecularBasicMethod extends LightingMethodBase
 	 */
 	public iInitVO(shaderObject:ShaderLightingObject, methodVO:MethodVO)
 	{
-		methodVO.needsUV = this._pUseTexture;
 		methodVO.needsNormals = shaderObject.numLights > 0;
 		methodVO.needsView = shaderObject.numLights > 0;
+
+		if (this._texture) {
+			methodVO.textureObject = shaderObject.getTextureObject(this._texture);
+			shaderObject.uvDependencies++;
+		} else if (methodVO.textureObject) {
+			methodVO.textureObject.dispose();
+			methodVO.textureObject = null;
+		}
 	}
 
 	/**
@@ -113,24 +117,22 @@ class SpecularBasicMethod extends LightingMethodBase
 
 	/**
 	 * The bitmapData that encodes the specular highlight strength per texel in the red channel, and the sharpness
-	 * in the green channel. You can use SpecularBitmapTexture if you want to easily set specular and gloss maps
+	 * in the green channel. You can use SpecularTextureBase if you want to easily set specular and gloss maps
 	 * from grayscale images, but prepared images are preferred.
 	 */
-	public get texture():Texture2DBase
+	public get texture():TextureBase
 	{
 		return this._texture;
 	}
 
-	public set texture(value:Texture2DBase)
+	public set texture(value:TextureBase)
 	{
-		var b:boolean = ( value != null );
+		if (this._texture == value)
+			return;
 
-		if (b != this._pUseTexture || (value && this._texture && (value.format != this._texture.format)))
-			this.iInvalidateShaderProgram();
-
-		this._pUseTexture = b;
 		this._texture = value;
 
+		this.iInvalidateShaderProgram();
 	}
 
 	/**
@@ -156,7 +158,6 @@ class SpecularBasicMethod extends LightingMethodBase
 	{
 		super.iCleanCompilationData();
 		this._pTotalLightColorReg = null;
-		this._pSpecularTextureRegister = null;
 		this._pSpecularTexData = null;
 		this._pSpecularDataRegister = null;
 	}
@@ -173,17 +174,14 @@ class SpecularBasicMethod extends LightingMethodBase
 		this._pSpecularDataRegister = registerCache.getFreeFragmentConstant();
 		methodVO.fragmentConstantsIndex = this._pSpecularDataRegister.index*4;
 
-		if (this._pUseTexture) {
+		if (this._texture) {
 
 			this._pSpecularTexData = registerCache.getFreeFragmentVectorTemp();
 			registerCache.addFragmentTempUsages(this._pSpecularTexData, 1);
-			this._pSpecularTextureRegister = registerCache.getFreeTextureReg();
-			methodVO.texturesIndex = this._pSpecularTextureRegister.index;
-			code = ShaderCompilerHelper.getTex2DSampleCode(this._pSpecularTexData, sharedRegisters, this._pSpecularTextureRegister, this._texture, shaderObject.useSmoothTextures, shaderObject.repeatTextures, shaderObject.useMipmapping);
 
-		} else {
+			methodVO.textureObject._iInitRegisters(shaderObject, registerCache);
 
-			this._pSpecularTextureRegister = null;
+			code += methodVO.textureObject._iGetFragmentCode(shaderObject, this._pSpecularTexData, registerCache, sharedRegisters.uvVarying);
 		}
 
 		this._pTotalLightColorReg = registerCache.getFreeFragmentVectorTemp();
@@ -216,7 +214,7 @@ class SpecularBasicMethod extends LightingMethodBase
 				"dp3 " + t + ".w, " + normalReg + ", " + t + "\n" +
 				"sat " + t + ".w, " + t + ".w\n";
 
-		if (this._pUseTexture) {
+		if (this._texture) {
 			// apply gloss modulation from texture
 			code += "mul " + this._pSpecularTexData + ".w, " + this._pSpecularTexData + ".y, " + this._pSpecularDataRegister + ".w\n" +
 					"pow " + t + ".w, " + t + ".w, " + this._pSpecularTexData + ".w\n";
@@ -292,7 +290,7 @@ class SpecularBasicMethod extends LightingMethodBase
 		if (sharedRegisters.shadowTarget)
 			code += "mul " + this._pTotalLightColorReg + ".xyz, " + this._pTotalLightColorReg + ", " + sharedRegisters.shadowTarget + ".w\n";
 
-		if (this._pUseTexture) {
+		if (this._texture) {
 			// apply strength modulation from texture
 			code += "mul " + this._pTotalLightColorReg + ".xyz, " + this._pTotalLightColorReg + ", " + this._pSpecularTexData + ".x\n";
 			registerCache.removeFragmentTempUsage(this._pSpecularTexData);
@@ -311,8 +309,8 @@ class SpecularBasicMethod extends LightingMethodBase
 	 */
 	public iActivate(shaderObject:ShaderLightingObject, methodVO:MethodVO, stage:Stage)
 	{
-		if (methodVO.texturesIndex >= 0)
-			stage.activateTexture(methodVO.texturesIndex, this._texture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
+		if (this._texture)
+			methodVO.textureObject.activate(shaderObject);
 
 		var index:number = methodVO.fragmentConstantsIndex;
 		var data:Array<number> = shaderObject.fragmentConstantData;

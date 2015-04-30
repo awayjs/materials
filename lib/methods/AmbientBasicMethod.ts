@@ -1,12 +1,9 @@
-import Texture2DBase				= require("awayjs-core/lib/textures/Texture2DBase");
-
 import Stage						= require("awayjs-stagegl/lib/base/Stage");
 
 import ShaderObjectBase				= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
 import ShaderRegisterCache			= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 import ShaderRegisterData			= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
 import ShaderRegisterElement		= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import ShaderCompilerHelper			= require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 
 import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
 import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
@@ -38,7 +35,8 @@ class AmbientBasicMethod extends ShadingMethodBase
 	 */
 	public iInitVO(shaderObject:ShaderObjectBase, methodVO:MethodVO)
 	{
-		methodVO.needsUV = Boolean(shaderObject.texture != null);
+		if (shaderObject.texture)
+			shaderObject.uvDependencies++;
 	}
 
 	/**
@@ -46,7 +44,7 @@ class AmbientBasicMethod extends ShadingMethodBase
 	 */
 	public iInitConstants(shaderObject:ShaderObjectBase, methodVO:MethodVO)
 	{
-		if (!methodVO.needsUV) {
+		if (!shaderObject.texture) {
 			this._color = shaderObject.color;
 			this.updateColor();
 		}
@@ -103,14 +101,11 @@ class AmbientBasicMethod extends ShadingMethodBase
 	public iGetFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
-		var ambientInputRegister:ShaderRegisterElement;
 
-		if (methodVO.needsUV) {
-			ambientInputRegister = registerCache.getFreeTextureReg();
+		if (shaderObject.texture) {
+			shaderObject.texture._iInitRegisters(shaderObject, registerCache);
 
-			methodVO.texturesIndex = ambientInputRegister.index;
-
-			code += ShaderCompilerHelper.getTex2DSampleCode(targetReg, sharedRegisters, ambientInputRegister, shaderObject.texture, shaderObject.useSmoothTextures, shaderObject.repeatTextures, false);
+			code += shaderObject.texture._iGetFragmentCode(shaderObject, targetReg, registerCache, sharedRegisters.uvVarying);
 
 			if (shaderObject.alphaThreshold > 0) {
 				var cutOffReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
@@ -122,7 +117,7 @@ class AmbientBasicMethod extends ShadingMethodBase
 			}
 
 		} else {
-			ambientInputRegister = registerCache.getFreeFragmentConstant();
+			var ambientInputRegister:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 			methodVO.fragmentConstantsIndex = ambientInputRegister.index*4;
 
 			code += "mov " + targetReg + ", " + ambientInputRegister + "\n";
@@ -136,8 +131,8 @@ class AmbientBasicMethod extends ShadingMethodBase
 	 */
 	public iActivate(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
 	{
-		if (methodVO.needsUV) {
-			stage.activateTexture(methodVO.texturesIndex, shaderObject.texture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
+		if (shaderObject.texture) {
+			shaderObject.texture.activate(shaderObject);
 
 			if (shaderObject.alphaThreshold > 0)
 				shaderObject.fragmentConstantData[methodVO.fragmentConstantsIndex] = shaderObject.alphaThreshold;

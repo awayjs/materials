@@ -1,11 +1,13 @@
 ﻿import BlendMode					= require("awayjs-core/lib/data/BlendMode");
-import Texture2DBase				= require("awayjs-core/lib/textures/Texture2DBase");
+import Image2D						= require("awayjs-core/lib/data/Image2D");
 
 import Camera						= require("awayjs-display/lib/entities/Camera");
 import StaticLightPicker			= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
 import IRenderObjectOwner			= require("awayjs-display/lib/base/IRenderObjectOwner");
 import MaterialBase					= require("awayjs-display/lib/materials/MaterialBase");
 import IRenderObject				= require("awayjs-display/lib/pool/IRenderObject");
+import Single2DTexture				= require("awayjs-display/lib/textures/Single2DTexture");
+import TextureBase					= require("awayjs-display/lib/textures/TextureBase");
 
 import ContextGLCompareMode			= require("awayjs-stagegl/lib/base/ContextGLCompareMode");
 
@@ -45,7 +47,8 @@ class MethodMaterial extends MaterialBase
 	 * @param repeat Indicates whether the texture should be tiled when sampled. Defaults to false.
 	 * @param mipmap Indicates whether or not any used textures should use mipmapping. Defaults to false.
 	 */
-	constructor(texture?:Texture2DBase, smooth?:boolean, repeat?:boolean, mipmap?:boolean);
+	constructor(texture?:Image2D, smooth?:boolean, repeat?:boolean, mipmap?:boolean);
+	constructor(texture?:TextureBase, smooth?:boolean, repeat?:boolean, mipmap?:boolean);
 	constructor(color?:number, alpha?:number);
 	constructor(textureColor:any = null, smoothAlpha:any = null, repeat:boolean = false, mipmap:boolean = true)
 	{
@@ -53,8 +56,11 @@ class MethodMaterial extends MaterialBase
 
 		this._mode = MethodMaterialMode.SINGLE_PASS;
 
-		if (textureColor instanceof Texture2DBase) {
-			this.texture = <Texture2DBase> textureColor;
+		if (textureColor instanceof Image2D)
+			textureColor = new Single2DTexture(textureColor);
+
+		if (textureColor instanceof TextureBase) {
+			this.texture = <TextureBase> textureColor;
 
 			this.smooth = (smoothAlpha == null)? true : false;
 			this.repeat = repeat;
@@ -105,12 +111,12 @@ class MethodMaterial extends MaterialBase
 	/**
 	 * The texture object to use for the ambient colour.
 	 */
-	public get diffuseTexture():Texture2DBase
+	public get diffuseTexture():TextureBase
 	{
 		return this._diffuseMethod.texture;
 	}
 
-	public set diffuseTexture(value:Texture2DBase)
+	public set diffuseTexture(value:TextureBase)
 	{
 		this._diffuseMethod.texture = value;
 	}
@@ -274,27 +280,27 @@ class MethodMaterial extends MaterialBase
 	 * The normal map to modulate the direction of the surface for each texel. The default normal method expects
 	 * tangent-space normal maps, but others could expect object-space maps.
 	 */
-	public get normalMap():Texture2DBase
+	public get normalMap():TextureBase
 	{
 		return this._normalMethod.normalMap;
 	}
 
-	public set normalMap(value:Texture2DBase)
+	public set normalMap(value:TextureBase)
 	{
 		this._normalMethod.normalMap = value;
 	}
 
 	/**
 	 * A specular map that defines the strength of specular reflections for each texel in the red channel,
-	 * and the gloss factor in the green channel. You can use SpecularBitmapTexture if you want to easily set
+	 * and the gloss factor in the green channel. You can use Specular2DTexture if you want to easily set
 	 * specular and gloss maps from grayscale images, but correctly authored images are preferred.
 	 */
-	public get specularMap():Texture2DBase
+	public get specularMap():TextureBase
 	{
 		return this._specularMethod.texture;
 	}
 
-	public set specularMap(value:Texture2DBase)
+	public set specularMap(value:TextureBase)
 	{
 		this._specularMethod.texture = value;
 	}

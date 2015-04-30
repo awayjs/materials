@@ -64,7 +64,7 @@ class SpecularAnisotropicMethod extends SpecularBasicMethod
 			// (t.x - t.w) ^ k
 			"sub " + t + ".w, " + t + ".x, " + t + ".w\n";
 
-		if (this._pUseTexture) {
+		if (this.texture) {
 			// apply gloss modulation from texture
 			code += "mul " + this._pSpecularTexData + ".w, " + this._pSpecularTexData + ".y, " + this._pSpecularDataRegister + ".w\n" +
 				"pow " + t + ".w, " + t + ".w, " + this._pSpecularTexData + ".w\n";

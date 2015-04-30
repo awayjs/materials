@@ -3,7 +3,6 @@ import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderO
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
 import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import ShaderCompilerHelper				= require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
@@ -43,7 +42,7 @@ class DiffuseDepthMethod extends DiffuseBasicMethod
 		var temp:ShaderRegisterElement;
 		var decReg:ShaderRegisterElement;
 
-		if (!this._pUseTexture)
+		if (!this._texture)
 			throw new Error("DiffuseDepthMethod requires texture!");
 
 		// incorporate input from ambient
@@ -53,15 +52,17 @@ class DiffuseDepthMethod extends DiffuseBasicMethod
 			code += "add " + targetReg + ".xyz, " + this._pTotalLightColorReg + ".xyz, " + targetReg + ".xyz\n" +
 				"sat " + targetReg + ".xyz, " + targetReg + ".xyz\n";
 			registerCache.removeFragmentTempUsage(this._pTotalLightColorReg);
+			registerCache.addFragmentTempUsages(temp = registerCache.getFreeFragmentVectorTemp(), 1);
+		} else {
+			temp = targetReg;
 		}
 
-		temp = shaderObject.numLights > 0? registerCache.getFreeFragmentVectorTemp():targetReg;
-
-		this._pDiffuseInputRegister = registerCache.getFreeTextureReg();
-		methodVO.texturesIndex = this._pDiffuseInputRegister.index;
 		decReg = registerCache.getFreeFragmentConstant();
 		methodVO.fragmentConstantsIndex = decReg.index*4;
-		code += ShaderCompilerHelper.getTex2DSampleCode(temp, sharedRegisters, this._pDiffuseInputRegister, this.texture, shaderObject.useSmoothTextures, shaderObject.repeatTextures, shaderObject.useMipmapping) +
+
+		methodVO.textureObject._iInitRegisters(shaderObject, registerCache);
+
+		code += methodVO.textureObject._iGetFragmentCode(shaderObject, temp, registerCache, sharedRegisters.uvVarying) +
 			"dp4 " + temp + ".x, " + temp + ", " + decReg + "\n" +
 			"mov " + temp + ".yz, " + temp + ".xx			\n" +
 			"mov " + temp + ".w, " + decReg + ".x\n" +
@@ -72,6 +73,9 @@ class DiffuseDepthMethod extends DiffuseBasicMethod
 
 		code += "mul " + targetReg + ".xyz, " + temp + ".xyz, " + targetReg + ".xyz\n" +
 			"mov " + targetReg + ".w, " + temp + ".w\n";
+
+		if (shaderObject.numLights > 0)
+			registerCache.removeFragmentTempUsage(temp);
 
 		return code;
 	}

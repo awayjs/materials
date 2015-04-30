@@ -213,7 +213,7 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	public iActivate(shaderObject:ShaderLightingObject, methodVO:MethodVO, stage:Stage)
 	{
 		super.iActivate(shaderObject, methodVO, stage);
-		
+
 		var index:number /*int*/ = methodVO.secondaryFragmentConstantsIndex;
 		var data:Array<number> = shaderObject.fragmentConstantData;
 		data[index] = this._scatterR;
@@ -228,7 +228,8 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	 */
 	public iSetRenderState(shaderObject:ShaderObjectBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
-		stage.activateTexture(methodVO.secondaryTexturesIndex, this._depthPass._iGetDepthMap(renderable), shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
+		methodVO.secondaryTextureObject = shaderObject.getTextureObject(this._depthPass._iGetDepthMap(renderable));
+		methodVO.secondaryTextureObject.activate(shaderObject);
 
 		this._depthPass._iGetProjection(renderable).copyRawDataTo(shaderObject.vertexConstantData, methodVO.secondaryVertexConstantsIndex + 4, true);
 	}
@@ -245,19 +246,15 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 		this._pIsFirstLight = false;
 
 		var code:string = "";
-		var depthReg:ShaderRegisterElement = registerCache.getFreeTextureReg();
 
-		if (sharedRegisters.viewDirFragment) {
+		if (sharedRegisters.viewDirFragment)
 			this._targetReg = sharedRegisters.viewDirFragment;
-		} else {
-			this._targetReg = registerCache.getFreeFragmentVectorTemp();
-			registerCache.addFragmentTempUsages(this._targetReg, 1);
-		}
+		else
+			registerCache.addFragmentTempUsages(this._targetReg = registerCache.getFreeFragmentVectorTemp(), 1);
 
-		methodVO.secondaryTexturesIndex = depthReg.index;
-		
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
-		code += "tex " + temp + ", " + this._lightProjVarying + ", " + depthReg + " <2d,nearest,clamp>\n" +
+
+		code += methodVO.secondaryTextureObject._iGetFragmentCode(shaderObject, temp, registerCache, this._lightProjVarying) +
 			// reencode RGBA
 			"dp4 " + targetReg + ".z, " + temp + ", " + this._decReg + "\n";
 		// currentDistanceToLight - closestDistanceToLight

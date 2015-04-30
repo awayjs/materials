@@ -54,9 +54,10 @@ class SpecularPhongMethod extends SpecularBasicMethod
 			"dp3 " + t + ".w, " + t + ", " + viewDirReg + "\n" + // sca1 = vec1.view
 			"sat " + t + ".w, " + t + ".w\n";
 
-		if (this._pUseTexture) {
+		if (this.texture) {
 			// apply gloss modulation from texture
-			code += "mul " + this._pSpecularTexData + ".w, " + this._pSpecularTexData + ".y, " + this._pSpecularDataRegister + ".w\n" + "pow " + t + ".w, " + t + ".w, " + this._pSpecularTexData + ".w\n";
+			code += "mul " + this._pSpecularTexData + ".w, " + this._pSpecularTexData + ".y, " + this._pSpecularDataRegister + ".w\n" +
+				"pow " + t + ".w, " + t + ".w, " + this._pSpecularTexData + ".w\n";
 		} else
 			code += "pow " + t + ".w, " + t + ".w, " + this._pSpecularDataRegister + ".w\n";
 

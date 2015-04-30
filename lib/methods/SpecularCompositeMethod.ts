@@ -1,6 +1,5 @@
 import Camera							= require("awayjs-display/lib/entities/Camera");
-
-import Texture2DBase					= require("awayjs-core/lib/textures/Texture2DBase");
+import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
@@ -118,12 +117,12 @@ class SpecularCompositeMethod extends SpecularBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public get texture():Texture2DBase
+	public get texture():TextureBase
 	{
 		return this._baseMethod.texture;
 	}
 
-	public set texture(value:Texture2DBase)
+	public set texture(value:TextureBase)
 	{
 		this._baseMethod.texture = value;
 	}

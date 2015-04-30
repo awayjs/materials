@@ -1,6 +1,5 @@
-import Texture2DBase				= require("awayjs-core/lib/textures/Texture2DBase");
-
 import Camera						= require("awayjs-display/lib/entities/Camera");
+import TextureBase					= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage						= require("awayjs-stagegl/lib/base/Stage");
 
@@ -8,7 +7,6 @@ import ShaderLightingObject			= require("awayjs-renderergl/lib/compilation/Shade
 import ShaderRegisterCache			= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 import ShaderRegisterData			= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
 import ShaderRegisterElement		= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import ShaderCompilerHelper			= require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 import RenderableBase				= require("awayjs-renderergl/lib/pool/RenderableBase");
 
 import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
@@ -22,11 +20,9 @@ class DiffuseBasicMethod extends LightingMethodBase
 {
 	private _multiply:boolean = true;
 
-	public _pUseTexture:boolean;
 	public _pTotalLightColorReg:ShaderRegisterElement;
-	public _pDiffuseInputRegister:ShaderRegisterElement;
 
-	private _texture:Texture2DBase;
+	public _texture:TextureBase;
 	private _diffuseColor:number = 0xffffff;
 	private _ambientColor:number = 0xffffff;
 	private _diffuseR:number = 1;
@@ -74,18 +70,16 @@ class DiffuseBasicMethod extends LightingMethodBase
 
 	public iInitVO(shaderObject:ShaderLightingObject, methodVO:MethodVO)
 	{
-		methodVO.needsUV = this._pUseTexture;
-		methodVO.needsNormals = shaderObject.numLights > 0;
-	}
+		if (this._texture) {
+			methodVO.textureObject = shaderObject.getTextureObject(this._texture);
+			shaderObject.uvDependencies++;
+		} else if (methodVO.textureObject) {
+			methodVO.textureObject.dispose();
+			methodVO.textureObject = null;
+		}
 
-	/**
-	 * Forces the creation of the texture's mipmaps.
-	 * @param stage The Stage used by the renderer
-	 */
-	public generateMip(stage:Stage)
-	{
-		if (this._pUseTexture)
-			stage.activateTexture(0, this._texture, true, true, true);
+
+		methodVO.needsNormals = shaderObject.numLights > 0;
 	}
 
 	/**
@@ -128,20 +122,19 @@ class DiffuseBasicMethod extends LightingMethodBase
 	/**
 	 * The bitmapData to use to define the diffuse reflection color per texel.
 	 */
-	public get texture():Texture2DBase
+	public get texture():TextureBase
 	{
 		return this._texture;
 	}
 
-	public set texture(value:Texture2DBase)
+	public set texture(value:TextureBase)
 	{
-		var b:boolean = (value != null);
+		if (this._texture == value)
+			return;
 
-		if (b != this._pUseTexture || (value && this._texture && (value.format != this._texture.format)))
-			this.iInvalidateShaderProgram();
-
-		this._pUseTexture = b;
 		this._texture = value;
+
+		this.iInvalidateShaderProgram();
 	}
 
 	/**
@@ -173,7 +166,6 @@ class DiffuseBasicMethod extends LightingMethodBase
 		super.iCleanCompilationData();
 
 		this._pTotalLightColorReg = null;
-		this._pDiffuseInputRegister = null;
 	}
 
 	/**
@@ -185,8 +177,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 
 		this._pIsFirstLight = true;
 
-		this._pTotalLightColorReg = registerCache.getFreeFragmentVectorTemp();
-		registerCache.addFragmentTempUsages(this._pTotalLightColorReg, 1);
+		registerCache.addFragmentTempUsages(this._pTotalLightColorReg = registerCache.getFreeFragmentVectorTemp(), 1);
 
 		return code;
 	}
@@ -274,23 +265,19 @@ class DiffuseBasicMethod extends LightingMethodBase
 		if (sharedRegisters.shadowTarget)
 			code += this.pApplyShadow(shaderObject, methodVO, registerCache, sharedRegisters);
 
-		albedo = registerCache.getFreeFragmentVectorTemp();
-		registerCache.addFragmentTempUsages(albedo, 1);
+		registerCache.addFragmentTempUsages(albedo = registerCache.getFreeFragmentVectorTemp(), 1);
 
 		var ambientColorRegister:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 		methodVO.fragmentConstantsIndex = ambientColorRegister.index*4;
 
-		if (this._pUseTexture) {
-			this._pDiffuseInputRegister = registerCache.getFreeTextureReg();
+		if (this._texture) {
+			methodVO.textureObject._iInitRegisters(shaderObject, registerCache);
 
-			methodVO.texturesIndex = this._pDiffuseInputRegister.index;
-
-			code += ShaderCompilerHelper.getTex2DSampleCode(albedo, sharedRegisters, this._pDiffuseInputRegister, this._texture, shaderObject.useSmoothTextures, shaderObject.repeatTextures, shaderObject.useMipmapping);
-
+			code += methodVO.textureObject._iGetFragmentCode(shaderObject, albedo, registerCache, sharedRegisters.uvVarying);
 		} else {
-			this._pDiffuseInputRegister = registerCache.getFreeFragmentConstant();
+			var diffuseInputRegister:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 
-			code += "mov " + albedo + ", " + this._pDiffuseInputRegister + "\n";
+			code += "mov " + albedo + ", " + diffuseInputRegister + "\n";
 		}
 
 		code += "sat " + this._pTotalLightColorReg + ", " + this._pTotalLightColorReg + "\n" +
@@ -327,8 +314,8 @@ class DiffuseBasicMethod extends LightingMethodBase
 	 */
 	public iActivate(shaderObject:ShaderLightingObject, methodVO:MethodVO, stage:Stage)
 	{
-		if (this._pUseTexture) {
-			stage.activateTexture(methodVO.texturesIndex, this._texture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
+		if (this._texture) {
+			methodVO.textureObject.activate(shaderObject);
 		} else {
 			var index:number = methodVO.fragmentConstantsIndex;
 			var data:Array<number> = shaderObject.fragmentConstantData;

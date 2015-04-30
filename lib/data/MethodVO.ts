@@ -1,3 +1,5 @@
+import TextureObjectBase			= require("awayjs-renderergl/lib/pool/TextureObjectBase");
+
 import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
 
 /**
@@ -11,8 +13,8 @@ class MethodVO
 	public method:ShadingMethodBase;
 
 	// public register indices
-	public texturesIndex:number;
-	public secondaryTexturesIndex:number; // sometimes needed for composites
+	public textureObject:TextureObjectBase;
+	public secondaryTextureObject:TextureObjectBase; // sometimes needed for composites
 	public vertexConstantsIndex:number;
 	public secondaryVertexConstantsIndex:number; // sometimes needed for composites
 	public fragmentConstantsIndex:number;
@@ -23,13 +25,8 @@ class MethodVO
 	public needsView:boolean;
 	public needsNormals:boolean;
 	public needsTangents:boolean;
-	public needsUV:boolean;
-	public needsSecondaryUV:boolean;
 	public needsGlobalVertexPos:boolean;
 	public needsGlobalFragmentPos:boolean;
-
-	public usesTexture:boolean;
-
 	/**
 	 * Creates a new MethodVO object.
 	 */
@@ -45,16 +42,15 @@ class MethodVO
 	{
 		this.method.iReset();
 
-		this.texturesIndex = -1;
 		this.vertexConstantsIndex = -1;
+		this.secondaryVertexConstantsIndex = -1;
 		this.fragmentConstantsIndex = -1;
+		this.secondaryFragmentConstantsIndex = -1;
 
 		this.needsProjection = false;
 		this.needsView = false;
 		this.needsNormals = false;
 		this.needsTangents = false;
-		this.needsUV = false;
-		this.needsSecondaryUV = false;
 		this.needsGlobalVertexPos = false;
 		this.needsGlobalFragmentPos = false;
 	}

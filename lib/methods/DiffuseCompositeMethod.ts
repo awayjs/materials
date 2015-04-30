@@ -1,6 +1,5 @@
-import Texture2DBase					= require("awayjs-core/lib/textures/Texture2DBase");
-
 import Camera							= require("awayjs-display/lib/entities/Camera");
+import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
@@ -89,7 +88,7 @@ class DiffuseCompositeMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public get texture():Texture2DBase
+	public get texture():TextureBase
 	{
 		return this.pBaseMethod.texture;
 	}
@@ -97,7 +96,7 @@ class DiffuseCompositeMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public set texture(value:Texture2DBase)
+	public set texture(value:TextureBase)
 	{
 		this.pBaseMethod.texture = value;
 	}

@@ -1,4 +1,4 @@
-import Texture2DBase				= require("awayjs-core/lib/textures/Texture2DBase");
+import TextureBase					= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage						= require("awayjs-stagegl/lib/base/Stage");
 
@@ -6,7 +6,6 @@ import ShaderObjectBase				= require("awayjs-renderergl/lib/compilation/ShaderOb
 import ShaderRegisterCache			= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 import ShaderRegisterData			= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
 import ShaderRegisterElement		= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import ShaderCompilerHelper			= require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 
 import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
 import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
@@ -16,24 +15,24 @@ import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/Shading
  */
 class NormalBasicMethod extends ShadingMethodBase
 {
-	private _texture:Texture2DBase;
-	private _useTexture:boolean;
-	public _pNormalTextureRegister:ShaderRegisterElement;
+	private _normalMap:TextureBase;
 
 	/**
 	 * Creates a new NormalBasicMethod object.
 	 */
-	constructor()
+	constructor(normalMap:TextureBase = null)
 	{
 		super();
+
+		this._normalMap = normalMap;
 	}
 
 	public iIsUsed(shaderObject:ShaderObjectBase):boolean
 	{
-		if (!this._useTexture || !shaderObject.normalDependencies)
-			return false;
+		if (this._normalMap && shaderObject.normalDependencies)
+			return true;
 
-		return true;
+		return false;
 	}
 
 	/**
@@ -41,7 +40,10 @@ class NormalBasicMethod extends ShadingMethodBase
 	 */
 	public iInitVO(shaderObject:ShaderObjectBase, methodVO:MethodVO)
 	{
-		methodVO.needsUV = this._useTexture;
+		if (this._normalMap) {
+			methodVO.textureObject = shaderObject.getTextureObject(this._normalMap);
+			shaderObject.uvDependencies++;
+		}
 	}
 
 	/**
@@ -67,30 +69,19 @@ class NormalBasicMethod extends ShadingMethodBase
 	/**
 	 * The texture containing the normals per pixel.
 	 */
-	public get normalMap():Texture2DBase
+	public get normalMap():TextureBase
 	{
-		return this._texture;
+		return this._normalMap;
 	}
 
-	public set normalMap(value:Texture2DBase)
+	public set normalMap(value:TextureBase)
 	{
-		var b:boolean = (value != null);
+		if (this._normalMap == value)
+			return;
 
-		if (b != this._useTexture || (value && this._texture && (value.format != this._texture.format)))
-			this.iInvalidateShaderProgram();
+		this._normalMap = value;
 
-		this._useTexture = b;
-		this._texture = value;
-
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iCleanCompilationData()
-	{
-		super.iCleanCompilationData();
-		this._pNormalTextureRegister = null;
+		this.iInvalidateShaderProgram();
 	}
 
 	/**
@@ -98,8 +89,8 @@ class NormalBasicMethod extends ShadingMethodBase
 	 */
 	public dispose()
 	{
-		if (this._texture)
-			this._texture = null;
+		if (this._normalMap)
+			this._normalMap = null;
 	}
 
 	/**
@@ -107,8 +98,8 @@ class NormalBasicMethod extends ShadingMethodBase
 	 */
 	public iActivate(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
 	{
-		if (methodVO.texturesIndex >= 0)
-			stage.activateTexture(methodVO.texturesIndex, this._texture, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
+		if (this._normalMap)
+			methodVO.textureObject.activate(shaderObject);
 	}
 
 	/**
@@ -116,13 +107,18 @@ class NormalBasicMethod extends ShadingMethodBase
 	 */
 	public iGetFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		this._pNormalTextureRegister = registerCache.getFreeTextureReg();
+		var code:string = "";
 
-		methodVO.texturesIndex = this._pNormalTextureRegister.index;
+		if (this._normalMap) {
+			methodVO.textureObject._iInitRegisters(shaderObject, registerCache);
 
-		return ShaderCompilerHelper.getTex2DSampleCode(targetReg, sharedRegisters, this._pNormalTextureRegister, this._texture, shaderObject.useSmoothTextures, shaderObject.repeatTextures, shaderObject.useMipmapping) +
-			"sub " + targetReg + ".xyz, " + targetReg + ".xyz, " + sharedRegisters.commons + ".xxx\n" +
+			code += methodVO.textureObject._iGetFragmentCode(shaderObject, targetReg, registerCache, sharedRegisters.uvVarying);
+		}
+
+		code += "sub " + targetReg + ".xyz, " + targetReg + ".xyz, " + sharedRegisters.commons + ".xxx\n" +
 			"nrm " + targetReg + ".xyz, " + targetReg + "\n";
+
+		return code;
 	}
 }
 

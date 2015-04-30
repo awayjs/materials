@@ -1,4 +1,4 @@
-import Texture2DBase					= require("awayjs-core/lib/textures/Texture2DBase");
+import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
@@ -6,7 +6,6 @@ import ShaderLightingObject				= require("awayjs-renderergl/lib/compilation/Shad
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
 import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import ShaderCompilerHelper				= require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
@@ -19,35 +18,44 @@ import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/Diffu
  */
 class DiffuseGradientMethod extends DiffuseBasicMethod
 {
-	private _gradientTextureRegister:ShaderRegisterElement;
-	private _gradient:Texture2DBase;
+	private _gradient:TextureBase;
 
 	/**
 	 * Creates a new DiffuseGradientMethod object.
 	 * @param gradient A texture that contains the light colour based on the angle. This can be used to change
 	 * the light colour due to subsurface scattering when the surface faces away from the light.
 	 */
-	constructor(gradient:Texture2DBase)
+	constructor(gradient:TextureBase)
 	{
 		super();
 
 		this._gradient = gradient;
 	}
 
+	public iInitVO(shaderObject:ShaderLightingObject, methodVO:MethodVO)
+	{
+		super.iInitVO(shaderObject, methodVO);
+
+		methodVO.secondaryTextureObject = shaderObject.getTextureObject(this._gradient);
+	}
+
 	/**
 	 * A texture that contains the light colour based on the angle. This can be used to change the light colour
 	 * due to subsurface scattering when the surface faces away from the light.
 	 */
-	public get gradient():Texture2DBase
+	public get gradient():TextureBase
 	{
 		return this._gradient;
 	}
 
-	public set gradient(value:Texture2DBase)
+	public set gradient(value:TextureBase)
 	{
-		if (value.format != this._gradient.format)
-			this.iInvalidateShaderProgram();
+		if (this._gradient == value)
+			return;
+
 		this._gradient = value;
+
+		this.iInvalidateShaderProgram();
 	}
 
 	/**
@@ -56,7 +64,6 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 	public iCleanCompilationData()
 	{
 		super.iCleanCompilationData();
-		this._gradientTextureRegister = null;
 	}
 
 	/**
@@ -67,10 +74,9 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 		var code:string = super.iGetFragmentPreLightingCode(shaderObject, methodVO, registerCache, sharedRegisters);
 		this._pIsFirstLight = true;
 
-		if (shaderObject.numLights > 0) {
-			this._gradientTextureRegister = registerCache.getFreeTextureReg();
-			methodVO.secondaryTexturesIndex = this._gradientTextureRegister.index;
-		}
+		if (shaderObject.numLights > 0)
+			methodVO.secondaryTextureObject._iInitRegisters(shaderObject, registerCache);
+
 		return code;
 	}
 
@@ -98,7 +104,7 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 		if (this._iModulateMethod != null)
 			code += this._iModulateMethod(shaderObject, methodVO, t, registerCache, sharedRegisters);
 
-		code += ShaderCompilerHelper.getTex2DSampleCode(t, sharedRegisters, this._gradientTextureRegister, this._gradient, shaderObject.useSmoothTextures, shaderObject.repeatTextures, shaderObject.useMipmapping, t, "clamp") +
+		code += methodVO.secondaryTextureObject._iGetFragmentCode(shaderObject, t, registerCache, t) +
 			//					"mul " + t + ".xyz, " + t + ".xyz, " + t + ".w\n" +
 			"mul " + t + ".xyz, " + t + ".xyz, " + lightColReg + ".xyz\n";
 
@@ -120,7 +126,7 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 		var t:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
 
 		return "mov " + t + ", " + sharedRegisters.shadowTarget + ".wwww\n" +
-			ShaderCompilerHelper.getTex2DSampleCode(t, sharedRegisters, this._gradientTextureRegister, this._gradient, shaderObject.useSmoothTextures, shaderObject.repeatTextures, shaderObject.useMipmapping, t, "clamp") +
+			methodVO.secondaryTextureObject._iGetFragmentCode(shaderObject, t, regCache, sharedRegisters.uvVarying) +
 			"mul " + this._pTotalLightColorReg + ".xyz, " + this._pTotalLightColorReg + ", " + t + "\n";
 	}
 
@@ -131,7 +137,7 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 	{
 		super.iActivate(shaderObject, methodVO, stage);
 
-		stage.activateTexture(methodVO.secondaryTexturesIndex, this._gradient, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
+		methodVO.secondaryTextureObject.activate(shaderObject);
 	}
 }
 

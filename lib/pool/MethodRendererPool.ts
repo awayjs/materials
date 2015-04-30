@@ -1,10 +1,10 @@
+import RendererBase					= require("awayjs-renderergl/lib/RendererBase");
 import BillboardRenderable			= require("awayjs-renderergl/lib/pool/BillboardRenderable");
 import LineSegmentRenderable		= require("awayjs-renderergl/lib/pool/LineSegmentRenderable");
 import LineSubMeshRenderable		= require("awayjs-renderergl/lib/pool/LineSubMeshRenderable");
 import TriangleSubMeshRenderable	= require("awayjs-renderergl/lib/pool/TriangleSubMeshRenderable");
 import CurveSubMeshRenderable		= require("awayjs-renderergl/lib/pool/CurveSubMeshRenderable");
 import RendererPoolBase				= require("awayjs-renderergl/lib/pool/RendererPoolBase");
-import RendererBase					= require("awayjs-renderergl/lib/base/RendererBase");
 
 import MethodRenderablePool			= require("awayjs-methodmaterials/lib/pool/MethodRenderablePool");
 

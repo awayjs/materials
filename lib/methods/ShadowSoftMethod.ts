@@ -101,18 +101,18 @@ class ShadowSoftMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public _pGetPlanarFragmentCode(methodVO:MethodVO, targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _pGetPlanarFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		// todo: move some things to super
-		var depthMapRegister:ShaderRegisterElement = regCache.getFreeTextureReg();
 		var decReg:ShaderRegisterElement = regCache.getFreeFragmentConstant();
+		regCache.getFreeFragmentConstant();
 		var dataReg:ShaderRegisterElement = regCache.getFreeFragmentConstant();
-		var customDataReg:ShaderRegisterElement = regCache.getFreeFragmentConstant();
 
 		methodVO.fragmentConstantsIndex = decReg.index*4;
-		methodVO.texturesIndex = depthMapRegister.index;
 
-		return this.getSampleCode(regCache, depthMapRegister, decReg, targetReg, customDataReg);
+		methodVO.textureObject._iInitRegisters(shaderObject, regCache);
+
+		return this.getSampleCode(shaderObject, methodVO, decReg, targetReg, regCache, dataReg);
 	}
 
 	/**
@@ -124,13 +124,13 @@ class ShadowSoftMethod extends ShadowMethodBase
 	 * @param regCache The register cache managing the registers.
 	 * @return
 	 */
-	private addSample(uv:ShaderRegisterElement, texture:ShaderRegisterElement, decode:ShaderRegisterElement, target:ShaderRegisterElement, regCache:ShaderRegisterCache):string
+	private addSample(shaderObject:ShaderObjectBase, methodVO:MethodVO, decodeRegister:ShaderRegisterElement, targetRegister:ShaderRegisterElement, registerCache:ShaderRegisterCache, uvReg:ShaderRegisterElement):string
 	{
-		var temp:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
-		return "tex " + temp + ", " + uv + ", " + texture + " <2d,nearest,clamp>\n" +
-			"dp4 " + temp + ".z, " + temp + ", " + decode + "\n" +
-			"slt " + uv + ".w, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n" + // 0 if in shadow
-			"add " + target + ".w, " + target + ".w, " + uv + ".w\n";
+		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
+		return methodVO.textureObject._iGetFragmentCode(shaderObject, temp, registerCache, uvReg) +
+			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
+			"slt " + uvReg + ".w, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n" + // 0 if in shadow
+			"add " + targetRegister + ".w, " + targetRegister + ".w, " + uvReg + ".w\n";
 	}
 
 	/**
@@ -160,14 +160,14 @@ class ShadowSoftMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public _iGetCascadeFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, decodeRegister:ShaderRegisterElement, depthTexture:ShaderRegisterElement, depthProjection:ShaderRegisterElement, targetRegister:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _iGetCascadeFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, decodeRegister:ShaderRegisterElement, depthProjection:ShaderRegisterElement, targetRegister:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		this._pDepthMapCoordReg = depthProjection;
 
 		var dataReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 		methodVO.secondaryFragmentConstantsIndex = dataReg.index*4;
 
-		return this.getSampleCode(registerCache, depthTexture, decodeRegister, targetRegister, dataReg);
+		return this.getSampleCode(shaderObject, methodVO, decodeRegister, targetRegister, registerCache, dataReg);
 	}
 
 	/**
@@ -178,36 +178,36 @@ class ShadowSoftMethod extends ShadowMethodBase
 	 * @param targetReg The target register to add the shadow coverage.
 	 * @param dataReg The register containing additional data.
 	 */
-	private getSampleCode(regCache:ShaderRegisterCache, depthTexture:ShaderRegisterElement, decodeRegister:ShaderRegisterElement, targetRegister:ShaderRegisterElement, dataReg:ShaderRegisterElement):string
+	private getSampleCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, decodeRegister:ShaderRegisterElement, targetRegister:ShaderRegisterElement, registerCache:ShaderRegisterCache, dataReg:ShaderRegisterElement):string
 	{
-		var uvReg:ShaderRegisterElement;
 		var code:string;
+		var uvReg:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
+		registerCache.addFragmentTempUsages(uvReg, 1);
+
 		var offsets:Array<string> = new Array<string>(dataReg + ".zw");
-		uvReg = regCache.getFreeFragmentVectorTemp();
-		regCache.addFragmentTempUsages(uvReg, 1);
-
-		var temp:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
-
 		var numRegs:number /*int*/ = this._numSamples >> 1;
+
 		for (var i:number /*int*/ = 0; i < numRegs; ++i) {
-			var reg:ShaderRegisterElement = regCache.getFreeFragmentConstant();
+			var reg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 			offsets.push(reg + ".xy");
 			offsets.push(reg + ".zw");
 		}
 
 		for (i = 0; i < this._numSamples; ++i) {
 			if (i == 0) {
+				var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
+
 				code = "add " + uvReg + ", " + this._pDepthMapCoordReg + ", " + dataReg + ".zwyy\n" +
-					"tex " + temp + ", " + uvReg + ", " + depthTexture + " <2d,nearest,clamp>\n" +
+					methodVO.textureObject._iGetFragmentCode(shaderObject, temp, registerCache, uvReg) +
 					"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
 					"slt " + targetRegister + ".w, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n"; // 0 if in shadow;
 			} else {
 				code += "add " + uvReg + ".xy, " + this._pDepthMapCoordReg + ".xy, " + offsets[i] + "\n" +
-					this.addSample(uvReg, depthTexture, decodeRegister, targetRegister, regCache);
+					this.addSample(shaderObject, methodVO, decodeRegister, targetRegister, registerCache, uvReg);
 			}
 		}
 
-		regCache.removeFragmentTempUsage(uvReg);
+		registerCache.removeFragmentTempUsage(uvReg);
 
 		code += "mul " + targetRegister + ".w, " + targetRegister + ".w, " + dataReg + ".x\n"; // average
 

@@ -1,5 +1,4 @@
-import CubeTextureBase					= require("awayjs-core/lib/textures/CubeTextureBase");
-import Texture2DBase					= require("awayjs-core/lib/textures/Texture2DBase");
+import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
@@ -7,7 +6,6 @@ import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderO
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
 import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import ShaderCompilerHelper				= require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import EffectMethodBase					= require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
@@ -17,19 +15,19 @@ import EffectMethodBase					= require("awayjs-methodmaterials/lib/methods/Effect
  */
 class EffectEnvMapMethod extends EffectMethodBase
 {
-	private _cubeTexture:CubeTextureBase;
+	private _envMap:TextureBase;
 	private _alpha:number;
-	private _mask:Texture2DBase;
+	private _mask:TextureBase;
 
 	/**
 	 * Creates an EffectEnvMapMethod object.
 	 * @param envMap The environment map containing the reflected scene.
 	 * @param alpha The reflectivity of the surface.
 	 */
-	constructor(envMap:CubeTextureBase, alpha:number = 1)
+	constructor(envMap:TextureBase, alpha:number = 1)
 	{
 		super();
-		this._cubeTexture = envMap;
+		this._envMap = envMap;
 		this._alpha = alpha;
 
 	}
@@ -37,17 +35,19 @@ class EffectEnvMapMethod extends EffectMethodBase
 	/**
 	 * An optional texture to modulate the reflectivity of the surface.
 	 */
-	public get mask():Texture2DBase
+	public get mask():TextureBase
 	{
 		return this._mask;
 	}
 
-	public set mask(value:Texture2DBase)
+	public set mask(value:TextureBase)
 	{
-		if (value != this._mask || (value && this._mask && (value.format != this._mask.format)))
-			this.iInvalidateShaderProgram();
+		if (value == this._mask)
+			return;
 
 		this._mask = value;
+
+		this.iInvalidateShaderProgram();
 	}
 
 	/**
@@ -57,20 +57,31 @@ class EffectEnvMapMethod extends EffectMethodBase
 	{
 		methodVO.needsNormals = true;
 		methodVO.needsView = true;
-		methodVO.needsUV = this._mask != null;
+
+		methodVO.textureObject = shaderObject.getTextureObject(this._envMap);
+
+		if (this._mask != null) {
+			methodVO.secondaryTextureObject = shaderObject.getTextureObject(this._mask);
+			shaderObject.uvDependencies++;
+		}
 	}
 
 	/**
 	 * The cubic environment map containing the reflected scene.
 	 */
-	public get envMap():CubeTextureBase
+	public get envMap():TextureBase
 	{
-		return this._cubeTexture;
+		return this._envMap;
 	}
 
-	public set envMap(value:CubeTextureBase)
+	public set envMap(value:TextureBase)
 	{
-		this._cubeTexture = value;
+		if (this._envMap == value)
+			return;
+
+		this._envMap = value;
+
+		this.iInvalidateShaderProgram();
 	}
 
 	/**
@@ -100,10 +111,10 @@ class EffectEnvMapMethod extends EffectMethodBase
 	{
 		shaderObject.fragmentConstantData[methodVO.fragmentConstantsIndex] = this._alpha;
 
-		stage.activateCubeTexture(methodVO.texturesIndex, this._cubeTexture, shaderObject.useSmoothTextures,shaderObject.useMipmapping);
+		methodVO.textureObject.activate(shaderObject);
 
 		if (this._mask)
-			stage.activateTexture(methodVO.texturesIndex + 1, this._mask,  shaderObject.repeatTextures, shaderObject.useSmoothTextures,shaderObject.useMipmapping);
+			methodVO.secondaryTextureObject.activate(shaderObject);
 	}
 
 	/**
@@ -112,34 +123,39 @@ class EffectEnvMapMethod extends EffectMethodBase
 	public iGetFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var dataRegister:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
-		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 		var code:string = "";
-		var cubeMapReg:ShaderRegisterElement = registerCache.getFreeTextureReg();
 
-		methodVO.texturesIndex = cubeMapReg.index;
 		methodVO.fragmentConstantsIndex = dataRegister.index*4;
 
+		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 		registerCache.addFragmentTempUsages(temp, 1);
 		var temp2:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
+		registerCache.addFragmentTempUsages(temp2, 1);
+
+		methodVO.textureObject._iInitRegisters(shaderObject, registerCache);
 
 		// r = I - 2(I.N)*N
 		code += "dp3 " + temp + ".w, " + sharedRegisters.viewDirFragment + ".xyz, " + sharedRegisters.normalFragment + ".xyz\n" +
-				"add " + temp + ".w, " + temp + ".w, " + temp + ".w\n" +
-				"mul " + temp + ".xyz, " + sharedRegisters.normalFragment + ".xyz, " + temp + ".w\n" +
-				"sub " + temp + ".xyz, " + temp + ".xyz, " + sharedRegisters.viewDirFragment + ".xyz\n" +
-			ShaderCompilerHelper.getTexCubeSampleCode(temp, cubeMapReg, this._cubeTexture, shaderObject.useSmoothTextures, shaderObject.useMipmapping, temp) +
-				"sub " + temp2 + ".w, " + temp + ".w, fc0.x\n" + // -.5
-				"kil " + temp2 + ".w\n" +	// used for real time reflection mapping - if alpha is not 1 (mock texture) kil output
-				"sub " + temp + ", " + temp + ", " + targetReg + "\n";
+			"add " + temp + ".w, " + temp + ".w, " + temp + ".w\n" +
+			"mul " + temp + ".xyz, " + sharedRegisters.normalFragment + ".xyz, " + temp + ".w\n" +
+			"sub " + temp + ".xyz, " + temp + ".xyz, " + sharedRegisters.viewDirFragment + ".xyz\n" +
+			methodVO.textureObject._iGetFragmentCode(shaderObject, temp, registerCache, temp) +
+			"sub " + temp2 + ".w, " + temp + ".w, fc0.x\n" + // -.5
+			"kil " + temp2 + ".w\n" +	// used for real time reflection mapping - if alpha is not 1 (mock texture) kil output
+			"sub " + temp + ", " + temp + ", " + targetReg + "\n";
 
-		if (this._mask)
-			code += ShaderCompilerHelper.getTex2DSampleCode(temp2, sharedRegisters, registerCache.getFreeTextureReg(), this._mask, shaderObject.useSmoothTextures, shaderObject.repeatTextures, shaderObject.useMipmapping) +
+		if (this._mask) {
+			methodVO.secondaryTextureObject._iInitRegisters(shaderObject, registerCache);
+
+			code += methodVO.secondaryTextureObject._iGetFragmentCode(shaderObject, temp2, registerCache, sharedRegisters.uvVarying) +
 				"mul " + temp + ", " + temp2 + ", " + temp + "\n";
+		}
 
 		code += "mul " + temp + ", " + temp + ", " + dataRegister + ".x\n" +
 				"add " + targetReg + ", " + targetReg + ", " + temp + "\n";
 
 		registerCache.removeFragmentTempUsage(temp);
+		registerCache.removeFragmentTempUsage(temp2);
 
 		return code;
 	}

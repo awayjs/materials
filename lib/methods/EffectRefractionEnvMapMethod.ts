@@ -1,4 +1,4 @@
-import CubeTextureBase					= require("awayjs-core/lib/textures/CubeTextureBase");
+import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
@@ -6,7 +6,6 @@ import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderO
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
 import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import ShaderCompilerHelper				= require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import EffectMethodBase					= require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
@@ -16,7 +15,7 @@ import EffectMethodBase					= require("awayjs-methodmaterials/lib/methods/Effect
  */
 class EffectRefractionEnvMapMethod extends EffectMethodBase
 {
-	private _envMap:CubeTextureBase;
+	private _envMap:TextureBase;
 
 	private _dispersionR:number = 0;
 	private _dispersionG:number = 0;
@@ -34,7 +33,7 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 	 * @param dispersionG The amount of chromatic dispersion of the green channel. Defaults to 0 (none).
 	 * @param dispersionB The amount of chromatic dispersion of the blue channel. Defaults to 0 (none).
 	 */
-	constructor(envMap:CubeTextureBase, refractionIndex:number = .1, dispersionR:number = 0, dispersionG:number = 0, dispersionB:number = 0)
+	constructor(envMap:TextureBase, refractionIndex:number = .1, dispersionR:number = 0, dispersionG:number = 0, dispersionB:number = 0)
 	{
 		super();
 		this._envMap = envMap;
@@ -64,17 +63,19 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 	{
 		methodVO.needsNormals = true;
 		methodVO.needsView = true;
+
+		methodVO.textureObject = shaderObject.getTextureObject(this._envMap);
 	}
 
 	/**
 	 * The cube environment map to use for the refraction.
 	 */
-	public get envMap():CubeTextureBase
+	public get envMap():TextureBase
 	{
 		return this._envMap;
 	}
 
-	public set envMap(value:CubeTextureBase)
+	public set envMap(value:TextureBase)
 	{
 		this._envMap = value;
 	}
@@ -179,7 +180,7 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 		}
 		data[index + 3] = this._alpha;
 
-		stage.activateCubeTexture(methodVO.texturesIndex, this._envMap, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
+		methodVO.textureObject.activate(shaderObject);
 	}
 
 	/**
@@ -191,23 +192,23 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 		var data:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 		var data2:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 		var code:string = "";
-		var cubeMapReg:ShaderRegisterElement = registerCache.getFreeTextureReg();
 		var refractionDir:ShaderRegisterElement;
 		var refractionColor:ShaderRegisterElement;
 		var temp:ShaderRegisterElement;
 
-		methodVO.texturesIndex = cubeMapReg.index;
 		methodVO.fragmentConstantsIndex = data.index*4;
 
 		refractionDir = registerCache.getFreeFragmentVectorTemp();
 		registerCache.addFragmentTempUsages(refractionDir, 1);
 		refractionColor = registerCache.getFreeFragmentVectorTemp();
 		registerCache.addFragmentTempUsages(refractionColor, 1);
-
 		temp = registerCache.getFreeFragmentVectorTemp();
+		registerCache.addFragmentTempUsages(temp, 1);
 
 		var viewDirReg:ShaderRegisterElement = sharedRegisters.viewDirFragment;
 		var normalReg:ShaderRegisterElement = sharedRegisters.normalFragment;
+
+		methodVO.textureObject._iInitRegisters(shaderObject, registerCache);
 
 		code += "neg " + viewDirReg + ".xyz, " + viewDirReg + ".xyz\n";
 
@@ -225,8 +226,8 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 
 			"mul " + refractionDir + ", " + data + ".x, " + viewDirReg + "\n" +
 			"sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" +
-			"nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n";
-		code += ShaderCompilerHelper.getTexCubeSampleCode(refractionColor, cubeMapReg, this._envMap, shaderObject.useSmoothTextures, shaderObject.useMipmapping, refractionDir) +
+			"nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" +
+		methodVO.textureObject._iGetFragmentCode(shaderObject, refractionColor, registerCache, refractionDir) +
 			"sub " + refractionColor + ".w, " + refractionColor + ".w, fc0.x	\n" +
 			"kil " + refractionColor + ".w\n";
 
@@ -246,8 +247,8 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 
 				"mul " + refractionDir + ", " + data + ".y, " + viewDirReg + "\n" +
 				"sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" +
-				"nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n";
-			code += ShaderCompilerHelper.getTexCubeSampleCode(temp, cubeMapReg, this._envMap, shaderObject.useSmoothTextures, shaderObject.useMipmapping, refractionDir) +
+				"nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" +
+			methodVO.textureObject._iGetFragmentCode(shaderObject, temp, registerCache, refractionDir) +
 				"mov " + refractionColor + ".y, " + temp + ".y\n";
 
 			// BLUE
@@ -265,17 +266,17 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 
 				"mul " + refractionDir + ", " + data + ".z, " + viewDirReg + "\n" +
 				"sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" +
-				"nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n";
-			code += ShaderCompilerHelper.getTexCubeSampleCode(temp, cubeMapReg, this._envMap, shaderObject.useSmoothTextures, shaderObject.useMipmapping, refractionDir) +
+				"nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" +
+			methodVO.textureObject._iGetFragmentCode(shaderObject, temp, registerCache, refractionDir) +
 				"mov " + refractionColor + ".z, " + temp + ".z\n";
 		}
-
-		registerCache.removeFragmentTempUsage(refractionDir);
 
 		code += "sub " + refractionColor + ".xyz, " + refractionColor + ".xyz, " + targetReg + ".xyz\n" +
 			"mul " + refractionColor + ".xyz, " + refractionColor + ".xyz, " + data + ".w\n" +
 			"add " + targetReg + ".xyz, " + targetReg + ".xyz, " + refractionColor + ".xyz\n";
 
+		registerCache.removeFragmentTempUsage(temp);
+		registerCache.removeFragmentTempUsage(refractionDir);
 		registerCache.removeFragmentTempUsage(refractionColor);
 
 		// restore

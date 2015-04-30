@@ -1,10 +1,9 @@
-import Texture2DBase					= require("awayjs-core/lib/textures/Texture2DBase");
+import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
 import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import ShaderCompilerHelper				= require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import NormalBasicMethod				= require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
@@ -26,7 +25,7 @@ class NormalHeightMapMethod extends NormalBasicMethod
 	 * @param worldHeight The height of the 'world'. This is used to map the height map values to scene dimensions.
 	 * @param worldDepth The depth of the 'world'. This is used to map uv coordinates' v component to scene dimensions.
 	 */
-	constructor(heightMap:Texture2DBase, worldWidth:number, worldHeight:number, worldDepth:number)
+	constructor(heightMap:TextureBase, worldWidth:number, worldHeight:number, worldDepth:number)
 	{
 		super();
 
@@ -74,28 +73,34 @@ class NormalHeightMapMethod extends NormalBasicMethod
 	 */
 	public iGetFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
+		var code:string = "";
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
+		registerCache.addFragmentTempUsages(temp, 1);
+
 		var dataReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 		var dataReg2:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
-		this._pNormalTextureRegister = registerCache.getFreeTextureReg();
-		methodVO.texturesIndex = this._pNormalTextureRegister.index;
+
 		methodVO.fragmentConstantsIndex = dataReg.index*4;
 
-		return ShaderCompilerHelper.getTex2DSampleCode(targetReg, sharedRegisters, this._pNormalTextureRegister, this.normalMap, shaderObject.useSmoothTextures, shaderObject.repeatTextures, shaderObject.useMipmapping, sharedRegisters.uvVarying, "clamp") +
+		code+= methodVO.textureObject._iGetFragmentCode(shaderObject, targetReg, registerCache, sharedRegisters.uvVarying) +
 
 			"add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg + ".xzzz\n" +
 
-			ShaderCompilerHelper.getTex2DSampleCode(temp, sharedRegisters, this._pNormalTextureRegister, this.normalMap, shaderObject.useSmoothTextures, shaderObject.repeatTextures, shaderObject.useMipmapping, temp, "clamp") +
+		methodVO.textureObject._iGetFragmentCode(shaderObject, temp, registerCache, temp) +
 
 			"sub " + targetReg + ".x, " + targetReg + ".x, " + temp + ".x\n" +
 			"add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg + ".zyzz\n" +
 
-			ShaderCompilerHelper.getTex2DSampleCode(temp, sharedRegisters, this._pNormalTextureRegister, this.normalMap, shaderObject.useSmoothTextures, shaderObject.repeatTextures, shaderObject.useMipmapping, temp, "clamp") +
+		methodVO.textureObject._iGetFragmentCode(shaderObject, temp, registerCache, temp) +
 
 			"sub " + targetReg + ".z, " + targetReg + ".z, " + temp + ".x\n" +
 			"mov " + targetReg + ".y, " + dataReg + ".w\n" +
 			"mul " + targetReg + ".xz, " + targetReg + ".xz, " + dataReg2 + ".xy\n" +
 			"nrm " + targetReg + ".xyz, " + targetReg + ".xyz\n";
+
+		registerCache.removeFragmentTempUsage(temp);
+
+		return code;
 	}
 }
 

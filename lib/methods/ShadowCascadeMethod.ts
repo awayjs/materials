@@ -1,9 +1,9 @@
 import Event							= require("awayjs-core/lib/events/Event");
-import Texture2DBase					= require("awayjs-core/lib/textures/Texture2DBase");
 
 import Camera							= require("awayjs-display/lib/entities/Camera");
 import DirectionalLight					= require("awayjs-display/lib/entities/DirectionalLight");
 import CascadeShadowMapper				= require("awayjs-display/lib/materials/shadowmappers/CascadeShadowMapper");
+import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
@@ -14,7 +14,6 @@ import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderO
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
 import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import ShaderCompilerHelper				= require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import ShadowMapMethodBase				= require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
@@ -91,6 +90,8 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 
 		methodVO.needsGlobalVertexPos = true;
 		methodVO.needsProjection = true;
+
+		methodVO.textureObject = shaderObject.getTextureObject(this._pCastingLight.shadowMapper.depthMap);
 	}
 
 	/**
@@ -169,7 +170,6 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	public iGetFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var numCascades:number = this._cascadeShadowMapper.numCascades;
-		var depthMapRegister:ShaderRegisterElement = registerCache.getFreeTextureReg();
 		var decReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 		var dataReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 		var planeDistanceReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
@@ -177,7 +177,6 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 		var code:string;
 
 		methodVO.fragmentConstantsIndex = decReg.index*4;
-		methodVO.texturesIndex = depthMapRegister.index;
 
 		var inQuad:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 		registerCache.addFragmentTempUsages(inQuad, 1);
@@ -207,7 +206,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 			"mul " + uvCoord + ".xy, " + uvCoord + ".xy, " + dataReg + ".zw\n" +
 			"add " + uvCoord + ".xy, " + uvCoord + ".xy, " + dataReg + ".zz\n";
 
-		code += this._baseMethod._iGetCascadeFragmentCode(shaderObject, methodVO, decReg, depthMapRegister, uvCoord, targetReg, registerCache, sharedRegisters) +
+		code += this._baseMethod._iGetCascadeFragmentCode(shaderObject, methodVO, decReg, uvCoord, targetReg, registerCache, sharedRegisters) +
 			"add " + targetReg + ".w, " + targetReg + ".w, " + dataReg + ".y\n";
 
 		registerCache.removeFragmentTempUsage(uvCoord);
@@ -220,7 +219,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	 */
 	public iActivate(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
 	{
-		stage.activateTexture(methodVO.texturesIndex, <Texture2DBase> this._pCastingLight.shadowMapper.depthMap, shaderObject.repeatTextures, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
+		methodVO.textureObject.activate(shaderObject);
 
 		var vertexData:Array<number> = shaderObject.vertexConstantData;
 		var vertexIndex:number = methodVO.vertexConstantsIndex;

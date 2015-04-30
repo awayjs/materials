@@ -15,7 +15,7 @@ import LightSources						= require("awayjs-display/lib/materials/LightSources");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import RendererBase						= require("awayjs-renderergl/lib/base/RendererBase");
+import RendererBase						= require("awayjs-renderergl/lib/RendererBase");
 import ShaderLightingObject				= require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
 import ShadingMethodEvent				= require("awayjs-renderergl/lib/events/ShadingMethodEvent");
 import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
@@ -623,16 +623,13 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 		if (methodVO.needsProjection)
 			shaderObject.projectionDependencies++;
 
-		if (methodVO.needsGlobalVertexPos) {
+		if (methodVO.needsGlobalVertexPos || methodVO.needsGlobalFragmentPos) {
 
 			shaderObject.globalPosDependencies++;
 
 			if (methodVO.needsGlobalFragmentPos)
 				shaderObject.usesGlobalPosFragment = true;
 
-		} else if (methodVO.needsGlobalFragmentPos) {
-			shaderObject.globalPosDependencies++;
-			shaderObject.usesGlobalPosFragment = true;
 		}
 
 		if (methodVO.needsNormals)
@@ -643,12 +640,6 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 
 		if (methodVO.needsView)
 			shaderObject.viewDirDependencies++;
-
-		if (methodVO.needsUV)
-			shaderObject.uvDependencies++;
-
-		if (methodVO.needsSecondaryUV)
-			shaderObject.secondaryUVDependencies++;
 	}
 
 	public _iGetPreLightingVertexCode(shaderObject:ShaderObjectBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string

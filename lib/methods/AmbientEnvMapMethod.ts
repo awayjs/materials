@@ -1,12 +1,7 @@
-import CubeTextureBase					= require("awayjs-core/lib/textures/CubeTextureBase");
-
-import Stage							= require("awayjs-stagegl/lib/base/Stage");
-
 import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
 import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import ShaderCompilerHelper				= require("awayjs-renderergl/lib/utils/ShaderCompilerHelper");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import AmbientBasicMethod				= require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
@@ -17,17 +12,14 @@ import AmbientBasicMethod				= require("awayjs-methodmaterials/lib/methods/Ambie
  */
 class AmbientEnvMapMethod extends AmbientBasicMethod
 {
-	private _cubeTexture:CubeTextureBase;
-	
 	/**
 	 * Creates a new <code>AmbientEnvMapMethod</code> object.
 	 *
 	 * @param envMap The cube environment map to use for the ambient lighting.
 	 */
-	constructor(envMap:CubeTextureBase)
+	constructor()
 	{
 		super();
-		this._cubeTexture = envMap;
 	}
 
 	/**
@@ -35,32 +27,7 @@ class AmbientEnvMapMethod extends AmbientBasicMethod
 	 */
 	public iInitVO(shaderObject:ShaderObjectBase, methodVO:MethodVO)
 	{
-		super.iInitVO(shaderObject, methodVO);
-
 		methodVO.needsNormals = true;
-	}
-	
-	/**
-	 * The cube environment map to use for the diffuse lighting.
-	 */
-	public get envMap():CubeTextureBase
-	{
-		return this._cubeTexture;
-	}
-	
-	public set envMap(value:CubeTextureBase)
-	{
-		this._cubeTexture = value;
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public iActivate(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
-	{
-		super.iActivate(shaderObject, methodVO, stage);
-
-		stage.activateCubeTexture(methodVO.texturesIndex, this._cubeTexture, shaderObject.useSmoothTextures, shaderObject.useMipmapping);
 	}
 	
 	/**
@@ -68,19 +35,9 @@ class AmbientEnvMapMethod extends AmbientBasicMethod
 	 */
 	public iGetFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		var code:string = "";
-		var ambientInputRegister:ShaderRegisterElement;
-		var cubeMapReg:ShaderRegisterElement = regCache.getFreeTextureReg();
-		methodVO.texturesIndex = cubeMapReg.index;
-		
-		code += ShaderCompilerHelper.getTexCubeSampleCode(targetReg, cubeMapReg, this._cubeTexture, shaderObject.useSmoothTextures, shaderObject.useMipmapping, sharedRegisters.normalFragment);
+		shaderObject.texture._iInitRegisters(shaderObject, regCache);
 
-		ambientInputRegister = regCache.getFreeFragmentConstant();
-		methodVO.fragmentConstantsIndex = ambientInputRegister.index;
-		
-		code += "add " + targetReg + ".xyz, " + targetReg + ".xyz, " + ambientInputRegister + ".xyz\n";
-		
-		return code;
+		return shaderObject.texture._iGetFragmentCode(shaderObject, targetReg, regCache, sharedRegisters.normalFragment);
 	}
 }
 
