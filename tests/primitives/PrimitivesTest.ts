@@ -20,7 +20,6 @@ import PrimitiveTorusPrefab			= require("awayjs-display/lib/prefabs/PrimitiveTor
 import DefaultRenderer				= require("awayjs-renderergl/lib/DefaultRenderer");
 
 import MethodMaterial				= require("awayjs-methodmaterials/lib/MethodMaterial");
-import MethodRendererPool			= require("awayjs-methodmaterials/lib/pool/MethodRendererPool");
 
 class PrimitivesTest
 {
@@ -39,7 +38,7 @@ class PrimitivesTest
 		Debug.LOG_PI_ERRORS    = false;
 		Debug.THROW_ERRORS     = false;
 
-		this.view = new View(new DefaultRenderer(MethodRendererPool));
+		this.view = new View(new DefaultRenderer());
 		this.raf = new RequestAnimationFrame(this.render, this);
 
 		this.light = new DirectionalLight();

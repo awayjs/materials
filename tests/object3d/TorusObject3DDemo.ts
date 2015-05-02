@@ -5,7 +5,6 @@ import URLRequest					= require("awayjs-core/lib/net/URLRequest");
 import AwayEvent					= require("awayjs-core/lib/events/Event");
 import ParserUtils					= require("awayjs-core/lib/parsers/ParserUtils");
 import PerspectiveProjection		= require("awayjs-core/lib/projections/PerspectiveProjection");
-import Single2DTexture				= require("awayjs-core/lib/textures/Single2DTexture");
 import RequestAnimationFrame		= require("awayjs-core/lib/utils/RequestAnimationFrame");
 import Debug						= require("awayjs-core/lib/utils/Debug");
 
@@ -14,11 +13,11 @@ import Mesh							= require("awayjs-display/lib/entities/Mesh");
 import PointLight					= require("awayjs-display/lib/entities/PointLight");
 import StaticLightPicker			= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
 import PrimitiveTorusPrefab			= require("awayjs-display/lib/prefabs/PrimitiveTorusPrefab");
+import Single2DTexture				= require("awayjs-display/lib/textures/Single2DTexture");
 
 import DefaultRenderer				= require("awayjs-renderergl/lib/DefaultRenderer");
 
 import MethodMaterial				= require("awayjs-methodmaterials/lib/MethodMaterial");
-import MethodRendererPool			= require("awayjs-methodmaterials/lib/pool/MethodRendererPool");
 
 class TorusObject3DDemo
 {
@@ -46,7 +45,7 @@ class TorusObject3DDemo
 
 		this.meshes = new Array<Mesh>();
 		this.light = new PointLight();
-		this.view = new View(new DefaultRenderer(MethodRendererPool));
+		this.view = new View(new DefaultRenderer());
 		this.pointLight = new PointLight();
 		this.lightPicker = new StaticLightPicker([this.pointLight]);
 
