@@ -1,7 +1,6 @@
 declare module "awayjs-methodmaterials/lib/MethodMaterial" {
 	import Image2D = require("awayjs-core/lib/data/Image2D");
 	import MaterialBase = require("awayjs-display/lib/materials/MaterialBase");
-	import IRenderObject = require("awayjs-display/lib/pool/IRenderObject");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import AmbientBasicMethod = require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
 	import DiffuseBasicMethod = require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
@@ -9,12 +8,12 @@ declare module "awayjs-methodmaterials/lib/MethodMaterial" {
 	import NormalBasicMethod = require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
 	import ShadowMapMethodBase = require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
 	import SpecularBasicMethod = require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
-	import MethodRenderablePool = require("awayjs-methodmaterials/lib/pool/MethodRenderablePool");
 	/**
 	 * MethodMaterial forms an abstract base class for the default shaded materials provided by Stage,
 	 * using material methods to define their appearance.
 	 */
 	class MethodMaterial extends MaterialBase {
+	    static assetType: string;
 	    private _effectMethods;
 	    private _mode;
 	    private _ambientMethod;
@@ -23,6 +22,12 @@ declare module "awayjs-methodmaterials/lib/MethodMaterial" {
 	    private _normalMethod;
 	    private _specularMethod;
 	    private _depthCompareMode;
+	    private static register;
+	    private static addRenderable();
+	    /**
+	     *
+	     */
+	    assetType: string;
 	    /**
 	     * Creates a new MethodMaterial object.
 	     *
@@ -124,13 +129,6 @@ declare module "awayjs-methodmaterials/lib/MethodMaterial" {
 	     * The colour of the specular reflection.
 	     */
 	    specularColor: number;
-	    /**
-	     *
-	     * @param renderer
-	     *
-	     * @internal
-	     */
-	    getRenderObject(renderablePool: MethodRenderablePool): IRenderObject;
 	}
 	export = MethodMaterial;
 	
@@ -162,10 +160,6 @@ declare module "awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObjec
 	 * using material methods to define their appearance.
 	 */
 	class RenderMethodMaterialObject extends RenderObjectBase {
-	    /**
-	     *
-	     */
-	    static id: string;
 	    private _material;
 	    private _screenPass;
 	    private _casterLightPass;
@@ -3144,61 +3138,6 @@ declare module "awayjs-methodmaterials/lib/passes/SingleObjectDepthPass" {
 	    _iActivate(camera: Camera): void;
 	}
 	export = SingleObjectDepthPass;
-	
-}
-
-declare module "awayjs-methodmaterials/lib/pool/MethodRenderablePool" {
-	import IRenderObjectOwner = require("awayjs-display/lib/base/IRenderObjectOwner");
-	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderablePoolBase = require("awayjs-renderergl/lib/pool/RenderablePoolBase");
-	import IRenderableClass = require("awayjs-renderergl/lib/pool/IRenderableClass");
-	import RenderObjectBase = require("awayjs-renderergl/lib/compilation/RenderObjectBase");
-	/**
-	 * @class away.pool.MethodRenderablePool
-	 */
-	class MethodRenderablePool extends RenderablePoolBase {
-	    private _methodMaterialRenderObjectPool;
-	    /**
-	     * //TODO
-	     *
-	     * @param renderableClass
-	     */
-	    constructor(renderableClass: IRenderableClass, stage: Stage);
-	    /**
-	     *
-	     * @param material
-	     * @param renderable
-	     */
-	    getMethodRenderObject(renderObjectOwner: IRenderObjectOwner): RenderObjectBase;
-	    /**
-	     * //TODO
-	     *
-	     * @param renderableClass
-	     * @returns MethodRenderablePool
-	     */
-	    static getPool(renderableClass: IRenderableClass, stage: Stage): MethodRenderablePool;
-	}
-	export = MethodRenderablePool;
-	
-}
-
-declare module "awayjs-methodmaterials/lib/pool/MethodRendererPool" {
-	import RendererBase = require("awayjs-renderergl/lib/RendererBase");
-	import RendererPoolBase = require("awayjs-renderergl/lib/pool/RendererPoolBase");
-	/**
-	 * MethodRendererPool forms an abstract base class for classes that are used in the rendering pipeline to render the
-	 * contents of a partition
-	 *
-	 * @class away.render.MethodRendererPool
-	 */
-	class MethodRendererPool extends RendererPoolBase {
-	    /**
-	     * Creates a new MethodRendererPool object.
-	     */
-	    constructor(renderer: RendererBase);
-	    _pUpdatePool(): void;
-	}
-	export = MethodRendererPool;
 	
 }
 

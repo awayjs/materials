@@ -26,6 +26,8 @@ var MaterialBase = require("awayjs-display/lib/materials/MaterialBase");
 var Single2DTexture = require("awayjs-display/lib/textures/Single2DTexture");
 var TextureBase = require("awayjs-display/lib/textures/TextureBase");
 var ContextGLCompareMode = require("awayjs-stagegl/lib/base/ContextGLCompareMode");
+var RenderObjectPool = require("awayjs-renderergl/lib/compilation/RenderObjectPool");
+var RenderMethodMaterialObject = require("awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject");
 var AmbientBasicMethod = require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
 var DiffuseBasicMethod = require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
 var NormalBasicMethod = require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
@@ -63,6 +65,19 @@ var MethodMaterial = (function (_super) {
             this.alpha = (smoothAlpha == null) ? 1 : Number(smoothAlpha);
         }
     }
+    MethodMaterial.addRenderable = function () {
+        RenderObjectPool.registerClass(RenderMethodMaterialObject, MethodMaterial);
+    };
+    Object.defineProperty(MethodMaterial.prototype, "assetType", {
+        /**
+         *
+         */
+        get: function () {
+            return MethodMaterial.assetType;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(MethodMaterial.prototype, "mode", {
         get: function () {
             return this._mode;
@@ -345,20 +360,13 @@ var MethodMaterial = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    /**
-     *
-     * @param renderer
-     *
-     * @internal
-     */
-    MethodMaterial.prototype.getRenderObject = function (renderablePool) {
-        return renderablePool.getMethodRenderObject(this);
-    };
+    MethodMaterial.assetType = "[materials MethodMaterial]";
+    MethodMaterial.register = MethodMaterial.addRenderable();
     return MethodMaterial;
 })(MaterialBase);
 module.exports = MethodMaterial;
 
-},{"awayjs-core/lib/data/Image2D":undefined,"awayjs-display/lib/materials/MaterialBase":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-display/lib/textures/TextureBase":undefined,"awayjs-methodmaterials/lib/MethodMaterialMode":"awayjs-methodmaterials/lib/MethodMaterialMode","awayjs-methodmaterials/lib/methods/AmbientBasicMethod":"awayjs-methodmaterials/lib/methods/AmbientBasicMethod","awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod","awayjs-methodmaterials/lib/methods/NormalBasicMethod":"awayjs-methodmaterials/lib/methods/NormalBasicMethod","awayjs-methodmaterials/lib/methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod","awayjs-stagegl/lib/base/ContextGLCompareMode":undefined}],"awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject":[function(require,module,exports){
+},{"awayjs-core/lib/data/Image2D":undefined,"awayjs-display/lib/materials/MaterialBase":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-display/lib/textures/TextureBase":undefined,"awayjs-methodmaterials/lib/MethodMaterialMode":"awayjs-methodmaterials/lib/MethodMaterialMode","awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject":"awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject","awayjs-methodmaterials/lib/methods/AmbientBasicMethod":"awayjs-methodmaterials/lib/methods/AmbientBasicMethod","awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod","awayjs-methodmaterials/lib/methods/NormalBasicMethod":"awayjs-methodmaterials/lib/methods/NormalBasicMethod","awayjs-methodmaterials/lib/methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod","awayjs-renderergl/lib/compilation/RenderObjectPool":undefined,"awayjs-stagegl/lib/base/ContextGLCompareMode":undefined}],"awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -605,10 +613,6 @@ var RenderMethodMaterialObject = (function (_super) {
         _super.prototype.dispose.call(this);
         //TODO
     };
-    /**
-     *
-     */
-    RenderMethodMaterialObject.id = "method";
     return RenderMethodMaterialObject;
 })(RenderObjectBase);
 module.exports = RenderMethodMaterialObject;
@@ -6775,92 +6779,7 @@ var SingleObjectDepthPass = (function (_super) {
 })(RenderPassBase);
 module.exports = SingleObjectDepthPass;
 
-},{"awayjs-core/lib/data/Image2D":undefined,"awayjs-core/lib/data/TriangleSubGeometry":undefined,"awayjs-core/lib/geom/Matrix3D":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-renderergl/lib/passes/RenderPassBase":undefined,"awayjs-stagegl/lib/base/ContextGLProgramType":undefined}],"awayjs-methodmaterials/lib/pool/MethodRenderablePool":[function(require,module,exports){
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-var RenderablePoolBase = require("awayjs-renderergl/lib/pool/RenderablePoolBase");
-var RenderObjectPool = require("awayjs-renderergl/lib/compilation/RenderObjectPool");
-var RenderMethodMaterialObject = require("awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject");
-/**
- * @class away.pool.MethodRenderablePool
- */
-var MethodRenderablePool = (function (_super) {
-    __extends(MethodRenderablePool, _super);
-    /**
-     * //TODO
-     *
-     * @param renderableClass
-     */
-    function MethodRenderablePool(renderableClass, stage) {
-        _super.call(this, renderableClass, stage);
-        this._methodMaterialRenderObjectPool = new RenderObjectPool(RenderMethodMaterialObject, this._renderableClass, this._stage);
-    }
-    /**
-     *
-     * @param material
-     * @param renderable
-     */
-    MethodRenderablePool.prototype.getMethodRenderObject = function (renderObjectOwner) {
-        return this._methodMaterialRenderObjectPool.getItem(renderObjectOwner);
-    };
-    /**
-     * //TODO
-     *
-     * @param renderableClass
-     * @returns MethodRenderablePool
-     */
-    MethodRenderablePool.getPool = function (renderableClass, stage) {
-        var pools = (RenderablePoolBase._pools[stage.stageIndex] || (RenderablePoolBase._pools[stage.stageIndex] = new Object()));
-        return (pools[renderableClass.id] || (pools[renderableClass.id] = new MethodRenderablePool(renderableClass, stage)));
-    };
-    return MethodRenderablePool;
-})(RenderablePoolBase);
-module.exports = MethodRenderablePool;
-
-},{"awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject":"awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject","awayjs-renderergl/lib/compilation/RenderObjectPool":undefined,"awayjs-renderergl/lib/pool/RenderablePoolBase":undefined}],"awayjs-methodmaterials/lib/pool/MethodRendererPool":[function(require,module,exports){
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-var BillboardRenderable = require("awayjs-renderergl/lib/pool/BillboardRenderable");
-var LineSegmentRenderable = require("awayjs-renderergl/lib/pool/LineSegmentRenderable");
-var LineSubMeshRenderable = require("awayjs-renderergl/lib/pool/LineSubMeshRenderable");
-var TriangleSubMeshRenderable = require("awayjs-renderergl/lib/pool/TriangleSubMeshRenderable");
-var CurveSubMeshRenderable = require("awayjs-renderergl/lib/pool/CurveSubMeshRenderable");
-var RendererPoolBase = require("awayjs-renderergl/lib/pool/RendererPoolBase");
-var MethodRenderablePool = require("awayjs-methodmaterials/lib/pool/MethodRenderablePool");
-/**
- * MethodRendererPool forms an abstract base class for classes that are used in the rendering pipeline to render the
- * contents of a partition
- *
- * @class away.render.MethodRendererPool
- */
-var MethodRendererPool = (function (_super) {
-    __extends(MethodRendererPool, _super);
-    /**
-     * Creates a new MethodRendererPool object.
-     */
-    function MethodRendererPool(renderer) {
-        _super.call(this, renderer);
-    }
-    MethodRendererPool.prototype._pUpdatePool = function () {
-        this._billboardRenderablePool = MethodRenderablePool.getPool(BillboardRenderable, this._pStage);
-        this._lineSegmentRenderablePool = MethodRenderablePool.getPool(LineSegmentRenderable, this._pStage);
-        this._triangleSubMeshRenderablePool = MethodRenderablePool.getPool(TriangleSubMeshRenderable, this._pStage);
-        this._lineSubMeshRenderablePool = MethodRenderablePool.getPool(LineSubMeshRenderable, this._pStage);
-        this._curveSubMeshRenderablePool = MethodRenderablePool.getPool(CurveSubMeshRenderable, this._pStage);
-    };
-    return MethodRendererPool;
-})(RendererPoolBase);
-module.exports = MethodRendererPool;
-
-},{"awayjs-methodmaterials/lib/pool/MethodRenderablePool":"awayjs-methodmaterials/lib/pool/MethodRenderablePool","awayjs-renderergl/lib/pool/BillboardRenderable":undefined,"awayjs-renderergl/lib/pool/CurveSubMeshRenderable":undefined,"awayjs-renderergl/lib/pool/LineSegmentRenderable":undefined,"awayjs-renderergl/lib/pool/LineSubMeshRenderable":undefined,"awayjs-renderergl/lib/pool/RendererPoolBase":undefined,"awayjs-renderergl/lib/pool/TriangleSubMeshRenderable":undefined}]},{},[])
+},{"awayjs-core/lib/data/Image2D":undefined,"awayjs-core/lib/data/TriangleSubGeometry":undefined,"awayjs-core/lib/geom/Matrix3D":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-renderergl/lib/passes/RenderPassBase":undefined,"awayjs-stagegl/lib/base/ContextGLProgramType":undefined}]},{},[])
 
 
 //# sourceMappingURL=awayjs-methodmaterials.js.map
