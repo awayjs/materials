@@ -7,6 +7,7 @@ import Matrix3DUtils					= require("awayjs-core/lib/geom/Matrix3DUtils");
 import Vector3D							= require("awayjs-core/lib/geom/Vector3D");
 import AbstractMethodError				= require("awayjs-core/lib/errors/AbstractMethodError");
 
+
 import Camera							= require("awayjs-display/lib/entities/Camera");
 import IRenderObjectOwner				= require("awayjs-display/lib/base/IRenderObjectOwner");
 import StaticLightPicker				= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
@@ -41,11 +42,6 @@ import MethodMaterialMode				= require("awayjs-methodmaterials/lib/MethodMateria
  */
 class RenderMethodMaterialObject extends RenderObjectBase
 {
-	/**
-	 *
-	 */
-	public static id:string = "method";
-
 	private _material:MethodMaterial;
 	private _screenPass:MethodPass;
 	private _casterLightPass:MethodPass;

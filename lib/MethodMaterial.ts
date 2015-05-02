@@ -11,6 +11,9 @@ import TextureBase					= require("awayjs-display/lib/textures/TextureBase");
 
 import ContextGLCompareMode			= require("awayjs-stagegl/lib/base/ContextGLCompareMode");
 
+import RenderObjectPool				= require("awayjs-renderergl/lib/compilation/RenderObjectPool");
+
+import RenderMethodMaterialObject	= require("awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject");
 import AmbientBasicMethod			= require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
 import DiffuseBasicMethod			= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
 import EffectMethodBase				= require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
@@ -19,14 +22,14 @@ import ShadowMapMethodBase			= require("awayjs-methodmaterials/lib/methods/Shado
 import SpecularBasicMethod			= require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
 import MethodMaterialMode			= require("awayjs-methodmaterials/lib/MethodMaterialMode");
 
-import MethodRenderablePool			= require("awayjs-methodmaterials/lib/pool/MethodRenderablePool");
-
 /**
  * MethodMaterial forms an abstract base class for the default shaded materials provided by Stage,
  * using material methods to define their appearance.
  */
 class MethodMaterial extends MaterialBase
 {
+	public static assetType:string = "[materials MethodMaterial]";
+
 	private _effectMethods:Array<EffectMethodBase> = new Array<EffectMethodBase>();
 	private _mode:string;
 
@@ -38,6 +41,21 @@ class MethodMaterial extends MaterialBase
 
 
 	private _depthCompareMode:string = ContextGLCompareMode.LESS_EQUAL;
+
+	private static register = MethodMaterial.addRenderable();
+
+	private static addRenderable()
+	{
+		RenderObjectPool.registerClass(RenderMethodMaterialObject, MethodMaterial);
+	}
+
+	/**
+	 *
+	 */
+	public get assetType():string
+	{
+		return MethodMaterial.assetType;
+	}
 
 	/**
 	 * Creates a new MethodMaterial object.
@@ -381,17 +399,6 @@ class MethodMaterial extends MaterialBase
 	public set specularColor(value:number)
 	{
 		this._specularMethod.specularColor = value;
-	}
-
-	/**
-	 *
-	 * @param renderer
-	 *
-	 * @internal
-	 */
-	public getRenderObject(renderablePool:MethodRenderablePool):IRenderObject
-	{
-		return renderablePool.getMethodRenderObject(this);
 	}
 }
 
