@@ -1,4 +1,4 @@
-import TextureObjectBase			= require("awayjs-renderergl/lib/pool/TextureObjectBase");
+import TextureVOBase				= require("awayjs-renderergl/lib/vos/TextureVOBase");
 
 import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
 
@@ -13,8 +13,8 @@ class MethodVO
 	public method:ShadingMethodBase;
 
 	// public register indices
-	public textureObject:TextureObjectBase;
-	public secondaryTextureObject:TextureObjectBase; // sometimes needed for composites
+	public textureVO:TextureVOBase;
+	public secondaryTextureVO:TextureVOBase; // sometimes needed for composites
 	public vertexConstantsIndex:number;
 	public secondaryVertexConstantsIndex:number; // sometimes needed for composites
 	public fragmentConstantsIndex:number;

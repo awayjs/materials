@@ -2,10 +2,10 @@ import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
+import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import EffectMethodBase					= require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
@@ -47,10 +47,10 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shaderObject:ShaderObjectBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
 	{
 		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
-		var data:Array<number> = shaderObject.fragmentConstantData;
+		var data:Array<number> = shader.fragmentConstantData;
 		data[index + 4] = 1;
 		data[index + 5] = 0;
 		data[index + 7] = 1;
@@ -59,12 +59,12 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shaderObject:ShaderObjectBase, methodVO:MethodVO)
+	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
 	{
 		methodVO.needsNormals = true;
 		methodVO.needsView = true;
 
-		methodVO.textureObject = shaderObject.getTextureObject(this._envMap);
+		methodVO.textureVO = shader.getTextureVO(this._envMap);
 	}
 
 	/**
@@ -167,10 +167,10 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
 		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
-		var data:Array<number> = shaderObject.fragmentConstantData;
+		var data:Array<number> = shader.fragmentConstantData;
 
 		data[index] = this._dispersionR + this._refractionIndex;
 
@@ -180,13 +180,13 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 		}
 		data[index + 3] = this._alpha;
 
-		methodVO.textureObject.activate(shaderObject);
+		methodVO.textureVO.activate(shader);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		// todo: data2.x could use common reg, so only 1 reg is used
 		var data:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
@@ -208,7 +208,7 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 		var viewDirReg:ShaderRegisterElement = sharedRegisters.viewDirFragment;
 		var normalReg:ShaderRegisterElement = sharedRegisters.normalFragment;
 
-		methodVO.textureObject._iInitRegisters(shaderObject, registerCache);
+		methodVO.textureVO._iInitRegisters(shader, registerCache);
 
 		code += "neg " + viewDirReg + ".xyz, " + viewDirReg + ".xyz\n";
 
@@ -227,7 +227,7 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 			"mul " + refractionDir + ", " + data + ".x, " + viewDirReg + "\n" +
 			"sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" +
 			"nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" +
-		methodVO.textureObject._iGetFragmentCode(shaderObject, refractionColor, registerCache, refractionDir) +
+		methodVO.textureVO._iGetFragmentCode(shader, refractionColor, registerCache, refractionDir) +
 			"sub " + refractionColor + ".w, " + refractionColor + ".w, fc0.x	\n" +
 			"kil " + refractionColor + ".w\n";
 
@@ -248,7 +248,7 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 				"mul " + refractionDir + ", " + data + ".y, " + viewDirReg + "\n" +
 				"sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" +
 				"nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" +
-			methodVO.textureObject._iGetFragmentCode(shaderObject, temp, registerCache, refractionDir) +
+			methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, refractionDir) +
 				"mov " + refractionColor + ".y, " + temp + ".y\n";
 
 			// BLUE
@@ -267,7 +267,7 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 				"mul " + refractionDir + ", " + data + ".z, " + viewDirReg + "\n" +
 				"sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" +
 				"nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" +
-			methodVO.textureObject._iGetFragmentCode(shaderObject, temp, registerCache, refractionDir) +
+			methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, refractionDir) +
 				"mov " + refractionColor + ".z, " + temp + ".z\n";
 		}
 

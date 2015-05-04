@@ -7,13 +7,13 @@ import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import RenderableBase					= require("awayjs-renderergl/lib/pool/RenderableBase");
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
 import ShadingMethodEvent				= require("awayjs-renderergl/lib/events/ShadingMethodEvent");
-import ShaderLightingObject				= require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
-import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
+import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
+import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import ShadowMapMethodBase				= require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
@@ -83,24 +83,24 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shaderObject:ShaderLightingObject, methodVO:MethodVO)
+	public iInitVO(shader:LightingShader, methodVO:MethodVO)
 	{
 		var tempVO:MethodVO = new MethodVO(this._baseMethod);
-		this._baseMethod.iInitVO(shaderObject, tempVO);
+		this._baseMethod.iInitVO(shader, tempVO);
 
 		methodVO.needsGlobalVertexPos = true;
 		methodVO.needsProjection = true;
 
-		methodVO.textureObject = shaderObject.getTextureObject(this._pCastingLight.shadowMapper.depthMap);
+		methodVO.textureVO = shader.getTextureVO(this._pCastingLight.shadowMapper.depthMap);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shaderObject:ShaderObjectBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
 	{
-		var fragmentData:Array<number> = shaderObject.fragmentConstantData;
-		var vertexData:Array<number> = shaderObject.vertexConstantData;
+		var fragmentData:Array<number> = shader.fragmentConstantData;
+		var vertexData:Array<number> = shader.vertexConstantData;
 		var index:number = methodVO.fragmentConstantsIndex;
 		fragmentData[index] = 1.0;
 		fragmentData[index + 1] = 1/255.0;
@@ -129,7 +129,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iGetVertexCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetVertexCode(shader:ShaderBase, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 		var dataReg:ShaderRegisterElement = registerCache.getFreeVertexConstant();
@@ -167,7 +167,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var numCascades:number = this._cascadeShadowMapper.numCascades;
 		var decReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
@@ -206,7 +206,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 			"mul " + uvCoord + ".xy, " + uvCoord + ".xy, " + dataReg + ".zw\n" +
 			"add " + uvCoord + ".xy, " + uvCoord + ".xy, " + dataReg + ".zz\n";
 
-		code += this._baseMethod._iGetCascadeFragmentCode(shaderObject, methodVO, decReg, uvCoord, targetReg, registerCache, sharedRegisters) +
+		code += this._baseMethod._iGetCascadeFragmentCode(shader, methodVO, decReg, uvCoord, targetReg, registerCache, sharedRegisters) +
 			"add " + targetReg + ".w, " + targetReg + ".w, " + dataReg + ".y\n";
 
 		registerCache.removeFragmentTempUsage(uvCoord);
@@ -217,14 +217,14 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
-		methodVO.textureObject.activate(shaderObject);
+		methodVO.textureVO.activate(shader);
 
-		var vertexData:Array<number> = shaderObject.vertexConstantData;
+		var vertexData:Array<number> = shader.vertexConstantData;
 		var vertexIndex:number = methodVO.vertexConstantsIndex;
 
-		shaderObject.vertexConstantData[methodVO.vertexConstantsIndex + 3] = -1/(this._cascadeShadowMapper.depth*this._pEpsilon);
+		shader.vertexConstantData[methodVO.vertexConstantsIndex + 3] = -1/(this._cascadeShadowMapper.depth*this._pEpsilon);
 
 		var numCascades:number = this._cascadeShadowMapper.numCascades;
 		vertexIndex += 4;
@@ -233,7 +233,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 			vertexIndex += 16;
 		}
 
-		var fragmentData:Array<number> = shaderObject.fragmentConstantData;
+		var fragmentData:Array<number> = shader.fragmentConstantData;
 		var fragmentIndex:number = methodVO.fragmentConstantsIndex;
 		fragmentData[fragmentIndex + 5] = 1 - this._pAlpha;
 
@@ -243,13 +243,13 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 		for (var i:number = 0; i < numCascades; ++i)
 			fragmentData[fragmentIndex + i] = nearPlaneDistances[i];
 
-		this._baseMethod.iActivateForCascade(shaderObject, methodVO, stage);
+		this._baseMethod.iActivateForCascade(shader, methodVO, stage);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shaderObject:ShaderObjectBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
 	}
 

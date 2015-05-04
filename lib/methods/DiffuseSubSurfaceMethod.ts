@@ -2,17 +2,17 @@ import Camera							= require("awayjs-display/lib/entities/Camera");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import ShaderLightingObject				= require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
-import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import RenderableBase					= require("awayjs-renderergl/lib/pool/RenderableBase");
+import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
+import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
 import DiffuseCompositeMethod			= require("awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod");
-import SingleObjectDepthPass			= require("awayjs-methodmaterials/lib/passes/SingleObjectDepthPass");
+import SingleObjectDepthPass			= require("awayjs-methodmaterials/lib/render/passes/SingleObjectDepthPass");
 
 /**
  * DiffuseSubSurfaceMethod provides a depth map-based diffuse shading method that mimics the scattering of
@@ -46,7 +46,7 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	{
 		super(null, baseMethod);
 
-		this.pBaseMethod._iModulateMethod = (shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData) => this.scatterLight(shaderObject, methodVO, targetReg, registerCache, sharedRegisters);
+		this.pBaseMethod._iModulateMethod = (shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData) => this.scatterLight(shader, methodVO, targetReg, registerCache, sharedRegisters);
 
 		//this._passes = new Array<MaterialPassGLBase>();
 		//this._depthPass = new SingleObjectDepthPass();
@@ -60,18 +60,18 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shaderObject:ShaderLightingObject, methodVO:MethodVO)
+	public iInitConstants(shader:LightingShader, methodVO:MethodVO)
 	{
-		super.iInitConstants(shaderObject, methodVO);
+		super.iInitConstants(shader, methodVO);
 
-		var data:Array<number> = shaderObject.vertexConstantData;
+		var data:Array<number> = shader.vertexConstantData;
 		var index:number /*int*/ = methodVO.secondaryVertexConstantsIndex;
 		data[index] = .5;
 		data[index + 1] = -.5;
 		data[index + 2] = 0;
 		data[index + 3] = 1;
 		
-		data = shaderObject.fragmentConstantData;
+		data = shader.fragmentConstantData;
 		index = methodVO.secondaryFragmentConstantsIndex;
 		data[index + 3] = 1.0;
 		data[index + 4] = 1.0;
@@ -140,9 +140,9 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iGetVertexCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetVertexCode(shader:ShaderBase, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		var code:string = super.iGetVertexCode(shaderObject, methodVO, registerCache, sharedRegisters);
+		var code:string = super.iGetVertexCode(shader, methodVO, registerCache, sharedRegisters);
 		var lightProjection:ShaderRegisterElement;
 		var toTexRegister:ShaderRegisterElement;
 		var temp:ShaderRegisterElement = registerCache.getFreeVertexVectorTemp();
@@ -169,32 +169,32 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentPreLightingCode(shaderObject:ShaderLightingObject, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentPreLightingCode(shader:LightingShader, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		this._colorReg = registerCache.getFreeFragmentConstant();
 		this._decReg = registerCache.getFreeFragmentConstant();
 		this._propReg = registerCache.getFreeFragmentConstant();
 		methodVO.secondaryFragmentConstantsIndex = this._colorReg.index*4;
 		
-		return super.iGetFragmentPreLightingCode(shaderObject, methodVO, registerCache, sharedRegisters);
+		return super.iGetFragmentPreLightingCode(shader, methodVO, registerCache, sharedRegisters);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentCodePerLight(shaderObject:ShaderLightingObject, methodVO:MethodVO, lightDirReg:ShaderRegisterElement, lightColReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentCodePerLight(shader:LightingShader, methodVO:MethodVO, lightDirReg:ShaderRegisterElement, lightColReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		this._pIsFirstLight = true;
 		this._lightColorReg = lightColReg;
-		return super.iGetFragmentCodePerLight(shaderObject, methodVO, lightDirReg, lightColReg, registerCache, sharedRegisters);
+		return super.iGetFragmentCodePerLight(shader, methodVO, lightDirReg, lightColReg, registerCache, sharedRegisters);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentPostLightingCode(shaderObject:ShaderLightingObject, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentPostLightingCode(shader:LightingShader, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		var code:string = super.iGetFragmentPostLightingCode(shaderObject, methodVO, targetReg, registerCache, sharedRegisters);
+		var code:string = super.iGetFragmentPostLightingCode(shader, methodVO, targetReg, registerCache, sharedRegisters);
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 		
 		code += "mul " + temp + ".xyz, " + this._lightColorReg + ".xyz, " + this._targetReg + ".w\n" +
@@ -210,12 +210,12 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shaderObject:ShaderLightingObject, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
 	{
-		super.iActivate(shaderObject, methodVO, stage);
+		super.iActivate(shader, methodVO, stage);
 
 		var index:number /*int*/ = methodVO.secondaryFragmentConstantsIndex;
-		var data:Array<number> = shaderObject.fragmentConstantData;
+		var data:Array<number> = shader.fragmentConstantData;
 		data[index] = this._scatterR;
 		data[index + 1] = this._scatterG;
 		data[index + 2] = this._scatterB;
@@ -226,18 +226,18 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shaderObject:ShaderObjectBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
-		methodVO.secondaryTextureObject = shaderObject.getTextureObject(this._depthPass._iGetDepthMap(renderable));
-		methodVO.secondaryTextureObject.activate(shaderObject);
+		methodVO.secondaryTextureVO = shader.getTextureVO(this._depthPass._iGetDepthMap(renderable));
+		methodVO.secondaryTextureVO.activate(shader);
 
-		this._depthPass._iGetProjection(renderable).copyRawDataTo(shaderObject.vertexConstantData, methodVO.secondaryVertexConstantsIndex + 4, true);
+		this._depthPass._iGetProjection(renderable).copyRawDataTo(shader.vertexConstantData, methodVO.secondaryVertexConstantsIndex + 4, true);
 	}
 	
 	/**
 	 * Generates the code for this method
 	 */
-	private scatterLight(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	private scatterLight(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		// only scatter first light
 		if (!this._pIsFirstLight)
@@ -254,7 +254,7 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 
-		code += methodVO.secondaryTextureObject._iGetFragmentCode(shaderObject, temp, registerCache, this._lightProjVarying) +
+		code += methodVO.secondaryTextureVO._iGetFragmentCode(shader, temp, registerCache, this._lightProjVarying) +
 			// reencode RGBA
 			"dp4 " + targetReg + ".z, " + temp + ", " + this._decReg + "\n";
 		// currentDistanceToLight - closestDistanceToLight

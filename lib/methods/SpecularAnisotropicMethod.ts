@@ -1,7 +1,7 @@
-import ShaderLightingObject				= require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
+import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import SpecularBasicMethod				= require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
@@ -24,7 +24,7 @@ class SpecularAnisotropicMethod extends SpecularBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shaderObject:ShaderLightingObject, methodVO:MethodVO)
+	public iInitVO(shader:LightingShader, methodVO:MethodVO)
 	{
 		methodVO.needsTangents = true;
 		methodVO.needsView = true;
@@ -33,7 +33,7 @@ class SpecularAnisotropicMethod extends SpecularBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentCodePerLight(shaderObject:ShaderLightingObject, methodVO:MethodVO, lightDirReg:ShaderRegisterElement, lightColReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentCodePerLight(shader:LightingShader, methodVO:MethodVO, lightDirReg:ShaderRegisterElement, lightColReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 		var t:ShaderRegisterElement;
@@ -75,7 +75,7 @@ class SpecularAnisotropicMethod extends SpecularBasicMethod
 		code += "mul " + t + ".w, " + t + ".w, " + lightDirReg + ".w\n";
 
 		if (this._iModulateMethod != null)
-			code += this._iModulateMethod(shaderObject, methodVO, t, registerCache, sharedRegisters);
+			code += this._iModulateMethod(shader, methodVO, t, registerCache, sharedRegisters);
 
 		code += "mul " + t + ".xyz, " + lightColReg + ".xyz, " + t + ".w\n";
 

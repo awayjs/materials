@@ -2,10 +2,10 @@ import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
+import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import EffectMethodBase					= require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
@@ -54,14 +54,14 @@ class EffectLightMapMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shaderObject:ShaderObjectBase, methodVO:MethodVO)
+	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
 	{
-		methodVO.textureObject = shaderObject.getTextureObject(this._lightMap);
+		methodVO.textureVO = shader.getTextureVO(this._lightMap);
 
 		if (this._useSecondaryUV)
-			shaderObject.secondaryUVDependencies++;
+			shader.secondaryUVDependencies++;
 		else
-			shaderObject.uvDependencies++;
+			shader.uvDependencies++;
 	}
 
 	/**
@@ -127,12 +127,12 @@ class EffectLightMapMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string;
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 
-		code = methodVO.secondaryTextureObject._iGetFragmentCode(shaderObject, temp, registerCache, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
+		code = methodVO.secondaryTextureVO._iGetFragmentCode(shader, temp, registerCache, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
 
 		switch (this._blendMode) {
 			case EffectLightMapMethod.MULTIPLY:
@@ -149,11 +149,11 @@ class EffectLightMapMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
-		super.iActivate(shaderObject, methodVO, stage);
+		super.iActivate(shader, methodVO, stage);
 
-		methodVO.textureObject.activate(shaderObject);
+		methodVO.textureVO.activate(shader);
 	}
 }
 

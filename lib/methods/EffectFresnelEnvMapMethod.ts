@@ -2,10 +2,10 @@ import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
+import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import EffectMethodBase					= require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
@@ -39,25 +39,25 @@ class EffectFresnelEnvMapMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shaderObject:ShaderObjectBase, methodVO:MethodVO)
+	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
 	{
 		methodVO.needsNormals = true;
 		methodVO.needsView = true;
 
-		methodVO.textureObject = shaderObject.getTextureObject(this._envMap);
+		methodVO.textureVO = shader.getTextureVO(this._envMap);
 
 		if (this._mask != null) {
-			methodVO.secondaryTextureObject = shaderObject.getTextureObject(this._mask);
-			shaderObject.uvDependencies++;
+			methodVO.secondaryTextureVO = shader.getTextureVO(this._mask);
+			shader.uvDependencies++;
 		}
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shaderObject:ShaderObjectBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
 	{
-		shaderObject.fragmentConstantData[methodVO.fragmentConstantsIndex + 3] = 1;
+		shader.fragmentConstantData[methodVO.fragmentConstantsIndex + 3] = 1;
 	}
 
 	/**
@@ -133,24 +133,24 @@ class EffectFresnelEnvMapMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
-		var data:Array<number> = shaderObject.fragmentConstantData;
+		var data:Array<number> = shader.fragmentConstantData;
 		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
 		data[index] = this._alpha;
 		data[index + 1] = this._normalReflectance;
 		data[index + 2] = this._fresnelPower;
 
-		methodVO.textureObject.activate(shaderObject);
+		methodVO.textureVO.activate(shader);
 
 		if (this._mask)
-			methodVO.secondaryTextureObject.activate(shaderObject);
+			methodVO.secondaryTextureVO.activate(shader);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var dataRegister:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 		var code:string = "";
@@ -164,14 +164,14 @@ class EffectFresnelEnvMapMethod extends EffectMethodBase
 		var temp2:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 		registerCache.addFragmentTempUsages(temp2, 1);
 
-		methodVO.textureObject._iInitRegisters(shaderObject, registerCache);
+		methodVO.textureVO._iInitRegisters(shader, registerCache);
 
 		// r = V - 2(V.N)*N
 		code += "dp3 " + temp + ".w, " + viewDirReg + ".xyz, " + normalReg + ".xyz\n" +
 				"add " + temp + ".w, " + temp + ".w, " + temp + ".w\n" +
 				"mul " + temp + ".xyz, " + normalReg + ".xyz, " + temp + ".w\n" +
 				"sub " + temp + ".xyz, " + temp + ".xyz, " + viewDirReg + ".xyz\n" +
-			methodVO.textureObject._iGetFragmentCode(shaderObject, temp, registerCache, temp) +
+			methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, temp) +
 				"sub " + temp2 + ".w, " + temp + ".w, fc0.x\n" +               	// -.5
 				"kil " + temp2 + ".w\n" +	// used for real time reflection mapping - if alpha is not 1 (mock texture) kil output
 				"sub " + temp + ", " + temp + ", " + targetReg + "\n";
@@ -188,9 +188,9 @@ class EffectFresnelEnvMapMethod extends EffectMethodBase
 				"mul " + viewDirReg + ".w, " + dataRegister + ".x, " + viewDirReg + ".w\n";
 
 		if (this._mask) {
-			methodVO.secondaryTextureObject._iInitRegisters(shaderObject, registerCache);
+			methodVO.secondaryTextureVO._iInitRegisters(shader, registerCache);
 
-			code += methodVO.secondaryTextureObject._iGetFragmentCode(shaderObject, temp2, registerCache, sharedRegisters.uvVarying) +
+			code += methodVO.secondaryTextureVO._iGetFragmentCode(shader, temp2, registerCache, sharedRegisters.uvVarying) +
 				"mul " + viewDirReg + ".w, " + temp2 + ".x, " + viewDirReg + ".w\n";
 		}
 

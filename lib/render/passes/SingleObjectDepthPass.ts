@@ -5,7 +5,7 @@ import Matrix3D							= require("awayjs-core/lib/geom/Matrix3D");
 import LightBase						= require("awayjs-display/lib/base/LightBase");
 import Camera							= require("awayjs-display/lib/entities/Camera");
 import MaterialBase						= require("awayjs-display/lib/materials/MaterialBase");
-import IRenderObjectOwner				= require("awayjs-display/lib/base/IRenderObjectOwner");
+import IRenderOwner				= require("awayjs-display/lib/base/IRenderOwner");
 import Single2DTexture					= require("awayjs-display/lib/textures/Single2DTexture");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
@@ -14,19 +14,19 @@ import IContextGL						= require("awayjs-stagegl/lib/base/IContextGL");
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
 import RendererBase						= require("awayjs-renderergl/lib/RendererBase");
-import RenderObjectBase					= require("awayjs-renderergl/lib/compilation/RenderObjectBase");
-import RenderableBase					= require("awayjs-renderergl/lib/pool/RenderableBase");
-import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import IRenderableClass					= require("awayjs-renderergl/lib/pool/IRenderableClass");
-import RenderPassBase					= require("awayjs-renderergl/lib/passes/RenderPassBase");
+import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import PassBase							= require("awayjs-renderergl/lib/render/passes/PassBase");
+import IRenderableClass					= require("awayjs-renderergl/lib/renderables/IRenderableClass");
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
+import RenderBase						= require("awayjs-renderergl/lib/render/RenderBase");
 
 /**
  * The SingleObjectDepthPass provides a material pass that renders a single object to a depth map from the point
  * of view from a light.
  */
-class SingleObjectDepthPass extends RenderPassBase
+class SingleObjectDepthPass extends PassBase
 {
 	private _textures:Object;
 	private _projections:Object;
@@ -64,9 +64,9 @@ class SingleObjectDepthPass extends RenderPassBase
 	/**
 	 * Creates a new SingleObjectDepthPass object.
 	 */
-	constructor(renderObject:RenderObjectBase, renderObjectOwner:IRenderObjectOwner, renderableClass:IRenderableClass, stage:Stage)
+	constructor(render:RenderBase, renderOwner:IRenderOwner, renderableClass:IRenderableClass, stage:Stage)
 	{
-		super(renderObject, renderObjectOwner, renderableClass, stage);
+		super(render, renderOwner, renderableClass, stage);
 
 		//this._pNumUsedStreams = 2;
 		//this._pNumUsedVertexConstants = 7;
@@ -130,7 +130,7 @@ class SingleObjectDepthPass extends RenderPassBase
 	/**
 	 * @inheritDoc
 	 */
-	public _iGetFragmentCode(shaderObject:ShaderObjectBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _iGetFragmentCode(shader:ShaderBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 
@@ -174,7 +174,7 @@ class SingleObjectDepthPass extends RenderPassBase
 		var context:IContextGL = this._stage.context;
 		var len:number /*uint*/;
 		var light:LightBase;
-		var lights:Array<LightBase> = this._renderObjectOwner.lightPicker.allPickedLights;
+		var lights:Array<LightBase> = this._renderOwner.lightPicker.allPickedLights;
 		var rId:number = renderable.renderableOwner.id;
 
 		if (!this._textures[rId])

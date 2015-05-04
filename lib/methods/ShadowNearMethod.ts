@@ -3,13 +3,13 @@ import Camera							= require("awayjs-display/lib/entities/Camera");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import RenderableBase					= require("awayjs-renderergl/lib/pool/RenderableBase");
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
 import ShadingMethodEvent				= require("awayjs-renderergl/lib/events/ShadingMethodEvent");
-import ShaderLightingObject				= require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
-import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
+import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
+import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import ShadowMethodBase					= require("awayjs-methodmaterials/lib/methods/ShadowMethodBase");
@@ -74,12 +74,12 @@ class ShadowNearMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shaderObject:ShaderObjectBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
 	{
-		super.iInitConstants(shaderObject, methodVO);
-		this._baseMethod.iInitConstants(shaderObject, methodVO);
+		super.iInitConstants(shader, methodVO);
+		this._baseMethod.iInitConstants(shader, methodVO);
 
-		var fragmentData:Array<number> = shaderObject.fragmentConstantData;
+		var fragmentData:Array<number> = shader.fragmentConstantData;
 		var index:number /*int*/ = methodVO.secondaryFragmentConstantsIndex;
 		fragmentData[index + 2] = 0;
 		fragmentData[index + 3] = 1;
@@ -88,9 +88,9 @@ class ShadowNearMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shaderObject:ShaderLightingObject, methodVO:MethodVO)
+	public iInitVO(shader:LightingShader, methodVO:MethodVO)
 	{
-		this._baseMethod.iInitVO(shaderObject, methodVO);
+		this._baseMethod.iInitVO(shader, methodVO);
 
 		methodVO.needsProjection = true;
 	}
@@ -145,9 +145,9 @@ class ShadowNearMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		var code:string = this._baseMethod.iGetFragmentCode(shaderObject, methodVO, targetReg, registerCache, sharedRegisters);
+		var code:string = this._baseMethod.iGetFragmentCode(shader, methodVO, targetReg, registerCache, sharedRegisters);
 
 		var dataReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentSingleTemp();
@@ -168,23 +168,23 @@ class ShadowNearMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
-		this._baseMethod.iActivate(shaderObject, methodVO, stage);
+		this._baseMethod.iActivate(shader, methodVO, stage);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public iDeactivate(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
+	public iDeactivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
-		this._baseMethod.iDeactivate(shaderObject, methodVO, stage);
+		this._baseMethod.iDeactivate(shader, methodVO, stage);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shaderObject:ShaderObjectBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
 		// todo: move this to activate (needs camera)
 		var near:number = camera.projection.near;
@@ -195,20 +195,20 @@ class ShadowNearMethod extends ShadowMethodBase
 		maxDistance = near + maxDistance*d;
 		minDistance = near + minDistance*d;
 
-		var fragmentData:Array<number> = shaderObject.fragmentConstantData;
+		var fragmentData:Array<number> = shader.fragmentConstantData;
 		var index:number /*int*/ = methodVO.secondaryFragmentConstantsIndex;
 		fragmentData[index] = minDistance;
 		fragmentData[index + 1] = 1/(maxDistance - minDistance);
 
-		this._baseMethod.iSetRenderState(shaderObject, methodVO, renderable, stage, camera);
+		this._baseMethod.iSetRenderState(shader, methodVO, renderable, stage, camera);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public iGetVertexCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetVertexCode(shader:ShaderBase, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		return this._baseMethod.iGetVertexCode(shaderObject, methodVO, registerCache, sharedRegisters);
+		return this._baseMethod.iGetVertexCode(shader, methodVO, registerCache, sharedRegisters);
 	}
 
 	/**

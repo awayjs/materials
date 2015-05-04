@@ -1,9 +1,9 @@
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
+import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import EffectMethodBase					= require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
@@ -47,15 +47,15 @@ class EffectRimLightMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shaderObject:ShaderObjectBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
 	{
-		shaderObject.fragmentConstantData[methodVO.fragmentConstantsIndex + 3] = 1;
+		shader.fragmentConstantData[methodVO.fragmentConstantsIndex + 3] = 1;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shaderObject:ShaderObjectBase, methodVO:MethodVO)
+	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
 	{
 		methodVO.needsNormals = true;
 		methodVO.needsView = true;
@@ -129,10 +129,10 @@ class EffectRimLightMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
 		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
-		var data:Array<number> = shaderObject.fragmentConstantData;
+		var data:Array<number> = shader.fragmentConstantData;
 		data[index] = this._colorR;
 		data[index + 1] = this._colorG;
 		data[index + 2] = this._colorB;
@@ -143,7 +143,7 @@ class EffectRimLightMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var dataRegister:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 		var dataRegister2:ShaderRegisterElement = registerCache.getFreeFragmentConstant();

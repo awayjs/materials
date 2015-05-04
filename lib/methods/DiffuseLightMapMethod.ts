@@ -2,10 +2,10 @@ import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import ShaderLightingObject				= require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
+import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
@@ -54,14 +54,14 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shaderObject:ShaderLightingObject, methodVO:MethodVO)
+	public iInitVO(shader:LightingShader, methodVO:MethodVO)
 	{
-		methodVO.secondaryTextureObject = shaderObject.getTextureObject(this._lightMap);
+		methodVO.secondaryTextureVO = shader.getTextureVO(this._lightMap);
 
 		if (this._useSecondaryUV)
-			shaderObject.secondaryUVDependencies++;
+			shader.secondaryUVDependencies++;
 		else
-			shaderObject.uvDependencies++;
+			shader.uvDependencies++;
 	}
 
 	/**
@@ -127,14 +127,14 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentPostLightingCode(shaderObject:ShaderLightingObject, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentPostLightingCode(shader:LightingShader, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string;
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 
-		methodVO.secondaryTextureObject._iInitRegisters(shaderObject, registerCache);
+		methodVO.secondaryTextureVO._iInitRegisters(shader, registerCache);
 
-		code = methodVO.secondaryTextureObject._iGetFragmentCode(shaderObject, temp, registerCache, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
+		code = methodVO.secondaryTextureVO._iGetFragmentCode(shader, temp, registerCache, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
 
 		switch (this._blendMode) {
 			case DiffuseLightMapMethod.MULTIPLY:
@@ -145,7 +145,7 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 				break;
 		}
 
-		code += super.iGetFragmentPostLightingCode(shaderObject, methodVO, targetReg, registerCache, sharedRegisters);
+		code += super.iGetFragmentPostLightingCode(shader, methodVO, targetReg, registerCache, sharedRegisters);
 
 		return code;
 	}
@@ -153,11 +153,11 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shaderObject:ShaderLightingObject, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
 	{
-		super.iActivate(shaderObject, methodVO, stage);
+		super.iActivate(shader, methodVO, stage);
 
-		methodVO.secondaryTextureObject.activate(shaderObject);
+		methodVO.secondaryTextureVO.activate(shader);
 	}
 }
 

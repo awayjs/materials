@@ -9,26 +9,25 @@ import Event							= require("awayjs-core/lib/events/Event");
 import MaterialBase						= require("awayjs-display/lib/materials/MaterialBase");
 
 import Camera							= require("awayjs-display/lib/entities/Camera");
-import IRenderObjectOwner				= require("awayjs-display/lib/base/IRenderObjectOwner");
+import IRenderOwner						= require("awayjs-display/lib/base/IRenderOwner");
 import LightPickerBase					= require("awayjs-display/lib/materials/lightpickers/LightPickerBase");
 import LightSources						= require("awayjs-display/lib/materials/LightSources");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
 import RendererBase						= require("awayjs-renderergl/lib/RendererBase");
-import ShaderLightingObject				= require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
+import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
 import ShadingMethodEvent				= require("awayjs-renderergl/lib/events/ShadingMethodEvent");
-import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import RenderableBase					= require("awayjs-renderergl/lib/pool/RenderableBase");
-import RenderPassBase					= require("awayjs-renderergl/lib/passes/RenderPassBase");
-import IRenderLightingPass				= require("awayjs-renderergl/lib/passes/IRenderLightingPass");
-import IRenderableClass					= require("awayjs-renderergl/lib/pool/IRenderableClass");
+import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
+import PassBase							= require("awayjs-renderergl/lib/render/passes/PassBase");
+import ILightingPass					= require("awayjs-renderergl/lib/render/passes/ILightingPass");
+import IRenderableClass					= require("awayjs-renderergl/lib/renderables/IRenderableClass");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
-import RenderMethodMaterialObject		= require("awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject");
 import AmbientBasicMethod				= require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
 import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
 import EffectColorTransformMethod		= require("awayjs-methodmaterials/lib/methods/EffectColorTransformMethod");
@@ -37,13 +36,14 @@ import LightingMethodBase				= require("awayjs-methodmaterials/lib/methods/Light
 import NormalBasicMethod				= require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
 import ShadowMapMethodBase				= require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
 import SpecularBasicMethod				= require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
-import MethodPassMode					= require("awayjs-methodmaterials/lib/passes/MethodPassMode");
+import MethodPassMode					= require("awayjs-methodmaterials/lib/render/passes/MethodPassMode");
+import MethodMaterialRender				= require("awayjs-methodmaterials/lib/render/MethodMaterialRender");
 
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
  * using material methods to define their appearance.
  */
-class MethodPass extends RenderPassBase implements IRenderLightingPass
+class MethodPass extends PassBase implements ILightingPass
 {
 	private _maxLights:number = 3;
 
@@ -175,19 +175,19 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 	 *
 	 * @param material The material to which this pass belongs.
 	 */
-	constructor(mode:number, renderObject:RenderMethodMaterialObject, renderObjectOwner:MaterialBase, renderableClass:IRenderableClass, stage:Stage)
+	constructor(mode:number, render:MethodMaterialRender, renderOwner:MaterialBase, renderableClass:IRenderableClass, stage:Stage)
 	{
-		super(renderObject, renderObjectOwner, renderableClass, stage);
+		super(render, renderOwner, renderableClass, stage);
 
 		this._mode = mode;
 
-		this._material = renderObjectOwner;
+		this._material = renderOwner;
 
 		this._onLightsChangeDelegate = (event:Event) => this.onLightsChange(event);
 		
 		this._onMethodInvalidatedDelegate = (event:ShadingMethodEvent) => this.onMethodInvalidated(event);
 
-		this.lightPicker = renderObjectOwner.lightPicker;
+		this.lightPicker = renderOwner.lightPicker;
 
 		if (this._shader == null)
 			this._updateShader();
@@ -195,30 +195,30 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 
 	private _updateShader()
 	{
-		if ((this.numDirectionalLights || this.numPointLights || this.numLightProbes) && !(this._shader instanceof ShaderLightingObject)) {
+		if ((this.numDirectionalLights || this.numPointLights || this.numLightProbes) && !(this._shader instanceof LightingShader)) {
 			if (this._shader != null)
 				this._shader.dispose();
 
-			this._shader = new ShaderLightingObject(this._renderableClass, this, this._stage);
-		} else if (!(this._shader instanceof ShaderObjectBase)) {
+			this._shader = new LightingShader(this._renderableClass, this, this._stage);
+		} else if (!(this._shader instanceof ShaderBase)) {
 			if (this._shader != null)
 				this._shader.dispose();
 
-			this._shader = new ShaderObjectBase(this._renderableClass, this, this._stage);
+			this._shader = new ShaderBase(this._renderableClass, this, this._stage);
 		}
 	}
 
 	/**
 	 * Initializes the unchanging constant data for this material.
 	 */
-	public _iInitConstantData(shaderObject:ShaderObjectBase)
+	public _iInitConstantData(shader:ShaderBase)
 	{
-		super._iInitConstantData(shaderObject);
+		super._iInitConstantData(shader);
 
 		//Updates method constants if they have changed.
 		var len:number = this._iMethodVOs.length;
 		for (var i:number = 0; i < len; ++i)
-			this._iMethodVOs[i].method.iInitConstants(shaderObject, this._iMethodVOs[i]);
+			this._iMethodVOs[i].method.iInitConstants(shader, this._iMethodVOs[i]);
 	}
 
 	/**
@@ -585,27 +585,40 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 		}
 	}
 
-	public _iIncludeDependencies(shaderObject:ShaderLightingObject)
+	public _iIncludeDependencies(shader:LightingShader)
 	{
-		super._iIncludeDependencies(shaderObject);
+		super._iIncludeDependencies(shader);
 
 		//TODO: fragment animtion should be compatible with lighting pass
-		shaderObject.usesFragmentAnimation = Boolean(this._mode == MethodPassMode.SUPER_SHADER);
-
-		if (!shaderObject.usesTangentSpace && this.numPointLights > 0 && shaderObject.usesLights) {
-			shaderObject.globalPosDependencies++;
-
-			if (Boolean(this._mode & MethodPassMode.EFFECTS))
-				shaderObject.usesGlobalPosFragment = true;
-		}
+		shader.usesFragmentAnimation = Boolean(this._mode == MethodPassMode.SUPER_SHADER);
 
 		var i:number;
 		var len:number = this._iMethodVOs.length;
 		for (i = 0; i < len; ++i)
-			this.setupAndCountDependencies(shaderObject, this._iMethodVOs[i]);
+			this.setupAndCountDependencies(shader, this._iMethodVOs[i]);
 
-		for (i = 0; i < len; ++i)
-			this._iMethodVOs[i].useMethod = this._iMethodVOs[i].method.iIsUsed(shaderObject);
+		var usesTangentSpace:boolean = true;
+
+		var methodVO:MethodVO;
+		for (i = 0; i < len; ++i) {
+			methodVO = this._iMethodVOs[i];
+			if ((methodVO.useMethod = methodVO.method.iIsUsed(shader)) && !methodVO.method.iUsesTangentSpace())
+				usesTangentSpace = false;
+		}
+
+		shader.outputsNormals = this._iNormalMethodVO && this._iNormalMethodVO.useMethod;
+		shader.outputsTangentNormals = shader.outputsNormals && (<NormalBasicMethod> this._iNormalMethodVO.method).iOutputsTangentNormals();
+		shader.usesTangentSpace = shader.outputsTangentNormals && !shader.usesProbes && usesTangentSpace;
+
+		if (!shader.usesTangentSpace) {
+			if (shader.viewDirDependencies > 0) {
+				shader.globalPosDependencies++;
+			} else if (this.numPointLights > 0 && shader.usesLights) {
+				shader.globalPosDependencies++;
+				if (Boolean(this._mode & MethodPassMode.EFFECTS))
+					shader.usesGlobalPosFragment = true;
+			}
+		}
 	}
 
 
@@ -614,56 +627,56 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 	 * @param method The method to count the dependencies for.
 	 * @param methodVO The method's data for this material.
 	 */
-	private setupAndCountDependencies(shaderObject:ShaderObjectBase, methodVO:MethodVO)
+	private setupAndCountDependencies(shader:ShaderBase, methodVO:MethodVO)
 	{
 		methodVO.reset();
 
-		methodVO.method.iInitVO(shaderObject, methodVO);
+		methodVO.method.iInitVO(shader, methodVO);
 
 		if (methodVO.needsProjection)
-			shaderObject.projectionDependencies++;
+			shader.projectionDependencies++;
 
 		if (methodVO.needsGlobalVertexPos || methodVO.needsGlobalFragmentPos) {
 
-			shaderObject.globalPosDependencies++;
+			shader.globalPosDependencies++;
 
 			if (methodVO.needsGlobalFragmentPos)
-				shaderObject.usesGlobalPosFragment = true;
+				shader.usesGlobalPosFragment = true;
 
 		}
 
 		if (methodVO.needsNormals)
-			shaderObject.normalDependencies++;
+			shader.normalDependencies++;
 
 		if (methodVO.needsTangents)
-			shaderObject.tangentDependencies++;
+			shader.tangentDependencies++;
 
 		if (methodVO.needsView)
-			shaderObject.viewDirDependencies++;
+			shader.viewDirDependencies++;
 	}
 
-	public _iGetPreLightingVertexCode(shaderObject:ShaderObjectBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _iGetPreLightingVertexCode(shader:ShaderBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 
 		if (this._iAmbientMethodVO && this._iAmbientMethodVO.useMethod)
-			code += this._iAmbientMethodVO.method.iGetVertexCode(shaderObject, this._iAmbientMethodVO, registerCache, sharedRegisters);
+			code += this._iAmbientMethodVO.method.iGetVertexCode(shader, this._iAmbientMethodVO, registerCache, sharedRegisters);
 
 		if (this._iDiffuseMethodVO && this._iDiffuseMethodVO.useMethod)
-			code += this._iDiffuseMethodVO.method.iGetVertexCode(shaderObject, this._iDiffuseMethodVO, registerCache, sharedRegisters);
+			code += this._iDiffuseMethodVO.method.iGetVertexCode(shader, this._iDiffuseMethodVO, registerCache, sharedRegisters);
 
 		if (this._iSpecularMethodVO && this._iSpecularMethodVO.useMethod)
-			code += this._iSpecularMethodVO.method.iGetVertexCode(shaderObject, this._iSpecularMethodVO, registerCache, sharedRegisters);
+			code += this._iSpecularMethodVO.method.iGetVertexCode(shader, this._iSpecularMethodVO, registerCache, sharedRegisters);
 
 		return code;
 	}
 
-	public _iGetPreLightingFragmentCode(shaderObject:ShaderObjectBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _iGetPreLightingFragmentCode(shader:ShaderBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 
 		if (this._iAmbientMethodVO && this._iAmbientMethodVO.useMethod) {
-			code += this._iAmbientMethodVO.method.iGetFragmentCode(shaderObject, this._iAmbientMethodVO, sharedRegisters.shadedTarget, registerCache, sharedRegisters);
+			code += this._iAmbientMethodVO.method.iGetFragmentCode(shader, this._iAmbientMethodVO, sharedRegisters.shadedTarget, registerCache, sharedRegisters);
 
 			if (this._iAmbientMethodVO.needsNormals)
 				registerCache.removeFragmentTempUsage(sharedRegisters.normalFragment);
@@ -673,49 +686,49 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 		}
 
 		if (this._iDiffuseMethodVO && this._iDiffuseMethodVO.useMethod)
-			code += (<LightingMethodBase> this._iDiffuseMethodVO.method).iGetFragmentPreLightingCode(<ShaderLightingObject> shaderObject, this._iDiffuseMethodVO, registerCache, sharedRegisters);
+			code += (<LightingMethodBase> this._iDiffuseMethodVO.method).iGetFragmentPreLightingCode(<LightingShader> shader, this._iDiffuseMethodVO, registerCache, sharedRegisters);
 
 		if (this._iSpecularMethodVO && this._iSpecularMethodVO.useMethod)
-			code += (<LightingMethodBase> this._iSpecularMethodVO.method).iGetFragmentPreLightingCode(<ShaderLightingObject> shaderObject, this._iSpecularMethodVO, registerCache, sharedRegisters);
+			code += (<LightingMethodBase> this._iSpecularMethodVO.method).iGetFragmentPreLightingCode(<LightingShader> shader, this._iSpecularMethodVO, registerCache, sharedRegisters);
 
 		return code;
 	}
 
-	public _iGetPerLightDiffuseFragmentCode(shaderObject:ShaderLightingObject, lightDirReg:ShaderRegisterElement, diffuseColorReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _iGetPerLightDiffuseFragmentCode(shader:LightingShader, lightDirReg:ShaderRegisterElement, diffuseColorReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		return (<LightingMethodBase> this._iDiffuseMethodVO.method).iGetFragmentCodePerLight(shaderObject, this._iDiffuseMethodVO, lightDirReg, diffuseColorReg, registerCache, sharedRegisters);
+		return (<LightingMethodBase> this._iDiffuseMethodVO.method).iGetFragmentCodePerLight(shader, this._iDiffuseMethodVO, lightDirReg, diffuseColorReg, registerCache, sharedRegisters);
 	}
 
-	public _iGetPerLightSpecularFragmentCode(shaderObject:ShaderLightingObject, lightDirReg:ShaderRegisterElement, specularColorReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _iGetPerLightSpecularFragmentCode(shader:LightingShader, lightDirReg:ShaderRegisterElement, specularColorReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		return (<LightingMethodBase> this._iSpecularMethodVO.method).iGetFragmentCodePerLight(shaderObject, this._iSpecularMethodVO, lightDirReg, specularColorReg, registerCache, sharedRegisters);
+		return (<LightingMethodBase> this._iSpecularMethodVO.method).iGetFragmentCodePerLight(shader, this._iSpecularMethodVO, lightDirReg, specularColorReg, registerCache, sharedRegisters);
 	}
 
-	public _iGetPerProbeDiffuseFragmentCode(shaderObject:ShaderLightingObject, texReg:ShaderRegisterElement, weightReg:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _iGetPerProbeDiffuseFragmentCode(shader:LightingShader, texReg:ShaderRegisterElement, weightReg:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		return (<LightingMethodBase> this._iDiffuseMethodVO.method).iGetFragmentCodePerProbe(shaderObject, this._iDiffuseMethodVO, texReg, weightReg, registerCache, sharedRegisters);
+		return (<LightingMethodBase> this._iDiffuseMethodVO.method).iGetFragmentCodePerProbe(shader, this._iDiffuseMethodVO, texReg, weightReg, registerCache, sharedRegisters);
 	}
 
-	public _iGetPerProbeSpecularFragmentCode(shaderObject:ShaderLightingObject, texReg:ShaderRegisterElement, weightReg:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _iGetPerProbeSpecularFragmentCode(shader:LightingShader, texReg:ShaderRegisterElement, weightReg:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		return (<LightingMethodBase> this._iSpecularMethodVO.method).iGetFragmentCodePerProbe(shaderObject, this._iSpecularMethodVO, texReg, weightReg, registerCache, sharedRegisters);
+		return (<LightingMethodBase> this._iSpecularMethodVO.method).iGetFragmentCodePerProbe(shader, this._iSpecularMethodVO, texReg, weightReg, registerCache, sharedRegisters);
 	}
 
-	public _iGetPostLightingVertexCode(shaderObject:ShaderLightingObject, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _iGetPostLightingVertexCode(shader:LightingShader, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 
 		if (this._iShadowMethodVO)
-			code += this._iShadowMethodVO.method.iGetVertexCode(shaderObject, this._iShadowMethodVO, registerCache, sharedRegisters);
+			code += this._iShadowMethodVO.method.iGetVertexCode(shader, this._iShadowMethodVO, registerCache, sharedRegisters);
 
 		return code;
 	}
 
-	public _iGetPostLightingFragmentCode(shaderObject:ShaderLightingObject, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _iGetPostLightingFragmentCode(shader:LightingShader, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 
-		if (shaderObject.useAlphaPremultiplied && this._pEnableBlending) {
+		if (shader.useAlphaPremultiplied && shader.usesBlending) {
 			code += "add " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.commons + ".z\n" +
 			"div " + sharedRegisters.shadedTarget + ".xyz, " + sharedRegisters.shadedTarget + ", " + sharedRegisters.shadedTarget + ".w\n" +
 			"sub " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.commons + ".z\n" +
@@ -723,10 +736,10 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 		}
 
 		if (this._iShadowMethodVO)
-			code += this._iShadowMethodVO.method.iGetFragmentCode(shaderObject, this._iShadowMethodVO, sharedRegisters.shadowTarget, registerCache, sharedRegisters);
+			code += this._iShadowMethodVO.method.iGetFragmentCode(shader, this._iShadowMethodVO, sharedRegisters.shadowTarget, registerCache, sharedRegisters);
 
 		if (this._iDiffuseMethodVO && this._iDiffuseMethodVO.useMethod) {
-			code += (<LightingMethodBase> this._iDiffuseMethodVO.method).iGetFragmentPostLightingCode(shaderObject, this._iDiffuseMethodVO, sharedRegisters.shadedTarget, registerCache, sharedRegisters);
+			code += (<LightingMethodBase> this._iDiffuseMethodVO.method).iGetFragmentPostLightingCode(shader, this._iDiffuseMethodVO, sharedRegisters.shadedTarget, registerCache, sharedRegisters);
 
 			// resolve other dependencies as well?
 			if (this._iDiffuseMethodVO.needsNormals)
@@ -737,7 +750,7 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 		}
 
 		if (this._iSpecularMethodVO && this._iSpecularMethodVO.useMethod) {
-			code += (<LightingMethodBase> this._iSpecularMethodVO.method).iGetFragmentPostLightingCode(shaderObject, this._iSpecularMethodVO, sharedRegisters.shadedTarget, registerCache, sharedRegisters);
+			code += (<LightingMethodBase> this._iSpecularMethodVO.method).iGetFragmentPostLightingCode(shader, this._iSpecularMethodVO, sharedRegisters.shadedTarget, registerCache, sharedRegisters);
 			if (this._iSpecularMethodVO.needsNormals)
 				registerCache.removeFragmentTempUsage(sharedRegisters.normalFragment);
 			if (this._iSpecularMethodVO.needsView)
@@ -750,51 +763,15 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 		return code;
 	}
 
-	/**
-	 * Indicates whether or not normals are allowed in tangent space. This is only the case if no object-space
-	 * dependencies exist.
-	 */
-	public _pUsesTangentSpace(shaderObject:ShaderLightingObject):boolean
+
+	public _iGetNormalVertexCode(shader:ShaderBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		if (shaderObject.usesProbes)
-			return false;
-
-		var methodVO:MethodVO;
-		var len:number = this._iMethodVOs.length;
-		for (var i:number = 0; i < len; ++i) {
-			methodVO = this._iMethodVOs[i];
-			if (methodVO.useMethod && !methodVO.method.iUsesTangentSpace())
-				return false;
-		}
-
-		return true;
+		return this._iNormalMethodVO.method.iGetVertexCode(shader, this._iNormalMethodVO, registerCache, sharedRegisters);
 	}
 
-	/**
-	 * Indicates whether or not normals are output in tangent space.
-	 */
-	public _pOutputsTangentNormals(shaderObject:ShaderObjectBase):boolean
+	public _iGetNormalFragmentCode(shader:ShaderBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		return (<NormalBasicMethod> this._iNormalMethodVO.method).iOutputsTangentNormals();
-	}
-
-	/**
-	 * Indicates whether or not normals are output by the pass.
-	 */
-	public _pOutputsNormals(shaderObject:ShaderObjectBase):boolean
-	{
-		return this._iNormalMethodVO && this._iNormalMethodVO.useMethod;
-	}
-
-
-	public _iGetNormalVertexCode(shaderObject:ShaderObjectBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		return this._iNormalMethodVO.method.iGetVertexCode(shaderObject, this._iNormalMethodVO, registerCache, sharedRegisters);
-	}
-
-	public _iGetNormalFragmentCode(shaderObject:ShaderObjectBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string = this._iNormalMethodVO.method.iGetFragmentCode(shaderObject, this._iNormalMethodVO, sharedRegisters.normalFragment, registerCache, sharedRegisters);
+		var code:string = this._iNormalMethodVO.method.iGetFragmentCode(shader, this._iNormalMethodVO, sharedRegisters.normalFragment, registerCache, sharedRegisters);
 
 		if (this._iNormalMethodVO.needsView)
 			registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
@@ -808,7 +785,7 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 	/**
 	 * @inheritDoc
 	 */
-	public _iGetVertexCode(shaderObject:ShaderObjectBase, regCache:ShaderRegisterCache, sharedReg:ShaderRegisterData):string
+	public _iGetVertexCode(shader:ShaderBase, regCache:ShaderRegisterCache, sharedReg:ShaderRegisterData):string
 	{
 		var code:string = "";
 		var methodVO:MethodVO;
@@ -816,7 +793,7 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 		for (var i:number = len - this._numEffectDependencies; i < len; i++) {
 			methodVO = this._iMethodVOs[i];
 			if (methodVO.useMethod) {
-				code += methodVO.method.iGetVertexCode(shaderObject, methodVO, regCache, sharedReg);
+				code += methodVO.method.iGetVertexCode(shader, methodVO, regCache, sharedReg);
 
 				if (methodVO.needsGlobalVertexPos || methodVO.needsGlobalFragmentPos)
 					regCache.removeVertexTempUsage(sharedReg.globalPositionVertex);
@@ -824,7 +801,7 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 		}
 
 		if (this._iColorTransformMethodVO && this._iColorTransformMethodVO.useMethod)
-			code += this._iColorTransformMethodVO.method.iGetVertexCode(shaderObject, this._iColorTransformMethodVO, regCache, sharedReg);
+			code += this._iColorTransformMethodVO.method.iGetVertexCode(shader, this._iColorTransformMethodVO, regCache, sharedReg);
 
 		return code;
 	}
@@ -832,7 +809,7 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 	/**
 	 * @inheritDoc
 	 */
-	public _iGetFragmentCode(shaderObject:ShaderObjectBase, regCache:ShaderRegisterCache, sharedReg:ShaderRegisterData):string
+	public _iGetFragmentCode(shader:ShaderBase, regCache:ShaderRegisterCache, sharedReg:ShaderRegisterData):string
 	{
 		var code:string = "";
 		var alphaReg:ShaderRegisterElement;
@@ -848,7 +825,7 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 		for (var i:number = len - this._numEffectDependencies; i < len; i++) {
 			methodVO = this._iMethodVOs[i];
 			if (methodVO.useMethod) {
-				code += methodVO.method.iGetFragmentCode(shaderObject, methodVO, sharedReg.shadedTarget, regCache, sharedReg);
+				code += methodVO.method.iGetFragmentCode(shader, methodVO, sharedReg.shadedTarget, regCache, sharedReg);
 
 				if (methodVO.needsNormals)
 					regCache.removeFragmentTempUsage(sharedReg.normalFragment);
@@ -865,14 +842,14 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 		}
 
 		if (this._iColorTransformMethodVO && this._iColorTransformMethodVO.useMethod)
-			code += this._iColorTransformMethodVO.method.iGetFragmentCode(shaderObject, this._iColorTransformMethodVO, sharedReg.shadedTarget, regCache, sharedReg);
+			code += this._iColorTransformMethodVO.method.iGetFragmentCode(shader, this._iColorTransformMethodVO, sharedReg.shadedTarget, regCache, sharedReg);
 
 		return code;
 	}
 	/**
 	 * Indicates whether the shader uses any shadows.
 	 */
-	public _iUsesShadows(shaderObject:ShaderObjectBase):boolean
+	public _iUsesShadows(shader:ShaderBase):boolean
 	{
 		return Boolean(this._iShadowMethodVO && (this._lightPicker.castingDirectionalLights.length > 0 || this._lightPicker.castingPointLights.length > 0));
 	}
@@ -880,7 +857,7 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 	/**
 	 * Indicates whether the shader uses any specular component.
 	 */
-	public _iUsesSpecular(shaderObject:ShaderObjectBase):boolean
+	public _iUsesSpecular(shader:ShaderBase):boolean
 	{
 		return Boolean(this._iSpecularMethodVO);
 	}
@@ -888,7 +865,7 @@ class MethodPass extends RenderPassBase implements IRenderLightingPass
 	/**
 	 * Indicates whether the shader uses any specular component.
 	 */
-	public _iUsesDiffuse(shaderObject:ShaderObjectBase):boolean
+	public _iUsesDiffuse(shader:ShaderBase):boolean
 	{
 		return Boolean(this._iDiffuseMethodVO);
 	}

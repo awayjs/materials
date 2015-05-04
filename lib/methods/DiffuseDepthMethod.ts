@@ -1,8 +1,8 @@
-import ShaderLightingObject				= require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
-import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
+import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
+import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
@@ -23,9 +23,9 @@ class DiffuseDepthMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shaderObject:ShaderObjectBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
 	{
-		var data:Array<number> = shaderObject.fragmentConstantData;
+		var data:Array<number> = shader.fragmentConstantData;
 		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
 		data[index] = 1.0;
 		data[index + 1] = 1/255.0;
@@ -36,7 +36,7 @@ class DiffuseDepthMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentPostLightingCode(shaderObject:ShaderLightingObject, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentPostLightingCode(shader:LightingShader, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 		var temp:ShaderRegisterElement;
@@ -46,7 +46,7 @@ class DiffuseDepthMethod extends DiffuseBasicMethod
 			throw new Error("DiffuseDepthMethod requires texture!");
 
 		// incorporate input from ambient
-		if (shaderObject.numLights > 0) {
+		if (shader.numLights > 0) {
 			if (sharedRegisters.shadowTarget)
 				code += "mul " + this._pTotalLightColorReg + ".xyz, " + this._pTotalLightColorReg + ".xyz, " + sharedRegisters.shadowTarget + ".w\n";
 			code += "add " + targetReg + ".xyz, " + this._pTotalLightColorReg + ".xyz, " + targetReg + ".xyz\n" +
@@ -60,21 +60,21 @@ class DiffuseDepthMethod extends DiffuseBasicMethod
 		decReg = registerCache.getFreeFragmentConstant();
 		methodVO.fragmentConstantsIndex = decReg.index*4;
 
-		methodVO.textureObject._iInitRegisters(shaderObject, registerCache);
+		methodVO.textureVO._iInitRegisters(shader, registerCache);
 
-		code += methodVO.textureObject._iGetFragmentCode(shaderObject, temp, registerCache, sharedRegisters.uvVarying) +
+		code += methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters.uvVarying) +
 			"dp4 " + temp + ".x, " + temp + ", " + decReg + "\n" +
 			"mov " + temp + ".yz, " + temp + ".xx			\n" +
 			"mov " + temp + ".w, " + decReg + ".x\n" +
 			"sub " + temp + ".xyz, " + decReg + ".xxx, " + temp + ".xyz\n";
 
-		if (shaderObject.numLights == 0)
+		if (shader.numLights == 0)
 			return code;
 
 		code += "mul " + targetReg + ".xyz, " + temp + ".xyz, " + targetReg + ".xyz\n" +
 			"mov " + targetReg + ".w, " + temp + ".w\n";
 
-		if (shaderObject.numLights > 0)
+		if (shader.numLights > 0)
 			registerCache.removeFragmentTempUsage(temp);
 
 		return code;

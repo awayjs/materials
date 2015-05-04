@@ -1,10 +1,10 @@
 import IAsset						= require("awayjs-core/lib/library/IAsset");
 import AbstractMethodError			= require("awayjs-core/lib/errors/AbstractMethodError");
 
-import ShaderObjectBase				= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-import ShaderRegisterCache			= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData			= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement		= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
+import ShaderBase					= require("awayjs-renderergl/lib/shaders/ShaderBase");
+import ShaderRegisterCache			= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData			= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement		= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
 import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
 import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
@@ -37,7 +37,7 @@ class EffectMethodBase extends ShadingMethodBase implements IAsset
 	 * @param targetReg The register that will be containing the method's output.
 	 * @private
 	 */
-	public iGetFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		throw new AbstractMethodError();
 		return "";

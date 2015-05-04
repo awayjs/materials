@@ -2,10 +2,10 @@ import TextureBase					= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage						= require("awayjs-stagegl/lib/base/Stage");
 
-import ShaderObjectBase				= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-import ShaderRegisterCache			= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData			= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement		= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
+import ShaderBase					= require("awayjs-renderergl/lib/shaders/ShaderBase");
+import ShaderRegisterCache			= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData			= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement		= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
 import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
 import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
@@ -27,9 +27,9 @@ class NormalBasicMethod extends ShadingMethodBase
 		this._normalMap = normalMap;
 	}
 
-	public iIsUsed(shaderObject:ShaderObjectBase):boolean
+	public iIsUsed(shader:ShaderBase):boolean
 	{
-		if (this._normalMap && shaderObject.normalDependencies)
+		if (this._normalMap && shader.normalDependencies)
 			return true;
 
 		return false;
@@ -38,11 +38,11 @@ class NormalBasicMethod extends ShadingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shaderObject:ShaderObjectBase, methodVO:MethodVO)
+	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
 	{
 		if (this._normalMap) {
-			methodVO.textureObject = shaderObject.getTextureObject(this._normalMap);
-			shaderObject.uvDependencies++;
+			methodVO.textureVO = shader.getTextureVO(this._normalMap);
+			shader.uvDependencies++;
 		}
 	}
 
@@ -96,23 +96,23 @@ class NormalBasicMethod extends ShadingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
 		if (this._normalMap)
-			methodVO.textureObject.activate(shaderObject);
+			methodVO.textureVO.activate(shader);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 
 		if (this._normalMap) {
-			methodVO.textureObject._iInitRegisters(shaderObject, registerCache);
+			methodVO.textureVO._iInitRegisters(shader, registerCache);
 
-			code += methodVO.textureObject._iGetFragmentCode(shaderObject, targetReg, registerCache, sharedRegisters.uvVarying);
+			code += methodVO.textureVO._iGetFragmentCode(shader, targetReg, registerCache, sharedRegisters.uvVarying);
 		}
 
 		code += "sub " + targetReg + ".xyz, " + targetReg + ".xyz, " + sharedRegisters.commons + ".xxx\n" +

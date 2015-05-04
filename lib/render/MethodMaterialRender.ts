@@ -9,23 +9,24 @@ import AbstractMethodError				= require("awayjs-core/lib/errors/AbstractMethodEr
 
 
 import Camera							= require("awayjs-display/lib/entities/Camera");
-import IRenderObjectOwner				= require("awayjs-display/lib/base/IRenderObjectOwner");
+import IRenderOwner				= require("awayjs-display/lib/base/IRenderOwner");
 import StaticLightPicker				= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 import ContextGLCompareMode				= require("awayjs-stagegl/lib/base/ContextGLCompareMode");
 
 import RendererBase						= require("awayjs-renderergl/lib/RendererBase");
-import RenderObjectPool					= require("awayjs-renderergl/lib/compilation/RenderObjectPool");
+import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
 import ShadingMethodEvent				= require("awayjs-renderergl/lib/events/ShadingMethodEvent");
-import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-import RenderObjectBase					= require("awayjs-renderergl/lib/compilation/RenderObjectBase");
-import RenderableBase					= require("awayjs-renderergl/lib/pool/RenderableBase");
-import IRenderableClass					= require("awayjs-renderergl/lib/pool/IRenderableClass");
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
+import IRenderableClass					= require("awayjs-renderergl/lib/renderables/IRenderableClass");
+import RenderBase						= require("awayjs-renderergl/lib/render/RenderBase");
+import RenderPool						= require("awayjs-renderergl/lib/render/RenderPool");
 
 import MethodMaterial					= require("awayjs-methodmaterials/lib/MethodMaterial");
-import MethodPassMode					= require("awayjs-methodmaterials/lib/passes/MethodPassMode");
-import MethodPass						= require("awayjs-methodmaterials/lib/passes/MethodPass");
+import MethodMaterialMode				= require("awayjs-methodmaterials/lib/MethodMaterialMode");
+import MethodPassMode					= require("awayjs-methodmaterials/lib/render/passes/MethodPassMode");
+import MethodPass						= require("awayjs-methodmaterials/lib/render/passes/MethodPass");
 import AmbientBasicMethod				= require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
 import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
 import EffectColorTransformMethod		= require("awayjs-methodmaterials/lib/methods/EffectColorTransformMethod");
@@ -34,16 +35,15 @@ import LightingMethodBase				= require("awayjs-methodmaterials/lib/methods/Light
 import NormalBasicMethod				= require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
 import ShadowMapMethodBase				= require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
 import SpecularBasicMethod				= require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
-import MethodMaterialMode				= require("awayjs-methodmaterials/lib/MethodMaterialMode");
 
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
  * using material methods to define their appearance.
  */
-class RenderMethodMaterialObject extends RenderObjectBase
+class MethodMaterialRender extends RenderBase
 {
 	private _material:MethodMaterial;
-	private _screenPass:MethodPass;
+	private _pass:MethodPass;
 	private _casterLightPass:MethodPass;
 	private _nonCasterLightPasses:Array<MethodPass>;
 	
@@ -68,7 +68,7 @@ class RenderMethodMaterialObject extends RenderObjectBase
 	 *
 	 * @param material The material to which this pass belongs.
 	 */
-	constructor(pool:RenderObjectPool, material:MethodMaterial, renderableClass:IRenderableClass, stage:Stage)
+	constructor(pool:RenderPool, material:MethodMaterial, renderableClass:IRenderableClass, stage:Stage)
 	{
 		super(pool, material, renderableClass, stage);
 
@@ -78,27 +78,27 @@ class RenderMethodMaterialObject extends RenderObjectBase
 	/**
 	 * @inheritDoc
 	 */
-	public _pUpdateRenderObject()
+	public _pUpdateRender()
 	{
-		super._pUpdateRenderObject();
+		super._pUpdateRender();
 
 		this.initPasses();
 
 		this.setBlendAndCompareModes();
 
-		this._pClearScreenPasses();
+		this._pClearPasses();
 
 		if (this._material.mode == MethodMaterialMode.MULTI_PASS) {
 			if (this._casterLightPass)
-				this._pAddScreenPass(this._casterLightPass);
+				this._pAddPass(this._casterLightPass);
 
 			if (this._nonCasterLightPasses)
 				for (var i:number = 0; i < this._nonCasterLightPasses.length; ++i)
-					this._pAddScreenPass(this._nonCasterLightPasses[i]);
+					this._pAddPass(this._nonCasterLightPasses[i]);
 		}
 
-		if (this._screenPass)
-			this._pAddScreenPass(this._screenPass);
+		if (this._pass)
+			this._pAddPass(this._pass);
 	}
 
 	/**
@@ -110,7 +110,7 @@ class RenderMethodMaterialObject extends RenderObjectBase
 		// after shading, or when the material mode is single pass.
 		if (this.numLights == 0 || this._material.numEffectMethods > 0 || this._material.mode == MethodMaterialMode.SINGLE_PASS)
 			this.initEffectPass();
-		else if (this._screenPass)
+		else if (this._pass)
 			this.removeEffectPass();
 
 		// only use a caster light pass if shadows need to be rendered
@@ -131,13 +131,13 @@ class RenderMethodMaterialObject extends RenderObjectBase
 	 */
 	private setBlendAndCompareModes()
 	{
-		var forceSeparateMVP:boolean = Boolean(this._casterLightPass || this._screenPass);
+		var forceSeparateMVP:boolean = Boolean(this._casterLightPass || this._pass);
 
 		// caster light pass is always first if it exists, hence it uses normal blending
 		if (this._casterLightPass) {
 			this._casterLightPass.forceSeparateMVP = forceSeparateMVP;
-			this._casterLightPass.setBlendMode(BlendMode.NORMAL);
-			this._casterLightPass.depthCompareMode = this._material.depthCompareMode;
+			this._casterLightPass.shader.setBlendMode(BlendMode.NORMAL);
+			this._casterLightPass.shader.depthCompareMode = this._material.depthCompareMode;
 		}
 
 		if (this._nonCasterLightPasses) {
@@ -147,16 +147,16 @@ class RenderMethodMaterialObject extends RenderObjectBase
 			// and should use normal blending
 			if (!this._casterLightPass) {
 				this._nonCasterLightPasses[0].forceSeparateMVP = forceSeparateMVP;
-				this._nonCasterLightPasses[0].setBlendMode(BlendMode.NORMAL);
-				this._nonCasterLightPasses[0].depthCompareMode = this._material.depthCompareMode;
+				this._nonCasterLightPasses[0].shader.setBlendMode(BlendMode.NORMAL);
+				this._nonCasterLightPasses[0].shader.depthCompareMode = this._material.depthCompareMode;
 				firstAdditiveIndex = 1;
 			}
 
 			// all lighting passes following the first light pass should use additive blending
 			for (var i:number = firstAdditiveIndex; i < this._nonCasterLightPasses.length; ++i) {
 				this._nonCasterLightPasses[i].forceSeparateMVP = forceSeparateMVP;
-				this._nonCasterLightPasses[i].setBlendMode(BlendMode.ADD);
-				this._nonCasterLightPasses[i].depthCompareMode = ContextGLCompareMode.LESS_EQUAL;
+				this._nonCasterLightPasses[i].shader.setBlendMode(BlendMode.ADD);
+				this._nonCasterLightPasses[i].shader.depthCompareMode = ContextGLCompareMode.LESS_EQUAL;
 			}
 		}
 
@@ -165,22 +165,22 @@ class RenderMethodMaterialObject extends RenderObjectBase
 			this._pRequiresBlending = false;
 
 			// there are light passes, so this should be blended in
-			if (this._screenPass) {
-				this._screenPass.mode = MethodPassMode.EFFECTS;
-				this._screenPass.depthCompareMode = ContextGLCompareMode.LESS_EQUAL;
-				this._screenPass.setBlendMode(BlendMode.LAYER);
-				this._screenPass.forceSeparateMVP = forceSeparateMVP;
+			if (this._pass) {
+				this._pass.mode = MethodPassMode.EFFECTS;
+				this._pass.forceSeparateMVP = forceSeparateMVP;
+				this._pass.shader.depthCompareMode = ContextGLCompareMode.LESS_EQUAL;
+				this._pass.shader.setBlendMode(BlendMode.LAYER);
 			}
 
-		} else if (this._screenPass) {
+		} else if (this._pass) {
 			this._pRequiresBlending = (this._material.blendMode != BlendMode.NORMAL || this._material.alphaBlending || (this._material.colorTransform && this._material.colorTransform.alphaMultiplier < 1));
 			// effects pass is the only pass, so it should just blend normally
-			this._screenPass.mode = MethodPassMode.SUPER_SHADER;
-			this._screenPass.depthCompareMode = this._material.depthCompareMode;
-			this._screenPass.preserveAlpha = this._pRequiresBlending;
-			this._screenPass.colorTransform = this._material.colorTransform;
-			this._screenPass.setBlendMode((this._material.blendMode == BlendMode.NORMAL && this._pRequiresBlending)? BlendMode.LAYER : this._material.blendMode);
-			this._screenPass.forceSeparateMVP = false;
+			this._pass.mode = MethodPassMode.SUPER_SHADER;
+			this._pass.preserveAlpha = this._pRequiresBlending;
+			this._pass.forceSeparateMVP = false;
+			this._pass.colorTransform = this._material.colorTransform;
+			this._pass.shader.setBlendMode((this._material.blendMode == BlendMode.NORMAL && this._pRequiresBlending)? BlendMode.LAYER : this._material.blendMode);
+			this._pass.shader.depthCompareMode = this._material.depthCompareMode;
 		}
 	}
 
@@ -201,7 +201,7 @@ class RenderMethodMaterialObject extends RenderObjectBase
 	private removeCasterLightPass()
 	{
 		this._casterLightPass.dispose();
-		this._pRemoveScreenPass(this._casterLightPass);
+		this._pRemovePass(this._casterLightPass);
 		this._casterLightPass = null;
 	}
 
@@ -248,66 +248,66 @@ class RenderMethodMaterialObject extends RenderObjectBase
 			return;
 
 		for (var i:number = 0; i < this._nonCasterLightPasses.length; ++i)
-			this._pRemoveScreenPass(this._nonCasterLightPasses[i]);
+			this._pRemovePass(this._nonCasterLightPasses[i]);
 
 		this._nonCasterLightPasses = null;
 	}
 
 	private removeEffectPass()
 	{
-		if (this._screenPass.ambientMethod != this._material.ambientMethod)
-			this._screenPass.ambientMethod.dispose();
+		if (this._pass.ambientMethod != this._material.ambientMethod)
+			this._pass.ambientMethod.dispose();
 
-		if (this._screenPass.diffuseMethod != this._material.diffuseMethod)
-			this._screenPass.diffuseMethod.dispose();
+		if (this._pass.diffuseMethod != this._material.diffuseMethod)
+			this._pass.diffuseMethod.dispose();
 
-		if (this._screenPass.specularMethod != this._material.specularMethod)
-			this._screenPass.specularMethod.dispose();
+		if (this._pass.specularMethod != this._material.specularMethod)
+			this._pass.specularMethod.dispose();
 
-		if (this._screenPass.normalMethod != this._material.normalMethod)
-			this._screenPass.normalMethod.dispose();
+		if (this._pass.normalMethod != this._material.normalMethod)
+			this._pass.normalMethod.dispose();
 
-		this._pRemoveScreenPass(this._screenPass);
-		this._screenPass = null;
+		this._pRemovePass(this._pass);
+		this._pass = null;
 	}
 
 	private initEffectPass()
 	{
-		if (this._screenPass == null)
-			this._screenPass = new MethodPass(MethodPassMode.SUPER_SHADER, this, this._material, this._renderableClass, this._stage);
+		if (this._pass == null)
+			this._pass = new MethodPass(MethodPassMode.SUPER_SHADER, this, this._material, this._renderableClass, this._stage);
 
 		if (this._material.mode == MethodMaterialMode.SINGLE_PASS) {
-			this._screenPass.ambientMethod = this._material.ambientMethod;
-			this._screenPass.diffuseMethod = this._material.diffuseMethod;
-			this._screenPass.specularMethod = this._material.specularMethod;
-			this._screenPass.normalMethod = this._material.normalMethod;
-			this._screenPass.shadowMethod = this._material.shadowMethod;
+			this._pass.ambientMethod = this._material.ambientMethod;
+			this._pass.diffuseMethod = this._material.diffuseMethod;
+			this._pass.specularMethod = this._material.specularMethod;
+			this._pass.normalMethod = this._material.normalMethod;
+			this._pass.shadowMethod = this._material.shadowMethod;
 		} else if (this._material.mode == MethodMaterialMode.MULTI_PASS) {
 			if (this.numLights == 0) {
-				this._screenPass.ambientMethod = this._material.ambientMethod;
+				this._pass.ambientMethod = this._material.ambientMethod;
 			} else {
-				this._screenPass.ambientMethod = null;
+				this._pass.ambientMethod = null;
 			}
 
-			this._screenPass.preserveAlpha = false;
-			this._screenPass.normalMethod = this._material.normalMethod;
+			this._pass.preserveAlpha = false;
+			this._pass.normalMethod = this._material.normalMethod;
 		}
 
 		//update effect methods
 		var i:number = 0;
 		var effectMethod:EffectMethodBase;
-		var len:number = Math.max(this._material.numEffectMethods, this._screenPass.numEffectMethods);
+		var len:number = Math.max(this._material.numEffectMethods, this._pass.numEffectMethods);
 
 		while (i < len) {
 			effectMethod = this._material.getEffectMethodAt(i);
-			if (effectMethod != this._screenPass.getEffectMethodAt(i)) {
-				this._screenPass.removeEffectMethodAt(i);
+			if (effectMethod != this._pass.getEffectMethodAt(i)) {
+				this._pass.removeEffectMethodAt(i);
 
 				if (effectMethod != null) {
-					if (i < this._screenPass.numEffectMethods)
-						this._screenPass.addEffectMethodAt(effectMethod, i);
+					if (i < this._pass.numEffectMethods)
+						this._pass.addEffectMethodAt(effectMethod, i);
 					else
-						this._screenPass.addEffectMethod(effectMethod);
+						this._pass.addEffectMethod(effectMethod);
 				}
 			}
 
@@ -326,4 +326,4 @@ class RenderMethodMaterialObject extends RenderObjectBase
 	}
 }
 
-export = RenderMethodMaterialObject;
+export = MethodMaterialRender;

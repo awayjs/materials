@@ -2,10 +2,10 @@ import TextureBase					= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage						= require("awayjs-stagegl/lib/base/Stage");
 
-import ShaderLightingObject			= require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
-import ShaderRegisterCache			= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData			= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement		= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
+import LightingShader				= require("awayjs-renderergl/lib/shaders/LightingShader");
+import ShaderRegisterCache			= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData			= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement		= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
 import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
 import LightingMethodBase			= require("awayjs-methodmaterials/lib/methods/LightingMethodBase");
@@ -39,9 +39,9 @@ class SpecularBasicMethod extends LightingMethodBase
 		super();
 	}
 
-	public iIsUsed(shaderObject:ShaderLightingObject):boolean
+	public iIsUsed(shader:LightingShader):boolean
 	{
-		if (!shaderObject.numLights)
+		if (!shader.numLights)
 			return false;
 
 		return true;
@@ -50,17 +50,17 @@ class SpecularBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shaderObject:ShaderLightingObject, methodVO:MethodVO)
+	public iInitVO(shader:LightingShader, methodVO:MethodVO)
 	{
-		methodVO.needsNormals = shaderObject.numLights > 0;
-		methodVO.needsView = shaderObject.numLights > 0;
+		methodVO.needsNormals = shader.numLights > 0;
+		methodVO.needsView = shader.numLights > 0;
 
 		if (this._texture) {
-			methodVO.textureObject = shaderObject.getTextureObject(this._texture);
-			shaderObject.uvDependencies++;
-		} else if (methodVO.textureObject) {
-			methodVO.textureObject.dispose();
-			methodVO.textureObject = null;
+			methodVO.textureVO = shader.getTextureVO(this._texture);
+			shader.uvDependencies++;
+		} else if (methodVO.textureVO) {
+			methodVO.textureVO.dispose();
+			methodVO.textureVO = null;
 		}
 	}
 
@@ -165,7 +165,7 @@ class SpecularBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentPreLightingCode(shaderObject:ShaderLightingObject, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentPreLightingCode(shader:LightingShader, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 
@@ -179,9 +179,9 @@ class SpecularBasicMethod extends LightingMethodBase
 			this._pSpecularTexData = registerCache.getFreeFragmentVectorTemp();
 			registerCache.addFragmentTempUsages(this._pSpecularTexData, 1);
 
-			methodVO.textureObject._iInitRegisters(shaderObject, registerCache);
+			methodVO.textureVO._iInitRegisters(shader, registerCache);
 
-			code += methodVO.textureObject._iGetFragmentCode(shaderObject, this._pSpecularTexData, registerCache, sharedRegisters.uvVarying);
+			code += methodVO.textureVO._iGetFragmentCode(shader, this._pSpecularTexData, registerCache, sharedRegisters.uvVarying);
 		}
 
 		this._pTotalLightColorReg = registerCache.getFreeFragmentVectorTemp();
@@ -193,7 +193,7 @@ class SpecularBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentCodePerLight(shaderObject:ShaderLightingObject, methodVO:MethodVO, lightDirReg:ShaderRegisterElement, lightColReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentCodePerLight(shader:LightingShader, methodVO:MethodVO, lightDirReg:ShaderRegisterElement, lightColReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 		var t:ShaderRegisterElement;
@@ -223,11 +223,11 @@ class SpecularBasicMethod extends LightingMethodBase
 		}
 
 		// attenuate
-		if (shaderObject.usesLightFallOff)
+		if (shader.usesLightFallOff)
 			code += "mul " + t + ".w, " + t + ".w, " + lightDirReg + ".w\n";
 
 		if (this._iModulateMethod != null)
-			code += this._iModulateMethod(shaderObject, methodVO, t, registerCache, sharedRegisters);
+			code += this._iModulateMethod(shader, methodVO, t, registerCache, sharedRegisters);
 
 		code += "mul " + t + ".xyz, " + lightColReg + ", " + t + ".w\n";
 
@@ -244,7 +244,7 @@ class SpecularBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentCodePerProbe(shaderObject:ShaderLightingObject, methodVO:MethodVO, cubeMapReg:ShaderRegisterElement, weightRegister:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentCodePerProbe(shader:LightingShader, methodVO:MethodVO, cubeMapReg:ShaderRegisterElement, weightRegister:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 		var t:ShaderRegisterElement;
@@ -264,11 +264,11 @@ class SpecularBasicMethod extends LightingMethodBase
 				"add " + t + ".w, " + t + ".w, " + t + ".w\n" +
 				"mul " + t + ", " + t + ".w, " + normalReg + "\n" +
 				"sub " + t + ", " + t + ", " + viewDirReg + "\n" +
-				"tex " + t + ", " + t + ", " + cubeMapReg + " <cube," + (shaderObject.useSmoothTextures? "linear":"nearest") + ",miplinear>\n" +
+				"tex " + t + ", " + t + ", " + cubeMapReg + " <cube," + (shader.useSmoothTextures? "linear":"nearest") + ",miplinear>\n" +
 				"mul " + t + ".xyz, " + t + ", " + weightRegister + "\n";
 
 		if (this._iModulateMethod != null)
-			code += this._iModulateMethod(shaderObject, methodVO, t, registerCache, sharedRegisters);
+			code += this._iModulateMethod(shader, methodVO, t, registerCache, sharedRegisters);
 
 		if (!this._pIsFirstLight) {
 			code += "add " + this._pTotalLightColorReg + ".xyz, " + this._pTotalLightColorReg + ", " + t + "\n";
@@ -283,7 +283,7 @@ class SpecularBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentPostLightingCode(shaderObject:ShaderLightingObject, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentPostLightingCode(shader:LightingShader, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 
@@ -307,13 +307,13 @@ class SpecularBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shaderObject:ShaderLightingObject, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
 	{
 		if (this._texture)
-			methodVO.textureObject.activate(shaderObject);
+			methodVO.textureVO.activate(shader);
 
 		var index:number = methodVO.fragmentConstantsIndex;
-		var data:Array<number> = shaderObject.fragmentConstantData;
+		var data:Array<number> = shader.fragmentConstantData;
 		data[index] = this._iSpecularR;
 		data[index + 1] = this._iSpecularG;
 		data[index + 2] = this._iSpecularB;

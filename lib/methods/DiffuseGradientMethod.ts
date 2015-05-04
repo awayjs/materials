@@ -2,10 +2,10 @@ import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import ShaderLightingObject				= require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
+import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
@@ -32,11 +32,11 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 		this._gradient = gradient;
 	}
 
-	public iInitVO(shaderObject:ShaderLightingObject, methodVO:MethodVO)
+	public iInitVO(shader:LightingShader, methodVO:MethodVO)
 	{
-		super.iInitVO(shaderObject, methodVO);
+		super.iInitVO(shader, methodVO);
 
-		methodVO.secondaryTextureObject = shaderObject.getTextureObject(this._gradient);
+		methodVO.secondaryTextureVO = shader.getTextureVO(this._gradient);
 	}
 
 	/**
@@ -69,13 +69,13 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentPreLightingCode(shaderObject:ShaderLightingObject, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentPreLightingCode(shader:LightingShader, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		var code:string = super.iGetFragmentPreLightingCode(shaderObject, methodVO, registerCache, sharedRegisters);
+		var code:string = super.iGetFragmentPreLightingCode(shader, methodVO, registerCache, sharedRegisters);
 		this._pIsFirstLight = true;
 
-		if (shaderObject.numLights > 0)
-			methodVO.secondaryTextureObject._iInitRegisters(shaderObject, registerCache);
+		if (shader.numLights > 0)
+			methodVO.secondaryTextureVO._iInitRegisters(shader, registerCache);
 
 		return code;
 	}
@@ -83,7 +83,7 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentCodePerLight(shaderObject:ShaderLightingObject, methodVO:MethodVO, lightDirReg:ShaderRegisterElement, lightColReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentCodePerLight(shader:LightingShader, methodVO:MethodVO, lightDirReg:ShaderRegisterElement, lightColReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 		var t:ShaderRegisterElement;
@@ -102,9 +102,9 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 			"mul " + t + ".xyz, " + t + ".w, " + lightDirReg + ".w\n";
 
 		if (this._iModulateMethod != null)
-			code += this._iModulateMethod(shaderObject, methodVO, t, registerCache, sharedRegisters);
+			code += this._iModulateMethod(shader, methodVO, t, registerCache, sharedRegisters);
 
-		code += methodVO.secondaryTextureObject._iGetFragmentCode(shaderObject, t, registerCache, t) +
+		code += methodVO.secondaryTextureVO._iGetFragmentCode(shader, t, registerCache, t) +
 			//					"mul " + t + ".xyz, " + t + ".xyz, " + t + ".w\n" +
 			"mul " + t + ".xyz, " + t + ".xyz, " + lightColReg + ".xyz\n";
 
@@ -121,23 +121,23 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public pApplyShadow(shaderObject:ShaderLightingObject, methodVO:MethodVO, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public pApplyShadow(shader:LightingShader, methodVO:MethodVO, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var t:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
 
 		return "mov " + t + ", " + sharedRegisters.shadowTarget + ".wwww\n" +
-			methodVO.secondaryTextureObject._iGetFragmentCode(shaderObject, t, regCache, sharedRegisters.uvVarying) +
+			methodVO.secondaryTextureVO._iGetFragmentCode(shader, t, regCache, sharedRegisters.uvVarying) +
 			"mul " + this._pTotalLightColorReg + ".xyz, " + this._pTotalLightColorReg + ", " + t + "\n";
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shaderObject:ShaderLightingObject, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
 	{
-		super.iActivate(shaderObject, methodVO, stage);
+		super.iActivate(shader, methodVO, stage);
 
-		methodVO.secondaryTextureObject.activate(shaderObject);
+		methodVO.secondaryTextureVO.activate(shader);
 	}
 }
 

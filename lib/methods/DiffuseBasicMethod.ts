@@ -3,11 +3,11 @@ import TextureBase					= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage						= require("awayjs-stagegl/lib/base/Stage");
 
-import ShaderLightingObject			= require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
-import ShaderRegisterCache			= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData			= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement		= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
-import RenderableBase				= require("awayjs-renderergl/lib/pool/RenderableBase");
+import LightingShader				= require("awayjs-renderergl/lib/shaders/LightingShader");
+import ShaderRegisterCache			= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData			= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement		= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import RenderableBase				= require("awayjs-renderergl/lib/renderables/RenderableBase");
 
 import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
 import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
@@ -42,9 +42,9 @@ class DiffuseBasicMethod extends LightingMethodBase
 		super();
 	}
 
-	public iIsUsed(shaderObject:ShaderLightingObject):boolean
+	public iIsUsed(shader:LightingShader):boolean
 	{
-		if (!shaderObject.numLights)
+		if (!shader.numLights)
 			return false;
 
 		return true;
@@ -68,18 +68,18 @@ class DiffuseBasicMethod extends LightingMethodBase
 		this.iInvalidateShaderProgram();
 	}
 
-	public iInitVO(shaderObject:ShaderLightingObject, methodVO:MethodVO)
+	public iInitVO(shader:LightingShader, methodVO:MethodVO)
 	{
 		if (this._texture) {
-			methodVO.textureObject = shaderObject.getTextureObject(this._texture);
-			shaderObject.uvDependencies++;
-		} else if (methodVO.textureObject) {
-			methodVO.textureObject.dispose();
-			methodVO.textureObject = null;
+			methodVO.textureVO = shader.getTextureVO(this._texture);
+			shader.uvDependencies++;
+		} else if (methodVO.textureVO) {
+			methodVO.textureVO.dispose();
+			methodVO.textureVO = null;
 		}
 
 
-		methodVO.needsNormals = shaderObject.numLights > 0;
+		methodVO.needsNormals = shader.numLights > 0;
 	}
 
 	/**
@@ -171,7 +171,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentPreLightingCode(shaderObject:ShaderLightingObject, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentPreLightingCode(shader:LightingShader, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 
@@ -185,7 +185,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentCodePerLight(shaderObject:ShaderLightingObject, methodVO:MethodVO, lightDirReg:ShaderRegisterElement, lightColReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentCodePerLight(shader:LightingShader, methodVO:MethodVO, lightDirReg:ShaderRegisterElement, lightColReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 		var t:ShaderRegisterElement;
@@ -201,11 +201,11 @@ class DiffuseBasicMethod extends LightingMethodBase
 		code += "dp3 " + t + ".x, " + lightDirReg + ", " + sharedRegisters.normalFragment + "\n" +
 				"max " + t + ".w, " + t + ".x, " + sharedRegisters.commons + ".y\n";
 
-		if (shaderObject.usesLightFallOff)
+		if (shader.usesLightFallOff)
 			code += "mul " + t + ".w, " + t + ".w, " + lightDirReg + ".w\n";
 
 		if (this._iModulateMethod != null)
-			code += this._iModulateMethod(shaderObject, methodVO, t, registerCache, sharedRegisters);
+			code += this._iModulateMethod(shader, methodVO, t, registerCache, sharedRegisters);
 
 		code += "mul " + t + ", " + t + ".w, " + lightColReg + "\n";
 
@@ -222,7 +222,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentCodePerProbe(shaderObject:ShaderLightingObject, methodVO:MethodVO, cubeMapReg:ShaderRegisterElement, weightRegister:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentCodePerProbe(shader:LightingShader, methodVO:MethodVO, cubeMapReg:ShaderRegisterElement, weightRegister:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 		var t:ShaderRegisterElement;
@@ -239,7 +239,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 				"mul " + t + ".xyz, " + t + ".xyz, " + weightRegister + "\n";
 
 		if (this._iModulateMethod != null)
-			code += this._iModulateMethod(shaderObject, methodVO, t, registerCache, sharedRegisters);
+			code += this._iModulateMethod(shader, methodVO, t, registerCache, sharedRegisters);
 
 		if (!this._pIsFirstLight) {
 			code += "add " + this._pTotalLightColorReg + ".xyz, " + this._pTotalLightColorReg + ", " + t + "\n";
@@ -254,7 +254,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentPostLightingCode(shaderObject:ShaderLightingObject, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentPostLightingCode(shader:LightingShader, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 
@@ -263,7 +263,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 
 		// incorporate input from ambient
 		if (sharedRegisters.shadowTarget)
-			code += this.pApplyShadow(shaderObject, methodVO, registerCache, sharedRegisters);
+			code += this.pApplyShadow(shader, methodVO, registerCache, sharedRegisters);
 
 		registerCache.addFragmentTempUsages(albedo = registerCache.getFreeFragmentVectorTemp(), 1);
 
@@ -271,9 +271,9 @@ class DiffuseBasicMethod extends LightingMethodBase
 		methodVO.fragmentConstantsIndex = ambientColorRegister.index*4;
 
 		if (this._texture) {
-			methodVO.textureObject._iInitRegisters(shaderObject, registerCache);
+			methodVO.textureVO._iInitRegisters(shader, registerCache);
 
-			code += methodVO.textureObject._iGetFragmentCode(shaderObject, albedo, registerCache, sharedRegisters.uvVarying);
+			code += methodVO.textureVO._iGetFragmentCode(shader, albedo, registerCache, sharedRegisters.uvVarying);
 		} else {
 			var diffuseInputRegister:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 
@@ -304,7 +304,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 	 * @param methodVO The MethodVO object for which the compilation is currently happening.
 	 * @param regCache The register cache the compiler is currently using for the register management.
 	 */
-	public pApplyShadow(shaderObject:ShaderLightingObject, methodVO:MethodVO, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public pApplyShadow(shader:LightingShader, methodVO:MethodVO, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		return "mul " + this._pTotalLightColorReg + ".xyz, " + this._pTotalLightColorReg + ", " + sharedRegisters.shadowTarget + ".w\n";
 	}
@@ -312,13 +312,13 @@ class DiffuseBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shaderObject:ShaderLightingObject, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
 	{
 		if (this._texture) {
-			methodVO.textureObject.activate(shaderObject);
+			methodVO.textureVO.activate(shader);
 		} else {
 			var index:number = methodVO.fragmentConstantsIndex;
-			var data:Array<number> = shaderObject.fragmentConstantData;
+			var data:Array<number> = shader.fragmentConstantData;
 			data[index + 4] = this._diffuseR;
 			data[index + 5] = this._diffuseG;
 			data[index + 6] = this._diffuseB;
@@ -349,15 +349,15 @@ class DiffuseBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shaderObject:ShaderLightingObject, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
 		//TODO move this to Activate (ambientR/G/B currently calc'd in render state)
-		if (shaderObject.numLights > 0) {
+		if (shader.numLights > 0) {
 			var index:number = methodVO.fragmentConstantsIndex;
-			var data:Array<number> = shaderObject.fragmentConstantData;
-			data[index] = shaderObject.ambientR*this._ambientR;
-			data[index + 1] = shaderObject.ambientG*this._ambientG;
-			data[index + 2] = shaderObject.ambientB*this._ambientB;
+			var data:Array<number> = shader.fragmentConstantData;
+			data[index] = shader.ambientR*this._ambientR;
+			data[index + 1] = shader.ambientG*this._ambientG;
+			data[index + 2] = shader.ambientB*this._ambientB;
 			data[index + 3] = 1;
 		}
 	}

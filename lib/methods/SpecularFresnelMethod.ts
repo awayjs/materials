@@ -2,11 +2,11 @@ import Camera							= require("awayjs-display/lib/entities/Camera");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import ShaderLightingObject				= require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
-import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
+import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
+import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import SpecularBasicMethod				= require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
@@ -32,7 +32,7 @@ class SpecularFresnelMethod extends SpecularCompositeMethod
 		// may want to offer diff speculars
 		super(null, baseMethod);
 
-		this.baseMethod._iModulateMethod = (shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData) => this.modulateSpecular(shaderObject, methodVO, targetReg, registerCache, sharedRegisters);
+		this.baseMethod._iModulateMethod = (shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData) => this.modulateSpecular(shader, methodVO, targetReg, registerCache, sharedRegisters);
 
 		this._incidentLight = !basedOnSurface;
 	}
@@ -40,12 +40,12 @@ class SpecularFresnelMethod extends SpecularCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shaderObject:ShaderObjectBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
 	{
 
 		var index:number = methodVO.secondaryFragmentConstantsIndex;
-		shaderObject.fragmentConstantData[index + 2] = 1;
-		shaderObject.fragmentConstantData[index + 3] = 0;
+		shader.fragmentConstantData[index + 2] = 1;
+		shader.fragmentConstantData[index + 3] = 0;
 	}
 
 	/**
@@ -104,11 +104,11 @@ class SpecularFresnelMethod extends SpecularCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shaderObject:ShaderLightingObject, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
 	{
-		super.iActivate(shaderObject, methodVO, stage);
+		super.iActivate(shader, methodVO, stage);
 
-		var fragmentData:Array<number> = shaderObject.fragmentConstantData;
+		var fragmentData:Array<number> = shader.fragmentConstantData;
 
 		var index:number = methodVO.secondaryFragmentConstantsIndex;
 		fragmentData[index] = this._normalReflectance;
@@ -118,13 +118,13 @@ class SpecularFresnelMethod extends SpecularCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentPreLightingCode(shaderObject:ShaderLightingObject, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentPreLightingCode(shader:LightingShader, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		this._dataReg = registerCache.getFreeFragmentConstant();
 
 		methodVO.secondaryFragmentConstantsIndex = this._dataReg.index*4;
 
-		return super.iGetFragmentPreLightingCode(shaderObject, methodVO, registerCache, sharedRegisters);
+		return super.iGetFragmentPreLightingCode(shader, methodVO, registerCache, sharedRegisters);
 	}
 
 	/**
@@ -136,7 +136,7 @@ class SpecularFresnelMethod extends SpecularCompositeMethod
 	 * @param sharedRegisters The shared registers created by the compiler.
 	 * @return The AGAL fragment code for the method.
 	 */
-	private modulateSpecular(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	private modulateSpecular(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string;
 

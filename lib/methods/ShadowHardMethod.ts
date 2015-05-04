@@ -2,10 +2,10 @@ import LightBase					= require("awayjs-display/lib/base/LightBase");
 
 import Stage						= require("awayjs-stagegl/lib/base/Stage");
 
-import ShaderObjectBase				= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-import ShaderRegisterCache			= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData			= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement		= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
+import ShaderBase					= require("awayjs-renderergl/lib/shaders/ShaderBase");
+import ShaderRegisterCache			= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData			= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement		= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
 import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
 import ShadowMethodBase				= require("awayjs-methodmaterials/lib/methods/ShadowMethodBase");
@@ -26,7 +26,7 @@ class ShadowHardMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public _pGetPlanarFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _pGetPlanarFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 		var decReg:ShaderRegisterElement = regCache.getFreeFragmentConstant();
@@ -36,9 +36,9 @@ class ShadowHardMethod extends ShadowMethodBase
 
 		methodVO.fragmentConstantsIndex = decReg.index*4;
 
-		methodVO.textureObject._iInitRegisters(shaderObject, regCache);
+		methodVO.textureVO._iInitRegisters(shader, regCache);
 
-		code += methodVO.textureObject._iGetFragmentCode(shaderObject, depthCol, regCache, this._pDepthMapCoordReg) +
+		code += methodVO.textureVO._iGetFragmentCode(shader, depthCol, regCache, this._pDepthMapCoordReg) +
 			"dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" +
 			"slt " + targetReg + ".w, " + this._pDepthMapCoordReg + ".z, " + depthCol + ".z\n"; // 0 if in shadow
 
@@ -48,7 +48,7 @@ class ShadowHardMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public _pGetPointFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _pGetPointFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 		var decReg:ShaderRegisterElement = regCache.getFreeFragmentConstant();
@@ -61,14 +61,14 @@ class ShadowHardMethod extends ShadowMethodBase
 
 		methodVO.fragmentConstantsIndex = decReg.index*4;
 
-		methodVO.textureObject._iInitRegisters(shaderObject, regCache);
+		methodVO.textureVO._iInitRegisters(shader, regCache);
 
 		code += "sub " + lightDir + ", " + sharedRegisters.globalPositionVarying + ", " + posReg + "\n" +
 			"dp3 " + lightDir + ".w, " + lightDir + ".xyz, " + lightDir + ".xyz\n" +
 			"mul " + lightDir + ".w, " + lightDir + ".w, " + posReg + ".w\n" +
 			"nrm " + lightDir + ".xyz, " + lightDir + ".xyz\n" +
 
-			methodVO.textureObject._iGetFragmentCode(shaderObject, depthSampleCol, regCache, lightDir) +
+			methodVO.textureVO._iGetFragmentCode(shader, depthSampleCol, regCache, lightDir) +
 			"dp4 " + depthSampleCol + ".z, " + depthSampleCol + ", " + decReg + "\n" +
 			"add " + targetReg + ".w, " + lightDir + ".w, " + epsReg + ".x\n" +    // offset by epsilon
 
@@ -83,10 +83,10 @@ class ShadowHardMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public _iGetCascadeFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, decodeRegister:ShaderRegisterElement, depthProjection:ShaderRegisterElement, targetRegister:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _iGetCascadeFragmentCode(shader:ShaderBase, methodVO:MethodVO, decodeRegister:ShaderRegisterElement, depthProjection:ShaderRegisterElement, targetRegister:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
-		return methodVO.textureObject._iGetFragmentCode(shaderObject, temp, registerCache, depthProjection) +
+		return methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, depthProjection) +
 			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
 			"slt " + targetRegister + ".w, " + depthProjection + ".z, " + temp + ".z\n"; // 0 if in shadow
 	}
@@ -94,7 +94,7 @@ class ShadowHardMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivateForCascade(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
+	public iActivateForCascade(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
 	}
 }

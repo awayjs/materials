@@ -1,26 +1,26 @@
 ﻿import BlendMode					= require("awayjs-core/lib/data/BlendMode");
 import Image2D						= require("awayjs-core/lib/data/Image2D");
 
+import IRenderOwner					= require("awayjs-display/lib/base/IRenderOwner");
 import Camera						= require("awayjs-display/lib/entities/Camera");
 import StaticLightPicker			= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
-import IRenderObjectOwner			= require("awayjs-display/lib/base/IRenderObjectOwner");
 import MaterialBase					= require("awayjs-display/lib/materials/MaterialBase");
-import IRenderObject				= require("awayjs-display/lib/pool/IRenderObject");
+import IRender						= require("awayjs-display/lib/pool/IRender");
 import Single2DTexture				= require("awayjs-display/lib/textures/Single2DTexture");
 import TextureBase					= require("awayjs-display/lib/textures/TextureBase");
 
 import ContextGLCompareMode			= require("awayjs-stagegl/lib/base/ContextGLCompareMode");
 
-import RenderObjectPool				= require("awayjs-renderergl/lib/compilation/RenderObjectPool");
+import RenderPool					= require("awayjs-renderergl/lib/render/RenderPool");
 
-import RenderMethodMaterialObject	= require("awayjs-methodmaterials/lib/compilation/RenderMethodMaterialObject");
+import MethodMaterialMode			= require("awayjs-methodmaterials/lib/MethodMaterialMode");
 import AmbientBasicMethod			= require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
 import DiffuseBasicMethod			= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
 import EffectMethodBase				= require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
 import NormalBasicMethod			= require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
 import ShadowMapMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
 import SpecularBasicMethod			= require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
-import MethodMaterialMode			= require("awayjs-methodmaterials/lib/MethodMaterialMode");
+import MethodMaterialRender			= require("awayjs-methodmaterials/lib/render/MethodMaterialRender");
 
 /**
  * MethodMaterial forms an abstract base class for the default shaded materials provided by Stage,
@@ -46,7 +46,7 @@ class MethodMaterial extends MaterialBase
 
 	private static addRenderable()
 	{
-		RenderObjectPool.registerClass(RenderMethodMaterialObject, MethodMaterial);
+		RenderPool.registerClass(MethodMaterialRender, MethodMaterial);
 	}
 
 	/**
@@ -102,7 +102,7 @@ class MethodMaterial extends MaterialBase
 
 		this._mode = value;
 
-		this._pInvalidateRenderObject();
+		this._pInvalidateRender();
 	}
 
 	/**
@@ -123,7 +123,7 @@ class MethodMaterial extends MaterialBase
 
 		this._depthCompareMode = value;
 
-		this._pInvalidateRenderObject();
+		this._pInvalidateRender();
 	}
 
 	/**
@@ -157,7 +157,7 @@ class MethodMaterial extends MaterialBase
 
 		this._ambientMethod = value;
 
-		this._pInvalidateRenderObject();
+		this._pInvalidateRender();
 	}
 
 	/**
@@ -178,7 +178,7 @@ class MethodMaterial extends MaterialBase
 
 		this._shadowMethod = value;
 
-		this._pInvalidateRenderObject();
+		this._pInvalidateRender();
 	}
 
 	/**
@@ -199,7 +199,7 @@ class MethodMaterial extends MaterialBase
 
 		this._diffuseMethod = value;
 
-		this._pInvalidateRenderObject();
+		this._pInvalidateRender();
 	}
 
 	/**
@@ -220,7 +220,7 @@ class MethodMaterial extends MaterialBase
 
 		this._specularMethod = value;
 
-		this._pInvalidateRenderObject();
+		this._pInvalidateRender();
 	}
 
 	/**
@@ -241,7 +241,7 @@ class MethodMaterial extends MaterialBase
 
 		this._normalMethod = value;
 
-		this._pInvalidateRenderObject();
+		this._pInvalidateRender();
 	}
 
 	public get numEffectMethods():number
@@ -258,7 +258,7 @@ class MethodMaterial extends MaterialBase
 	{
 		this._effectMethods.push(method);
 
-		this._pInvalidateRenderObject();
+		this._pInvalidateRender();
 	}
 
 	/**
@@ -280,7 +280,7 @@ class MethodMaterial extends MaterialBase
 	{
 		this._effectMethods.splice(index, 0, method);
 
-		this._pInvalidateRenderObject();
+		this._pInvalidateRender();
 	}
 
 	/**
@@ -291,7 +291,7 @@ class MethodMaterial extends MaterialBase
 	{
 		this._effectMethods.splice(this._effectMethods.indexOf(method), 1);
 
-		this._pInvalidateRenderObject();
+		this._pInvalidateRender();
 	}
 
 	/**

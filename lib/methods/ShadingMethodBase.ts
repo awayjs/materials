@@ -4,12 +4,12 @@ import Camera						= require("awayjs-display/lib/entities/Camera");
 
 import Stage						= require("awayjs-stagegl/lib/base/Stage");
 
-import RenderableBase				= require("awayjs-renderergl/lib/pool/RenderableBase");
+import RenderableBase				= require("awayjs-renderergl/lib/renderables/RenderableBase");
 import ShadingMethodEvent			= require("awayjs-renderergl/lib/events/ShadingMethodEvent");
-import ShaderObjectBase				= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-import ShaderRegisterCache			= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData			= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement		= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
+import ShaderBase					= require("awayjs-renderergl/lib/shaders/ShaderBase");
+import ShaderRegisterCache			= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData			= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement		= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
 import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
 
@@ -38,7 +38,7 @@ class ShadingMethodBase extends AssetBase
 		super();
 	}
 
-	public iIsUsed(shaderObject:ShaderObjectBase):boolean
+	public iIsUsed(shader:ShaderBase):boolean
 	{
 		return true;
 	}
@@ -50,7 +50,7 @@ class ShadingMethodBase extends AssetBase
 	 *
 	 * @internal
 	 */
-	public iInitVO(shaderObject:ShaderObjectBase, methodVO:MethodVO)
+	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
 	{
 
 	}
@@ -62,7 +62,7 @@ class ShadingMethodBase extends AssetBase
 	 *
 	 * @internal
 	 */
-	public iInitConstants(shaderObject:ShaderObjectBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
 	{
 
 
@@ -110,7 +110,7 @@ class ShadingMethodBase extends AssetBase
 	 *
 	 * @internal
 	 */
-	public iGetVertexCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetVertexCode(shader:ShaderBase, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		return "";
 	}
@@ -118,7 +118,7 @@ class ShadingMethodBase extends AssetBase
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentCode(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		return null;
 	}
@@ -131,7 +131,7 @@ class ShadingMethodBase extends AssetBase
 	 *
 	 * @internal
 	 */
-	public iActivate(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
 
 	}
@@ -146,7 +146,7 @@ class ShadingMethodBase extends AssetBase
 	 *
 	 * @internal
 	 */
-	public iSetRenderState(shaderObject:ShaderObjectBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
 
 	}
@@ -158,7 +158,7 @@ class ShadingMethodBase extends AssetBase
 	 *
 	 * @internal
 	 */
-	public iDeactivate(shaderObject:ShaderObjectBase, methodVO:MethodVO, stage:Stage)
+	public iDeactivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
 
 	}

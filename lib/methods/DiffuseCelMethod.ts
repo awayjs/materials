@@ -1,10 +1,10 @@
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import ShaderLightingObject				= require("awayjs-renderergl/lib/compilation/ShaderLightingObject");
-import ShaderObjectBase					= require("awayjs-renderergl/lib/compilation/ShaderObjectBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/compilation/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/compilation/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/compilation/ShaderRegisterElement");
+import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
+import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
@@ -28,7 +28,7 @@ class DiffuseCelMethod extends DiffuseCompositeMethod
 	{
 		super(null, baseMethod);
 
-		this.baseMethod._iModulateMethod = (shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData) => this.clampDiffuse(shaderObject, methodVO, targetReg, registerCache, sharedRegisters);
+		this.baseMethod._iModulateMethod = (shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData) => this.clampDiffuse(shader, methodVO, targetReg, registerCache, sharedRegisters);
 
 		this._levels = levels;
 	}
@@ -36,11 +36,11 @@ class DiffuseCelMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shaderObject:ShaderLightingObject, methodVO:MethodVO)
+	public iInitConstants(shader:LightingShader, methodVO:MethodVO)
 	{
-		var data:Array<number> = shaderObject.fragmentConstantData;
+		var data:Array<number> = shader.fragmentConstantData;
 		var index:number /*int*/ = methodVO.secondaryFragmentConstantsIndex;
-		super.iInitConstants(shaderObject, methodVO);
+		super.iInitConstants(shader, methodVO);
 		data[index + 1] = 1;
 		data[index + 2] = 0;
 	}
@@ -83,21 +83,21 @@ class DiffuseCelMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iGetFragmentPreLightingCode(shaderObject:ShaderLightingObject, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public iGetFragmentPreLightingCode(shader:LightingShader, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		this._dataReg = registerCache.getFreeFragmentConstant();
 		methodVO.secondaryFragmentConstantsIndex = this._dataReg.index*4;
 
-		return super.iGetFragmentPreLightingCode(shaderObject, methodVO, registerCache, sharedRegisters);
+		return super.iGetFragmentPreLightingCode(shader, methodVO, registerCache, sharedRegisters);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shaderObject:ShaderLightingObject, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
 	{
-		super.iActivate(shaderObject, methodVO, stage);
-		var data:Array<number> = shaderObject.fragmentConstantData;
+		super.iActivate(shader, methodVO, stage);
+		var data:Array<number> = shader.fragmentConstantData;
 		var index:number /*int*/ = methodVO.secondaryFragmentConstantsIndex;
 		data[index] = this._levels;
 		data[index + 3] = this._smoothness;
@@ -111,7 +111,7 @@ class DiffuseCelMethod extends DiffuseCompositeMethod
 	 * @param sharedRegisters The shared register data for this shader.
 	 * @return The AGAL fragment code for the method.
 	 */
-	private clampDiffuse(shaderObject:ShaderObjectBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	private clampDiffuse(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		return "mul " + targetReg + ".w, " + targetReg + ".w, " + this._dataReg + ".x\n" +
 			"frc " + targetReg + ".z, " + targetReg + ".w\n" +
