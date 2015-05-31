@@ -5,7 +5,7 @@ import Matrix3D							= require("awayjs-core/lib/geom/Matrix3D");
 import LightBase						= require("awayjs-display/lib/base/LightBase");
 import Camera							= require("awayjs-display/lib/entities/Camera");
 import MaterialBase						= require("awayjs-display/lib/materials/MaterialBase");
-import IRenderOwner				= require("awayjs-display/lib/base/IRenderOwner");
+import IRenderOwner						= require("awayjs-display/lib/base/IRenderOwner");
 import Single2DTexture					= require("awayjs-display/lib/textures/Single2DTexture");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
@@ -21,6 +21,8 @@ import PassBase							= require("awayjs-renderergl/lib/render/passes/PassBase");
 import IRenderableClass					= require("awayjs-renderergl/lib/renderables/IRenderableClass");
 import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
 import RenderBase						= require("awayjs-renderergl/lib/render/RenderBase");
+import SubGeometryVOBase				= require("awayjs-renderergl/lib/vos/SubGeometryVOBase");
+import SubGeometryVOPool				= require("awayjs-renderergl/lib/vos/SubGeometryVOPool");
 
 /**
  * The SingleObjectDepthPass provides a material pass that renders a single object to a depth map from the point
@@ -28,6 +30,7 @@ import RenderBase						= require("awayjs-renderergl/lib/render/RenderBase");
  */
 class SingleObjectDepthPass extends PassBase
 {
+	private _subGeometryVOPool:SubGeometryVOPool;
 	private _textures:Object;
 	private _projections:Object;
 	private _textureSize:number /*uint*/ = 512;
@@ -74,6 +77,7 @@ class SingleObjectDepthPass extends PassBase
 		//
 		//this._pAnimatableAttributes = Array<string>("va0", "va1");
 		//this._pAnimationTargetRegisters = Array<string>("vt0", "vt1");
+		this._subGeometryVOPool = SubGeometryVOPool.getPool();
 	}
 
 	/**
@@ -195,9 +199,12 @@ class SingleObjectDepthPass extends PassBase
 		context.setProgramConstantsFromMatrix(ContextGLProgramType.VERTEX, 0, matrix, true);
 		context.setProgramConstantsFromArray(ContextGLProgramType.FRAGMENT, 0, this._enc, 2);
 
-		this._stage.activateBuffer(0, renderable.getVertexData(TriangleSubGeometry.POSITION_DATA), renderable.getVertexOffset(TriangleSubGeometry.POSITION_DATA), TriangleSubGeometry.POSITION_FORMAT);
-		this._stage.activateBuffer(1, renderable.getVertexData(TriangleSubGeometry.NORMAL_DATA), renderable.getVertexOffset(TriangleSubGeometry.NORMAL_DATA), TriangleSubGeometry.NORMAL_FORMAT);
-		context.drawTriangles(this._stage.getIndexBuffer(renderable.getIndexData()), 0, renderable.numTriangles);
+		var subGeom:TriangleSubGeometry = <TriangleSubGeometry> renderable._pGetSubGeometry();
+		var subGeometryVO:SubGeometryVOBase = this._subGeometryVOPool.getItem(subGeom);
+
+		subGeometryVO.activateVertexBufferVO(0, subGeom.positions, this._stage);
+		subGeometryVO.activateVertexBufferVO(1, subGeom.normals, this._stage);
+		subGeometryVO.getIndexBufferVO(this._stage).draw(0, subGeometryVO.numElements);
 	}
 
 	/**
