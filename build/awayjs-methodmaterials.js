@@ -6607,11 +6607,11 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 var Image2D = require("awayjs-core/lib/data/Image2D");
-var TriangleSubGeometry = require("awayjs-core/lib/data/TriangleSubGeometry");
 var Matrix3D = require("awayjs-core/lib/geom/Matrix3D");
 var Single2DTexture = require("awayjs-display/lib/textures/Single2DTexture");
 var ContextGLProgramType = require("awayjs-stagegl/lib/base/ContextGLProgramType");
 var PassBase = require("awayjs-renderergl/lib/render/passes/PassBase");
+var SubGeometryVOPool = require("awayjs-renderergl/lib/vos/SubGeometryVOPool");
 /**
  * The SingleObjectDepthPass provides a material pass that renders a single object to a depth map from the point
  * of view from a light.
@@ -6632,6 +6632,7 @@ var SingleObjectDepthPass = (function (_super) {
         //
         //this._pAnimatableAttributes = Array<string>("va0", "va1");
         //this._pAnimationTargetRegisters = Array<string>("vt0", "vt1");
+        this._subGeometryVOPool = SubGeometryVOPool.getPool();
     }
     Object.defineProperty(SingleObjectDepthPass.prototype, "textureSize", {
         /**
@@ -6746,9 +6747,11 @@ var SingleObjectDepthPass = (function (_super) {
         context.clear(1.0, 1.0, 1.0);
         context.setProgramConstantsFromMatrix(ContextGLProgramType.VERTEX, 0, matrix, true);
         context.setProgramConstantsFromArray(ContextGLProgramType.FRAGMENT, 0, this._enc, 2);
-        this._stage.activateBuffer(0, renderable.getVertexData(TriangleSubGeometry.POSITION_DATA), renderable.getVertexOffset(TriangleSubGeometry.POSITION_DATA), TriangleSubGeometry.POSITION_FORMAT);
-        this._stage.activateBuffer(1, renderable.getVertexData(TriangleSubGeometry.NORMAL_DATA), renderable.getVertexOffset(TriangleSubGeometry.NORMAL_DATA), TriangleSubGeometry.NORMAL_FORMAT);
-        context.drawTriangles(this._stage.getIndexBuffer(renderable.getIndexData()), 0, renderable.numTriangles);
+        var subGeom = renderable._pGetSubGeometry();
+        var subGeometryVO = this._subGeometryVOPool.getItem(subGeom);
+        subGeometryVO.activateVertexBufferVO(0, subGeom.positions, this._stage);
+        subGeometryVO.activateVertexBufferVO(1, subGeom.normals, this._stage);
+        subGeometryVO.getIndexBufferVO(this._stage).draw(0, subGeometryVO.numElements);
     };
     /**
      * @inheritDoc
@@ -6764,7 +6767,7 @@ var SingleObjectDepthPass = (function (_super) {
 })(PassBase);
 module.exports = SingleObjectDepthPass;
 
-},{"awayjs-core/lib/data/Image2D":undefined,"awayjs-core/lib/data/TriangleSubGeometry":undefined,"awayjs-core/lib/geom/Matrix3D":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-renderergl/lib/render/passes/PassBase":undefined,"awayjs-stagegl/lib/base/ContextGLProgramType":undefined}]},{},[])
+},{"awayjs-core/lib/data/Image2D":undefined,"awayjs-core/lib/geom/Matrix3D":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-renderergl/lib/render/passes/PassBase":undefined,"awayjs-renderergl/lib/vos/SubGeometryVOPool":undefined,"awayjs-stagegl/lib/base/ContextGLProgramType":undefined}]},{},[])
 
 
 //# sourceMappingURL=awayjs-methodmaterials.js.map

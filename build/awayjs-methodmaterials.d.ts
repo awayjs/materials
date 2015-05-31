@@ -3068,6 +3068,7 @@ declare module "awayjs-methodmaterials/lib/render/passes/SingleObjectDepthPass" 
 	 * of view from a light.
 	 */
 	class SingleObjectDepthPass extends PassBase {
+	    private _subGeometryVOPool;
 	    private _textures;
 	    private _projections;
 	    private _textureSize;
