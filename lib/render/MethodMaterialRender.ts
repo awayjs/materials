@@ -1,5 +1,4 @@
 import BlendMode						= require("awayjs-core/lib/data/BlendMode");
-import TriangleSubGeometry				= require("awayjs-core/lib/data/TriangleSubGeometry");
 import ColorTransform					= require("awayjs-core/lib/geom/ColorTransform");
 import Matrix							= require("awayjs-core/lib/geom/Matrix");
 import Matrix3D							= require("awayjs-core/lib/geom/Matrix3D");
@@ -7,9 +6,8 @@ import Matrix3DUtils					= require("awayjs-core/lib/geom/Matrix3DUtils");
 import Vector3D							= require("awayjs-core/lib/geom/Vector3D");
 import AbstractMethodError				= require("awayjs-core/lib/errors/AbstractMethodError");
 
-
 import Camera							= require("awayjs-display/lib/entities/Camera");
-import IRenderOwner				= require("awayjs-display/lib/base/IRenderOwner");
+import IRenderOwner						= require("awayjs-display/lib/base/IRenderOwner");
 import StaticLightPicker				= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");

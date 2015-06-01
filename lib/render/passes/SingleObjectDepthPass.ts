@@ -1,8 +1,8 @@
 import Image2D							= require("awayjs-core/lib/data/Image2D");
-import TriangleSubGeometry				= require("awayjs-core/lib/data/TriangleSubGeometry");
 import Matrix3D							= require("awayjs-core/lib/geom/Matrix3D");
 
 import LightBase						= require("awayjs-display/lib/base/LightBase");
+import TriangleSubGeometry				= require("awayjs-display/lib/base/TriangleSubGeometry");
 import Camera							= require("awayjs-display/lib/entities/Camera");
 import MaterialBase						= require("awayjs-display/lib/materials/MaterialBase");
 import IRenderOwner						= require("awayjs-display/lib/base/IRenderOwner");
@@ -199,8 +199,8 @@ class SingleObjectDepthPass extends PassBase
 		context.setProgramConstantsFromMatrix(ContextGLProgramType.VERTEX, 0, matrix, true);
 		context.setProgramConstantsFromArray(ContextGLProgramType.FRAGMENT, 0, this._enc, 2);
 
-		var subGeom:TriangleSubGeometry = <TriangleSubGeometry> renderable._pGetSubGeometry();
-		var subGeometryVO:SubGeometryVOBase = this._subGeometryVOPool.getItem(subGeom);
+		var subGeometryVO:SubGeometryVOBase = renderable.subGeometryVO;
+		var subGeom:TriangleSubGeometry = <TriangleSubGeometry> subGeometryVO.subGeometry;
 
 		subGeometryVO.activateVertexBufferVO(0, subGeom.positions, this._stage);
 		subGeometryVO.activateVertexBufferVO(1, subGeom.normals, this._stage);

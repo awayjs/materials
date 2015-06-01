@@ -1,4 +1,3 @@
-import TriangleSubGeometry				= require("awayjs-core/lib/data/TriangleSubGeometry");
 import ColorTransform					= require("awayjs-core/lib/geom/ColorTransform");
 import Matrix							= require("awayjs-core/lib/geom/Matrix");
 import Matrix3D							= require("awayjs-core/lib/geom/Matrix3D");
