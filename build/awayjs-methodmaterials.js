@@ -6747,8 +6747,8 @@ var SingleObjectDepthPass = (function (_super) {
         context.clear(1.0, 1.0, 1.0);
         context.setProgramConstantsFromMatrix(ContextGLProgramType.VERTEX, 0, matrix, true);
         context.setProgramConstantsFromArray(ContextGLProgramType.FRAGMENT, 0, this._enc, 2);
-        var subGeom = renderable._pGetSubGeometry();
-        var subGeometryVO = this._subGeometryVOPool.getItem(subGeom);
+        var subGeometryVO = renderable.subGeometryVO;
+        var subGeom = subGeometryVO.subGeometry;
         subGeometryVO.activateVertexBufferVO(0, subGeom.positions, this._stage);
         subGeometryVO.activateVertexBufferVO(1, subGeom.normals, this._stage);
         subGeometryVO.getIndexBufferVO(this._stage).draw(0, subGeometryVO.numElements);
