@@ -78,8 +78,10 @@ class DiffuseBasicMethod extends LightingMethodBase
 			methodVO.textureVO = null;
 		}
 
-
-		methodVO.needsNormals = shader.numLights > 0;
+		if (shader.numLights > 0) {
+			shader.usesCommonData = true;
+			methodVO.needsNormals = true;
+		}
 	}
 
 	/**

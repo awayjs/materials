@@ -591,6 +591,9 @@ class MethodPass extends PassBase implements ILightingPass
 		//TODO: fragment animtion should be compatible with lighting pass
 		shader.usesFragmentAnimation = Boolean(this._mode == MethodPassMode.SUPER_SHADER);
 
+		if (shader.useAlphaPremultiplied && shader.usesBlending)
+			shader.usesCommonData = true;
+
 		var i:number;
 		var len:number = this._iMethodVOs.length;
 		for (i = 0; i < len; ++i)

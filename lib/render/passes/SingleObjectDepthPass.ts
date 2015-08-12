@@ -9,6 +9,7 @@ import IRenderOwner						= require("awayjs-display/lib/base/IRenderOwner");
 import Single2DTexture					= require("awayjs-display/lib/textures/Single2DTexture");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
+import ContextGLDrawMode				= require("awayjs-stagegl/lib/base/ContextGLDrawMode");
 import ContextGLProgramType				= require("awayjs-stagegl/lib/base/ContextGLProgramType");
 import IContextGL						= require("awayjs-stagegl/lib/base/IContextGL");
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
@@ -204,7 +205,7 @@ class SingleObjectDepthPass extends PassBase
 
 		subGeometryVO.activateVertexBufferVO(0, subGeom.positions, this._stage);
 		subGeometryVO.activateVertexBufferVO(1, subGeom.normals, this._stage);
-		subGeometryVO.getIndexBufferVO(this._stage).draw(0, subGeometryVO.numElements);
+		subGeometryVO.getIndexBufferVO(this._stage).draw(ContextGLDrawMode.TRIANGLES, 0, subGeometryVO.subGeometry.numElements);
 	}
 
 	/**
