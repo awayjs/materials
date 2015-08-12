@@ -765,7 +765,10 @@ var DiffuseBasicMethod = (function (_super) {
             methodVO.textureVO.dispose();
             methodVO.textureVO = null;
         }
-        methodVO.needsNormals = shader.numLights > 0;
+        if (shader.numLights > 0) {
+            shader.usesCommonData = true;
+            methodVO.needsNormals = true;
+        }
     };
     Object.defineProperty(DiffuseBasicMethod.prototype, "diffuseColor", {
         /**
@@ -6343,6 +6346,8 @@ var MethodPass = (function (_super) {
         _super.prototype._iIncludeDependencies.call(this, shader);
         //TODO: fragment animtion should be compatible with lighting pass
         shader.usesFragmentAnimation = Boolean(this._mode == MethodPassMode.SUPER_SHADER);
+        if (shader.useAlphaPremultiplied && shader.usesBlending)
+            shader.usesCommonData = true;
         var i;
         var len = this._iMethodVOs.length;
         for (i = 0; i < len; ++i)
@@ -6609,6 +6614,7 @@ var __extends = this.__extends || function (d, b) {
 var Image2D = require("awayjs-core/lib/data/Image2D");
 var Matrix3D = require("awayjs-core/lib/geom/Matrix3D");
 var Single2DTexture = require("awayjs-display/lib/textures/Single2DTexture");
+var ContextGLDrawMode = require("awayjs-stagegl/lib/base/ContextGLDrawMode");
 var ContextGLProgramType = require("awayjs-stagegl/lib/base/ContextGLProgramType");
 var PassBase = require("awayjs-renderergl/lib/render/passes/PassBase");
 var SubGeometryVOPool = require("awayjs-renderergl/lib/vos/SubGeometryVOPool");
@@ -6751,7 +6757,7 @@ var SingleObjectDepthPass = (function (_super) {
         var subGeom = subGeometryVO.subGeometry;
         subGeometryVO.activateVertexBufferVO(0, subGeom.positions, this._stage);
         subGeometryVO.activateVertexBufferVO(1, subGeom.normals, this._stage);
-        subGeometryVO.getIndexBufferVO(this._stage).draw(0, subGeometryVO.numElements);
+        subGeometryVO.getIndexBufferVO(this._stage).draw(ContextGLDrawMode.TRIANGLES, 0, subGeometryVO.subGeometry.numElements);
     };
     /**
      * @inheritDoc
@@ -6767,7 +6773,7 @@ var SingleObjectDepthPass = (function (_super) {
 })(PassBase);
 module.exports = SingleObjectDepthPass;
 
-},{"awayjs-core/lib/data/Image2D":undefined,"awayjs-core/lib/geom/Matrix3D":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-renderergl/lib/render/passes/PassBase":undefined,"awayjs-renderergl/lib/vos/SubGeometryVOPool":undefined,"awayjs-stagegl/lib/base/ContextGLProgramType":undefined}]},{},[])
+},{"awayjs-core/lib/data/Image2D":undefined,"awayjs-core/lib/geom/Matrix3D":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-renderergl/lib/render/passes/PassBase":undefined,"awayjs-renderergl/lib/vos/SubGeometryVOPool":undefined,"awayjs-stagegl/lib/base/ContextGLDrawMode":undefined,"awayjs-stagegl/lib/base/ContextGLProgramType":undefined}]},{},[])
 
 
 //# sourceMappingURL=awayjs-methodmaterials.js.map
