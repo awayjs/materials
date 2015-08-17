@@ -25,7 +25,7 @@ class DiffuseDepthMethod extends DiffuseBasicMethod
 	 */
 	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
 	{
-		var data:Array<number> = shader.fragmentConstantData;
+		var data:Float32Array = shader.fragmentConstantData;
 		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
 		data[index] = 1.0;
 		data[index + 1] = 1/255.0;

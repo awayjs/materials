@@ -48,7 +48,7 @@ class EffectFogMethod extends EffectMethodBase
 	 */
 	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
 	{
-		var data:Array<number> = shader.fragmentConstantData;
+		var data:Float32Array = shader.fragmentConstantData;
 		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
 		data[index + 3] = 1;
 		data[index + 6] = 0;

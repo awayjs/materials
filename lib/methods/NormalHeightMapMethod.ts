@@ -40,7 +40,7 @@ class NormalHeightMapMethod extends NormalBasicMethod
 	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
 	{
 		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
-		var data:Array<number> = shader.fragmentConstantData;
+		var data:Float32Array = shader.fragmentConstantData;
 		data[index] = 1/this.normalMap.width;
 		data[index + 1] = 1/this.normalMap.height;
 		data[index + 2] = 0;

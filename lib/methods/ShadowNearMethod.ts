@@ -195,7 +195,7 @@ class ShadowNearMethod extends ShadowMethodBase
 		maxDistance = near + maxDistance*d;
 		minDistance = near + minDistance*d;
 
-		var fragmentData:Array<number> = shader.fragmentConstantData;
+		var fragmentData:Float32Array = shader.fragmentConstantData;
 		var index:number /*int*/ = methodVO.secondaryFragmentConstantsIndex;
 		fragmentData[index] = minDistance;
 		fragmentData[index + 1] = 1/(maxDistance - minDistance);

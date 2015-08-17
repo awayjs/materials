@@ -313,7 +313,7 @@ class SpecularBasicMethod extends LightingMethodBase
 			methodVO.textureVO.activate(shader);
 
 		var index:number = methodVO.fragmentConstantsIndex;
-		var data:Array<number> = shader.fragmentConstantData;
+		var data:Float32Array = shader.fragmentConstantData;
 		data[index] = this._iSpecularR;
 		data[index + 1] = this._iSpecularG;
 		data[index + 2] = this._iSpecularB;

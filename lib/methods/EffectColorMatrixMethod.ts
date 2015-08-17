@@ -73,7 +73,7 @@ class EffectColorMatrixMethod extends EffectMethodBase
 	{
 		var matrix:Array<number> = this._matrix;
 		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
-		var data:Array<number> = shader.fragmentConstantData;
+		var data:Float32Array = shader.fragmentConstantData;
 
 		// r
 		data[index] = matrix[0];

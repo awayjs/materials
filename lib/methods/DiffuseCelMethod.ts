@@ -38,7 +38,7 @@ class DiffuseCelMethod extends DiffuseCompositeMethod
 	 */
 	public iInitConstants(shader:LightingShader, methodVO:MethodVO)
 	{
-		var data:Array<number> = shader.fragmentConstantData;
+		var data:Float32Array = shader.fragmentConstantData;
 		var index:number /*int*/ = methodVO.secondaryFragmentConstantsIndex;
 		super.iInitConstants(shader, methodVO);
 		data[index + 1] = 1;
@@ -97,7 +97,7 @@ class DiffuseCelMethod extends DiffuseCompositeMethod
 	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
 	{
 		super.iActivate(shader, methodVO, stage);
-		var data:Array<number> = shader.fragmentConstantData;
+		var data:Float32Array = shader.fragmentConstantData;
 		var index:number /*int*/ = methodVO.secondaryFragmentConstantsIndex;
 		data[index] = this._levels;
 		data[index + 3] = this._smoothness;

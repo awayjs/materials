@@ -320,7 +320,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 			methodVO.textureVO.activate(shader);
 		} else {
 			var index:number = methodVO.fragmentConstantsIndex;
-			var data:Array<number> = shader.fragmentConstantData;
+			var data:Float32Array = shader.fragmentConstantData;
 			data[index + 4] = this._diffuseR;
 			data[index + 5] = this._diffuseG;
 			data[index + 6] = this._diffuseB;
@@ -356,7 +356,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 		//TODO move this to Activate (ambientR/G/B currently calc'd in render state)
 		if (shader.numLights > 0) {
 			var index:number = methodVO.fragmentConstantsIndex;
-			var data:Array<number> = shader.fragmentConstantData;
+			var data:Float32Array = shader.fragmentConstantData;
 			data[index] = shader.ambientR*this._ambientR;
 			data[index + 1] = shader.ambientG*this._ambientG;
 			data[index + 2] = shader.ambientB*this._ambientB;

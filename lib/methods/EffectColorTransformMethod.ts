@@ -64,7 +64,7 @@ class EffectColorTransformMethod extends EffectMethodBase
 	{
 		var inv:number = 1/0xff;
 		var index:number = methodVO.fragmentConstantsIndex;
-		var data:Array<number> = shader.fragmentConstantData;
+		var data:Float32Array = shader.fragmentConstantData;
 
 		data[index] = this._colorTransform.redMultiplier;
 		data[index + 1] = this._colorTransform.greenMultiplier;

@@ -222,7 +222,7 @@ class ShadowMethodBase extends ShadowMapMethodBase
 	 */
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
-		var fragmentData:Array<number> = shader.fragmentConstantData;
+		var fragmentData:Float32Array = shader.fragmentConstantData;
 		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
 
 		if (this._pUsePoint)

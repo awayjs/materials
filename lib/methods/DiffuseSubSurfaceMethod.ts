@@ -215,7 +215,7 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 		super.iActivate(shader, methodVO, stage);
 
 		var index:number /*int*/ = methodVO.secondaryFragmentConstantsIndex;
-		var data:Array<number> = shader.fragmentConstantData;
+		var data:Float32Array = shader.fragmentConstantData;
 		data[index] = this._scatterR;
 		data[index + 1] = this._scatterG;
 		data[index + 2] = this._scatterB;

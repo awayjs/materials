@@ -39,7 +39,7 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
 	{
 		var index:number = methodVO.fragmentConstantsIndex;
-		var data:Array<number> = shader.fragmentConstantData;
+		var data:Float32Array = shader.fragmentConstantData;
 		data[index] = .5;
 		data[index + 1] = 0;
 		data[index + 2] = 0;

@@ -114,7 +114,7 @@ class ShadowFilteredMethod extends ShadowMethodBase
 	{
 		var size:number /*int*/ = this.castingLight.shadowMapper.depthMapSize;
 		var index:number /*int*/ = methodVO.secondaryFragmentConstantsIndex;
-		var data:Array<number> = shader.fragmentConstantData;
+		var data:Float32Array = shader.fragmentConstantData;
 		data[index] = size;
 		data[index + 1] = 1/size;
 	}

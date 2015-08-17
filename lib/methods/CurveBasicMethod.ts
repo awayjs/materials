@@ -144,7 +144,7 @@ class CurveBasicMethod extends ShadingMethodBase
 				shader.fragmentConstantData[methodVO.fragmentConstantsIndex] = shader.alphaThreshold;
 		} else {
 			var index:number = methodVO.fragmentConstantsIndex;
-			var data:Array<number> = shader.fragmentConstantData;
+			var data:Float32Array = shader.fragmentConstantData;
 			data[index] = this._colorR;
 			data[index + 1] = this._colorG;
 			data[index + 2] = this._colorB;

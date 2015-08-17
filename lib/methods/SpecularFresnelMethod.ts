@@ -108,7 +108,7 @@ class SpecularFresnelMethod extends SpecularCompositeMethod
 	{
 		super.iActivate(shader, methodVO, stage);
 
-		var fragmentData:Array<number> = shader.fragmentConstantData;
+		var fragmentData:Float32Array = shader.fragmentConstantData;
 
 		var index:number = methodVO.secondaryFragmentConstantsIndex;
 		fragmentData[index] = this._normalReflectance;

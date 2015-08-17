@@ -50,7 +50,7 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
 	{
 		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
-		var data:Array<number> = shader.fragmentConstantData;
+		var data:Float32Array = shader.fragmentConstantData;
 		data[index + 4] = 1;
 		data[index + 5] = 0;
 		data[index + 7] = 1;

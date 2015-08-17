@@ -99,8 +99,8 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	 */
 	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
 	{
-		var fragmentData:Array<number> = shader.fragmentConstantData;
-		var vertexData:Array<number> = shader.vertexConstantData;
+		var fragmentData:Float32Array = shader.fragmentConstantData;
+		var vertexData:Float32Array = shader.vertexConstantData;
 		var index:number = methodVO.fragmentConstantsIndex;
 		fragmentData[index] = 1.0;
 		fragmentData[index + 1] = 1/255.0;
