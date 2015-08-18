@@ -6630,7 +6630,7 @@ var SingleObjectDepthPass = (function (_super) {
     function SingleObjectDepthPass(render, renderOwner, renderableClass, stage) {
         _super.call(this, render, renderOwner, renderableClass, stage);
         this._textureSize = 512;
-        this._polyOffset = Array(15, 0, 0, 0);
+        this._polyOffset = new Float32Array([15, 0, 0, 0]);
         this._projectionTexturesInvalid = true;
         //this._pNumUsedStreams = 2;
         //this._pNumUsedVertexConstants = 7;
