@@ -90,7 +90,7 @@ class ShadowSoftMethod extends ShadowMethodBase
 		super.iActivate(shader, methodVO, stage);
 
 		var texRange:number = .5*this._range/this._pCastingLight.shadowMapper.depthMapSize;
-		var data:Array<number> = shader.fragmentConstantData;
+		var data:Float32Array = shader.fragmentConstantData;
 		var index:number /*uint*/ = methodVO.fragmentConstantsIndex + 10;
 		var len:number /*uint*/ = this._numSamples << 1;
 
@@ -141,7 +141,7 @@ class ShadowSoftMethod extends ShadowMethodBase
 		super.iActivate(shader, methodVO, stage);
 
 		var texRange:number = this._range/this._pCastingLight.shadowMapper.depthMapSize;
-		var data:Array<number> = shader.fragmentConstantData;
+		var data:Float32Array = shader.fragmentConstantData;
 		var index:number /*uint*/ = methodVO.secondaryFragmentConstantsIndex;
 		var len:number /*uint*/ = this._numSamples << 1;
 		data[index] = 1/this._numSamples;

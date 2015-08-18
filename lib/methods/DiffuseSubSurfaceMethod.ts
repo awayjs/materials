@@ -64,7 +64,7 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	{
 		super.iInitConstants(shader, methodVO);
 
-		var data:Array<number> = shader.vertexConstantData;
+		var data:Float32Array = shader.vertexConstantData;
 		var index:number /*int*/ = methodVO.secondaryVertexConstantsIndex;
 		data[index] = .5;
 		data[index + 1] = -.5;

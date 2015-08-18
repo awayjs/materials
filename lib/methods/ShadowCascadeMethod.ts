@@ -221,7 +221,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	{
 		methodVO.textureVO.activate(shader);
 
-		var vertexData:Array<number> = shader.vertexConstantData;
+		var vertexData:Float32Array = shader.vertexConstantData;
 		var vertexIndex:number = methodVO.vertexConstantsIndex;
 
 		shader.vertexConstantData[methodVO.vertexConstantsIndex + 3] = -1/(this._cascadeShadowMapper.depth*this._pEpsilon);
@@ -233,7 +233,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 			vertexIndex += 16;
 		}
 
-		var fragmentData:Array<number> = shader.fragmentConstantData;
+		var fragmentData:Float32Array = shader.fragmentConstantData;
 		var fragmentIndex:number = methodVO.fragmentConstantsIndex;
 		fragmentData[fragmentIndex + 5] = 1 - this._pAlpha;
 

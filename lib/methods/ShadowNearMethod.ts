@@ -79,7 +79,7 @@ class ShadowNearMethod extends ShadowMethodBase
 		super.iInitConstants(shader, methodVO);
 		this._baseMethod.iInitConstants(shader, methodVO);
 
-		var fragmentData:Array<number> = shader.fragmentConstantData;
+		var fragmentData:Float32Array = shader.fragmentConstantData;
 		var index:number /*int*/ = methodVO.secondaryFragmentConstantsIndex;
 		fragmentData[index + 2] = 0;
 		fragmentData[index + 3] = 1;

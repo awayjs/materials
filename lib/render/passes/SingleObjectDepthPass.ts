@@ -35,8 +35,8 @@ class SingleObjectDepthPass extends PassBase
 	private _textures:Object;
 	private _projections:Object;
 	private _textureSize:number /*uint*/ = 512;
-	private _polyOffset:Array<number> = Array<number>(15, 0, 0, 0);
-	private _enc:Array<number>;
+	private _polyOffset:Float32Array = new Float32Array([15, 0, 0, 0]);
+	private _enc:Float32Array;
 	private _projectionTexturesInvalid:Boolean = true;
 
 	/**

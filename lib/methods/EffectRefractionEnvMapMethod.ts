@@ -170,7 +170,7 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
 		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
-		var data:Array<number> = shader.fragmentConstantData;
+		var data:Float32Array = shader.fragmentConstantData;
 
 		data[index] = this._dispersionR + this._refractionIndex;
 

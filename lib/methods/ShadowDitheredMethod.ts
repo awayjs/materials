@@ -159,7 +159,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 	{
 		super.iActivate(shader, methodVO, stage);
 
-		var data:Array<number> = shader.fragmentConstantData;
+		var data:Float32Array = shader.fragmentConstantData;
 		var index:number /*uint*/ = methodVO.fragmentConstantsIndex;
 		data[index + 9] = (stage.width - 1)/63;
 		data[index + 10] = (stage.height - 1)/63;
@@ -284,7 +284,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 	 */
 	public iActivateForCascade(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
-		var data:Array<number> = shader.fragmentConstantData;
+		var data:Float32Array = shader.fragmentConstantData;
 		var index:number /*uint*/ = methodVO.secondaryFragmentConstantsIndex;
 		data[index] = 1/this._numSamples;
 		data[index + 1] = (stage.width - 1)/63;

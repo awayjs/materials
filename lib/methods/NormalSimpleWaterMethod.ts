@@ -146,7 +146,7 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 	{
 		super.iActivate(shader, methodVO, stage);
 
-		var data:Array<number> = shader.fragmentConstantData;
+		var data:Float32Array = shader.fragmentConstantData;
 		var index:number = methodVO.fragmentConstantsIndex;
 
 		data[index + 4] = this._water1OffsetX;
