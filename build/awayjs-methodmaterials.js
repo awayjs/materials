@@ -6285,11 +6285,11 @@ var MethodPass = (function (_super) {
      * @inheritDoc
      */
     MethodPass.prototype.dispose = function () {
-        _super.prototype.dispose.call(this);
         if (this._lightPicker)
             this._lightPicker.removeEventListener(Event.CHANGE, this._onLightsChangeDelegate);
         while (this._iMethodVOs.length)
             this._removeDependency(this._iMethodVOs[0]);
+        _super.prototype.dispose.call(this);
         this._iMethodVOs = null;
     };
     /**
