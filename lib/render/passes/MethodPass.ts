@@ -511,13 +511,13 @@ class MethodPass extends PassBase implements ILightingPass
 	 */
 	public dispose()
 	{
-		super.dispose();
-
 		if (this._lightPicker)
 			this._lightPicker.removeEventListener(Event.CHANGE, this._onLightsChangeDelegate);
-		
+
 		while (this._iMethodVOs.length)
 			this._removeDependency(this._iMethodVOs[0]);
+
+		super.dispose();
 
 		this._iMethodVOs = null;
 	}
