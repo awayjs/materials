@@ -1,3 +1,38 @@
+declare module "awayjs-methodmaterials/lib/data/MethodVO" {
+	import TextureVOBase = require("awayjs-renderergl/lib/vos/TextureVOBase");
+	import ShadingMethodBase = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
+	/**
+	 * MethodVO contains data for a given shader object for the use within a single material.
+	 * This allows shader methods to be shared across materials while their non-public state differs.
+	 */
+	class MethodVO {
+	    useMethod: boolean;
+	    method: ShadingMethodBase;
+	    textureVO: TextureVOBase;
+	    secondaryTextureVO: TextureVOBase;
+	    vertexConstantsIndex: number;
+	    secondaryVertexConstantsIndex: number;
+	    fragmentConstantsIndex: number;
+	    secondaryFragmentConstantsIndex: number;
+	    needsProjection: boolean;
+	    needsView: boolean;
+	    needsNormals: boolean;
+	    needsTangents: boolean;
+	    needsGlobalVertexPos: boolean;
+	    needsGlobalFragmentPos: boolean;
+	    /**
+	     * Creates a new MethodVO object.
+	     */
+	    constructor(method: ShadingMethodBase);
+	    /**
+	     * Resets the values of the value object to their "unused" state.
+	     */
+	    reset(): void;
+	}
+	export = MethodVO;
+	
+}
+
 declare module "awayjs-methodmaterials/lib/MethodMaterial" {
 	import Image2D = require("awayjs-core/lib/data/Image2D");
 	import MaterialBase = require("awayjs-display/lib/materials/MaterialBase");
@@ -146,41 +181,6 @@ declare module "awayjs-methodmaterials/lib/MethodMaterialMode" {
 	    static MULTI_PASS: string;
 	}
 	export = MethodMaterialMode;
-	
-}
-
-declare module "awayjs-methodmaterials/lib/data/MethodVO" {
-	import TextureVOBase = require("awayjs-renderergl/lib/vos/TextureVOBase");
-	import ShadingMethodBase = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
-	/**
-	 * MethodVO contains data for a given shader object for the use within a single material.
-	 * This allows shader methods to be shared across materials while their non-public state differs.
-	 */
-	class MethodVO {
-	    useMethod: boolean;
-	    method: ShadingMethodBase;
-	    textureVO: TextureVOBase;
-	    secondaryTextureVO: TextureVOBase;
-	    vertexConstantsIndex: number;
-	    secondaryVertexConstantsIndex: number;
-	    fragmentConstantsIndex: number;
-	    secondaryFragmentConstantsIndex: number;
-	    needsProjection: boolean;
-	    needsView: boolean;
-	    needsNormals: boolean;
-	    needsTangents: boolean;
-	    needsGlobalVertexPos: boolean;
-	    needsGlobalFragmentPos: boolean;
-	    /**
-	     * Creates a new MethodVO object.
-	     */
-	    constructor(method: ShadingMethodBase);
-	    /**
-	     * Resets the values of the value object to their "unused" state.
-	     */
-	    reset(): void;
-	}
-	export = MethodVO;
 	
 }
 
