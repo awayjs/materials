@@ -1,7 +1,9 @@
+import Camera							= require("awayjs-display/lib/entities/Camera");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
 import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -132,7 +134,7 @@ class EffectLightMapMethod extends EffectMethodBase
 		var code:string;
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 
-		code = methodVO.secondaryTextureVO._iGetFragmentCode(shader, temp, registerCache, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
+		code = methodVO.secondaryTextureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
 
 		switch (this._blendMode) {
 			case EffectLightMapMethod.MULTIPLY:
@@ -151,9 +153,13 @@ class EffectLightMapMethod extends EffectMethodBase
 	 */
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
-		super.iActivate(shader, methodVO, stage);
-
 		methodVO.textureVO.activate(shader);
+	}
+
+
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	{
+		methodVO.textureVO._setRenderState(renderable, shader);
 	}
 }
 

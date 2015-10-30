@@ -1,10 +1,12 @@
 import BitmapImage2D					= require("awayjs-core/lib/data/BitmapImage2D");
 
+import Camera							= require("awayjs-display/lib/entities/Camera");
 import DirectionalLight					= require("awayjs-display/lib/entities/DirectionalLight");
 import Single2DTexture					= require("awayjs-display/lib/textures/Single2DTexture");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
 import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
 import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
@@ -168,6 +170,17 @@ class ShadowDitheredMethod extends ShadowMethodBase
 		methodVO.secondaryTextureVO.activate(shader);
 	}
 
+
+	/**
+	 * @inheritDoc
+	 */
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	{
+		super.iSetRenderState(shader, methodVO, renderable, stage, camera);
+
+		methodVO.secondaryTextureVO._setRenderState(renderable, shader);
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -200,18 +213,15 @@ class ShadowDitheredMethod extends ShadowMethodBase
 
 		var projectionReg:ShaderRegisterElement = sharedRegisters.projectionFragment;
 
-		methodVO.textureVO._iInitRegisters(shader, regCache);
-		methodVO.secondaryTextureVO._iInitRegisters(shader, regCache);
-
 		code += "div " + uvReg + ", " + projectionReg + ", " + projectionReg + ".w\n" +
 			"mul " + uvReg + ".xy, " + uvReg + ".xy, " + customDataReg + ".yz\n";
 
 		while (numSamples > 0) {
 			if (numSamples == this._numSamples) {
-				code += methodVO.secondaryTextureVO._iGetFragmentCode(shader, uvReg, regCache, uvReg);
+				code += methodVO.secondaryTextureVO._iGetFragmentCode(shader, uvReg, regCache, sharedRegisters, uvReg);
 			} else {
 				code += "mov " + temp + ", " + uvReg + ".zwxy \n" +
-					methodVO.secondaryTextureVO._iGetFragmentCode(shader, uvReg, regCache, temp);
+					methodVO.secondaryTextureVO._iGetFragmentCode(shader, uvReg, regCache, sharedRegisters, temp);
 			}
 
 			// keep grain in uvReg.zw
@@ -221,35 +231,35 @@ class ShadowDitheredMethod extends ShadowMethodBase
 			if (numSamples == this._numSamples) {
 				// first sample
 				code += "add " + uvReg + ".xy, " + uvReg + ".zw, " + this._pDepthMapCoordReg + ".xy\n" +
-					methodVO.textureVO._iGetFragmentCode(shader, temp, regCache, uvReg) +
+					methodVO.textureVO._iGetFragmentCode(shader, temp, regCache, sharedRegisters, uvReg) +
 					"dp4 " + temp + ".z, " + temp + ", " + decReg + "\n" +
 					"slt " + targetReg + ".w, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n"; // 0 if in shadow
 			} else {
-				code += this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache);
+				code += this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache, sharedRegisters);
 			}
 
 			if (numSamples > 4)
-				code += "add " + uvReg + ".xy, " + uvReg + ".xy, " + uvReg + ".zw\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache);
+				code += "add " + uvReg + ".xy, " + uvReg + ".xy, " + uvReg + ".zw\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache, sharedRegisters);
 
 			if (numSamples > 1)
-				code += "sub " + uvReg + ".xy, " + this._pDepthMapCoordReg + ".xy, " + uvReg + ".zw\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache);
+				code += "sub " + uvReg + ".xy, " + this._pDepthMapCoordReg + ".xy, " + uvReg + ".zw\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache, sharedRegisters);
 
 			if (numSamples > 5)
-				code += "sub " + uvReg + ".xy, " + uvReg + ".xy, " + uvReg + ".zw\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache);
+				code += "sub " + uvReg + ".xy, " + uvReg + ".xy, " + uvReg + ".zw\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache, sharedRegisters);
 
 			if (numSamples > 2) {
 				code += "neg " + uvReg + ".w, " + uvReg + ".w\n"; // will be rotated 90 degrees when being accessed as wz
-				code += "add " + uvReg + ".xy, " + uvReg + ".wz, " + this._pDepthMapCoordReg + ".xy\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache);
+				code += "add " + uvReg + ".xy, " + uvReg + ".wz, " + this._pDepthMapCoordReg + ".xy\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache, sharedRegisters);
 			}
 
 			if (numSamples > 6)
-				code += "add " + uvReg + ".xy, " + uvReg + ".xy, " + uvReg + ".wz\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache);
+				code += "add " + uvReg + ".xy, " + uvReg + ".xy, " + uvReg + ".wz\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache, sharedRegisters);
 
 			if (numSamples > 3)
-				code += "sub " + uvReg + ".xy, " + this._pDepthMapCoordReg + ".xy, " + uvReg + ".wz\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache);
+				code += "sub " + uvReg + ".xy, " + this._pDepthMapCoordReg + ".xy, " + uvReg + ".wz\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache, sharedRegisters);
 
 			if (numSamples > 7)
-				code += "sub " + uvReg + ".xy, " + uvReg + ".xy, " + uvReg + ".wz\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache);
+				code += "sub " + uvReg + ".xy, " + uvReg + ".xy, " + uvReg + ".wz\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache, sharedRegisters);
 
 			numSamples -= 8;
 		}
@@ -269,11 +279,11 @@ class ShadowDitheredMethod extends ShadowMethodBase
 	 * @param regCache The register cache managing the registers.
 	 * @return
 	 */
-	private addSample(shader:ShaderBase, methodVO:MethodVO, uvReg:ShaderRegisterElement, decReg:ShaderRegisterElement, targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache):string
+	private addSample(shader:ShaderBase, methodVO:MethodVO, uvReg:ShaderRegisterElement, decReg:ShaderRegisterElement, targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var temp:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
 
-		return methodVO.textureVO._iGetFragmentCode(shader, temp, regCache, uvReg) +
+		return methodVO.textureVO._iGetFragmentCode(shader, temp, regCache, sharedRegisters, uvReg) +
 			"dp4 " + temp + ".z, " + temp + ", " + decReg + "\n" +
 			"slt " + temp + ".z, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n" + // 0 if in shadow
 			"add " + targetReg + ".w, " + targetReg + ".w, " + temp + ".z\n";

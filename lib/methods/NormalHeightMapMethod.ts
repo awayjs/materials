@@ -1,3 +1,4 @@
+import Single2DTexture					= require("awayjs-display/lib/textures/Single2DTexture");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
@@ -41,8 +42,8 @@ class NormalHeightMapMethod extends NormalBasicMethod
 	{
 		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
 		var data:Float32Array = shader.fragmentConstantData;
-		data[index] = 1/this.normalMap.width;
-		data[index + 1] = 1/this.normalMap.height;
+		data[index] = 1/(<Single2DTexture> this.normalMap).image2D.width;
+		data[index + 1] = 1/(<Single2DTexture> this.normalMap).image2D.height;
 		data[index + 2] = 0;
 		data[index + 3] = 1;
 		data[index + 4] = this._worldXYRatio;
@@ -82,16 +83,16 @@ class NormalHeightMapMethod extends NormalBasicMethod
 
 		methodVO.fragmentConstantsIndex = dataReg.index*4;
 
-		code+= methodVO.textureVO._iGetFragmentCode(shader, targetReg, registerCache, sharedRegisters.uvVarying) +
+		code+= methodVO.textureVO._iGetFragmentCode(shader, targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying) +
 
 			"add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg + ".xzzz\n" +
 
-		methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, temp) +
+		methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters, temp) +
 
 			"sub " + targetReg + ".x, " + targetReg + ".x, " + temp + ".x\n" +
 			"add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg + ".zyzz\n" +
 
-		methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, temp) +
+		methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters, temp) +
 
 			"sub " + targetReg + ".z, " + targetReg + ".z, " + temp + ".x\n" +
 			"mov " + targetReg + ".y, " + dataReg + ".w\n" +

@@ -1,7 +1,9 @@
+import Camera							= require("awayjs-display/lib/entities/Camera");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
 import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -183,6 +185,11 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 		methodVO.textureVO.activate(shader);
 	}
 
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	{
+		methodVO.textureVO._setRenderState(renderable, shader);
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -208,8 +215,6 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 		var viewDirReg:ShaderRegisterElement = sharedRegisters.viewDirFragment;
 		var normalReg:ShaderRegisterElement = sharedRegisters.normalFragment;
 
-		methodVO.textureVO._iInitRegisters(shader, registerCache);
-
 		code += "neg " + viewDirReg + ".xyz, " + viewDirReg + ".xyz\n";
 
 		code += "dp3 " + temp + ".x, " + viewDirReg + ".xyz, " + normalReg + ".xyz\n" +
@@ -227,7 +232,7 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 			"mul " + refractionDir + ", " + data + ".x, " + viewDirReg + "\n" +
 			"sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" +
 			"nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" +
-		methodVO.textureVO._iGetFragmentCode(shader, refractionColor, registerCache, refractionDir) +
+		methodVO.textureVO._iGetFragmentCode(shader, refractionColor, registerCache, sharedRegisters, refractionDir) +
 			"sub " + refractionColor + ".w, " + refractionColor + ".w, fc0.x	\n" +
 			"kil " + refractionColor + ".w\n";
 
@@ -248,7 +253,7 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 				"mul " + refractionDir + ", " + data + ".y, " + viewDirReg + "\n" +
 				"sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" +
 				"nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" +
-			methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, refractionDir) +
+			methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters, refractionDir) +
 				"mov " + refractionColor + ".y, " + temp + ".y\n";
 
 			// BLUE
@@ -267,7 +272,7 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 				"mul " + refractionDir + ", " + data + ".z, " + viewDirReg + "\n" +
 				"sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" +
 				"nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" +
-			methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, refractionDir) +
+			methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters, refractionDir) +
 				"mov " + refractionColor + ".z, " + temp + ".z\n";
 		}
 

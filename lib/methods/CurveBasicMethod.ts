@@ -1,12 +1,15 @@
-import Stage						= require("awayjs-stagegl/lib/base/Stage");
+import Camera							= require("awayjs-display/lib/entities/Camera");
 
-import ShaderBase					= require("awayjs-renderergl/lib/shaders/ShaderBase");
-import ShaderRegisterCache			= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData			= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement		= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
-import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
+import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+
+import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
+import ShadingMethodBase				= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
 
 /**
  * AmbientBasicMethod provides the default shading method for uniform ambient lighting.
@@ -109,9 +112,7 @@ class CurveBasicMethod extends ShadingMethodBase
 		var ambientInputRegister:ShaderRegisterElement;
 
 		if (shader.texture) {
-			shader.texture._iInitRegisters(shader, registerCache);
-
-			code += shader.texture._iGetFragmentCode(shader, targetReg, registerCache, sharedRegisters.uvVarying);
+			code += shader.texture._iGetFragmentCode(shader, targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
 
 			if (shader.alphaThreshold > 0) {
 				var cutOffReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
@@ -150,6 +151,12 @@ class CurveBasicMethod extends ShadingMethodBase
 			data[index + 2] = this._colorB;
 			data[index + 3] = this._alpha;
 		}
+	}
+
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	{
+		if (shader.texture)
+			methodVO.textureVO._setRenderState(renderable, shader);
 	}
 
 	/**

@@ -1,15 +1,17 @@
-import TextureBase					= require("awayjs-display/lib/textures/TextureBase");
+import Camera							= require("awayjs-display/lib/entities/Camera");
+import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
-import Stage						= require("awayjs-stagegl/lib/base/Stage");
+import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import LightingShader				= require("awayjs-renderergl/lib/shaders/LightingShader");
-import ShaderRegisterCache			= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData			= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement		= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
+import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
-import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
-import LightingMethodBase			= require("awayjs-methodmaterials/lib/methods/LightingMethodBase");
-import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
+import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
+import LightingMethodBase				= require("awayjs-methodmaterials/lib/methods/LightingMethodBase");
+import ShadingMethodBase				= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
 
 /**
  * SpecularBasicMethod provides the default shading method for Blinn-Phong specular highlights (an optimized but approximated
@@ -179,9 +181,7 @@ class SpecularBasicMethod extends LightingMethodBase
 			this._pSpecularTexData = registerCache.getFreeFragmentVectorTemp();
 			registerCache.addFragmentTempUsages(this._pSpecularTexData, 1);
 
-			methodVO.textureVO._iInitRegisters(shader, registerCache);
-
-			code += methodVO.textureVO._iGetFragmentCode(shader, this._pSpecularTexData, registerCache, sharedRegisters.uvVarying);
+			code += methodVO.textureVO._iGetFragmentCode(shader, this._pSpecularTexData, registerCache, sharedRegisters, sharedRegisters.uvVarying);
 		}
 
 		this._pTotalLightColorReg = registerCache.getFreeFragmentVectorTemp();
@@ -318,6 +318,12 @@ class SpecularBasicMethod extends LightingMethodBase
 		data[index + 1] = this._iSpecularG;
 		data[index + 2] = this._iSpecularB;
 		data[index + 3] = this._gloss;
+	}
+
+	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	{
+		if (this._texture)
+			methodVO.textureVO._setRenderState(renderable, shader);
 	}
 
 	/**

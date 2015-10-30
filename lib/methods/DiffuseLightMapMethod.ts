@@ -1,7 +1,9 @@
+import Camera							= require("awayjs-display/lib/entities/Camera");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
 import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -132,9 +134,7 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 		var code:string;
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 
-		methodVO.secondaryTextureVO._iInitRegisters(shader, registerCache);
-
-		code = methodVO.secondaryTextureVO._iGetFragmentCode(shader, temp, registerCache, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
+		code = methodVO.secondaryTextureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
 
 		switch (this._blendMode) {
 			case DiffuseLightMapMethod.MULTIPLY:
@@ -158,6 +158,16 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 		super.iActivate(shader, methodVO, stage);
 
 		methodVO.secondaryTextureVO.activate(shader);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	{
+		super.iSetRenderState(shader, methodVO, renderable, stage, camera);
+
+		methodVO.secondaryTextureVO._setRenderState(renderable, shader);
 	}
 }
 

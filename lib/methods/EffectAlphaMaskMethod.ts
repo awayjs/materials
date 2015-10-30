@@ -1,7 +1,9 @@
+import Camera							= require("awayjs-display/lib/entities/Camera");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
 import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
 import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
@@ -93,7 +95,7 @@ class EffectAlphaMaskMethod extends EffectMethodBase
 	{
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 
-		return methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying) +
+		return methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying) +
 			"mul " + targetReg + ", " + targetReg + ", " + temp + ".x\n";
 	}
 
@@ -106,6 +108,12 @@ class EffectAlphaMaskMethod extends EffectMethodBase
 		super.iActivate(shader, methodVO, stage);
 
 		methodVO.textureVO.activate(shader);
+	}
+
+
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	{
+		methodVO.textureVO._setRenderState(renderable, shader);
 	}
 }
 

@@ -1,24 +1,24 @@
-import Vector3D						= require("awayjs-core/lib/geom/Vector3D");
-import AbstractMethodError			= require("awayjs-core/lib/errors/AbstractMethodError");
+import Vector3D							= require("awayjs-core/lib/geom/Vector3D");
+import AbstractMethodError				= require("awayjs-core/lib/errors/AbstractMethodError");
 
-import LightBase					= require("awayjs-display/lib/base/LightBase");
-import Camera						= require("awayjs-display/lib/entities/Camera");
-import DirectionalLight				= require("awayjs-display/lib/entities/DirectionalLight");
-import PointLight					= require("awayjs-display/lib/entities/PointLight");
-import DirectionalShadowMapper		= require("awayjs-display/lib/materials/shadowmappers/DirectionalShadowMapper");
-import TextureBase					= require("awayjs-display/lib/textures/TextureBase");
+import LightBase						= require("awayjs-display/lib/base/LightBase");
+import Camera							= require("awayjs-display/lib/entities/Camera");
+import DirectionalLight					= require("awayjs-display/lib/entities/DirectionalLight");
+import PointLight						= require("awayjs-display/lib/entities/PointLight");
+import DirectionalShadowMapper			= require("awayjs-display/lib/materials/shadowmappers/DirectionalShadowMapper");
+import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
-import Stage						= require("awayjs-stagegl/lib/base/Stage");
+import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import RenderableBase				= require("awayjs-renderergl/lib/renderables/RenderableBase");
-import LightingShader				= require("awayjs-renderergl/lib/shaders/LightingShader");
-import ShaderBase					= require("awayjs-renderergl/lib/shaders/ShaderBase");
-import ShaderRegisterCache			= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData			= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement		= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
+import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
+import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
-import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
-import ShadowMapMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
+import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
+import ShadowMapMethodBase				= require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
 
 /**
  * ShadowMethodBase provides an abstract method for simple (non-wrapping) shadow map methods.
@@ -200,6 +200,8 @@ class ShadowMethodBase extends ShadowMapMethodBase
 	{
 		if (!this._pUsePoint)
 			(<DirectionalShadowMapper> this._pShadowMapper).iDepthProjection.copyRawDataTo(shader.vertexConstantData, methodVO.vertexConstantsIndex + 4, true);
+
+		methodVO.textureVO._setRenderState(renderable, shader);
 	}
 
 	/**

@@ -1,7 +1,9 @@
+import Camera							= require("awayjs-display/lib/entities/Camera");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
 import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -161,6 +163,17 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 	/**
 	 * @inheritDoc
 	 */
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	{
+		super.iSetRenderState(shader, methodVO, renderable, stage, camera);
+
+		if (this._secondaryNormalMap)
+			methodVO.secondaryTextureVO._setRenderState(renderable, shader);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
@@ -173,19 +186,13 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 
 		code += "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg2 + ".xyxy\n";
 
-		if (this.normalMap) {
-			methodVO.textureVO._iInitRegisters(shader, registerCache);
-
-			code += methodVO.textureVO._iGetFragmentCode(shader, targetReg, registerCache, temp);
-		}
+		if (this.normalMap)
+			code += methodVO.textureVO._iGetFragmentCode(shader, targetReg, registerCache, sharedRegisters, temp);
 
 		code += "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg2 + ".zwzw\n";
 
-		if (this._secondaryNormalMap) {
-			methodVO.secondaryTextureVO._iInitRegisters(shader, registerCache);
-
-			code += methodVO.secondaryTextureVO._iGetFragmentCode(shader, temp, registerCache, temp);
-		}
+		if (this._secondaryNormalMap)
+			code += methodVO.secondaryTextureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters, temp);
 
 		code +=	"add " + targetReg + ", " + targetReg + ", " + temp + "		\n" +
 			"mul " + targetReg + ", " + targetReg + ", " + dataReg + ".x	\n" +

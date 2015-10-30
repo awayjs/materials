@@ -2,12 +2,12 @@ import Camera							= require("awayjs-display/lib/entities/Camera");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
 import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
 import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
 import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
-import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
@@ -229,7 +229,7 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
 		methodVO.secondaryTextureVO = shader.getTextureVO(this._depthPass._iGetDepthMap(renderable));
-		methodVO.secondaryTextureVO.activate(shader);
+		methodVO.secondaryTextureVO._setRenderState(renderable, shader);
 
 		this._depthPass._iGetProjection(renderable).copyRawDataTo(shader.vertexConstantData, methodVO.secondaryVertexConstantsIndex + 4, true);
 	}
@@ -254,7 +254,7 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 
-		code += methodVO.secondaryTextureVO._iGetFragmentCode(shader, temp, registerCache, this._lightProjVarying) +
+		code += methodVO.secondaryTextureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters, this._lightProjVarying) +
 			// reencode RGBA
 			"dp4 " + targetReg + ".z, " + temp + ", " + this._decReg + "\n";
 		// currentDistanceToLight - closestDistanceToLight

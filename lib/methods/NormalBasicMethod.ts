@@ -1,14 +1,16 @@
-import TextureBase					= require("awayjs-display/lib/textures/TextureBase");
+import Camera							= require("awayjs-display/lib/entities/Camera");
+import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
-import Stage						= require("awayjs-stagegl/lib/base/Stage");
+import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import ShaderBase					= require("awayjs-renderergl/lib/shaders/ShaderBase");
-import ShaderRegisterCache			= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData			= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement		= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
+import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
-import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
-import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
+import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
+import ShadingMethodBase				= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
 
 /**
  * NormalBasicMethod is the default method for standard tangent-space normal mapping.
@@ -102,6 +104,12 @@ class NormalBasicMethod extends ShadingMethodBase
 			methodVO.textureVO.activate(shader);
 	}
 
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	{
+		if (this._normalMap)
+			methodVO.textureVO._setRenderState(renderable, shader);
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -109,11 +117,9 @@ class NormalBasicMethod extends ShadingMethodBase
 	{
 		var code:string = "";
 
-		if (this._normalMap) {
-			methodVO.textureVO._iInitRegisters(shader, registerCache);
+		if (this._normalMap)
+			code += methodVO.textureVO._iGetFragmentCode(shader, targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
 
-			code += methodVO.textureVO._iGetFragmentCode(shader, targetReg, registerCache, sharedRegisters.uvVarying);
-		}
 
 		code += "sub " + targetReg + ".xyz, " + targetReg + ".xyz, " + sharedRegisters.commons + ".xxx\n" +
 			"nrm " + targetReg + ".xyz, " + targetReg + "\n";

@@ -110,9 +110,7 @@ class ShadowSoftMethod extends ShadowMethodBase
 
 		methodVO.fragmentConstantsIndex = decReg.index*4;
 
-		methodVO.textureVO._iInitRegisters(shader, regCache);
-
-		return this.getSampleCode(shader, methodVO, decReg, targetReg, regCache, dataReg);
+		return this.getSampleCode(shader, methodVO, decReg, targetReg, regCache, sharedRegisters, dataReg);
 	}
 
 	/**
@@ -124,10 +122,10 @@ class ShadowSoftMethod extends ShadowMethodBase
 	 * @param regCache The register cache managing the registers.
 	 * @return
 	 */
-	private addSample(shader:ShaderBase, methodVO:MethodVO, decodeRegister:ShaderRegisterElement, targetRegister:ShaderRegisterElement, registerCache:ShaderRegisterCache, uvReg:ShaderRegisterElement):string
+	private addSample(shader:ShaderBase, methodVO:MethodVO, decodeRegister:ShaderRegisterElement, targetRegister:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData, uvReg:ShaderRegisterElement):string
 	{
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
-		return methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, uvReg) +
+		return methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters, uvReg) +
 			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
 			"slt " + uvReg + ".w, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n" + // 0 if in shadow
 			"add " + targetRegister + ".w, " + targetRegister + ".w, " + uvReg + ".w\n";
@@ -167,7 +165,7 @@ class ShadowSoftMethod extends ShadowMethodBase
 		var dataReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 		methodVO.secondaryFragmentConstantsIndex = dataReg.index*4;
 
-		return this.getSampleCode(shader, methodVO, decodeRegister, targetRegister, registerCache, dataReg);
+		return this.getSampleCode(shader, methodVO, decodeRegister, targetRegister, registerCache, sharedRegisters, dataReg);
 	}
 
 	/**
@@ -178,7 +176,7 @@ class ShadowSoftMethod extends ShadowMethodBase
 	 * @param targetReg The target register to add the shadow coverage.
 	 * @param dataReg The register containing additional data.
 	 */
-	private getSampleCode(shader:ShaderBase, methodVO:MethodVO, decodeRegister:ShaderRegisterElement, targetRegister:ShaderRegisterElement, registerCache:ShaderRegisterCache, dataReg:ShaderRegisterElement):string
+	private getSampleCode(shader:ShaderBase, methodVO:MethodVO, decodeRegister:ShaderRegisterElement, targetRegister:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData, dataReg:ShaderRegisterElement):string
 	{
 		var code:string;
 		var uvReg:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
@@ -198,12 +196,12 @@ class ShadowSoftMethod extends ShadowMethodBase
 				var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 
 				code = "add " + uvReg + ", " + this._pDepthMapCoordReg + ", " + dataReg + ".zwyy\n" +
-					methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, uvReg) +
+					methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters, uvReg) +
 					"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
 					"slt " + targetRegister + ".w, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n"; // 0 if in shadow;
 			} else {
 				code += "add " + uvReg + ".xy, " + this._pDepthMapCoordReg + ".xy, " + offsets[i] + "\n" +
-					this.addSample(shader, methodVO, decodeRegister, targetRegister, registerCache, uvReg);
+					this.addSample(shader, methodVO, decodeRegister, targetRegister, registerCache, sharedRegisters, uvReg);
 			}
 		}
 

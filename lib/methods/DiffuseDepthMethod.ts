@@ -1,3 +1,4 @@
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
 import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
 import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
@@ -60,9 +61,7 @@ class DiffuseDepthMethod extends DiffuseBasicMethod
 		decReg = registerCache.getFreeFragmentConstant();
 		methodVO.fragmentConstantsIndex = decReg.index*4;
 
-		methodVO.textureVO._iInitRegisters(shader, registerCache);
-
-		code += methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters.uvVarying) +
+		code += methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters, sharedRegisters.uvVarying) +
 			"dp4 " + temp + ".x, " + temp + ", " + decReg + "\n" +
 			"mov " + temp + ".yz, " + temp + ".xx			\n" +
 			"mov " + temp + ".w, " + decReg + ".x\n" +

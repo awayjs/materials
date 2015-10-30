@@ -1,9 +1,9 @@
-import IAsset						= require("awayjs-core/lib/library/IAsset");
+import IAsset							= require("awayjs-core/lib/library/IAsset");
 
-import LightBase					= require("awayjs-display/lib/base/LightBase");
-import ShadowMapperBase				= require("awayjs-display/lib/materials/shadowmappers/ShadowMapperBase");
+import LightBase						= require("awayjs-display/lib/base/LightBase");
+import ShadowMapperBase					= require("awayjs-display/lib/materials/shadowmappers/ShadowMapperBase");
 
-import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
+import ShadingMethodBase				= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
 
 /**
  * ShadowMapMethodBase provides an abstract base method for shadow map methods.

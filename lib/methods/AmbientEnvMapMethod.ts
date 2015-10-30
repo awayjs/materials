@@ -35,9 +35,7 @@ class AmbientEnvMapMethod extends AmbientBasicMethod
 	 */
 	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		shader.texture._iInitRegisters(shader, regCache);
-
-		return shader.texture._iGetFragmentCode(shader, targetReg, regCache, sharedRegisters.normalFragment);
+		return shader.texture._iGetFragmentCode(shader, targetReg, regCache, sharedRegisters, sharedRegisters.normalFragment);
 	}
 }
 

@@ -1,17 +1,17 @@
-import Camera						= require("awayjs-display/lib/entities/Camera");
-import TextureBase					= require("awayjs-display/lib/textures/TextureBase");
+import Camera							= require("awayjs-display/lib/entities/Camera");
+import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
-import Stage						= require("awayjs-stagegl/lib/base/Stage");
+import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import LightingShader				= require("awayjs-renderergl/lib/shaders/LightingShader");
-import ShaderRegisterCache			= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData			= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement		= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
-import RenderableBase				= require("awayjs-renderergl/lib/renderables/RenderableBase");
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
+import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
+import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
+import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
+import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 
-import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
-import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
-import LightingMethodBase			= require("awayjs-methodmaterials/lib/methods/LightingMethodBase");
+import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
+import ShadingMethodBase				= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
+import LightingMethodBase				= require("awayjs-methodmaterials/lib/methods/LightingMethodBase");
 
 /**
  * DiffuseBasicMethod provides the default shading method for Lambert (dot3) diffuse lighting.
@@ -273,9 +273,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 		methodVO.fragmentConstantsIndex = ambientColorRegister.index*4;
 
 		if (this._texture) {
-			methodVO.textureVO._iInitRegisters(shader, registerCache);
-
-			code += methodVO.textureVO._iGetFragmentCode(shader, albedo, registerCache, sharedRegisters.uvVarying);
+			code += methodVO.textureVO._iGetFragmentCode(shader, albedo, registerCache, sharedRegisters, sharedRegisters.uvVarying);
 		} else {
 			var diffuseInputRegister:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 
@@ -353,6 +351,9 @@ class DiffuseBasicMethod extends LightingMethodBase
 	 */
 	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
+		if (this._texture)
+			methodVO.textureVO._setRenderState(renderable, shader);
+
 		//TODO move this to Activate (ambientR/G/B currently calc'd in render state)
 		if (shader.numLights > 0) {
 			var index:number = methodVO.fragmentConstantsIndex;

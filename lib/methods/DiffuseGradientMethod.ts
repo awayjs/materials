@@ -1,7 +1,9 @@
+import Camera							= require("awayjs-display/lib/entities/Camera");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
+import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
 import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -74,9 +76,6 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 		var code:string = super.iGetFragmentPreLightingCode(shader, methodVO, registerCache, sharedRegisters);
 		this._pIsFirstLight = true;
 
-		if (shader.numLights > 0)
-			methodVO.secondaryTextureVO._iInitRegisters(shader, registerCache);
-
 		return code;
 	}
 
@@ -104,7 +103,7 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 		if (this._iModulateMethod != null)
 			code += this._iModulateMethod(shader, methodVO, t, registerCache, sharedRegisters);
 
-		code += methodVO.secondaryTextureVO._iGetFragmentCode(shader, t, registerCache, t) +
+		code += methodVO.secondaryTextureVO._iGetFragmentCode(shader, t, registerCache, sharedRegisters, t) +
 			//					"mul " + t + ".xyz, " + t + ".xyz, " + t + ".w\n" +
 			"mul " + t + ".xyz, " + t + ".xyz, " + lightColReg + ".xyz\n";
 
@@ -126,7 +125,7 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 		var t:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
 
 		return "mov " + t + ", " + sharedRegisters.shadowTarget + ".wwww\n" +
-			methodVO.secondaryTextureVO._iGetFragmentCode(shader, t, regCache, sharedRegisters.uvVarying) +
+			methodVO.secondaryTextureVO._iGetFragmentCode(shader, t, regCache, sharedRegisters, sharedRegisters.uvVarying) +
 			"mul " + this._pTotalLightColorReg + ".xyz, " + this._pTotalLightColorReg + ", " + t + "\n";
 	}
 
@@ -138,6 +137,18 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 		super.iActivate(shader, methodVO, stage);
 
 		methodVO.secondaryTextureVO.activate(shader);
+	}
+
+
+	/**
+	 * @inheritDoc
+	 */
+	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	{
+		super.iSetRenderState(shader, methodVO, renderable, stage, camera);
+
+		if (shader.numLights > 0)
+			methodVO.secondaryTextureVO._setRenderState(renderable, shader);
 	}
 }
 
