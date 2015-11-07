@@ -39,7 +39,7 @@ class SoftwarePrimitivesTest
         Debug.THROW_ERRORS     = false;
 
         var defaultRenderer:DefaultRenderer = new DefaultRenderer(null, false, "baseline", "software");
-        defaultRenderer.antiAlias = 2;
+        defaultRenderer.antiAlias = 1;
 
         this.view = new View(defaultRenderer);
 
@@ -83,12 +83,12 @@ class SoftwarePrimitivesTest
         material.lightPicker = this.staticLightPicker;
         material.smooth = false;
 
-        //primitives.push(new PrimitiveTorusPrefab());
-        //primitives.push(new PrimitiveSpherePrefab());
-        //primitives.push(new PrimitiveCapsulePrefab());
-        //primitives.push(new PrimitiveCylinderPrefab());
-        //primitives.push(new PrimitivePlanePrefab());
-        //primitives.push(new PrimitiveConePrefab());
+        primitives.push(new PrimitiveTorusPrefab());
+        primitives.push(new PrimitiveSpherePrefab());
+        primitives.push(new PrimitiveCapsulePrefab());
+        primitives.push(new PrimitiveCylinderPrefab());
+        primitives.push(new PrimitivePlanePrefab());
+        primitives.push(new PrimitiveConePrefab());
         primitives.push(new PrimitiveCubePrefab());
 
         var mesh:Mesh;
