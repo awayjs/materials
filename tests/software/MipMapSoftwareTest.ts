@@ -53,7 +53,9 @@ class MipMapSoftwareTest {
         Debug.LOG_PI_ERRORS = false;
         Debug.THROW_ERRORS = false;
 
-        this.view = new View(new DefaultRenderer(null, false, "baseline", "software"));
+        var defaultRenderer:DefaultRenderer = new DefaultRenderer(null, false, "baseline", "software");
+        defaultRenderer.antiAlias = 2;
+        this.view = new View(defaultRenderer);
         //this.view = new View(new DefaultRenderer(null, false, "baseline"));
         this.raf = new RequestAnimationFrame(this.render, this);
 

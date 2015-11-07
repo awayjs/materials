@@ -38,7 +38,11 @@ class SoftwarePrimitivesTest
         Debug.LOG_PI_ERRORS    = false;
         Debug.THROW_ERRORS     = false;
 
-        this.view = new View(new DefaultRenderer(null, false, "baseline", "software"));
+        var defaultRenderer:DefaultRenderer = new DefaultRenderer(null, false, "baseline", "software");
+        defaultRenderer.antiAlias = 2;
+
+        this.view = new View(defaultRenderer);
+
         this.raf = new RequestAnimationFrame(this.render, this);
 
         this.light = new DirectionalLight();
@@ -62,7 +66,7 @@ class SoftwarePrimitivesTest
         this.view.scene.addChild(this.light);
         this.view.scene.addChild(this.lightB);
 
-        this.view.backgroundColor = 0x222222;
+        this.view.backgroundColor = 0x000000;
 
         window.onresize = (event:UIEvent) => this.onResize(event);
 
@@ -79,12 +83,12 @@ class SoftwarePrimitivesTest
         material.lightPicker = this.staticLightPicker;
         material.smooth = false;
 
-        primitives.push(new PrimitiveTorusPrefab());
-        primitives.push(new PrimitiveSpherePrefab());
-        primitives.push(new PrimitiveCapsulePrefab());
-        primitives.push(new PrimitiveCylinderPrefab());
-        primitives.push(new PrimitivePlanePrefab());
-        primitives.push(new PrimitiveConePrefab());
+        //primitives.push(new PrimitiveTorusPrefab());
+        //primitives.push(new PrimitiveSpherePrefab());
+        //primitives.push(new PrimitiveCapsulePrefab());
+        //primitives.push(new PrimitiveCylinderPrefab());
+        //primitives.push(new PrimitivePlanePrefab());
+        //primitives.push(new PrimitiveConePrefab());
         primitives.push(new PrimitiveCubePrefab());
 
         var mesh:Mesh;
@@ -109,9 +113,9 @@ class SoftwarePrimitivesTest
 
     private render()
     {
-        if (this.meshes)
-            for (var c:number = 0; c < this.meshes.length; c++)
-                this.meshes[c].rotationY += 1;
+        //if (this.meshes)
+        //    for (var c:number = 0; c < this.meshes.length; c++)
+        //        this.meshes[c].rotationY += 1;
 
         this.view.render();
     }
