@@ -64,6 +64,11 @@ var MethodMaterial = (function (_super) {
             this.color = (textureColor == null) ? 0xFFFFFF : Number(textureColor);
             this.alpha = (smoothAlpha == null) ? 1 : Number(smoothAlpha);
         }
+        //add default methods owners
+        this._ambientMethod.iAddOwner(this);
+        this._diffuseMethod.iAddOwner(this);
+        this._normalMethod.iAddOwner(this);
+        this._specularMethod.iAddOwner(this);
     }
     MethodMaterial.addRenderable = function () {
         RenderPool.registerClass(MethodMaterialRender, MethodMaterial);
@@ -134,7 +139,11 @@ var MethodMaterial = (function (_super) {
                 return;
             if (value && this._ambientMethod)
                 value.copyFrom(this._ambientMethod);
+            if (this._ambientMethod)
+                this._ambientMethod.iRemoveOwner(this);
             this._ambientMethod = value;
+            if (this._ambientMethod)
+                this._ambientMethod.iAddOwner(this);
             this._pInvalidateRender();
         },
         enumerable: true,
@@ -152,7 +161,11 @@ var MethodMaterial = (function (_super) {
                 return;
             if (value && this._shadowMethod)
                 value.copyFrom(this._shadowMethod);
+            if (this._shadowMethod)
+                this._shadowMethod.iRemoveOwner(this);
             this._shadowMethod = value;
+            if (this._shadowMethod)
+                this._shadowMethod.iAddOwner(this);
             this._pInvalidateRender();
         },
         enumerable: true,
@@ -170,7 +183,11 @@ var MethodMaterial = (function (_super) {
                 return;
             if (value && this._diffuseMethod)
                 value.copyFrom(this._diffuseMethod);
+            if (this._diffuseMethod)
+                this._diffuseMethod.iRemoveOwner(this);
             this._diffuseMethod = value;
+            if (this._diffuseMethod)
+                this._diffuseMethod.iAddOwner(this);
             this._pInvalidateRender();
         },
         enumerable: true,
@@ -188,7 +205,11 @@ var MethodMaterial = (function (_super) {
                 return;
             if (value && this._specularMethod)
                 value.copyFrom(this._specularMethod);
+            if (this._specularMethod)
+                this._specularMethod.iRemoveOwner(this);
             this._specularMethod = value;
+            if (this._specularMethod)
+                this._specularMethod.iAddOwner(this);
             this._pInvalidateRender();
         },
         enumerable: true,
@@ -206,7 +227,11 @@ var MethodMaterial = (function (_super) {
                 return;
             if (value && this._normalMethod)
                 value.copyFrom(this._normalMethod);
+            if (this._normalMethod)
+                this._normalMethod.iRemoveOwner(this);
             this._normalMethod = value;
+            if (this._normalMethod)
+                this._normalMethod.iAddOwner(this);
             this._pInvalidateRender();
         },
         enumerable: true,
@@ -225,6 +250,7 @@ var MethodMaterial = (function (_super) {
      * methods added prior.
      */
     MethodMaterial.prototype.addEffectMethod = function (method) {
+        method.iAddOwner(this);
         this._effectMethods.push(method);
         this._pInvalidateRender();
     };
@@ -242,6 +268,7 @@ var MethodMaterial = (function (_super) {
      * etc. The method will be applied to the result of the methods with a lower index.
      */
     MethodMaterial.prototype.addEffectMethodAt = function (method, index) {
+        method.iAddOwner(this);
         this._effectMethods.splice(index, 0, method);
         this._pInvalidateRender();
     };
@@ -250,6 +277,7 @@ var MethodMaterial = (function (_super) {
      * @param method The method to be removed.
      */
     MethodMaterial.prototype.removeEffectMethod = function (method) {
+        method.iRemoveOwner(this);
         this._effectMethods.splice(this._effectMethods.indexOf(method), 1);
         this._pInvalidateRender();
     };
@@ -817,7 +845,11 @@ var DiffuseBasicMethod = (function (_super) {
         set: function (value) {
             if (this._texture == value)
                 return;
+            if (this._texture)
+                this.iRemoveTexture(this._texture);
             this._texture = value;
+            if (this._texture)
+                this.iAddTexture(this._texture);
             this.iInvalidateShaderProgram();
         },
         enumerable: true,
@@ -1160,6 +1192,14 @@ var DiffuseCompositeMethod = (function (_super) {
     DiffuseCompositeMethod.prototype.iInitConstants = function (shader, methodVO) {
         this.pBaseMethod.iInitConstants(shader, methodVO);
     };
+    DiffuseCompositeMethod.prototype.iAddOwner = function (owner) {
+        _super.prototype.iAddOwner.call(this, owner);
+        this.pBaseMethod.iAddOwner(owner);
+    };
+    DiffuseCompositeMethod.prototype.iRemoveOwner = function (owner) {
+        _super.prototype.iRemoveOwner.call(this, owner);
+        this.pBaseMethod.iRemoveOwner(owner);
+    };
     /**
      * @inheritDoc
      */
@@ -1378,6 +1418,8 @@ var DiffuseGradientMethod = (function (_super) {
     function DiffuseGradientMethod(gradient) {
         _super.call(this);
         this._gradient = gradient;
+        if (this._gradient)
+            this.iAddTexture(this._gradient);
     }
     DiffuseGradientMethod.prototype.iInitVO = function (shader, methodVO) {
         _super.prototype.iInitVO.call(this, shader, methodVO);
@@ -1394,7 +1436,11 @@ var DiffuseGradientMethod = (function (_super) {
         set: function (value) {
             if (this._gradient == value)
                 return;
+            if (this._gradient)
+                this.iRemoveTexture(this._gradient);
             this._gradient = value;
+            if (this._gradient)
+                this.iAddTexture(this._gradient);
             this.iInvalidateShaderProgram();
         },
         enumerable: true,
@@ -1495,6 +1541,8 @@ var DiffuseLightMapMethod = (function (_super) {
         this._useSecondaryUV = useSecondaryUV;
         this._lightMap = lightMap;
         this.blendMode = blendMode;
+        if (this._lightMap)
+            this.iAddTexture(this._lightMap);
     }
     /**
      * @inheritDoc
@@ -1537,7 +1585,11 @@ var DiffuseLightMapMethod = (function (_super) {
         set: function (value) {
             if (this._lightMap == value)
                 return;
+            if (this._lightMap)
+                this.iRemoveTexture(this._lightMap);
             this._lightMap = value;
+            if (this._lightMap)
+                this.iAddTexture(this._lightMap);
             this.iInvalidateShaderProgram();
         },
         enumerable: true,
@@ -1930,6 +1982,8 @@ var EffectAlphaMaskMethod = (function (_super) {
         _super.call(this);
         this._texture = texture;
         this._useSecondaryUV = useSecondaryUV;
+        if (this._texture)
+            this.iAddTexture(this._texture);
     }
     /**
      * @inheritDoc
@@ -1969,7 +2023,11 @@ var EffectAlphaMaskMethod = (function (_super) {
         set: function (value) {
             if (this._texture == value)
                 return;
+            if (this._texture)
+                this.iRemoveTexture(this._texture);
             this._texture = value;
+            if (this._texture)
+                this.iAddTexture(this._texture);
             this.iInvalidateShaderProgram();
         },
         enumerable: true,
@@ -2173,6 +2231,8 @@ var EffectEnvMapMethod = (function (_super) {
         _super.call(this);
         this._envMap = envMap;
         this._alpha = alpha;
+        if (this._envMap)
+            this.iAddTexture(this._envMap);
     }
     Object.defineProperty(EffectEnvMapMethod.prototype, "mask", {
         /**
@@ -2184,7 +2244,11 @@ var EffectEnvMapMethod = (function (_super) {
         set: function (value) {
             if (value == this._mask)
                 return;
+            if (this._mask)
+                this.iRemoveTexture(this._mask);
             this._mask = value;
+            if (this._mask)
+                this.iAddTexture(this._mask);
             this.iInvalidateShaderProgram();
         },
         enumerable: true,
@@ -2212,7 +2276,11 @@ var EffectEnvMapMethod = (function (_super) {
         set: function (value) {
             if (this._envMap == value)
                 return;
+            if (this._envMap)
+                this.iRemoveTexture(this._envMap);
             this._envMap = value;
+            if (this._envMap)
+                this.iAddTexture(this._envMap);
             this.iInvalidateShaderProgram();
         },
         enumerable: true,
@@ -2419,6 +2487,8 @@ var EffectFresnelEnvMapMethod = (function (_super) {
         this._normalReflectance = 0;
         this._envMap = envMap;
         this._alpha = alpha;
+        if (this._envMap)
+            this.iAddTexture(this._envMap);
     }
     /**
      * @inheritDoc
@@ -2448,7 +2518,11 @@ var EffectFresnelEnvMapMethod = (function (_super) {
         set: function (value) {
             if (this._mask == value)
                 return;
+            if (this._mask)
+                this.iRemoveTexture(this._mask);
             this._mask = value;
+            if (this._mask)
+                this.iAddTexture(this._mask);
             this.iInvalidateShaderProgram();
         },
         enumerable: true,
@@ -2475,7 +2549,13 @@ var EffectFresnelEnvMapMethod = (function (_super) {
             return this._envMap;
         },
         set: function (value) {
+            if (this._envMap == value)
+                return;
+            if (this._envMap)
+                this.iRemoveTexture(this._envMap);
             this._envMap = value;
+            if (this._envMap)
+                this.iAddTexture(this._envMap);
         },
         enumerable: true,
         configurable: true
@@ -2585,6 +2665,8 @@ var EffectLightMapMethod = (function (_super) {
         this._lightMap = lightMap;
         this._blendMode = blendMode;
         this._useSecondaryUV = useSecondaryUV;
+        if (this._lightMap)
+            this.iAddTexture(this._lightMap);
     }
     /**
      * @inheritDoc
@@ -2627,7 +2709,11 @@ var EffectLightMapMethod = (function (_super) {
         set: function (value) {
             if (this._lightMap == value)
                 return;
+            if (this._lightMap)
+                this.iRemoveTexture(this._lightMap);
             this._lightMap = value;
+            if (this._lightMap)
+                this.iAddTexture(this._lightMap);
             this.iInvalidateShaderProgram();
         },
         enumerable: true,
@@ -2769,6 +2855,8 @@ var EffectRefractionEnvMapMethod = (function (_super) {
         this._dispersionB = dispersionB;
         this._useDispersion = !(this._dispersionR == this._dispersionB && this._dispersionR == this._dispersionG);
         this._refractionIndex = refractionIndex;
+        if (this._envMap)
+            this.iAddTexture(this._envMap);
     }
     /**
      * @inheritDoc
@@ -2796,7 +2884,13 @@ var EffectRefractionEnvMapMethod = (function (_super) {
             return this._envMap;
         },
         set: function (value) {
+            if (this._envMap == value)
+                return;
+            if (this._envMap)
+                this.iRemoveTexture(this._envMap);
             this._envMap = value;
+            if (this._envMap)
+                this.iAddTexture(this._envMap);
         },
         enumerable: true,
         configurable: true
@@ -3172,6 +3266,8 @@ var NormalBasicMethod = (function (_super) {
         if (normalMap === void 0) { normalMap = null; }
         _super.call(this);
         this._normalMap = normalMap;
+        if (this._normalMap)
+            this.iAddTexture(this._normalMap);
     }
     NormalBasicMethod.prototype.iIsUsed = function (shader) {
         if (this._normalMap && shader.normalDependencies)
@@ -3212,7 +3308,11 @@ var NormalBasicMethod = (function (_super) {
         set: function (value) {
             if (this._normalMap == value)
                 return;
+            if (this._normalMap)
+                this.iRemoveTexture(this._normalMap);
             this._normalMap = value;
+            if (this._normalMap)
+                this.iAddTexture(this._normalMap);
             this.iInvalidateShaderProgram();
         },
         enumerable: true,
@@ -3353,6 +3453,8 @@ var NormalSimpleWaterMethod = (function (_super) {
         this._water2OffsetX = 0;
         this._water2OffsetY = 0;
         this._secondaryNormalMap = secondaryNormalMap;
+        if (this._secondaryNormalMap)
+            this.iAddTexture(this._secondaryNormalMap);
     }
     /**
      * @inheritDoc
@@ -3437,7 +3539,11 @@ var NormalSimpleWaterMethod = (function (_super) {
         set: function (value) {
             if (this._secondaryNormalMap == value)
                 return;
+            if (this._secondaryNormalMap)
+                this.iRemoveTexture(this._secondaryNormalMap);
             this._secondaryNormalMap = value;
+            if (this._secondaryNormalMap)
+                this.iAddTexture(this._secondaryNormalMap);
             this.iInvalidateShaderProgram();
         },
         enumerable: true,
@@ -3515,6 +3621,9 @@ var ShadingMethodBase = (function (_super) {
      */
     function ShadingMethodBase() {
         _super.call(this);
+        this._textures = new Array();
+        this._owners = new Array();
+        this._counts = new Array();
     }
     Object.defineProperty(ShadingMethodBase.prototype, "assetType", {
         /**
@@ -3557,6 +3666,53 @@ var ShadingMethodBase = (function (_super) {
      * Cleans up any resources used by the current object.
      */
     ShadingMethodBase.prototype.dispose = function () {
+    };
+    ShadingMethodBase.prototype.iAddOwner = function (owner) {
+        //a method can be used more than once in the same material, so we check for this
+        var index = this._owners.indexOf(owner);
+        if (index != -1) {
+            this._counts[index]++;
+        }
+        else {
+            this._owners.push(owner);
+            this._counts.push(1);
+            //add textures
+            var len = this._textures.length;
+            for (var i = 0; i < len; i++)
+                this._textures[i].iAddOwner(owner);
+        }
+    };
+    ShadingMethodBase.prototype.iRemoveOwner = function (owner) {
+        var index = this._owners.indexOf(owner);
+        if (this._counts[index] != 1) {
+            this._counts[index]--;
+        }
+        else {
+            this._owners.splice(index, 1);
+            this._counts.splice(index, 1);
+            //remove textures
+            var len = this._textures.length;
+            for (var i = 0; i < len; i++)
+                this._textures[i].iRemoveOwner(owner);
+        }
+    };
+    /**
+     *
+     */
+    ShadingMethodBase.prototype.iAddTexture = function (texture) {
+        this._textures.push(texture);
+        var len = this._owners.length;
+        for (var i = 0; i < len; i++)
+            texture.iAddOwner(this._owners[i]);
+    };
+    /**
+     *
+     */
+    ShadingMethodBase.prototype.iRemoveTexture = function (texture) {
+        this._textures.splice(this._textures.indexOf(texture), 1);
+        var len = this._owners.length;
+        for (var i = 0; i < len; i++)
+            texture.iRemoveOwner(this._owners[i]);
     };
     /**
      * Resets the compilation state of the method.
@@ -4255,6 +4411,7 @@ var ShadowMapMethodBase = (function (_super) {
         this._pCastingLight = castingLight;
         castingLight.castsShadows = true;
         this._pShadowMapper = castingLight.shadowMapper;
+        this.iAddTexture(castingLight.shadowMapper.depthMap);
     }
     Object.defineProperty(ShadowMapMethodBase.prototype, "assetType", {
         /**
@@ -5034,7 +5191,11 @@ var SpecularBasicMethod = (function (_super) {
         set: function (value) {
             if (this._texture == value)
                 return;
+            if (this._texture)
+                this.iRemoveTexture(this._texture);
             this._texture = value;
+            if (this._texture)
+                this.iAddTexture(this._texture);
             this.iInvalidateShaderProgram();
         },
         enumerable: true,
@@ -5322,6 +5483,14 @@ var SpecularCompositeMethod = (function (_super) {
      */
     SpecularCompositeMethod.prototype.iInitConstants = function (shader, methodVO) {
         this._baseMethod.iInitConstants(shader, methodVO);
+    };
+    SpecularCompositeMethod.prototype.iAddOwner = function (owner) {
+        _super.prototype.iAddOwner.call(this, owner);
+        this._baseMethod.iAddOwner(owner);
+    };
+    SpecularCompositeMethod.prototype.iRemoveOwner = function (owner) {
+        _super.prototype.iRemoveOwner.call(this, owner);
+        this._baseMethod.iRemoveOwner(owner);
     };
     Object.defineProperty(SpecularCompositeMethod.prototype, "baseMethod", {
         /**

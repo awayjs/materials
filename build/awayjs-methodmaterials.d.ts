@@ -1,38 +1,3 @@
-declare module "awayjs-methodmaterials/lib/data/MethodVO" {
-	import TextureVOBase = require("awayjs-renderergl/lib/vos/TextureVOBase");
-	import ShadingMethodBase = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
-	/**
-	 * MethodVO contains data for a given shader object for the use within a single material.
-	 * This allows shader methods to be shared across materials while their non-public state differs.
-	 */
-	class MethodVO {
-	    useMethod: boolean;
-	    method: ShadingMethodBase;
-	    textureVO: TextureVOBase;
-	    secondaryTextureVO: TextureVOBase;
-	    vertexConstantsIndex: number;
-	    secondaryVertexConstantsIndex: number;
-	    fragmentConstantsIndex: number;
-	    secondaryFragmentConstantsIndex: number;
-	    needsProjection: boolean;
-	    needsView: boolean;
-	    needsNormals: boolean;
-	    needsTangents: boolean;
-	    needsGlobalVertexPos: boolean;
-	    needsGlobalFragmentPos: boolean;
-	    /**
-	     * Creates a new MethodVO object.
-	     */
-	    constructor(method: ShadingMethodBase);
-	    /**
-	     * Resets the values of the value object to their "unused" state.
-	     */
-	    reset(): void;
-	}
-	export = MethodVO;
-	
-}
-
 declare module "awayjs-methodmaterials/lib/MethodMaterial" {
 	import Image2D = require("awayjs-core/lib/data/Image2D");
 	import MaterialBase = require("awayjs-display/lib/materials/MaterialBase");
@@ -181,6 +146,41 @@ declare module "awayjs-methodmaterials/lib/MethodMaterialMode" {
 	    static MULTI_PASS: string;
 	}
 	export = MethodMaterialMode;
+	
+}
+
+declare module "awayjs-methodmaterials/lib/data/MethodVO" {
+	import TextureVOBase = require("awayjs-renderergl/lib/vos/TextureVOBase");
+	import ShadingMethodBase = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
+	/**
+	 * MethodVO contains data for a given shader object for the use within a single material.
+	 * This allows shader methods to be shared across materials while their non-public state differs.
+	 */
+	class MethodVO {
+	    useMethod: boolean;
+	    method: ShadingMethodBase;
+	    textureVO: TextureVOBase;
+	    secondaryTextureVO: TextureVOBase;
+	    vertexConstantsIndex: number;
+	    secondaryVertexConstantsIndex: number;
+	    fragmentConstantsIndex: number;
+	    secondaryFragmentConstantsIndex: number;
+	    needsProjection: boolean;
+	    needsView: boolean;
+	    needsNormals: boolean;
+	    needsTangents: boolean;
+	    needsGlobalVertexPos: boolean;
+	    needsGlobalFragmentPos: boolean;
+	    /**
+	     * Creates a new MethodVO object.
+	     */
+	    constructor(method: ShadingMethodBase);
+	    /**
+	     * Resets the values of the value object to their "unused" state.
+	     */
+	    reset(): void;
+	}
+	export = MethodVO;
 	
 }
 
@@ -506,6 +506,7 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseCelMethod" {
 declare module "awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod" {
 	import Camera = require("awayjs-display/lib/entities/Camera");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
+	import IRenderOwner = require("awayjs-display/lib/base/IRenderOwner");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import LightingShader = require("awayjs-renderergl/lib/shaders/LightingShader");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
@@ -541,6 +542,8 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod" {
 	     * @inheritDoc
 	     */
 	    iInitConstants(shader: LightingShader, methodVO: MethodVO): void;
+	    iAddOwner(owner: IRenderOwner): void;
+	    iRemoveOwner(owner: IRenderOwner): void;
 	    /**
 	     * @inheritDoc
 	     */
@@ -1719,6 +1722,8 @@ declare module "awayjs-methodmaterials/lib/methods/NormalSimpleWaterMethod" {
 declare module "awayjs-methodmaterials/lib/methods/ShadingMethodBase" {
 	import AssetBase = require("awayjs-core/lib/library/AssetBase");
 	import Camera = require("awayjs-display/lib/entities/Camera");
+	import IRenderOwner = require("awayjs-display/lib/base/IRenderOwner");
+	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
@@ -1731,6 +1736,9 @@ declare module "awayjs-methodmaterials/lib/methods/ShadingMethodBase" {
 	 * the final shading program.
 	 */
 	class ShadingMethodBase extends AssetBase {
+	    _textures: Array<TextureBase>;
+	    _owners: Array<IRenderOwner>;
+	    _counts: Array<number>;
 	    static assetType: string;
 	    /**
 	     * @inheritDoc
@@ -1765,6 +1773,16 @@ declare module "awayjs-methodmaterials/lib/methods/ShadingMethodBase" {
 	     * Cleans up any resources used by the current object.
 	     */
 	    dispose(): void;
+	    iAddOwner(owner: IRenderOwner): void;
+	    iRemoveOwner(owner: IRenderOwner): void;
+	    /**
+	     *
+	     */
+	    iAddTexture(texture: TextureBase): void;
+	    /**
+	     *
+	     */
+	    iRemoveTexture(texture: TextureBase): void;
 	    /**
 	     * Resets the compilation state of the method.
 	     *
@@ -2586,6 +2604,7 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularCelMethod" {
 declare module "awayjs-methodmaterials/lib/methods/SpecularCompositeMethod" {
 	import Camera = require("awayjs-display/lib/entities/Camera");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
+	import IRenderOwner = require("awayjs-display/lib/base/IRenderOwner");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
 	import LightingShader = require("awayjs-renderergl/lib/shaders/LightingShader");
@@ -2617,6 +2636,8 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularCompositeMethod" {
 	     * @inheritDoc
 	     */
 	    iInitConstants(shader: ShaderBase, methodVO: MethodVO): void;
+	    iAddOwner(owner: IRenderOwner): void;
+	    iRemoveOwner(owner: IRenderOwner): void;
 	    /**
 	     * The base specular method on which this method's shading is based.
 	     */
