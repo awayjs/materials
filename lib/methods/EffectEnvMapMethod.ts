@@ -32,6 +32,8 @@ class EffectEnvMapMethod extends EffectMethodBase
 		this._envMap = envMap;
 		this._alpha = alpha;
 
+		if (this._envMap)
+			this.iAddTexture(this._envMap);
 	}
 
 	/**
@@ -47,7 +49,13 @@ class EffectEnvMapMethod extends EffectMethodBase
 		if (value == this._mask)
 			return;
 
+		if (this._mask)
+			this.iRemoveTexture(this._mask);
+
 		this._mask = value;
+
+		if (this._mask)
+			this.iAddTexture(this._mask);
 
 		this.iInvalidateShaderProgram();
 	}
@@ -81,7 +89,13 @@ class EffectEnvMapMethod extends EffectMethodBase
 		if (this._envMap == value)
 			return;
 
+		if (this._envMap)
+			this.iRemoveTexture(this._envMap);
+
 		this._envMap = value;
+
+		if (this._envMap)
+			this.iAddTexture(this._envMap);
 
 		this.iInvalidateShaderProgram();
 	}

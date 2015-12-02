@@ -32,6 +32,9 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 		super();
 
 		this._gradient = gradient;
+
+		if (this._gradient)
+			this.iAddTexture(this._gradient);
 	}
 
 	public iInitVO(shader:LightingShader, methodVO:MethodVO)
@@ -55,7 +58,13 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 		if (this._gradient == value)
 			return;
 
+		if (this._gradient)
+			this.iRemoveTexture(this._gradient);
+
 		this._gradient = value;
+
+		if (this._gradient)
+			this.iAddTexture(this._gradient);
 
 		this.iInvalidateShaderProgram();
 	}

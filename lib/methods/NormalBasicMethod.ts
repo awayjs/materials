@@ -27,6 +27,9 @@ class NormalBasicMethod extends ShadingMethodBase
 		super();
 
 		this._normalMap = normalMap;
+
+		if (this._normalMap)
+			this.iAddTexture(this._normalMap);
 	}
 
 	public iIsUsed(shader:ShaderBase):boolean
@@ -81,7 +84,13 @@ class NormalBasicMethod extends ShadingMethodBase
 		if (this._normalMap == value)
 			return;
 
+		if (this._normalMap)
+			this.iRemoveTexture(this._normalMap);
+
 		this._normalMap = value;
+
+		if (this._normalMap)
+			this.iAddTexture(this._normalMap);
 
 		this.iInvalidateShaderProgram();
 	}

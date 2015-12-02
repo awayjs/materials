@@ -1,5 +1,6 @@
 import Camera							= require("awayjs-display/lib/entities/Camera");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
+import IRenderOwner						= require("awayjs-display/lib/base/IRenderOwner");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
@@ -74,6 +75,20 @@ class DiffuseCompositeMethod extends DiffuseBasicMethod
 	public iInitConstants(shader:LightingShader, methodVO:MethodVO)
 	{
 		this.pBaseMethod.iInitConstants(shader, methodVO);
+	}
+
+	public iAddOwner(owner:IRenderOwner)
+	{
+		super.iAddOwner(owner);
+
+		this.pBaseMethod.iAddOwner(owner);
+	}
+
+	public iRemoveOwner(owner:IRenderOwner)
+	{
+		super.iRemoveOwner(owner);
+
+		this.pBaseMethod.iRemoveOwner(owner);
 	}
 
 	/**

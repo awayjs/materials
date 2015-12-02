@@ -51,6 +51,9 @@ class EffectLightMapMethod extends EffectMethodBase
 		this._lightMap = lightMap;
 		this._blendMode = blendMode;
 		this._useSecondaryUV = useSecondaryUV;
+
+		if (this._lightMap)
+			this.iAddTexture(this._lightMap);
 	}
 
 	/**
@@ -103,7 +106,13 @@ class EffectLightMapMethod extends EffectMethodBase
 		if (this._lightMap == value)
 			return;
 
+		if (this._lightMap)
+			this.iRemoveTexture(this._lightMap);
+
 		this._lightMap = value;
+
+		if (this._lightMap)
+			this.iAddTexture(this._lightMap);
 
 		this.iInvalidateShaderProgram();
 	}

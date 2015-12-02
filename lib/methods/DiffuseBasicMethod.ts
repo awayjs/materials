@@ -134,7 +134,13 @@ class DiffuseBasicMethod extends LightingMethodBase
 		if (this._texture == value)
 			return;
 
+		if (this._texture)
+			this.iRemoveTexture(this._texture);
+
 		this._texture = value;
+
+		if (this._texture)
+			this.iAddTexture(this._texture);
 
 		this.iInvalidateShaderProgram();
 	}

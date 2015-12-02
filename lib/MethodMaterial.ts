@@ -87,6 +87,12 @@ class MethodMaterial extends MaterialBase
 			this.color = (textureColor == null)? 0xFFFFFF : Number(textureColor);
 			this.alpha = (smoothAlpha == null)? 1 : Number(smoothAlpha);
 		}
+
+		//add default methods owners
+		this._ambientMethod.iAddOwner(this);
+		this._diffuseMethod.iAddOwner(this);
+		this._normalMethod.iAddOwner(this);
+		this._specularMethod.iAddOwner(this);
 	}
 
 
@@ -155,7 +161,13 @@ class MethodMaterial extends MaterialBase
 		if (value && this._ambientMethod)
 			value.copyFrom(this._ambientMethod);
 
+		if (this._ambientMethod)
+			this._ambientMethod.iRemoveOwner(this);
+
 		this._ambientMethod = value;
+
+		if (this._ambientMethod)
+			this._ambientMethod.iAddOwner(this);
 
 		this._pInvalidateRender();
 	}
@@ -176,7 +188,13 @@ class MethodMaterial extends MaterialBase
 		if (value && this._shadowMethod)
 			value.copyFrom(this._shadowMethod);
 
+		if (this._shadowMethod)
+			this._shadowMethod.iRemoveOwner(this);
+
 		this._shadowMethod = value;
+
+		if (this._shadowMethod)
+			this._shadowMethod.iAddOwner(this);
 
 		this._pInvalidateRender();
 	}
@@ -197,7 +215,13 @@ class MethodMaterial extends MaterialBase
 		if (value && this._diffuseMethod)
 			value.copyFrom(this._diffuseMethod);
 
+		if (this._diffuseMethod)
+			this._diffuseMethod.iRemoveOwner(this);
+
 		this._diffuseMethod = value;
+
+		if (this._diffuseMethod)
+			this._diffuseMethod.iAddOwner(this);
 
 		this._pInvalidateRender();
 	}
@@ -218,7 +242,13 @@ class MethodMaterial extends MaterialBase
 		if (value && this._specularMethod)
 			value.copyFrom(this._specularMethod);
 
+		if (this._specularMethod)
+			this._specularMethod.iRemoveOwner(this);
+
 		this._specularMethod = value;
+
+		if (this._specularMethod)
+			this._specularMethod.iAddOwner(this);
 
 		this._pInvalidateRender();
 	}
@@ -239,7 +269,13 @@ class MethodMaterial extends MaterialBase
 		if (value && this._normalMethod)
 			value.copyFrom(this._normalMethod);
 
+		if (this._normalMethod)
+			this._normalMethod.iRemoveOwner(this);
+
 		this._normalMethod = value;
+
+		if (this._normalMethod)
+			this._normalMethod.iAddOwner(this);
 
 		this._pInvalidateRender();
 	}
@@ -256,6 +292,8 @@ class MethodMaterial extends MaterialBase
 	 */
 	public addEffectMethod(method:EffectMethodBase)
 	{
+		method.iAddOwner(this);
+
 		this._effectMethods.push(method);
 
 		this._pInvalidateRender();
@@ -278,6 +316,8 @@ class MethodMaterial extends MaterialBase
 	 */
 	public addEffectMethodAt(method:EffectMethodBase, index:number)
 	{
+		method.iAddOwner(this);
+
 		this._effectMethods.splice(index, 0, method);
 
 		this._pInvalidateRender();
@@ -289,6 +329,8 @@ class MethodMaterial extends MaterialBase
 	 */
 	public removeEffectMethod(method:EffectMethodBase)
 	{
+		method.iRemoveOwner(this);
+
 		this._effectMethods.splice(this._effectMethods.indexOf(method), 1);
 
 		this._pInvalidateRender();

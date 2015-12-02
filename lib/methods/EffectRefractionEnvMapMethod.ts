@@ -44,6 +44,9 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 		this._dispersionB = dispersionB;
 		this._useDispersion = !(this._dispersionR == this._dispersionB && this._dispersionR == this._dispersionG);
 		this._refractionIndex = refractionIndex;
+
+		if (this._envMap)
+			this.iAddTexture(this._envMap);
 	}
 
 	/**
@@ -79,7 +82,16 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 
 	public set envMap(value:TextureBase)
 	{
+		if (this._envMap == value)
+			return;
+
+		if (this._envMap)
+			this.iRemoveTexture(this._envMap);
+
 		this._envMap = value;
+
+		if (this._envMap)
+			this.iAddTexture(this._envMap);
 	}
 
 	/**

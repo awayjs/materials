@@ -1,5 +1,6 @@
 import Camera							= require("awayjs-display/lib/entities/Camera");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
+import IRenderOwner						= require("awayjs-display/lib/base/IRenderOwner");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
@@ -55,6 +56,21 @@ class SpecularCompositeMethod extends SpecularBasicMethod
 	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
 	{
 		this._baseMethod.iInitConstants(shader, methodVO);
+	}
+
+
+	public iAddOwner(owner:IRenderOwner)
+	{
+		super.iAddOwner(owner);
+
+		this._baseMethod.iAddOwner(owner);
+	}
+
+	public iRemoveOwner(owner:IRenderOwner)
+	{
+		super.iRemoveOwner(owner);
+
+		this._baseMethod.iRemoveOwner(owner);
 	}
 
 	/**

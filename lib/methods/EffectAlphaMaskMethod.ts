@@ -35,6 +35,9 @@ class EffectAlphaMaskMethod extends EffectMethodBase
 
 		this._texture = texture;
 		this._useSecondaryUV = useSecondaryUV;
+
+		if (this._texture)
+			this.iAddTexture(this._texture);
 	}
 
 	/**
@@ -83,7 +86,13 @@ class EffectAlphaMaskMethod extends EffectMethodBase
 		if (this._texture == value)
 			return;
 
+		if (this._texture)
+			this.iRemoveTexture(this._texture);
+
 		this._texture = value;
+
+		if (this._texture)
+			this.iAddTexture(this._texture);
 
 		this.iInvalidateShaderProgram();
 	}

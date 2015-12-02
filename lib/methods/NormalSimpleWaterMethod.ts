@@ -33,6 +33,9 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 		super(normalMap);
 
 		this._secondaryNormalMap = secondaryNormalMap;
+
+		if (this._secondaryNormalMap)
+			this.iAddTexture(this._secondaryNormalMap);
 	}
 
 	/**
@@ -126,7 +129,13 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 		if (this._secondaryNormalMap == value)
 			return;
 
+		if (this._secondaryNormalMap)
+			this.iRemoveTexture(this._secondaryNormalMap);
+
 		this._secondaryNormalMap = value;
+
+		if (this._secondaryNormalMap)
+			this.iAddTexture(this._secondaryNormalMap);
 
 		this.iInvalidateShaderProgram();
 	}

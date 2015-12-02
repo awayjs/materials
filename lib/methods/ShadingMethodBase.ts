@@ -1,6 +1,8 @@
 import AssetBase					= require("awayjs-core/lib/library/AssetBase");
 
 import Camera						= require("awayjs-display/lib/entities/Camera");
+import IRenderOwner					= require("awayjs-display/lib/base/IRenderOwner");
+import TextureBase					= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage						= require("awayjs-stagegl/lib/base/Stage");
 
@@ -20,6 +22,11 @@ import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
  */
 class ShadingMethodBase extends AssetBase
 {
+	public _textures:Array<TextureBase> = new Array<TextureBase>();
+
+	public _owners:Array<IRenderOwner> = new Array<IRenderOwner>();
+	public _counts:Array<number> = new Array<number>();
+
 	public static assetType:string = "[asset ShadingMethod]";
 
 	/**
@@ -82,6 +89,67 @@ class ShadingMethodBase extends AssetBase
 	public dispose()
 	{
 
+	}
+
+
+	public iAddOwner(owner:IRenderOwner)
+	{
+		//a method can be used more than once in the same material, so we check for this
+		var index:number = this._owners.indexOf(owner);
+
+		if (index != -1) {
+			this._counts[index]++;
+		} else {
+			this._owners.push(owner);
+			this._counts.push(1);
+
+			//add textures
+			var len:number = this._textures.length;
+			for (var i:number = 0; i< len; i++)
+				this._textures[i].iAddOwner(owner);
+		}
+	}
+
+	public iRemoveOwner(owner:IRenderOwner)
+	{
+		var index:number = this._owners.indexOf(owner);
+
+		if (this._counts[index] != 1) {
+			this._counts[index]--;
+		} else {
+			this._owners.splice(index, 1);
+			this._counts.splice(index, 1);
+
+			//remove textures
+			var len:number = this._textures.length;
+			for (var i:number = 0; i< len; i++)
+				this._textures[i].iRemoveOwner(owner);
+		}
+	}
+
+
+	/**
+	 *
+	 */
+	public iAddTexture(texture:TextureBase)
+	{
+		this._textures.push(texture);
+
+		var len:number = this._owners.length;
+		for (var i:number = 0; i < len; i++)
+			texture.iAddOwner(this._owners[i]);
+	}
+
+	/**
+	 *
+	 */
+	public iRemoveTexture(texture:TextureBase)
+	{
+		this._textures.splice(this._textures.indexOf(texture), 1);
+
+		var len:number = this._owners.length;
+		for (var i:number = 0; i < len; i++)
+			texture.iRemoveOwner(this._owners[i]);
 	}
 
 	/**
