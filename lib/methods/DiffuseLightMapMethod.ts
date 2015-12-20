@@ -61,7 +61,7 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	 */
 	public iInitVO(shader:LightingShader, methodVO:MethodVO)
 	{
-		methodVO.secondaryTextureVO = shader.getTextureVO(this._lightMap);
+		methodVO.secondaryTextureVO = shader.getAbstraction(this._lightMap);
 
 		if (this._useSecondaryUV)
 			shader.secondaryUVDependencies++;
@@ -143,7 +143,7 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 		var code:string;
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 
-		code = methodVO.secondaryTextureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
+		code = methodVO.secondaryTextureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
 
 		switch (this._blendMode) {
 			case DiffuseLightMapMethod.MULTIPLY:
@@ -166,7 +166,7 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	{
 		super.iActivate(shader, methodVO, stage);
 
-		methodVO.secondaryTextureVO.activate(shader);
+		methodVO.secondaryTextureVO.activate();
 	}
 
 	/**
@@ -176,7 +176,7 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	{
 		super.iSetRenderState(shader, methodVO, renderable, stage, camera);
 
-		methodVO.secondaryTextureVO._setRenderState(renderable, shader);
+		methodVO.secondaryTextureVO._setRenderState(renderable);
 	}
 }
 

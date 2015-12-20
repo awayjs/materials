@@ -45,7 +45,7 @@ class EffectAlphaMaskMethod extends EffectMethodBase
 	 */
 	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
 	{
-		methodVO.textureVO = shader.getTextureVO(this._texture);
+		methodVO.textureVO = shader.getAbstraction(this._texture);
 
 		if (this._useSecondaryUV)
 			shader.secondaryUVDependencies++;
@@ -104,7 +104,7 @@ class EffectAlphaMaskMethod extends EffectMethodBase
 	{
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 
-		return methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying) +
+		return methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying) +
 			"mul " + targetReg + ", " + targetReg + ", " + temp + ".x\n";
 	}
 
@@ -116,13 +116,13 @@ class EffectAlphaMaskMethod extends EffectMethodBase
 	{
 		super.iActivate(shader, methodVO, stage);
 
-		methodVO.textureVO.activate(shader);
+		methodVO.textureVO.activate();
 	}
 
 
 	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
-		methodVO.textureVO._setRenderState(renderable, shader);
+		methodVO.textureVO._setRenderState(renderable);
 	}
 }
 

@@ -36,7 +36,7 @@ class ShadowHardMethod extends ShadowMethodBase
 
 		methodVO.fragmentConstantsIndex = decReg.index*4;
 
-		code += methodVO.textureVO._iGetFragmentCode(shader, depthCol, regCache, sharedRegisters, this._pDepthMapCoordReg) +
+		code += methodVO.textureVO._iGetFragmentCode(depthCol, regCache, sharedRegisters, this._pDepthMapCoordReg) +
 			"dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" +
 			"slt " + targetReg + ".w, " + this._pDepthMapCoordReg + ".z, " + depthCol + ".z\n"; // 0 if in shadow
 
@@ -64,7 +64,7 @@ class ShadowHardMethod extends ShadowMethodBase
 			"mul " + lightDir + ".w, " + lightDir + ".w, " + posReg + ".w\n" +
 			"nrm " + lightDir + ".xyz, " + lightDir + ".xyz\n" +
 
-			methodVO.textureVO._iGetFragmentCode(shader, depthSampleCol, regCache, sharedRegisters, lightDir) +
+			methodVO.textureVO._iGetFragmentCode(depthSampleCol, regCache, sharedRegisters, lightDir) +
 			"dp4 " + depthSampleCol + ".z, " + depthSampleCol + ", " + decReg + "\n" +
 			"add " + targetReg + ".w, " + lightDir + ".w, " + epsReg + ".x\n" +    // offset by epsilon
 
@@ -83,7 +83,7 @@ class ShadowHardMethod extends ShadowMethodBase
 	{
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 
-		return methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters, depthProjection) +
+		return methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
 			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
 			"slt " + targetRegister + ".w, " + depthProjection + ".z, " + temp + ".z\n"; // 0 if in shadow
 	}

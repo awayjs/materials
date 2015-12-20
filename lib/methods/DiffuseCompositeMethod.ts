@@ -23,7 +23,7 @@ class DiffuseCompositeMethod extends DiffuseBasicMethod
 {
 	public pBaseMethod:DiffuseBasicMethod;
 
-	private _onShaderInvalidatedDelegate:Function;
+	private _onShaderInvalidatedDelegate:(event:ShadingMethodEvent) => void;
 
 	/**
 	 * Creates a new <code>DiffuseCompositeMethod</code> object.

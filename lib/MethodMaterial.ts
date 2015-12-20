@@ -1,11 +1,9 @@
-﻿import BlendMode					= require("awayjs-core/lib/data/BlendMode");
-import Image2D						= require("awayjs-core/lib/data/Image2D");
+﻿import Image2D						= require("awayjs-core/lib/image/Image2D");
 
 import IRenderOwner					= require("awayjs-display/lib/base/IRenderOwner");
 import Camera						= require("awayjs-display/lib/entities/Camera");
 import StaticLightPicker			= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
 import MaterialBase					= require("awayjs-display/lib/materials/MaterialBase");
-import IRender						= require("awayjs-display/lib/pool/IRender");
 import Single2DTexture				= require("awayjs-display/lib/textures/Single2DTexture");
 import TextureBase					= require("awayjs-display/lib/textures/TextureBase");
 
@@ -20,7 +18,6 @@ import EffectMethodBase				= require("awayjs-methodmaterials/lib/methods/EffectM
 import NormalBasicMethod			= require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
 import ShadowMapMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
 import SpecularBasicMethod			= require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
-import MethodMaterialRender			= require("awayjs-methodmaterials/lib/render/MethodMaterialRender");
 
 /**
  * MethodMaterial forms an abstract base class for the default shaded materials provided by Stage,
@@ -41,13 +38,6 @@ class MethodMaterial extends MaterialBase
 
 
 	private _depthCompareMode:string = ContextGLCompareMode.LESS_EQUAL;
-
-	private static register = MethodMaterial.addRenderable();
-
-	private static addRenderable()
-	{
-		RenderPool.registerClass(MethodMaterialRender, MethodMaterial);
-	}
 
 	/**
 	 *
@@ -108,7 +98,7 @@ class MethodMaterial extends MaterialBase
 
 		this._mode = value;
 
-		this._pInvalidateRender();
+		this.invalidate();
 	}
 
 	/**
@@ -129,7 +119,7 @@ class MethodMaterial extends MaterialBase
 
 		this._depthCompareMode = value;
 
-		this._pInvalidateRender();
+		this.invalidate();
 	}
 
 	/**
@@ -169,7 +159,7 @@ class MethodMaterial extends MaterialBase
 		if (this._ambientMethod)
 			this._ambientMethod.iAddOwner(this);
 
-		this._pInvalidateRender();
+		this.invalidate();
 	}
 
 	/**
@@ -196,7 +186,7 @@ class MethodMaterial extends MaterialBase
 		if (this._shadowMethod)
 			this._shadowMethod.iAddOwner(this);
 
-		this._pInvalidateRender();
+		this.invalidate();
 	}
 
 	/**
@@ -223,7 +213,7 @@ class MethodMaterial extends MaterialBase
 		if (this._diffuseMethod)
 			this._diffuseMethod.iAddOwner(this);
 
-		this._pInvalidateRender();
+		this.invalidate();
 	}
 
 	/**
@@ -250,7 +240,7 @@ class MethodMaterial extends MaterialBase
 		if (this._specularMethod)
 			this._specularMethod.iAddOwner(this);
 
-		this._pInvalidateRender();
+		this.invalidate();
 	}
 
 	/**
@@ -277,7 +267,7 @@ class MethodMaterial extends MaterialBase
 		if (this._normalMethod)
 			this._normalMethod.iAddOwner(this);
 
-		this._pInvalidateRender();
+		this.invalidate();
 	}
 
 	public get numEffectMethods():number
@@ -296,7 +286,7 @@ class MethodMaterial extends MaterialBase
 
 		this._effectMethods.push(method);
 
-		this._pInvalidateRender();
+		this.invalidate();
 	}
 
 	/**
@@ -320,7 +310,7 @@ class MethodMaterial extends MaterialBase
 
 		this._effectMethods.splice(index, 0, method);
 
-		this._pInvalidateRender();
+		this.invalidate();
 	}
 
 	/**
@@ -333,7 +323,7 @@ class MethodMaterial extends MaterialBase
 
 		this._effectMethods.splice(this._effectMethods.indexOf(method), 1);
 
-		this._pInvalidateRender();
+		this.invalidate();
 	}
 
 	/**

@@ -1,3 +1,5 @@
+import AssetEvent						= require("awayjs-core/lib/events/AssetEvent");
+
 import Camera							= require("awayjs-display/lib/entities/Camera");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
@@ -71,10 +73,10 @@ class DiffuseBasicMethod extends LightingMethodBase
 	public iInitVO(shader:LightingShader, methodVO:MethodVO)
 	{
 		if (this._texture) {
-			methodVO.textureVO = shader.getTextureVO(this._texture);
+			methodVO.textureVO = shader.getAbstraction(this._texture);
 			shader.uvDependencies++;
 		} else if (methodVO.textureVO) {
-			methodVO.textureVO.dispose();
+			methodVO.textureVO.onClear(new AssetEvent(AssetEvent.CLEAR, null));
 			methodVO.textureVO = null;
 		}
 
@@ -279,7 +281,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 		methodVO.fragmentConstantsIndex = ambientColorRegister.index*4;
 
 		if (this._texture) {
-			code += methodVO.textureVO._iGetFragmentCode(shader, albedo, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+			code += methodVO.textureVO._iGetFragmentCode(albedo, registerCache, sharedRegisters, sharedRegisters.uvVarying);
 		} else {
 			var diffuseInputRegister:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 
@@ -321,7 +323,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
 	{
 		if (this._texture) {
-			methodVO.textureVO.activate(shader);
+			methodVO.textureVO.activate();
 		} else {
 			var index:number = methodVO.fragmentConstantsIndex;
 			var data:Float32Array = shader.fragmentConstantData;
@@ -358,7 +360,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
 		if (this._texture)
-			methodVO.textureVO._setRenderState(renderable, shader);
+			methodVO.textureVO._setRenderState(renderable);
 
 		//TODO move this to Activate (ambientR/G/B currently calc'd in render state)
 		if (shader.numLights > 0) {

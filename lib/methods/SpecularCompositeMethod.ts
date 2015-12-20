@@ -23,7 +23,7 @@ class SpecularCompositeMethod extends SpecularBasicMethod
 {
 	private _baseMethod:SpecularBasicMethod;
 
-	private _onShaderInvalidatedDelegate:Function;
+	private _onShaderInvalidatedDelegate:(event:ShadingMethodEvent) => void;
 
 	/**
 	 * Creates a new <code>SpecularCompositeMethod</code> object.

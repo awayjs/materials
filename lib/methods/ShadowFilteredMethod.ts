@@ -61,12 +61,12 @@ class ShadowFilteredMethod extends ShadowMethodBase
 
 		code += "mov " + uvReg + ", " + this._pDepthMapCoordReg + "\n" +
 
-			methodVO.textureVO._iGetFragmentCode(shader, depthCol, regCache, sharedRegisters, this._pDepthMapCoordReg) +
+			methodVO.textureVO._iGetFragmentCode(depthCol, regCache, sharedRegisters, this._pDepthMapCoordReg) +
 			"dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" +
 			"slt " + uvReg + ".z, " + this._pDepthMapCoordReg + ".z, " + depthCol + ".z\n" +   // 0 if in shadow
 
 			"add " + uvReg + ".x, " + this._pDepthMapCoordReg + ".x, " + customDataReg + ".z\n" + 	// (1, 0)
-			methodVO.textureVO._iGetFragmentCode(shader, depthCol, regCache, sharedRegisters, uvReg) +
+			methodVO.textureVO._iGetFragmentCode(depthCol, regCache, sharedRegisters, uvReg) +
 			"dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" +
 			"slt " + uvReg + ".w, " + this._pDepthMapCoordReg + ".z, " + depthCol + ".z\n" +   // 0 if in shadow
 
@@ -78,12 +78,12 @@ class ShadowFilteredMethod extends ShadowMethodBase
 
 			"mov " + uvReg + ".x, " + this._pDepthMapCoordReg + ".x\n" +
 			"add " + uvReg + ".y, " + this._pDepthMapCoordReg + ".y, " + customDataReg + ".z\n" +	// (0, 1)
-			methodVO.textureVO._iGetFragmentCode(shader, depthCol, regCache, sharedRegisters, uvReg) +
+			methodVO.textureVO._iGetFragmentCode(depthCol, regCache, sharedRegisters, uvReg) +
 			"dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" +
 			"slt " + uvReg + ".z, " + this._pDepthMapCoordReg + ".z, " + depthCol + ".z\n" +   // 0 if in shadow
 
 			"add " + uvReg + ".x, " + this._pDepthMapCoordReg + ".x, " + customDataReg + ".z\n" +	// (1, 1)
-			methodVO.textureVO._iGetFragmentCode(shader, depthCol, regCache, sharedRegisters, uvReg) +
+			methodVO.textureVO._iGetFragmentCode(depthCol, regCache, sharedRegisters, uvReg) +
 			"dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" +
 			"slt " + uvReg + ".w, " + this._pDepthMapCoordReg + ".z, " + depthCol + ".z\n" +   // 0 if in shadow
 
@@ -131,22 +131,22 @@ class ShadowFilteredMethod extends ShadowMethodBase
 		var predicate:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 		registerCache.addFragmentTempUsages(predicate, 1);
 
-		code = methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters, depthProjection) +
+		code = methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
 			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
 			"slt " + predicate + ".x, " + depthProjection + ".z, " + temp + ".z\n" +
 
 			"add " + depthProjection + ".x, " + depthProjection + ".x, " + dataReg + ".y\n" +
-			methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters, depthProjection) +
+			methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
 			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
 			"slt " + predicate + ".z, " + depthProjection + ".z, " + temp + ".z\n" +
 
 			"add " + depthProjection + ".y, " + depthProjection + ".y, " + dataReg + ".y\n" +
-			methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters, depthProjection) +
+			methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
 			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
 			"slt " + predicate + ".w, " + depthProjection + ".z, " + temp + ".z\n" +
 
 			"sub " + depthProjection + ".x, " + depthProjection + ".x, " + dataReg + ".y\n" +
-			methodVO.textureVO._iGetFragmentCode(shader, temp, registerCache, sharedRegisters, depthProjection) +
+			methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
 			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
 			"slt " + predicate + ".y, " + depthProjection + ".z, " + temp + ".z\n" +
 

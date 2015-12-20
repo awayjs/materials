@@ -1,16 +1,16 @@
-import BlendMode						= require("awayjs-core/lib/data/BlendMode");
+import BlendMode						= require("awayjs-core/lib/image/BlendMode");
 import ColorTransform					= require("awayjs-core/lib/geom/ColorTransform");
 import Matrix							= require("awayjs-core/lib/geom/Matrix");
 import Matrix3D							= require("awayjs-core/lib/geom/Matrix3D");
 import Matrix3DUtils					= require("awayjs-core/lib/geom/Matrix3DUtils");
 import Vector3D							= require("awayjs-core/lib/geom/Vector3D");
 import AbstractMethodError				= require("awayjs-core/lib/errors/AbstractMethodError");
+import AssetEvent						= require("awayjs-core/lib/events/AssetEvent");
 
 import Camera							= require("awayjs-display/lib/entities/Camera");
 import IRenderOwner						= require("awayjs-display/lib/base/IRenderOwner");
 import StaticLightPicker				= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
 
-import Stage							= require("awayjs-stagegl/lib/base/Stage");
 import ContextGLCompareMode				= require("awayjs-stagegl/lib/base/ContextGLCompareMode");
 
 import RendererBase						= require("awayjs-renderergl/lib/RendererBase");
@@ -66,9 +66,9 @@ class MethodMaterialRender extends RenderBase
 	 *
 	 * @param material The material to which this pass belongs.
 	 */
-	constructor(pool:RenderPool, material:MethodMaterial, renderableClass:IRenderableClass, stage:Stage)
+	constructor(material:MethodMaterial, renderableClass:IRenderableClass, pool:RenderPool)
 	{
-		super(pool, material, renderableClass, stage);
+		super(material, renderableClass, pool);
 
 		this._material = material;
 	}
@@ -316,9 +316,9 @@ class MethodMaterialRender extends RenderBase
 	/**
 	 * @inheritDoc
 	 */
-	public dispose()
+	public onClear(event:AssetEvent)
 	{
-		super.dispose();
+		super.onClear(event);
 
 		//TODO
 	}

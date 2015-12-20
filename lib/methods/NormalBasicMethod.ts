@@ -46,7 +46,7 @@ class NormalBasicMethod extends ShadingMethodBase
 	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
 	{
 		if (this._normalMap) {
-			methodVO.textureVO = shader.getTextureVO(this._normalMap);
+			methodVO.textureVO = shader.getAbstraction(this._normalMap);
 			shader.uvDependencies++;
 		}
 	}
@@ -110,13 +110,13 @@ class NormalBasicMethod extends ShadingMethodBase
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
 		if (this._normalMap)
-			methodVO.textureVO.activate(shader);
+			methodVO.textureVO.activate();
 	}
 
 	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
 		if (this._normalMap)
-			methodVO.textureVO._setRenderState(renderable, shader);
+			methodVO.textureVO._setRenderState(renderable);
 	}
 
 	/**
@@ -127,7 +127,7 @@ class NormalBasicMethod extends ShadingMethodBase
 		var code:string = "";
 
 		if (this._normalMap)
-			code += methodVO.textureVO._iGetFragmentCode(shader, targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+			code += methodVO.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
 
 
 		code += "sub " + targetReg + ".xyz, " + targetReg + ".xyz, " + sharedRegisters.commons + ".xxx\n" +

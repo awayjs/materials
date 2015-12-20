@@ -1,4 +1,4 @@
-import Image2D							= require("awayjs-core/lib/data/Image2D");
+import Image2D							= require("awayjs-core/lib/image/Image2D");
 import Matrix3D							= require("awayjs-core/lib/geom/Matrix3D");
 
 import LightBase						= require("awayjs-display/lib/base/LightBase");
@@ -23,7 +23,6 @@ import IRenderableClass					= require("awayjs-renderergl/lib/renderables/IRender
 import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
 import RenderBase						= require("awayjs-renderergl/lib/render/RenderBase");
 import SubGeometryVOBase				= require("awayjs-renderergl/lib/vos/SubGeometryVOBase");
-import SubGeometryVOPool				= require("awayjs-renderergl/lib/vos/SubGeometryVOPool");
 
 /**
  * The SingleObjectDepthPass provides a material pass that renders a single object to a depth map from the point
@@ -31,7 +30,6 @@ import SubGeometryVOPool				= require("awayjs-renderergl/lib/vos/SubGeometryVOPo
  */
 class SingleObjectDepthPass extends PassBase
 {
-	private _subGeometryVOPool:SubGeometryVOPool;
 	private _textures:Object;
 	private _projections:Object;
 	private _textureSize:number /*uint*/ = 512;
@@ -78,7 +76,6 @@ class SingleObjectDepthPass extends PassBase
 		//
 		//this._pAnimatableAttributes = Array<string>("va0", "va1");
 		//this._pAnimationTargetRegisters = Array<string>("vt0", "vt1");
-		this._subGeometryVOPool = SubGeometryVOPool.getPool();
 	}
 
 	/**
@@ -203,9 +200,9 @@ class SingleObjectDepthPass extends PassBase
 		var subGeometryVO:SubGeometryVOBase = renderable.subGeometryVO;
 		var subGeom:TriangleSubGeometry = <TriangleSubGeometry> subGeometryVO.subGeometry;
 
-		subGeometryVO.activateVertexBufferVO(0, subGeom.positions, this._stage);
-		subGeometryVO.activateVertexBufferVO(1, subGeom.normals, this._stage);
-		subGeometryVO.getIndexBufferVO(this._stage).draw(ContextGLDrawMode.TRIANGLES, 0, subGeometryVO.subGeometry.numElements);
+		subGeometryVO.activateVertexBufferVO(0, subGeom.positions);
+		subGeometryVO.activateVertexBufferVO(1, subGeom.normals);
+		subGeometryVO.getIndexBufferVO().draw(ContextGLDrawMode.TRIANGLES, 0, subGeometryVO.subGeometry.numElements);
 	}
 
 	/**

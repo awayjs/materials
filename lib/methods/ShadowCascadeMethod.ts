@@ -1,4 +1,4 @@
-import Event							= require("awayjs-core/lib/events/Event");
+import AssetEvent						= require("awayjs-core/lib/events/AssetEvent");
 
 import Camera							= require("awayjs-display/lib/entities/Camera");
 import DirectionalLight					= require("awayjs-display/lib/entities/DirectionalLight");
@@ -50,7 +50,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 		if (!this._cascadeShadowMapper)
 			throw new Error("ShadowCascadeMethod requires a light that has a CascadeShadowMapper instance assigned to shadowMapper.");
 
-		this._cascadeShadowMapper.addEventListener(Event.CHANGE, (event:Event) => this.onCascadeChange(event));
+		this._cascadeShadowMapper.addEventListener(AssetEvent.INVALIDATE, (event:AssetEvent) => this.onCascadeChange(event));
 		this._baseMethod.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, (event:ShadingMethodEvent) => this.onShaderInvalidated(event));
 	}
 
@@ -91,7 +91,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 		methodVO.needsGlobalVertexPos = true;
 		methodVO.needsProjection = true;
 
-		methodVO.textureVO = shader.getTextureVO(this._pCastingLight.shadowMapper.depthMap);
+		methodVO.textureVO = shader.getAbstraction(this._pCastingLight.shadowMapper.depthMap);
 	}
 
 	/**
@@ -219,7 +219,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	 */
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
-		methodVO.textureVO.activate(shader);
+		methodVO.textureVO.activate();
 
 		var vertexData:Float32Array = shader.vertexConstantData;
 		var vertexIndex:number = methodVO.vertexConstantsIndex;
@@ -256,7 +256,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	/**
 	 * Called when the shadow mappers cascade configuration changes.
 	 */
-	private onCascadeChange(event:Event)
+	private onCascadeChange(event:AssetEvent)
 	{
 		this.iInvalidateShaderProgram();
 	}

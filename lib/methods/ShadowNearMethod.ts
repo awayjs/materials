@@ -28,7 +28,7 @@ class ShadowNearMethod extends ShadowMethodBase
 	private _fadeRatio:number;
 	private _nearShadowMapper:NearDirectionalShadowMapper;
 
-	private _onShaderInvalidatedDelegate:Function;
+	private _onShaderInvalidatedDelegate:(event:ShadingMethodEvent) => void;
 
 	/**
 	 * Creates a new ShadowNearMethod object.

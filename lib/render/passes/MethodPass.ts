@@ -4,7 +4,7 @@ import Matrix3D							= require("awayjs-core/lib/geom/Matrix3D");
 import Matrix3DUtils					= require("awayjs-core/lib/geom/Matrix3DUtils");
 import Vector3D							= require("awayjs-core/lib/geom/Vector3D");
 import AbstractMethodError				= require("awayjs-core/lib/errors/AbstractMethodError");
-import Event							= require("awayjs-core/lib/events/Event");
+import AssetEvent						= require("awayjs-core/lib/events/AssetEvent");
 import MaterialBase						= require("awayjs-display/lib/materials/MaterialBase");
 
 import Camera							= require("awayjs-display/lib/entities/Camera");
@@ -62,7 +62,7 @@ class MethodPass extends PassBase implements ILightingPass
 
 	public _numEffectDependencies:number = 0;
 
-	private _onLightsChangeDelegate:(event:Event) => void;
+	private _onLightsChangeDelegate:(event:AssetEvent) => void;
 	private _onMethodInvalidatedDelegate:(event:ShadingMethodEvent) => void;
 
 	public numDirectionalLights:number = 0;
@@ -128,12 +128,12 @@ class MethodPass extends PassBase implements ILightingPass
 		//	return;
 
 		if (this._lightPicker)
-			this._lightPicker.removeEventListener(Event.CHANGE, this._onLightsChangeDelegate);
+			this._lightPicker.removeEventListener(AssetEvent.INVALIDATE, this._onLightsChangeDelegate);
 
 		this._lightPicker = value;
 
 		if (this._lightPicker)
-			this._lightPicker.addEventListener(Event.CHANGE, this._onLightsChangeDelegate);
+			this._lightPicker.addEventListener(AssetEvent.INVALIDATE, this._onLightsChangeDelegate);
 
 		this._updateLights();
 	}
@@ -182,7 +182,7 @@ class MethodPass extends PassBase implements ILightingPass
 
 		this._material = renderOwner;
 
-		this._onLightsChangeDelegate = (event:Event) => this.onLightsChange(event);
+		this._onLightsChangeDelegate = (event:AssetEvent) => this.onLightsChange(event);
 		
 		this._onMethodInvalidatedDelegate = (event:ShadingMethodEvent) => this.onMethodInvalidated(event);
 
@@ -276,7 +276,7 @@ class MethodPass extends PassBase implements ILightingPass
 		methodVO.method.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
 		this._iMethodVOs.splice(index, 1);
 
-		this.invalidatePass();
+		this.invalidate();
 	}
 
 	private _addDependency(methodVO:MethodVO, effectsDependency:boolean = false, index:number = -1)
@@ -293,7 +293,7 @@ class MethodPass extends PassBase implements ILightingPass
 			this._iMethodVOs.splice(this._iMethodVOs.length - this._numEffectDependencies, 0, methodVO);
 		}
 
-		this.invalidatePass();
+		this.invalidate();
 	}
 
 	/**
@@ -512,7 +512,7 @@ class MethodPass extends PassBase implements ILightingPass
 	public dispose()
 	{
 		if (this._lightPicker)
-			this._lightPicker.removeEventListener(Event.CHANGE, this._onLightsChangeDelegate);
+			this._lightPicker.removeEventListener(AssetEvent.INVALIDATE, this._onLightsChangeDelegate);
 
 		while (this._iMethodVOs.length)
 			this._removeDependency(this._iMethodVOs[0]);
@@ -527,7 +527,7 @@ class MethodPass extends PassBase implements ILightingPass
 	 */
 	private onMethodInvalidated(event:ShadingMethodEvent)
 	{
-		this.invalidatePass();
+		this.invalidate();
 	}
 
 	// RENDER LOOP
@@ -873,7 +873,7 @@ class MethodPass extends PassBase implements ILightingPass
 	}
 
 
-	private onLightsChange(event:Event)
+	private onLightsChange(event:AssetEvent)
 	{
 		this._updateLights();
 	}
@@ -903,7 +903,7 @@ class MethodPass extends PassBase implements ILightingPass
 		if (numDirectionalLightsOld != this.numDirectionalLights || numPointLightsOld != this.numPointLights || numLightProbesOld != this.numLightProbes) {
 			this._updateShader();
 
-			this.invalidatePass();
+			this.invalidate();
 		}
 	}
 

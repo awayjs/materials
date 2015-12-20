@@ -1,3 +1,5 @@
+import AssetEvent						= require("awayjs-core/lib/events/AssetEvent");
+
 import Camera							= require("awayjs-display/lib/entities/Camera");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
@@ -58,10 +60,10 @@ class SpecularBasicMethod extends LightingMethodBase
 		methodVO.needsView = shader.numLights > 0;
 
 		if (this._texture) {
-			methodVO.textureVO = shader.getTextureVO(this._texture);
+			methodVO.textureVO = shader.getAbstraction(this._texture);
 			shader.uvDependencies++;
 		} else if (methodVO.textureVO) {
-			methodVO.textureVO.dispose();
+			methodVO.textureVO.onClear(new AssetEvent(AssetEvent.CLEAR, null));
 			methodVO.textureVO = null;
 		}
 	}
@@ -187,7 +189,7 @@ class SpecularBasicMethod extends LightingMethodBase
 			this._pSpecularTexData = registerCache.getFreeFragmentVectorTemp();
 			registerCache.addFragmentTempUsages(this._pSpecularTexData, 1);
 
-			code += methodVO.textureVO._iGetFragmentCode(shader, this._pSpecularTexData, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+			code += methodVO.textureVO._iGetFragmentCode(this._pSpecularTexData, registerCache, sharedRegisters, sharedRegisters.uvVarying);
 		}
 
 		this._pTotalLightColorReg = registerCache.getFreeFragmentVectorTemp();
@@ -316,7 +318,7 @@ class SpecularBasicMethod extends LightingMethodBase
 	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
 	{
 		if (this._texture)
-			methodVO.textureVO.activate(shader);
+			methodVO.textureVO.activate();
 
 		var index:number = methodVO.fragmentConstantsIndex;
 		var data:Float32Array = shader.fragmentConstantData;
@@ -329,7 +331,7 @@ class SpecularBasicMethod extends LightingMethodBase
 	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
 		if (this._texture)
-			methodVO.textureVO._setRenderState(renderable, shader);
+			methodVO.textureVO._setRenderState(renderable);
 	}
 
 	/**

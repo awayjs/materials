@@ -38,7 +38,7 @@ class AmbientBasicMethod extends ShadingMethodBase
 	 */
 	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
 	{
-		if (shader.texture)
+		if (shader.textureVO)
 			shader.uvDependencies++;
 	}
 
@@ -47,7 +47,7 @@ class AmbientBasicMethod extends ShadingMethodBase
 	 */
 	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
 	{
-		if (!shader.texture) {
+		if (!shader.textureVO) {
 			this._color = shader.color;
 			this.updateColor();
 		}
@@ -105,8 +105,8 @@ class AmbientBasicMethod extends ShadingMethodBase
 	{
 		var code:string = "";
 
-		if (shader.texture) {
-			code += shader.texture._iGetFragmentCode(shader, targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+		if (shader.textureVO) {
+			code += shader.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
 
 			if (shader.alphaThreshold > 0) {
 				var cutOffReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
@@ -132,8 +132,8 @@ class AmbientBasicMethod extends ShadingMethodBase
 	 */
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
-		if (shader.texture) {
-			shader.texture.activate(shader);
+		if (shader.textureVO) {
+			shader.textureVO.activate();
 
 			if (shader.alphaThreshold > 0)
 				shader.fragmentConstantData[methodVO.fragmentConstantsIndex] = shader.alphaThreshold;
@@ -149,8 +149,8 @@ class AmbientBasicMethod extends ShadingMethodBase
 
 	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
-		if (shader.texture)
-			shader.texture._setRenderState(renderable, shader);
+		if (shader.textureVO)
+			shader.textureVO._setRenderState(renderable);
 	}
 
 	/**
