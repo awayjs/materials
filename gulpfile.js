@@ -70,6 +70,7 @@ function browserifyShare(callback) {
     var b = browserify({
         debug: true,
         paths: ['../'],
+        entries: './methodmaterials.ts',
         cache: {},
         packageCache: {},
         fullPaths: true
