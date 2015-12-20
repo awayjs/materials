@@ -1,5 +1,16 @@
+declare module "awayjs-methodmaterials/methodmaterials" {
+	/**
+	 *
+	 * static shim
+	 */
+	class methodmaterials {
+	}
+	export = methodmaterials;
+	
+}
+
 declare module "awayjs-methodmaterials/lib/MethodMaterial" {
-	import Image2D = require("awayjs-core/lib/data/Image2D");
+	import Image2D = require("awayjs-core/lib/image/Image2D");
 	import MaterialBase = require("awayjs-display/lib/materials/MaterialBase");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import AmbientBasicMethod = require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
@@ -22,8 +33,6 @@ declare module "awayjs-methodmaterials/lib/MethodMaterial" {
 	    private _normalMethod;
 	    private _specularMethod;
 	    private _depthCompareMode;
-	    private static register;
-	    private static addRenderable();
 	    /**
 	     *
 	     */
@@ -2799,7 +2808,7 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularPhongMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/render/MethodMaterialRender" {
-	import Stage = require("awayjs-stagegl/lib/base/Stage");
+	import AssetEvent = require("awayjs-core/lib/events/AssetEvent");
 	import IRenderableClass = require("awayjs-renderergl/lib/renderables/IRenderableClass");
 	import RenderBase = require("awayjs-renderergl/lib/render/RenderBase");
 	import RenderPool = require("awayjs-renderergl/lib/render/RenderPool");
@@ -2826,7 +2835,7 @@ declare module "awayjs-methodmaterials/lib/render/MethodMaterialRender" {
 	     *
 	     * @param material The material to which this pass belongs.
 	     */
-	    constructor(pool: RenderPool, material: MethodMaterial, renderableClass: IRenderableClass, stage: Stage);
+	    constructor(material: MethodMaterial, renderableClass: IRenderableClass, pool: RenderPool);
 	    /**
 	     * @inheritDoc
 	     */
@@ -2848,7 +2857,7 @@ declare module "awayjs-methodmaterials/lib/render/MethodMaterialRender" {
 	    /**
 	     * @inheritDoc
 	     */
-	    dispose(): void;
+	    onClear(event: AssetEvent): void;
 	}
 	export = MethodMaterialRender;
 	
@@ -3140,7 +3149,6 @@ declare module "awayjs-methodmaterials/lib/render/passes/SingleObjectDepthPass" 
 	 * of view from a light.
 	 */
 	class SingleObjectDepthPass extends PassBase {
-	    private _subGeometryVOPool;
 	    private _textures;
 	    private _projections;
 	    private _textureSize;
