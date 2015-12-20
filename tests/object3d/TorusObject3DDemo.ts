@@ -1,8 +1,8 @@
-import BitmapImage2D				= require("awayjs-core/lib/data/BitmapImage2D");
+import BitmapImage2D				= require("awayjs-core/lib/image/BitmapImage2D");
 import URLLoader					= require("awayjs-core/lib/net/URLLoader");
 import URLLoaderDataFormat			= require("awayjs-core/lib/net/URLLoaderDataFormat");
 import URLRequest					= require("awayjs-core/lib/net/URLRequest");
-import AwayEvent					= require("awayjs-core/lib/events/Event");
+import URLLoaderEvent				= require("awayjs-core/lib/events/URLLoaderEvent");
 import ParserUtils					= require("awayjs-core/lib/parsers/ParserUtils");
 import PerspectiveProjection		= require("awayjs-core/lib/projections/PerspectiveProjection");
 import RequestAnimationFrame		= require("awayjs-core/lib/utils/RequestAnimationFrame");
@@ -94,13 +94,13 @@ class TorusObject3DDemo
 		var urlRequest:URLRequest = new URLRequest("assets/custom_uv_horizontal.png");
 		var urlLoader:URLLoader = new URLLoader();
 		urlLoader.dataFormat = URLLoaderDataFormat.BLOB;
-		urlLoader.addEventListener(AwayEvent.COMPLETE, (event:AwayEvent) => this.imageCompleteHandler(event));
+		urlLoader.addEventListener(URLLoaderEvent.LOAD_COMPLETE, (event:URLLoaderEvent) => this.imageCompleteHandler(event));
 		urlLoader.load(urlRequest);
 	}
 
-	private imageCompleteHandler(event:AwayEvent)
+	private imageCompleteHandler(event:URLLoaderEvent)
 	{
-		var urlLoader:URLLoader = <URLLoader> event.target;
+		var urlLoader:URLLoader = event.target;
 
 		this._image = ParserUtils.blobToImage(urlLoader.data);
 		this._image.onload = (event:Event) => this.onImageLoadComplete(event);

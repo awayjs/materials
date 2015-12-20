@@ -1,7 +1,7 @@
 import Vector3D						= require("awayjs-core/lib/geom/Vector3D");
 import URLLoader					= require("awayjs-core/lib/net/URLLoader");
 import URLRequest					= require("awayjs-core/lib/net/URLRequest");
-import Event						= require("awayjs-core/lib/events/Event")
+import URLLoaderEvent				= require("awayjs-core/lib/events/URLLoaderEvent");
 import RequestAnimationFrame		= require("awayjs-core/lib/utils/RequestAnimationFrame");
 import Debug						= require("awayjs-core/lib/utils/Debug");
 

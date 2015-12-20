@@ -1,5 +1,5 @@
 import Vector3D                        = require("awayjs-core/lib/geom/Vector3D");
-import Event                        = require("awayjs-core/lib/events/Event");
+import URLLoaderEvent				= require("awayjs-core/lib/events/URLLoaderEvent");
 import RequestAnimationFrame        = require("awayjs-core/lib/utils/RequestAnimationFrame");
 import Debug                        = require("awayjs-core/lib/utils/Debug");
 
@@ -39,12 +39,12 @@ class MipMapSoftwareTest {
 
         this.pngLoader = new URLLoader();
         this.pngLoader.dataFormat = URLLoaderDataFormat.BLOB;
-        this.pngLoader.addEventListener(Event.COMPLETE, (event:Event) => this.pngLoaderComplete(event));
+        this.pngLoader.addEventListener(URLLoaderEvent.LOAD_COMPLETE, (event:URLLoaderEvent) => this.pngLoaderComplete(event));
         this.pngLoader.load(pngURLRequest);
     }
 
-    private pngLoaderComplete(event:Event) {
-        var imageLoader:URLLoader = <URLLoader> event.target;
+    private pngLoaderComplete(event:URLLoaderEvent) {
+        var imageLoader:URLLoader = event.target;
         this.image = ParserUtils.blobToImage(imageLoader.data);
         this.image.onload = (event) => this.onLoadComplete(event);
     }
