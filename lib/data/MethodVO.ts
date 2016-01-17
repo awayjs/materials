@@ -1,5 +1,6 @@
 import TextureVOBase				= require("awayjs-renderergl/lib/vos/TextureVOBase");
 
+import MethodPass					= require("awayjs-methodmaterials/lib/render/passes/MethodPass");
 import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
 
 /**
@@ -11,6 +12,7 @@ class MethodVO
 	public useMethod:boolean = true;
 
 	public method:ShadingMethodBase;
+	public pass:MethodPass;
 
 	// public register indices
 	public textureVO:TextureVOBase;
@@ -30,9 +32,10 @@ class MethodVO
 	/**
 	 * Creates a new MethodVO object.
 	 */
-	constructor(method:ShadingMethodBase)
+	constructor(method:ShadingMethodBase, pass:MethodPass)
 	{
 		this.method = method;
+		this.pass = pass;
 	}
 
 	/**

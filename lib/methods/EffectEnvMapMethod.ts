@@ -128,10 +128,10 @@ class EffectEnvMapMethod extends EffectMethodBase
 	{
 		shader.fragmentConstantData[methodVO.fragmentConstantsIndex] = this._alpha;
 
-		methodVO.textureVO.activate();
+		methodVO.textureVO.activate(methodVO.pass._render);
 
 		if (this._mask)
-			methodVO.secondaryTextureVO.activate();
+			methodVO.secondaryTextureVO.activate(methodVO.pass._render);
 	}
 
 	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)

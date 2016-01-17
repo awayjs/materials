@@ -28,8 +28,8 @@ class SpecularBasicMethod extends LightingMethodBase
 	private _texture:TextureBase;
 
 	private _gloss:number = 50;
-	private _specular:number = 1;
-	private _specularColor:number = 0xffffff;
+	private _strength:number = 1;
+	private _color:number = 0xffffff;
 	public _iSpecularR:number = 1;
 	public _iSpecularG:number = 1;
 	public _iSpecularB:number = 1;
@@ -69,7 +69,7 @@ class SpecularBasicMethod extends LightingMethodBase
 	}
 
 	/**
-	 * The sharpness of the specular highlight.
+	 * The glossiness of the material (sharpness of the specular highlight).
 	 */
 	public get gloss():number
 	{
@@ -84,45 +84,45 @@ class SpecularBasicMethod extends LightingMethodBase
 	/**
 	 * The overall strength of the specular highlights.
 	 */
-	public get specular():number
+	public get strength():number
 	{
-		return this._specular;
+		return this._strength;
 	}
 
-	public set specular(value:number)
+	public set strength(value:number)
 	{
-		if (value == this._specular)
+		if (value == this._strength)
 			return;
 
-		this._specular = value;
+		this._strength = value;
 		this.updateSpecular();
 	}
 
 	/**
 	 * The colour of the specular reflection of the surface.
 	 */
-	public get specularColor():number
+	public get color():number
 	{
-		return this._specularColor;
+		return this._color;
 	}
 
-	public set specularColor(value:number)
+	public set color(value:number)
 	{
-		if (this._specularColor == value)
+		if (this._color == value)
 			return;
 
 		// specular is now either enabled or disabled
-		if (this._specularColor == 0 || value == 0)
+		if (this._color == 0 || value == 0)
 			this.iInvalidateShaderProgram();
 
-		this._specularColor = value;
+		this._color = value;
 		this.updateSpecular();
 	}
 
 	/**
-	 * The bitmapData that encodes the specular highlight strength per texel in the red channel, and the sharpness
-	 * in the green channel. You can use SpecularTextureBase if you want to easily set specular and gloss maps
-	 * from grayscale images, but prepared images are preferred.
+	 * A texture that defines the strength of specular reflections for each texel in the red channel,
+	 * and the gloss factor (sharpness) in the green channel. You can use Specular2DTexture if you want to easily set
+	 * specular and gloss maps from grayscale images, but correctly authored images are preferred.
 	 */
 	public get texture():TextureBase
 	{
@@ -156,8 +156,8 @@ class SpecularBasicMethod extends LightingMethodBase
 
 		var spec:SpecularBasicMethod = bsm;//SpecularBasicMethod(method);
 		this.texture = spec.texture;
-		this.specular = spec.specular;
-		this.specularColor = spec.specularColor;
+		this.strength = spec.strength;
+		this.color = spec.color;
 		this.gloss = spec.gloss;
 	}
 
@@ -272,7 +272,7 @@ class SpecularBasicMethod extends LightingMethodBase
 				"add " + t + ".w, " + t + ".w, " + t + ".w\n" +
 				"mul " + t + ", " + t + ".w, " + normalReg + "\n" +
 				"sub " + t + ", " + t + ", " + viewDirReg + "\n" +
-				"tex " + t + ", " + t + ", " + cubeMapReg + " <cube," + (shader.useSmoothTextures? "linear":"nearest") + ",miplinear>\n" +
+				"tex " + t + ", " + t + ", " + cubeMapReg + " <cube," + "linear" + ",miplinear>\n" +
 				"mul " + t + ".xyz, " + t + ", " + weightRegister + "\n";
 
 		if (this._iModulateMethod != null)
@@ -318,7 +318,7 @@ class SpecularBasicMethod extends LightingMethodBase
 	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
 	{
 		if (this._texture)
-			methodVO.textureVO.activate();
+			methodVO.textureVO.activate(methodVO.pass._render);
 
 		var index:number = methodVO.fragmentConstantsIndex;
 		var data:Float32Array = shader.fragmentConstantData;
@@ -339,9 +339,9 @@ class SpecularBasicMethod extends LightingMethodBase
 	 */
 	private updateSpecular()
 	{
-		this._iSpecularR = (( this._specularColor >> 16) & 0xff)/0xff*this._specular;
-		this._iSpecularG = (( this._specularColor >> 8) & 0xff)/0xff*this._specular;
-		this._iSpecularB = ( this._specularColor & 0xff)/0xff*this._specular;
+		this._iSpecularR = (( this._color >> 16) & 0xff)/0xff*this._strength;
+		this._iSpecularG = (( this._color >> 8) & 0xff)/0xff*this._strength;
+		this._iSpecularB = ( this._color & 0xff)/0xff*this._strength;
 	}
 }
 

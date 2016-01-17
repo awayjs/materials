@@ -106,7 +106,7 @@ class ShadingMethodBase extends AssetBase
 			//add textures
 			var len:number = this._textures.length;
 			for (var i:number = 0; i< len; i++)
-				this._textures[i].iAddOwner(owner);
+				owner.addTexture(this._textures[i]);
 		}
 	}
 
@@ -123,7 +123,7 @@ class ShadingMethodBase extends AssetBase
 			//remove textures
 			var len:number = this._textures.length;
 			for (var i:number = 0; i< len; i++)
-				this._textures[i].iRemoveOwner(owner);
+				owner.removeTexture(this._textures[i]);
 		}
 	}
 
@@ -137,7 +137,7 @@ class ShadingMethodBase extends AssetBase
 
 		var len:number = this._owners.length;
 		for (var i:number = 0; i < len; i++)
-			texture.iAddOwner(this._owners[i]);
+			this._owners[i].addTexture(texture);
 	}
 
 	/**
@@ -149,7 +149,7 @@ class ShadingMethodBase extends AssetBase
 
 		var len:number = this._owners.length;
 		for (var i:number = 0; i < len; i++)
-			texture.iRemoveOwner(this._owners[i]);
+			this._owners[i].removeTexture(texture);
 	}
 
 	/**

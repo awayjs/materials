@@ -167,7 +167,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 		data[index + 10] = (stage.height - 1)/63;
 		data[index + 11] = 2*this._range/this._depthMapSize;
 
-		methodVO.secondaryTextureVO.activate();
+		methodVO.secondaryTextureVO.activate(methodVO.pass._render);
 	}
 
 
@@ -301,7 +301,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 		data[index + 2] = (stage.height - 1)/63;
 		data[index + 3] = 2*this._range/this._depthMapSize;
 
-		methodVO.secondaryTextureVO.activate();
+		methodVO.secondaryTextureVO.activate(methodVO.pass._render);
 	}
 
 	/**

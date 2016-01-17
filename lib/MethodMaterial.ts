@@ -55,34 +55,23 @@ class MethodMaterial extends MaterialBase
 	 * @param repeat Indicates whether the texture should be tiled when sampled. Defaults to false.
 	 * @param mipmap Indicates whether or not any used textures should use mipmapping. Defaults to false.
 	 */
-	constructor(texture?:Image2D, smooth?:boolean, repeat?:boolean, mipmap?:boolean);
-	constructor(texture?:TextureBase, smooth?:boolean, repeat?:boolean, mipmap?:boolean);
+	constructor(image?:Image2D, alpha?:number);
 	constructor(color?:number, alpha?:number);
-	constructor(textureColor:any = null, smoothAlpha:any = null, repeat:boolean = false, mipmap:boolean = true)
+	constructor(imageColor:any = null, alpha:number = 1)
 	{
-		super();
+		super(imageColor, alpha);
 
 		this._mode = MethodMaterialMode.SINGLE_PASS;
-
-		if (textureColor instanceof Image2D)
-			textureColor = new Single2DTexture(textureColor);
-
-		if (textureColor instanceof TextureBase) {
-			this.texture = <TextureBase> textureColor;
-
-			this.smooth = (smoothAlpha == null)? true : false;
-			this.repeat = repeat;
-			this.mipmap = mipmap;
-		} else {
-			this.color = (textureColor == null)? 0xFFFFFF : Number(textureColor);
-			this.alpha = (smoothAlpha == null)? 1 : Number(smoothAlpha);
-		}
 
 		//add default methods owners
 		this._ambientMethod.iAddOwner(this);
 		this._diffuseMethod.iAddOwner(this);
 		this._normalMethod.iAddOwner(this);
 		this._specularMethod.iAddOwner(this);
+
+		//set a texture if an image is present
+		if (imageColor instanceof Image2D)
+			this._ambientMethod.texture = new Single2DTexture();
 	}
 
 
@@ -148,9 +137,6 @@ class MethodMaterial extends MaterialBase
 		if (this._ambientMethod == value)
 			return;
 
-		if (value && this._ambientMethod)
-			value.copyFrom(this._ambientMethod);
-
 		if (this._ambientMethod)
 			this._ambientMethod.iRemoveOwner(this);
 
@@ -174,9 +160,6 @@ class MethodMaterial extends MaterialBase
 	{
 		if (this._shadowMethod == value)
 			return;
-
-		if (value && this._shadowMethod)
-			value.copyFrom(this._shadowMethod);
 
 		if (this._shadowMethod)
 			this._shadowMethod.iRemoveOwner(this);
@@ -202,9 +185,6 @@ class MethodMaterial extends MaterialBase
 		if (this._diffuseMethod == value)
 			return;
 
-		if (value && this._diffuseMethod)
-			value.copyFrom(this._diffuseMethod);
-
 		if (this._diffuseMethod)
 			this._diffuseMethod.iRemoveOwner(this);
 
@@ -229,9 +209,6 @@ class MethodMaterial extends MaterialBase
 		if (this._specularMethod == value)
 			return;
 
-		if (value && this._specularMethod)
-			value.copyFrom(this._specularMethod);
-
 		if (this._specularMethod)
 			this._specularMethod.iRemoveOwner(this);
 
@@ -255,9 +232,6 @@ class MethodMaterial extends MaterialBase
 	{
 		if (this._normalMethod == value)
 			return;
-
-		if (value && this._normalMethod)
-			value.copyFrom(this._normalMethod);
 
 		if (this._normalMethod)
 			this._normalMethod.iRemoveOwner(this);
@@ -324,113 +298,6 @@ class MethodMaterial extends MaterialBase
 		this._effectMethods.splice(this._effectMethods.indexOf(method), 1);
 
 		this.invalidate();
-	}
-
-	/**
-	 * The normal map to modulate the direction of the surface for each texel. The default normal method expects
-	 * tangent-space normal maps, but others could expect object-space maps.
-	 */
-	public get normalMap():TextureBase
-	{
-		return this._normalMethod.normalMap;
-	}
-
-	public set normalMap(value:TextureBase)
-	{
-		this._normalMethod.normalMap = value;
-	}
-
-	/**
-	 * A specular map that defines the strength of specular reflections for each texel in the red channel,
-	 * and the gloss factor in the green channel. You can use Specular2DTexture if you want to easily set
-	 * specular and gloss maps from grayscale images, but correctly authored images are preferred.
-	 */
-	public get specularMap():TextureBase
-	{
-		return this._specularMethod.texture;
-	}
-
-	public set specularMap(value:TextureBase)
-	{
-		this._specularMethod.texture = value;
-	}
-
-	/**
-	 * The glossiness of the material (sharpness of the specular highlight).
-	 */
-	public get gloss():number
-	{
-		return this._specularMethod.gloss;
-	}
-
-	public set gloss(value:number)
-	{
-		this._specularMethod.gloss = value;
-	}
-
-	/**
-	 * The strength of the ambient reflection.
-	 */
-	public get ambient():number
-	{
-		return this._ambientMethod.ambient;
-	}
-
-	public set ambient(value:number)
-	{
-		this._ambientMethod.ambient = value;
-	}
-
-	/**
-	 * The overall strength of the specular reflection.
-	 */
-	public get specular():number
-	{
-		return this._specularMethod.specular;
-	}
-
-	public set specular(value:number)
-	{
-		this._specularMethod.specular = value;
-	}
-
-	/**
-	 * The colour of the ambient reflection.
-	 */
-	public get ambientColor():number
-	{
-		return this._diffuseMethod.ambientColor;
-	}
-
-	public set ambientColor(value:number)
-	{
-		this._diffuseMethod.ambientColor = value;
-	}
-
-	/**
-	 * The colour of the diffuse reflection.
-	 */
-	public get diffuseColor():number
-	{
-		return this._diffuseMethod.diffuseColor;
-	}
-
-	public set diffuseColor(value:number)
-	{
-		this._diffuseMethod.diffuseColor = value;
-	}
-
-	/**
-	 * The colour of the specular reflection.
-	 */
-	public get specularColor():number
-	{
-		return this._specularMethod.specularColor;
-	}
-
-	public set specularColor(value:number)
-	{
-		this._specularMethod.specularColor = value;
 	}
 }
 

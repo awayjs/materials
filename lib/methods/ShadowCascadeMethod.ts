@@ -85,7 +85,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	 */
 	public iInitVO(shader:LightingShader, methodVO:MethodVO)
 	{
-		var tempVO:MethodVO = new MethodVO(this._baseMethod);
+		var tempVO:MethodVO = new MethodVO(this._baseMethod, methodVO.pass);
 		this._baseMethod.iInitVO(shader, tempVO);
 
 		methodVO.needsGlobalVertexPos = true;
@@ -219,7 +219,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	 */
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
-		methodVO.textureVO.activate();
+		methodVO.textureVO.activate(methodVO.pass._render);
 
 		var vertexData:Float32Array = shader.vertexConstantData;
 		var vertexIndex:number = methodVO.vertexConstantsIndex;

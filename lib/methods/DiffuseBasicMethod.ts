@@ -25,14 +25,14 @@ class DiffuseBasicMethod extends LightingMethodBase
 	public _pTotalLightColorReg:ShaderRegisterElement;
 
 	public _texture:TextureBase;
-	private _diffuseColor:number = 0xffffff;
-	private _ambientColor:number = 0xffffff;
-	private _diffuseR:number = 1;
-	private _diffuseG:number = 1;
-	private _diffuseB:number = 1;
-	private _ambientR:number = 1;
-	private _ambientG:number = 1;
-	private _ambientB:number = 1;
+	private _ambientColor:number;
+	private _ambientColorR:number = 1;
+	private _ambientColorG:number = 1;
+	private _ambientColorB:number = 1;
+	private _color:number = 0xffffff;
+	private _colorR:number = 1;
+	private _colorG:number = 1;
+	private _colorB:number = 1;
 
 	public _pIsFirstLight:boolean;
 
@@ -87,44 +87,38 @@ class DiffuseBasicMethod extends LightingMethodBase
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public iInitConstants(shader:LightingShader, methodVO:MethodVO)
+	{
+		if (shader.numLights > 0) {
+			this._ambientColor = methodVO.pass._renderOwner.style.color;
+			this.updateAmbientColor();
+		} else {
+			this._ambientColor = null;
+		}
+	}
+
+	/**
 	 * The color of the diffuse reflection when not using a texture.
 	 */
-	public get diffuseColor():number
+	public get color():number
 	{
-		return this._diffuseColor;
+		return this._color;
 	}
 
-	public set diffuseColor(value:number)
+	public set color(value:number)
 	{
-		if (this._diffuseColor == value)
+		if (this._color == value)
 			return;
 
-		this._diffuseColor = value;
+		this._color = value;
 
-		this.updateDiffuse();
+		this.updateColor();
 	}
 
 	/**
-	 * The color of the ambient reflection
-	 */
-	public get ambientColor():number
-	{
-		return this._ambientColor;
-	}
-
-	public set ambientColor(value:number)
-	{
-		if (this._ambientColor == value)
-			return;
-
-		this._ambientColor = value;
-
-		this.updateAmbient();
-	}
-
-
-	/**
-	 * The bitmapData to use to define the diffuse reflection color per texel.
+	 * The texture to use to define the diffuse reflection color per texel.
 	 */
 	public get texture():TextureBase
 	{
@@ -164,8 +158,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 
 		this.texture = diff.texture;
 		this.multiply = diff.multiply;
-		this.diffuseColor = diff.diffuseColor;
-		this.ambientColor = diff.ambientColor;
+		this.color = diff.color;
 	}
 
 	/**
@@ -323,13 +316,13 @@ class DiffuseBasicMethod extends LightingMethodBase
 	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
 	{
 		if (this._texture) {
-			methodVO.textureVO.activate();
+			methodVO.textureVO.activate(methodVO.pass._render);
 		} else {
 			var index:number = methodVO.fragmentConstantsIndex;
 			var data:Float32Array = shader.fragmentConstantData;
-			data[index + 4] = this._diffuseR;
-			data[index + 5] = this._diffuseG;
-			data[index + 6] = this._diffuseB;
+			data[index + 4] = this._colorR;
+			data[index + 5] = this._colorG;
+			data[index + 6] = this._colorB;
 			data[index + 7] = 1;
 		}
 	}
@@ -337,21 +330,22 @@ class DiffuseBasicMethod extends LightingMethodBase
 	/**
 	 * Updates the diffuse color data used by the render state.
 	 */
-	private updateDiffuse()
+	private updateColor()
 	{
-		this._diffuseR = ((this._diffuseColor >> 16) & 0xff)/0xff;
-		this._diffuseG = ((this._diffuseColor >> 8) & 0xff)/0xff;
-		this._diffuseB = (this._diffuseColor & 0xff)/0xff;
+		this._colorR = ((this._color >> 16) & 0xff)/0xff;
+		this._colorG = ((this._color >> 8) & 0xff)/0xff;
+		this._colorB = (this._color & 0xff)/0xff;
 	}
+
 
 	/**
 	 * Updates the ambient color data used by the render state.
 	 */
-	private updateAmbient()
+	private updateAmbientColor()
 	{
-		this._ambientR = ((this._ambientColor >> 16) & 0xff)/0xff;
-		this._ambientG = ((this._ambientColor >> 8) & 0xff)/0xff;
-		this._ambientB = (this._ambientColor & 0xff)/0xff;
+		this._ambientColorR = ((this._ambientColor >> 16) & 0xff)/0xff;
+		this._ambientColorG = ((this._ambientColor >> 8) & 0xff)/0xff;
+		this._ambientColorB = (this._ambientColor & 0xff)/0xff;
 	}
 
 	/**
@@ -366,9 +360,15 @@ class DiffuseBasicMethod extends LightingMethodBase
 		if (shader.numLights > 0) {
 			var index:number = methodVO.fragmentConstantsIndex;
 			var data:Float32Array = shader.fragmentConstantData;
-			data[index] = shader.ambientR*this._ambientR;
-			data[index + 1] = shader.ambientG*this._ambientG;
-			data[index + 2] = shader.ambientB*this._ambientB;
+			if (this._ambientColor != null) {
+				data[index] = shader.ambientR*this._ambientColorR;
+				data[index + 1] = shader.ambientG*this._ambientColorG;
+				data[index + 2] = shader.ambientB*this._ambientColorB;
+			} else {
+				data[index] = shader.ambientR;
+				data[index + 1] = shader.ambientG;
+				data[index + 2] = shader.ambientB;
+			}
 			data[index + 3] = 1;
 		}
 	}

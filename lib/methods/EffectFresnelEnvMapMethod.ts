@@ -161,10 +161,10 @@ class EffectFresnelEnvMapMethod extends EffectMethodBase
 		data[index + 1] = this._normalReflectance;
 		data[index + 2] = this._fresnelPower;
 
-		methodVO.textureVO.activate();
+		methodVO.textureVO.activate(methodVO.pass._render);
 
 		if (this._mask)
-			methodVO.secondaryTextureVO.activate();
+			methodVO.secondaryTextureVO.activate(methodVO.pass._render);
 	}
 
 	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)

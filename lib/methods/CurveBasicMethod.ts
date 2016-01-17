@@ -1,4 +1,6 @@
+import AssetEvent						= require("awayjs-core/lib/events/AssetEvent");
 import Camera							= require("awayjs-display/lib/entities/Camera");
+import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
@@ -19,6 +21,7 @@ class CurveBasicMethod extends ShadingMethodBase
 	private _color:number = 0xffffff;
 	private _alpha:number = 1;
 
+	public _texture:TextureBase;
 	private _colorR:number = 1;
 	private _colorG:number = 1;
 	private _colorB:number = 1;
@@ -38,8 +41,13 @@ class CurveBasicMethod extends ShadingMethodBase
 	 */
 	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
 	{
-		if (shader.textureVO)
+		if (this._texture) {
+			methodVO.textureVO = shader.getAbstraction(this._texture);
 			shader.uvDependencies++;
+		} else if (methodVO.textureVO) {
+			methodVO.textureVO.onClear(new AssetEvent(AssetEvent.CLEAR, this._texture));
+			methodVO.textureVO = null;
+		}
 	}
 
 	/**
@@ -47,8 +55,8 @@ class CurveBasicMethod extends ShadingMethodBase
 	 */
 	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
 	{
-		if (!shader.textureVO) {
-			this._color = shader.color;
+		if (!methodVO.textureVO) {
+			this._color = methodVO.pass._renderOwner.style.color;
 			this.updateColor();
 		}
 	}
@@ -90,6 +98,30 @@ class CurveBasicMethod extends ShadingMethodBase
 	}
 
 	/**
+	 * The texture to use to define the diffuse reflection color per texel.
+	 */
+	public get texture():TextureBase
+	{
+		return this._texture;
+	}
+
+	public set texture(value:TextureBase)
+	{
+		if (this._texture == value)
+			return;
+
+		if (this._texture)
+			this.iRemoveTexture(this._texture);
+
+		this._texture = value;
+
+		if (this._texture)
+			this.iAddTexture(this._texture);
+
+		this.iInvalidateShaderProgram();
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public copyFrom(method:ShadingMethodBase)
@@ -111,8 +143,8 @@ class CurveBasicMethod extends ShadingMethodBase
 		var code:string = "";
 		var ambientInputRegister:ShaderRegisterElement;
 
-		if (shader.textureVO) {
-			code += shader.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+		if (methodVO.textureVO) {
+			code += methodVO.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
 
 			if (shader.alphaThreshold > 0) {
 				var cutOffReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
@@ -138,8 +170,8 @@ class CurveBasicMethod extends ShadingMethodBase
 	 */
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
-		if (shader.textureVO) {
-			shader.textureVO.activate();
+		if (methodVO.textureVO) {
+			methodVO.textureVO.activate(methodVO.pass._render);
 
 			if (shader.alphaThreshold > 0)
 				shader.fragmentConstantData[methodVO.fragmentConstantsIndex] = shader.alphaThreshold;
@@ -155,8 +187,8 @@ class CurveBasicMethod extends ShadingMethodBase
 
 	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
-		if (shader.textureVO)
-			shader.textureVO._setRenderState(renderable);
+		if (methodVO.textureVO)
+			methodVO.textureVO._setRenderState(renderable);
 	}
 
 	/**

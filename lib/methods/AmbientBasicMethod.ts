@@ -1,4 +1,6 @@
+import AssetEvent						= require("awayjs-core/lib/events/AssetEvent");
 import Camera							= require("awayjs-display/lib/entities/Camera");
+import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
@@ -16,14 +18,15 @@ import ShadingMethodBase				= require("awayjs-methodmaterials/lib/methods/Shadin
  */
 class AmbientBasicMethod extends ShadingMethodBase
 {
-	private _color:number = 0xffffff;
+	private _color:number;
 	private _alpha:number = 1;
 
+	public _texture:TextureBase;
 	private _colorR:number = 1;
 	private _colorG:number = 1;
 	private _colorB:number = 1;
 
-	private _ambient:number = 1;
+	private _strength:number = 1;
 
 	/**
 	 * Creates a new AmbientBasicMethod object.
@@ -38,8 +41,13 @@ class AmbientBasicMethod extends ShadingMethodBase
 	 */
 	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
 	{
-		if (shader.textureVO)
+		if (this._texture) {
+			methodVO.textureVO = shader.getAbstraction(this._texture);
 			shader.uvDependencies++;
+		} else if (methodVO.textureVO) {
+			methodVO.textureVO.onClear(new AssetEvent(AssetEvent.CLEAR, this._texture));
+			methodVO.textureVO = null;
+		}
 	}
 
 	/**
@@ -47,8 +55,8 @@ class AmbientBasicMethod extends ShadingMethodBase
 	 */
 	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
 	{
-		if (!shader.textureVO) {
-			this._color = shader.color;
+		if (!methodVO.textureVO) {
+			this._color = shader.numLights? 0xFFFFFF : methodVO.pass._renderOwner.style.color;
 			this.updateColor();
 		}
 	}
@@ -56,17 +64,17 @@ class AmbientBasicMethod extends ShadingMethodBase
 	/**
 	 * The strength of the ambient reflection of the surface.
 	 */
-	public get ambient():number
+	public get strength():number
 	{
-		return this._ambient;
+		return this._strength;
 	}
 
-	public set ambient(value:number)
+	public set strength(value:number)
 	{
-		if (this._ambient == value)
+		if (this._strength == value)
 			return;
 
-		this._ambient = value;
+		this._strength = value;
 
 		this.updateColor();
 	}
@@ -90,6 +98,30 @@ class AmbientBasicMethod extends ShadingMethodBase
 	}
 
 	/**
+	 * The texture to use to define the diffuse reflection color per texel.
+	 */
+	public get texture():TextureBase
+	{
+		return this._texture;
+	}
+
+	public set texture(value:TextureBase)
+	{
+		if (this._texture == value)
+			return;
+
+		if (this._texture)
+			this.iRemoveTexture(this._texture);
+
+		this._texture = value;
+
+		if (this._texture)
+			this.iAddTexture(this._texture);
+
+		this.iInvalidateShaderProgram();
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public copyFrom(method:ShadingMethodBase)
@@ -105,8 +137,8 @@ class AmbientBasicMethod extends ShadingMethodBase
 	{
 		var code:string = "";
 
-		if (shader.textureVO) {
-			code += shader.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+		if (methodVO.textureVO) {
+			code += methodVO.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
 
 			if (shader.alphaThreshold > 0) {
 				var cutOffReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
@@ -132,8 +164,8 @@ class AmbientBasicMethod extends ShadingMethodBase
 	 */
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
-		if (shader.textureVO) {
-			shader.textureVO.activate();
+		if (methodVO.textureVO) {
+			methodVO.textureVO.activate(methodVO.pass._render);
 
 			if (shader.alphaThreshold > 0)
 				shader.fragmentConstantData[methodVO.fragmentConstantsIndex] = shader.alphaThreshold;
@@ -149,8 +181,8 @@ class AmbientBasicMethod extends ShadingMethodBase
 
 	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
-		if (shader.textureVO)
-			shader.textureVO._setRenderState(renderable);
+		if (methodVO.textureVO)
+			methodVO.textureVO._setRenderState(renderable);
 	}
 
 	/**
@@ -158,9 +190,9 @@ class AmbientBasicMethod extends ShadingMethodBase
 	 */
 	private updateColor()
 	{
-		this._colorR = ((this._color >> 16) & 0xff)/0xff*this._ambient;
-		this._colorG = ((this._color >> 8) & 0xff)/0xff*this._ambient;
-		this._colorB = (this._color & 0xff)/0xff*this._ambient;
+		this._colorR = ((this._color >> 16) & 0xff)/0xff*this._strength;
+		this._colorG = ((this._color >> 8) & 0xff)/0xff*this._strength;
+		this._colorB = (this._color & 0xff)/0xff*this._strength;
 	}
 }
 

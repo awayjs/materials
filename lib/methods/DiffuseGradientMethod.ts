@@ -145,7 +145,7 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 	{
 		super.iActivate(shader, methodVO, stage);
 
-		methodVO.secondaryTextureVO.activate();
+		methodVO.secondaryTextureVO.activate(methodVO.pass._render);
 	}
 
 

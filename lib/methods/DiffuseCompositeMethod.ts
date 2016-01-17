@@ -119,34 +119,17 @@ class DiffuseCompositeMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public get diffuseColor():number
+	public get color():number
 	{
-		return this.pBaseMethod.diffuseColor;
+		return this.pBaseMethod.color;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public set diffuseColor(value:number)
+	public set color(value:number)
 	{
-		this.pBaseMethod.diffuseColor = value;
-	}
-
-
-	/**
-	 * @inheritDoc
-	 */
-	public get ambientColor():number
-	{
-		return this.pBaseMethod.ambientColor;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public set ambientColor(value:number)
-	{
-		this.pBaseMethod.ambientColor = value;
+		this.pBaseMethod.color = value;
 	}
 
 	/**

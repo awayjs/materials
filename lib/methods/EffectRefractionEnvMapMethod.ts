@@ -194,7 +194,7 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 		}
 		data[index + 3] = this._alpha;
 
-		methodVO.textureVO.activate();
+		methodVO.textureVO.activate(methodVO.pass._render);
 	}
 
 	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)

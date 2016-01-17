@@ -1,3 +1,4 @@
+import AssetEvent						= require("awayjs-core/lib/events/AssetEvent");
 import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -28,6 +29,14 @@ class AmbientEnvMapMethod extends AmbientBasicMethod
 	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
 	{
 		methodVO.needsNormals = true;
+
+		if (this._texture) {
+			methodVO.textureVO = shader.getAbstraction(this._texture);
+			shader.uvDependencies++;
+		} else if (methodVO.textureVO) {
+			methodVO.textureVO.onClear(new AssetEvent(AssetEvent.CLEAR, this._texture));
+			methodVO.textureVO = null;
+		}
 	}
 	
 	/**
@@ -35,7 +44,7 @@ class AmbientEnvMapMethod extends AmbientBasicMethod
 	 */
 	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		return shader.textureVO._iGetFragmentCode(targetReg, regCache, sharedRegisters, sharedRegisters.normalFragment);
+		return (this._texture)? methodVO.textureVO._iGetFragmentCode(targetReg, regCache, sharedRegisters, sharedRegisters.normalFragment) : "";
 	}
 }
 

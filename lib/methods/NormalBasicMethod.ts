@@ -17,24 +17,24 @@ import ShadingMethodBase				= require("awayjs-methodmaterials/lib/methods/Shadin
  */
 class NormalBasicMethod extends ShadingMethodBase
 {
-	private _normalMap:TextureBase;
+	private _texture:TextureBase;
 
 	/**
 	 * Creates a new NormalBasicMethod object.
 	 */
-	constructor(normalMap:TextureBase = null)
+	constructor(texture:TextureBase = null)
 	{
 		super();
 
-		this._normalMap = normalMap;
+		this._texture = texture;
 
-		if (this._normalMap)
-			this.iAddTexture(this._normalMap);
+		if (this._texture)
+			this.iAddTexture(this._texture);
 	}
 
 	public iIsUsed(shader:ShaderBase):boolean
 	{
-		if (this._normalMap && shader.normalDependencies)
+		if (this._texture && shader.normalDependencies)
 			return true;
 
 		return false;
@@ -45,8 +45,8 @@ class NormalBasicMethod extends ShadingMethodBase
 	 */
 	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
 	{
-		if (this._normalMap) {
-			methodVO.textureVO = shader.getAbstraction(this._normalMap);
+		if (this._texture) {
+			methodVO.textureVO = shader.getAbstraction(this._texture);
 			shader.uvDependencies++;
 		}
 	}
@@ -67,30 +67,31 @@ class NormalBasicMethod extends ShadingMethodBase
 		var s:any = method;
 		var bnm:NormalBasicMethod = <NormalBasicMethod> method;
 
-		if (bnm.normalMap != null)
-			this.normalMap = bnm.normalMap;
+		if (bnm.texture != null)
+			this.texture = bnm.texture;
 	}
 
 	/**
-	 * The texture containing the normals per pixel.
+	 * A texture to modulate the direction of the surface for each texel (normal map). The default normal method expects
+	 * tangent-space normal maps, but others could expect object-space maps.
 	 */
-	public get normalMap():TextureBase
+	public get texture():TextureBase
 	{
-		return this._normalMap;
+		return this._texture;
 	}
 
-	public set normalMap(value:TextureBase)
+	public set texture(value:TextureBase)
 	{
-		if (this._normalMap == value)
+		if (this._texture == value)
 			return;
 
-		if (this._normalMap)
-			this.iRemoveTexture(this._normalMap);
+		if (this._texture)
+			this.iRemoveTexture(this._texture);
 
-		this._normalMap = value;
+		this._texture = value;
 
-		if (this._normalMap)
-			this.iAddTexture(this._normalMap);
+		if (this._texture)
+			this.iAddTexture(this._texture);
 
 		this.iInvalidateShaderProgram();
 	}
@@ -100,8 +101,8 @@ class NormalBasicMethod extends ShadingMethodBase
 	 */
 	public dispose()
 	{
-		if (this._normalMap)
-			this._normalMap = null;
+		if (this._texture)
+			this._texture = null;
 	}
 
 	/**
@@ -109,13 +110,13 @@ class NormalBasicMethod extends ShadingMethodBase
 	 */
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
-		if (this._normalMap)
-			methodVO.textureVO.activate();
+		if (this._texture)
+			methodVO.textureVO.activate(methodVO.pass._render);
 	}
 
 	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
-		if (this._normalMap)
+		if (this._texture)
 			methodVO.textureVO._setRenderState(renderable);
 	}
 
@@ -126,7 +127,7 @@ class NormalBasicMethod extends ShadingMethodBase
 	{
 		var code:string = "";
 
-		if (this._normalMap)
+		if (this._texture)
 			code += methodVO.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
 
 

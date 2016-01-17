@@ -244,7 +244,7 @@ class ShadowMethodBase extends ShadowMapMethodBase
 			fragmentData[index + 11] = 1/(2*f*f);
 		}
 
-		methodVO.textureVO.activate();
+		methodVO.textureVO.activate(methodVO.pass._render);
 	}
 
 	/**

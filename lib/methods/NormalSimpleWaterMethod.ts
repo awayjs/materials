@@ -166,7 +166,7 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 		data[index + 7] = this._water2OffsetY;
 
 		if (this._secondaryNormalMap)
-			methodVO.secondaryTextureVO.activate();
+			methodVO.secondaryTextureVO.activate(methodVO.pass._render);
 	}
 
 	/**
@@ -195,7 +195,7 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 
 		code += "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg2 + ".xyxy\n";
 
-		if (this.normalMap)
+		if (this.texture)
 			code += methodVO.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, temp);
 
 		code += "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg2 + ".zwzw\n";

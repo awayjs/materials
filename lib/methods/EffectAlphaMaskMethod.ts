@@ -116,7 +116,7 @@ class EffectAlphaMaskMethod extends EffectMethodBase
 	{
 		super.iActivate(shader, methodVO, stage);
 
-		methodVO.textureVO.activate();
+		methodVO.textureVO.activate(methodVO.pass._render);
 	}
 
 

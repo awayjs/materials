@@ -30,7 +30,7 @@ class NormalHeightMapMethod extends NormalBasicMethod
 	{
 		super();
 
-		this.normalMap = heightMap;
+		this.texture = heightMap;
 		this._worldXYRatio = worldWidth/worldHeight;
 		this._worldXZRatio = worldDepth/worldHeight;
 	}
@@ -42,8 +42,8 @@ class NormalHeightMapMethod extends NormalBasicMethod
 	{
 		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
 		var data:Float32Array = shader.fragmentConstantData;
-		data[index] = 1/(<Single2DTexture> this.normalMap).image2D.width;
-		data[index + 1] = 1/(<Single2DTexture> this.normalMap).image2D.height;
+		data[index] = 1/(<Single2DTexture> this.texture).image2D.width;
+		data[index + 1] = 1/(<Single2DTexture> this.texture).image2D.height;
 		data[index + 2] = 0;
 		data[index + 3] = 1;
 		data[index + 4] = this._worldXYRatio;

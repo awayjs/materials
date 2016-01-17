@@ -261,7 +261,7 @@ class MethodPass extends PassBase implements ILightingPass
 		}
 
 		if (value) {
-			this._iColorTransformMethodVO = new MethodVO(value);
+			this._iColorTransformMethodVO = new MethodVO(value, this);
 			this._addDependency(this._iColorTransformMethodVO);
 		}
 	}
@@ -303,7 +303,7 @@ class MethodPass extends PassBase implements ILightingPass
 	 */
 	public addEffectMethod(method:EffectMethodBase)
 	{
-		this._addDependency(new MethodVO(method), true);
+		this._addDependency(new MethodVO(method, this), true);
 	}
 
 	/**
@@ -345,7 +345,7 @@ class MethodPass extends PassBase implements ILightingPass
 	 */
 	public addEffectMethodAt(method:EffectMethodBase, index:number)
 	{
-		this._addDependency(new MethodVO(method), true, index);
+		this._addDependency(new MethodVO(method, this), true, index);
 	}
 
 	/**
@@ -405,7 +405,7 @@ class MethodPass extends PassBase implements ILightingPass
 		}
 
 		if (value) {
-			this._iNormalMethodVO = new MethodVO(value);
+			this._iNormalMethodVO = new MethodVO(value, this);
 			this._addDependency(this._iNormalMethodVO);
 		}
 	}
@@ -429,7 +429,7 @@ class MethodPass extends PassBase implements ILightingPass
 		}
 
 		if (value) {
-			this._iAmbientMethodVO = new MethodVO(value);
+			this._iAmbientMethodVO = new MethodVO(value, this);
 			this._addDependency(this._iAmbientMethodVO);
 		}
 	}
@@ -453,7 +453,7 @@ class MethodPass extends PassBase implements ILightingPass
 		}
 
 		if (value) {
-			this._iShadowMethodVO = new MethodVO(value);
+			this._iShadowMethodVO = new MethodVO(value, this);
 			this._addDependency(this._iShadowMethodVO);
 		}
 	}
@@ -477,7 +477,7 @@ class MethodPass extends PassBase implements ILightingPass
 		}
 
 		if (value) {
-			this._iDiffuseMethodVO = new MethodVO(value);
+			this._iDiffuseMethodVO = new MethodVO(value, this);
 			this._addDependency(this._iDiffuseMethodVO);
 		}
 	}
@@ -501,7 +501,7 @@ class MethodPass extends PassBase implements ILightingPass
 		}
 
 		if (value) {
-			this._iSpecularMethodVO = new MethodVO(value);
+			this._iSpecularMethodVO = new MethodVO(value, this);
 			this._addDependency(this._iSpecularMethodVO);
 		}
 	}

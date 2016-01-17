@@ -111,14 +111,30 @@ class SpecularCompositeMethod extends SpecularBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public get specular():number
+	public get strength():number
 	{
-		return this._baseMethod.specular;
+		return this._baseMethod.strength;
 	}
 
-	public set specular(value:number)
+	public set strength(value:number)
 	{
-		this._baseMethod.specular = value;
+		this._baseMethod.strength = value;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public get color():number
+	{
+		return this._baseMethod.color;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public set color(value:number)
+	{
+		this._baseMethod.color = value;
 	}
 
 	/**
