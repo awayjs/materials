@@ -40,7 +40,6 @@ var __extends = this.__extends || function (d, b) {
 var Image2D = require("awayjs-core/lib/image/Image2D");
 var MaterialBase = require("awayjs-display/lib/materials/MaterialBase");
 var Single2DTexture = require("awayjs-display/lib/textures/Single2DTexture");
-var TextureBase = require("awayjs-display/lib/textures/TextureBase");
 var ContextGLCompareMode = require("awayjs-stagegl/lib/base/ContextGLCompareMode");
 var MethodMaterialMode = require("awayjs-methodmaterials/lib/MethodMaterialMode");
 var AmbientBasicMethod = require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
@@ -53,12 +52,10 @@ var SpecularBasicMethod = require("awayjs-methodmaterials/lib/methods/SpecularBa
  */
 var MethodMaterial = (function (_super) {
     __extends(MethodMaterial, _super);
-    function MethodMaterial(textureColor, smoothAlpha, repeat, mipmap) {
-        if (textureColor === void 0) { textureColor = null; }
-        if (smoothAlpha === void 0) { smoothAlpha = null; }
-        if (repeat === void 0) { repeat = false; }
-        if (mipmap === void 0) { mipmap = true; }
-        _super.call(this);
+    function MethodMaterial(imageColor, alpha) {
+        if (imageColor === void 0) { imageColor = null; }
+        if (alpha === void 0) { alpha = 1; }
+        _super.call(this, imageColor, alpha);
         this._effectMethods = new Array();
         this._ambientMethod = new AmbientBasicMethod();
         this._diffuseMethod = new DiffuseBasicMethod();
@@ -66,23 +63,14 @@ var MethodMaterial = (function (_super) {
         this._specularMethod = new SpecularBasicMethod();
         this._depthCompareMode = ContextGLCompareMode.LESS_EQUAL;
         this._mode = MethodMaterialMode.SINGLE_PASS;
-        if (textureColor instanceof Image2D)
-            textureColor = new Single2DTexture(textureColor);
-        if (textureColor instanceof TextureBase) {
-            this.texture = textureColor;
-            this.smooth = (smoothAlpha == null) ? true : false;
-            this.repeat = repeat;
-            this.mipmap = mipmap;
-        }
-        else {
-            this.color = (textureColor == null) ? 0xFFFFFF : Number(textureColor);
-            this.alpha = (smoothAlpha == null) ? 1 : Number(smoothAlpha);
-        }
         //add default methods owners
         this._ambientMethod.iAddOwner(this);
         this._diffuseMethod.iAddOwner(this);
         this._normalMethod.iAddOwner(this);
         this._specularMethod.iAddOwner(this);
+        //set a texture if an image is present
+        if (imageColor instanceof Image2D)
+            this._ambientMethod.texture = new Single2DTexture();
     }
     Object.defineProperty(MethodMaterial.prototype, "assetType", {
         /**
@@ -148,8 +136,6 @@ var MethodMaterial = (function (_super) {
         set: function (value) {
             if (this._ambientMethod == value)
                 return;
-            if (value && this._ambientMethod)
-                value.copyFrom(this._ambientMethod);
             if (this._ambientMethod)
                 this._ambientMethod.iRemoveOwner(this);
             this._ambientMethod = value;
@@ -170,8 +156,6 @@ var MethodMaterial = (function (_super) {
         set: function (value) {
             if (this._shadowMethod == value)
                 return;
-            if (value && this._shadowMethod)
-                value.copyFrom(this._shadowMethod);
             if (this._shadowMethod)
                 this._shadowMethod.iRemoveOwner(this);
             this._shadowMethod = value;
@@ -192,8 +176,6 @@ var MethodMaterial = (function (_super) {
         set: function (value) {
             if (this._diffuseMethod == value)
                 return;
-            if (value && this._diffuseMethod)
-                value.copyFrom(this._diffuseMethod);
             if (this._diffuseMethod)
                 this._diffuseMethod.iRemoveOwner(this);
             this._diffuseMethod = value;
@@ -214,8 +196,6 @@ var MethodMaterial = (function (_super) {
         set: function (value) {
             if (this._specularMethod == value)
                 return;
-            if (value && this._specularMethod)
-                value.copyFrom(this._specularMethod);
             if (this._specularMethod)
                 this._specularMethod.iRemoveOwner(this);
             this._specularMethod = value;
@@ -236,8 +216,6 @@ var MethodMaterial = (function (_super) {
         set: function (value) {
             if (this._normalMethod == value)
                 return;
-            if (value && this._normalMethod)
-                value.copyFrom(this._normalMethod);
             if (this._normalMethod)
                 this._normalMethod.iRemoveOwner(this);
             this._normalMethod = value;
@@ -292,119 +270,12 @@ var MethodMaterial = (function (_super) {
         this._effectMethods.splice(this._effectMethods.indexOf(method), 1);
         this.invalidate();
     };
-    Object.defineProperty(MethodMaterial.prototype, "normalMap", {
-        /**
-         * The normal map to modulate the direction of the surface for each texel. The default normal method expects
-         * tangent-space normal maps, but others could expect object-space maps.
-         */
-        get: function () {
-            return this._normalMethod.normalMap;
-        },
-        set: function (value) {
-            this._normalMethod.normalMap = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MethodMaterial.prototype, "specularMap", {
-        /**
-         * A specular map that defines the strength of specular reflections for each texel in the red channel,
-         * and the gloss factor in the green channel. You can use Specular2DTexture if you want to easily set
-         * specular and gloss maps from grayscale images, but correctly authored images are preferred.
-         */
-        get: function () {
-            return this._specularMethod.texture;
-        },
-        set: function (value) {
-            this._specularMethod.texture = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MethodMaterial.prototype, "gloss", {
-        /**
-         * The glossiness of the material (sharpness of the specular highlight).
-         */
-        get: function () {
-            return this._specularMethod.gloss;
-        },
-        set: function (value) {
-            this._specularMethod.gloss = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MethodMaterial.prototype, "ambient", {
-        /**
-         * The strength of the ambient reflection.
-         */
-        get: function () {
-            return this._ambientMethod.ambient;
-        },
-        set: function (value) {
-            this._ambientMethod.ambient = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MethodMaterial.prototype, "specular", {
-        /**
-         * The overall strength of the specular reflection.
-         */
-        get: function () {
-            return this._specularMethod.specular;
-        },
-        set: function (value) {
-            this._specularMethod.specular = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MethodMaterial.prototype, "ambientColor", {
-        /**
-         * The colour of the ambient reflection.
-         */
-        get: function () {
-            return this._diffuseMethod.ambientColor;
-        },
-        set: function (value) {
-            this._diffuseMethod.ambientColor = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MethodMaterial.prototype, "diffuseColor", {
-        /**
-         * The colour of the diffuse reflection.
-         */
-        get: function () {
-            return this._diffuseMethod.diffuseColor;
-        },
-        set: function (value) {
-            this._diffuseMethod.diffuseColor = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MethodMaterial.prototype, "specularColor", {
-        /**
-         * The colour of the specular reflection.
-         */
-        get: function () {
-            return this._specularMethod.specularColor;
-        },
-        set: function (value) {
-            this._specularMethod.specularColor = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
     MethodMaterial.assetType = "[materials MethodMaterial]";
     return MethodMaterial;
 })(MaterialBase);
 module.exports = MethodMaterial;
 
-},{"awayjs-core/lib/image/Image2D":undefined,"awayjs-display/lib/materials/MaterialBase":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-display/lib/textures/TextureBase":undefined,"awayjs-methodmaterials/lib/MethodMaterialMode":"awayjs-methodmaterials/lib/MethodMaterialMode","awayjs-methodmaterials/lib/methods/AmbientBasicMethod":"awayjs-methodmaterials/lib/methods/AmbientBasicMethod","awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod","awayjs-methodmaterials/lib/methods/NormalBasicMethod":"awayjs-methodmaterials/lib/methods/NormalBasicMethod","awayjs-methodmaterials/lib/methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod","awayjs-stagegl/lib/base/ContextGLCompareMode":undefined}],"awayjs-methodmaterials/lib/data/MethodVO":[function(require,module,exports){
+},{"awayjs-core/lib/image/Image2D":undefined,"awayjs-display/lib/materials/MaterialBase":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-methodmaterials/lib/MethodMaterialMode":"awayjs-methodmaterials/lib/MethodMaterialMode","awayjs-methodmaterials/lib/methods/AmbientBasicMethod":"awayjs-methodmaterials/lib/methods/AmbientBasicMethod","awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod","awayjs-methodmaterials/lib/methods/NormalBasicMethod":"awayjs-methodmaterials/lib/methods/NormalBasicMethod","awayjs-methodmaterials/lib/methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod","awayjs-stagegl/lib/base/ContextGLCompareMode":undefined}],"awayjs-methodmaterials/lib/data/MethodVO":[function(require,module,exports){
 /**
  * MethodVO contains data for a given shader object for the use within a single material.
  * This allows shader methods to be shared across materials while their non-public state differs.
@@ -413,9 +284,10 @@ var MethodVO = (function () {
     /**
      * Creates a new MethodVO object.
      */
-    function MethodVO(method) {
+    function MethodVO(method, pass) {
         this.useMethod = true;
         this.method = method;
+        this.pass = pass;
     }
     /**
      * Resets the values of the value object to their "unused" state.
@@ -444,6 +316,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+var AssetEvent = require("awayjs-core/lib/events/AssetEvent");
 var ShadingMethodBase = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
 /**
  * AmbientBasicMethod provides the default shading method for uniform ambient lighting.
@@ -455,40 +328,45 @@ var AmbientBasicMethod = (function (_super) {
      */
     function AmbientBasicMethod() {
         _super.call(this);
-        this._color = 0xffffff;
         this._alpha = 1;
         this._colorR = 1;
         this._colorG = 1;
         this._colorB = 1;
-        this._ambient = 1;
+        this._strength = 1;
     }
     /**
      * @inheritDoc
      */
     AmbientBasicMethod.prototype.iInitVO = function (shader, methodVO) {
-        if (shader.textureVO)
+        if (this._texture) {
+            methodVO.textureVO = shader.getAbstraction(this._texture);
             shader.uvDependencies++;
+        }
+        else if (methodVO.textureVO) {
+            methodVO.textureVO.onClear(new AssetEvent(AssetEvent.CLEAR, this._texture));
+            methodVO.textureVO = null;
+        }
     };
     /**
      * @inheritDoc
      */
     AmbientBasicMethod.prototype.iInitConstants = function (shader, methodVO) {
-        if (!shader.textureVO) {
-            this._color = shader.color;
+        if (!methodVO.textureVO) {
+            this._color = shader.numLights ? 0xFFFFFF : methodVO.pass._renderOwner.style.color;
             this.updateColor();
         }
     };
-    Object.defineProperty(AmbientBasicMethod.prototype, "ambient", {
+    Object.defineProperty(AmbientBasicMethod.prototype, "strength", {
         /**
          * The strength of the ambient reflection of the surface.
          */
         get: function () {
-            return this._ambient;
+            return this._strength;
         },
         set: function (value) {
-            if (this._ambient == value)
+            if (this._strength == value)
                 return;
-            this._ambient = value;
+            this._strength = value;
             this.updateColor();
         },
         enumerable: true,
@@ -510,6 +388,26 @@ var AmbientBasicMethod = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(AmbientBasicMethod.prototype, "texture", {
+        /**
+         * The texture to use to define the diffuse reflection color per texel.
+         */
+        get: function () {
+            return this._texture;
+        },
+        set: function (value) {
+            if (this._texture == value)
+                return;
+            if (this._texture)
+                this.iRemoveTexture(this._texture);
+            this._texture = value;
+            if (this._texture)
+                this.iAddTexture(this._texture);
+            this.iInvalidateShaderProgram();
+        },
+        enumerable: true,
+        configurable: true
+    });
     /**
      * @inheritDoc
      */
@@ -522,8 +420,8 @@ var AmbientBasicMethod = (function (_super) {
      */
     AmbientBasicMethod.prototype.iGetFragmentCode = function (shader, methodVO, targetReg, registerCache, sharedRegisters) {
         var code = "";
-        if (shader.textureVO) {
-            code += shader.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+        if (methodVO.textureVO) {
+            code += methodVO.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
             if (shader.alphaThreshold > 0) {
                 var cutOffReg = registerCache.getFreeFragmentConstant();
                 methodVO.fragmentConstantsIndex = cutOffReg.index * 4;
@@ -541,8 +439,8 @@ var AmbientBasicMethod = (function (_super) {
      * @inheritDoc
      */
     AmbientBasicMethod.prototype.iActivate = function (shader, methodVO, stage) {
-        if (shader.textureVO) {
-            shader.textureVO.activate();
+        if (methodVO.textureVO) {
+            methodVO.textureVO.activate(methodVO.pass._render);
             if (shader.alphaThreshold > 0)
                 shader.fragmentConstantData[methodVO.fragmentConstantsIndex] = shader.alphaThreshold;
         }
@@ -556,28 +454,29 @@ var AmbientBasicMethod = (function (_super) {
         }
     };
     AmbientBasicMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
-        if (shader.textureVO)
-            shader.textureVO._setRenderState(renderable);
+        if (methodVO.textureVO)
+            methodVO.textureVO._setRenderState(renderable);
     };
     /**
      * Updates the ambient color data used by the render state.
      */
     AmbientBasicMethod.prototype.updateColor = function () {
-        this._colorR = ((this._color >> 16) & 0xff) / 0xff * this._ambient;
-        this._colorG = ((this._color >> 8) & 0xff) / 0xff * this._ambient;
-        this._colorB = (this._color & 0xff) / 0xff * this._ambient;
+        this._colorR = ((this._color >> 16) & 0xff) / 0xff * this._strength;
+        this._colorG = ((this._color >> 8) & 0xff) / 0xff * this._strength;
+        this._colorB = (this._color & 0xff) / 0xff * this._strength;
     };
     return AmbientBasicMethod;
 })(ShadingMethodBase);
 module.exports = AmbientBasicMethod;
 
-},{"awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod":[function(require,module,exports){
+},{"awayjs-core/lib/events/AssetEvent":undefined,"awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+var AssetEvent = require("awayjs-core/lib/events/AssetEvent");
 var AmbientBasicMethod = require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
 /**
  * AmbientEnvMapMethod provides a diffuse shading method that uses a diffuse irradiance environment map to
@@ -598,24 +497,33 @@ var AmbientEnvMapMethod = (function (_super) {
      */
     AmbientEnvMapMethod.prototype.iInitVO = function (shader, methodVO) {
         methodVO.needsNormals = true;
+        if (this._texture) {
+            methodVO.textureVO = shader.getAbstraction(this._texture);
+            shader.uvDependencies++;
+        }
+        else if (methodVO.textureVO) {
+            methodVO.textureVO.onClear(new AssetEvent(AssetEvent.CLEAR, this._texture));
+            methodVO.textureVO = null;
+        }
     };
     /**
      * @inheritDoc
      */
     AmbientEnvMapMethod.prototype.iGetFragmentCode = function (shader, methodVO, targetReg, regCache, sharedRegisters) {
-        return shader.textureVO._iGetFragmentCode(targetReg, regCache, sharedRegisters, sharedRegisters.normalFragment);
+        return (this._texture) ? methodVO.textureVO._iGetFragmentCode(targetReg, regCache, sharedRegisters, sharedRegisters.normalFragment) : "";
     };
     return AmbientEnvMapMethod;
 })(AmbientBasicMethod);
 module.exports = AmbientEnvMapMethod;
 
-},{"awayjs-methodmaterials/lib/methods/AmbientBasicMethod":"awayjs-methodmaterials/lib/methods/AmbientBasicMethod"}],"awayjs-methodmaterials/lib/methods/CurveBasicMethod":[function(require,module,exports){
+},{"awayjs-core/lib/events/AssetEvent":undefined,"awayjs-methodmaterials/lib/methods/AmbientBasicMethod":"awayjs-methodmaterials/lib/methods/AmbientBasicMethod"}],"awayjs-methodmaterials/lib/methods/CurveBasicMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+var AssetEvent = require("awayjs-core/lib/events/AssetEvent");
 var ShadingMethodBase = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
 /**
  * AmbientBasicMethod provides the default shading method for uniform ambient lighting.
@@ -638,15 +546,21 @@ var CurveBasicMethod = (function (_super) {
      * @inheritDoc
      */
     CurveBasicMethod.prototype.iInitVO = function (shader, methodVO) {
-        if (shader.textureVO)
+        if (this._texture) {
+            methodVO.textureVO = shader.getAbstraction(this._texture);
             shader.uvDependencies++;
+        }
+        else if (methodVO.textureVO) {
+            methodVO.textureVO.onClear(new AssetEvent(AssetEvent.CLEAR, this._texture));
+            methodVO.textureVO = null;
+        }
     };
     /**
      * @inheritDoc
      */
     CurveBasicMethod.prototype.iInitConstants = function (shader, methodVO) {
-        if (!shader.textureVO) {
-            this._color = shader.color;
+        if (!methodVO.textureVO) {
+            this._color = methodVO.pass._renderOwner.style.color;
             this.updateColor();
         }
     };
@@ -682,6 +596,26 @@ var CurveBasicMethod = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(CurveBasicMethod.prototype, "texture", {
+        /**
+         * The texture to use to define the diffuse reflection color per texel.
+         */
+        get: function () {
+            return this._texture;
+        },
+        set: function (value) {
+            if (this._texture == value)
+                return;
+            if (this._texture)
+                this.iRemoveTexture(this._texture);
+            this._texture = value;
+            if (this._texture)
+                this.iAddTexture(this._texture);
+            this.iInvalidateShaderProgram();
+        },
+        enumerable: true,
+        configurable: true
+    });
     /**
      * @inheritDoc
      */
@@ -700,8 +634,8 @@ var CurveBasicMethod = (function (_super) {
     CurveBasicMethod.prototype.iGetFragmentCode = function (shader, methodVO, targetReg, registerCache, sharedRegisters) {
         var code = "";
         var ambientInputRegister;
-        if (shader.textureVO) {
-            code += shader.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+        if (methodVO.textureVO) {
+            code += methodVO.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
             if (shader.alphaThreshold > 0) {
                 var cutOffReg = registerCache.getFreeFragmentConstant();
                 methodVO.fragmentConstantsIndex = cutOffReg.index * 4;
@@ -720,8 +654,8 @@ var CurveBasicMethod = (function (_super) {
      * @inheritDoc
      */
     CurveBasicMethod.prototype.iActivate = function (shader, methodVO, stage) {
-        if (shader.textureVO) {
-            shader.textureVO.activate();
+        if (methodVO.textureVO) {
+            methodVO.textureVO.activate(methodVO.pass._render);
             if (shader.alphaThreshold > 0)
                 shader.fragmentConstantData[methodVO.fragmentConstantsIndex] = shader.alphaThreshold;
         }
@@ -735,8 +669,8 @@ var CurveBasicMethod = (function (_super) {
         }
     };
     CurveBasicMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
-        if (shader.textureVO)
-            shader.textureVO._setRenderState(renderable);
+        if (methodVO.textureVO)
+            methodVO.textureVO._setRenderState(renderable);
     };
     /**
      * Updates the ambient color data used by the render state.
@@ -750,7 +684,7 @@ var CurveBasicMethod = (function (_super) {
 })(ShadingMethodBase);
 module.exports = CurveBasicMethod;
 
-},{"awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":[function(require,module,exports){
+},{"awayjs-core/lib/events/AssetEvent":undefined,"awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -770,14 +704,13 @@ var DiffuseBasicMethod = (function (_super) {
     function DiffuseBasicMethod() {
         _super.call(this);
         this._multiply = true;
-        this._diffuseColor = 0xffffff;
-        this._ambientColor = 0xffffff;
-        this._diffuseR = 1;
-        this._diffuseG = 1;
-        this._diffuseB = 1;
-        this._ambientR = 1;
-        this._ambientG = 1;
-        this._ambientB = 1;
+        this._ambientColorR = 1;
+        this._ambientColorG = 1;
+        this._ambientColorB = 1;
+        this._color = 0xffffff;
+        this._colorR = 1;
+        this._colorG = 1;
+        this._colorB = 1;
     }
     DiffuseBasicMethod.prototype.iIsUsed = function (shader) {
         if (!shader.numLights)
@@ -814,41 +747,37 @@ var DiffuseBasicMethod = (function (_super) {
             methodVO.needsNormals = true;
         }
     };
-    Object.defineProperty(DiffuseBasicMethod.prototype, "diffuseColor", {
+    /**
+     * @inheritDoc
+     */
+    DiffuseBasicMethod.prototype.iInitConstants = function (shader, methodVO) {
+        if (shader.numLights > 0) {
+            this._ambientColor = methodVO.pass._renderOwner.style.color;
+            this.updateAmbientColor();
+        }
+        else {
+            this._ambientColor = null;
+        }
+    };
+    Object.defineProperty(DiffuseBasicMethod.prototype, "color", {
         /**
          * The color of the diffuse reflection when not using a texture.
          */
         get: function () {
-            return this._diffuseColor;
+            return this._color;
         },
         set: function (value) {
-            if (this._diffuseColor == value)
+            if (this._color == value)
                 return;
-            this._diffuseColor = value;
-            this.updateDiffuse();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(DiffuseBasicMethod.prototype, "ambientColor", {
-        /**
-         * The color of the ambient reflection
-         */
-        get: function () {
-            return this._ambientColor;
-        },
-        set: function (value) {
-            if (this._ambientColor == value)
-                return;
-            this._ambientColor = value;
-            this.updateAmbient();
+            this._color = value;
+            this.updateColor();
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(DiffuseBasicMethod.prototype, "texture", {
         /**
-         * The bitmapData to use to define the diffuse reflection color per texel.
+         * The texture to use to define the diffuse reflection color per texel.
          */
         get: function () {
             return this._texture;
@@ -879,8 +808,7 @@ var DiffuseBasicMethod = (function (_super) {
         var diff = method;
         this.texture = diff.texture;
         this.multiply = diff.multiply;
-        this.diffuseColor = diff.diffuseColor;
-        this.ambientColor = diff.ambientColor;
+        this.color = diff.color;
     };
     /**
      * @inheritDoc
@@ -993,32 +921,32 @@ var DiffuseBasicMethod = (function (_super) {
      */
     DiffuseBasicMethod.prototype.iActivate = function (shader, methodVO, stage) {
         if (this._texture) {
-            methodVO.textureVO.activate();
+            methodVO.textureVO.activate(methodVO.pass._render);
         }
         else {
             var index = methodVO.fragmentConstantsIndex;
             var data = shader.fragmentConstantData;
-            data[index + 4] = this._diffuseR;
-            data[index + 5] = this._diffuseG;
-            data[index + 6] = this._diffuseB;
+            data[index + 4] = this._colorR;
+            data[index + 5] = this._colorG;
+            data[index + 6] = this._colorB;
             data[index + 7] = 1;
         }
     };
     /**
      * Updates the diffuse color data used by the render state.
      */
-    DiffuseBasicMethod.prototype.updateDiffuse = function () {
-        this._diffuseR = ((this._diffuseColor >> 16) & 0xff) / 0xff;
-        this._diffuseG = ((this._diffuseColor >> 8) & 0xff) / 0xff;
-        this._diffuseB = (this._diffuseColor & 0xff) / 0xff;
+    DiffuseBasicMethod.prototype.updateColor = function () {
+        this._colorR = ((this._color >> 16) & 0xff) / 0xff;
+        this._colorG = ((this._color >> 8) & 0xff) / 0xff;
+        this._colorB = (this._color & 0xff) / 0xff;
     };
     /**
      * Updates the ambient color data used by the render state.
      */
-    DiffuseBasicMethod.prototype.updateAmbient = function () {
-        this._ambientR = ((this._ambientColor >> 16) & 0xff) / 0xff;
-        this._ambientG = ((this._ambientColor >> 8) & 0xff) / 0xff;
-        this._ambientB = (this._ambientColor & 0xff) / 0xff;
+    DiffuseBasicMethod.prototype.updateAmbientColor = function () {
+        this._ambientColorR = ((this._ambientColor >> 16) & 0xff) / 0xff;
+        this._ambientColorG = ((this._ambientColor >> 8) & 0xff) / 0xff;
+        this._ambientColorB = (this._ambientColor & 0xff) / 0xff;
     };
     /**
      * @inheritDoc
@@ -1030,9 +958,16 @@ var DiffuseBasicMethod = (function (_super) {
         if (shader.numLights > 0) {
             var index = methodVO.fragmentConstantsIndex;
             var data = shader.fragmentConstantData;
-            data[index] = shader.ambientR * this._ambientR;
-            data[index + 1] = shader.ambientG * this._ambientG;
-            data[index + 2] = shader.ambientB * this._ambientB;
+            if (this._ambientColor != null) {
+                data[index] = shader.ambientR * this._ambientColorR;
+                data[index + 1] = shader.ambientG * this._ambientColorG;
+                data[index + 2] = shader.ambientB * this._ambientColorB;
+            }
+            else {
+                data[index] = shader.ambientR;
+                data[index + 1] = shader.ambientG;
+                data[index + 2] = shader.ambientB;
+            }
             data[index + 3] = 1;
         }
     };
@@ -1234,34 +1169,18 @@ var DiffuseCompositeMethod = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(DiffuseCompositeMethod.prototype, "diffuseColor", {
+    Object.defineProperty(DiffuseCompositeMethod.prototype, "color", {
         /**
          * @inheritDoc
          */
         get: function () {
-            return this.pBaseMethod.diffuseColor;
+            return this.pBaseMethod.color;
         },
         /**
          * @inheritDoc
          */
         set: function (value) {
-            this.pBaseMethod.diffuseColor = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(DiffuseCompositeMethod.prototype, "ambientColor", {
-        /**
-         * @inheritDoc
-         */
-        get: function () {
-            return this.pBaseMethod.ambientColor;
-        },
-        /**
-         * @inheritDoc
-         */
-        set: function (value) {
-            this.pBaseMethod.ambientColor = value;
+            this.pBaseMethod.color = value;
         },
         enumerable: true,
         configurable: true
@@ -1507,7 +1426,7 @@ var DiffuseGradientMethod = (function (_super) {
      */
     DiffuseGradientMethod.prototype.iActivate = function (shader, methodVO, stage) {
         _super.prototype.iActivate.call(this, shader, methodVO, stage);
-        methodVO.secondaryTextureVO.activate();
+        methodVO.secondaryTextureVO.activate(methodVO.pass._render);
     };
     /**
      * @inheritDoc
@@ -1645,7 +1564,7 @@ var DiffuseLightMapMethod = (function (_super) {
      */
     DiffuseLightMapMethod.prototype.iActivate = function (shader, methodVO, stage) {
         _super.prototype.iActivate.call(this, shader, methodVO, stage);
-        methodVO.secondaryTextureVO.activate();
+        methodVO.secondaryTextureVO.activate(methodVO.pass._render);
     };
     /**
      * @inheritDoc
@@ -2056,7 +1975,7 @@ var EffectAlphaMaskMethod = (function (_super) {
      */
     EffectAlphaMaskMethod.prototype.iActivate = function (shader, methodVO, stage) {
         _super.prototype.iActivate.call(this, shader, methodVO, stage);
-        methodVO.textureVO.activate();
+        methodVO.textureVO.activate(methodVO.pass._render);
     };
     EffectAlphaMaskMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
         methodVO.textureVO._setRenderState(renderable);
@@ -2321,9 +2240,9 @@ var EffectEnvMapMethod = (function (_super) {
      */
     EffectEnvMapMethod.prototype.iActivate = function (shader, methodVO, stage) {
         shader.fragmentConstantData[methodVO.fragmentConstantsIndex] = this._alpha;
-        methodVO.textureVO.activate();
+        methodVO.textureVO.activate(methodVO.pass._render);
         if (this._mask)
-            methodVO.secondaryTextureVO.activate();
+            methodVO.secondaryTextureVO.activate(methodVO.pass._render);
     };
     EffectEnvMapMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
         methodVO.textureVO._setRenderState(renderable);
@@ -2607,9 +2526,9 @@ var EffectFresnelEnvMapMethod = (function (_super) {
         data[index] = this._alpha;
         data[index + 1] = this._normalReflectance;
         data[index + 2] = this._fresnelPower;
-        methodVO.textureVO.activate();
+        methodVO.textureVO.activate(methodVO.pass._render);
         if (this._mask)
-            methodVO.secondaryTextureVO.activate();
+            methodVO.secondaryTextureVO.activate(methodVO.pass._render);
     };
     EffectFresnelEnvMapMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
         methodVO.textureVO._setRenderState(renderable);
@@ -2768,7 +2687,7 @@ var EffectLightMapMethod = (function (_super) {
      * @inheritDoc
      */
     EffectLightMapMethod.prototype.iActivate = function (shader, methodVO, stage) {
-        methodVO.textureVO.activate();
+        methodVO.textureVO.activate(methodVO.pass._render);
     };
     EffectLightMapMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
         methodVO.textureVO._setRenderState(renderable);
@@ -3000,7 +2919,7 @@ var EffectRefractionEnvMapMethod = (function (_super) {
             data[index + 2] = this._dispersionB + this._refractionIndex;
         }
         data[index + 3] = this._alpha;
-        methodVO.textureVO.activate();
+        methodVO.textureVO.activate(methodVO.pass._render);
     };
     EffectRefractionEnvMapMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
         methodVO.textureVO._setRenderState(renderable);
@@ -3274,15 +3193,15 @@ var NormalBasicMethod = (function (_super) {
     /**
      * Creates a new NormalBasicMethod object.
      */
-    function NormalBasicMethod(normalMap) {
-        if (normalMap === void 0) { normalMap = null; }
+    function NormalBasicMethod(texture) {
+        if (texture === void 0) { texture = null; }
         _super.call(this);
-        this._normalMap = normalMap;
-        if (this._normalMap)
-            this.iAddTexture(this._normalMap);
+        this._texture = texture;
+        if (this._texture)
+            this.iAddTexture(this._texture);
     }
     NormalBasicMethod.prototype.iIsUsed = function (shader) {
-        if (this._normalMap && shader.normalDependencies)
+        if (this._texture && shader.normalDependencies)
             return true;
         return false;
     };
@@ -3290,8 +3209,8 @@ var NormalBasicMethod = (function (_super) {
      * @inheritDoc
      */
     NormalBasicMethod.prototype.iInitVO = function (shader, methodVO) {
-        if (this._normalMap) {
-            methodVO.textureVO = shader.getAbstraction(this._normalMap);
+        if (this._texture) {
+            methodVO.textureVO = shader.getAbstraction(this._texture);
             shader.uvDependencies++;
         }
     };
@@ -3307,24 +3226,25 @@ var NormalBasicMethod = (function (_super) {
     NormalBasicMethod.prototype.copyFrom = function (method) {
         var s = method;
         var bnm = method;
-        if (bnm.normalMap != null)
-            this.normalMap = bnm.normalMap;
+        if (bnm.texture != null)
+            this.texture = bnm.texture;
     };
-    Object.defineProperty(NormalBasicMethod.prototype, "normalMap", {
+    Object.defineProperty(NormalBasicMethod.prototype, "texture", {
         /**
-         * The texture containing the normals per pixel.
+         * A texture to modulate the direction of the surface for each texel (normal map). The default normal method expects
+         * tangent-space normal maps, but others could expect object-space maps.
          */
         get: function () {
-            return this._normalMap;
+            return this._texture;
         },
         set: function (value) {
-            if (this._normalMap == value)
+            if (this._texture == value)
                 return;
-            if (this._normalMap)
-                this.iRemoveTexture(this._normalMap);
-            this._normalMap = value;
-            if (this._normalMap)
-                this.iAddTexture(this._normalMap);
+            if (this._texture)
+                this.iRemoveTexture(this._texture);
+            this._texture = value;
+            if (this._texture)
+                this.iAddTexture(this._texture);
             this.iInvalidateShaderProgram();
         },
         enumerable: true,
@@ -3334,18 +3254,18 @@ var NormalBasicMethod = (function (_super) {
      * @inheritDoc
      */
     NormalBasicMethod.prototype.dispose = function () {
-        if (this._normalMap)
-            this._normalMap = null;
+        if (this._texture)
+            this._texture = null;
     };
     /**
      * @inheritDoc
      */
     NormalBasicMethod.prototype.iActivate = function (shader, methodVO, stage) {
-        if (this._normalMap)
-            methodVO.textureVO.activate();
+        if (this._texture)
+            methodVO.textureVO.activate(methodVO.pass._render);
     };
     NormalBasicMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
-        if (this._normalMap)
+        if (this._texture)
             methodVO.textureVO._setRenderState(renderable);
     };
     /**
@@ -3353,7 +3273,7 @@ var NormalBasicMethod = (function (_super) {
      */
     NormalBasicMethod.prototype.iGetFragmentCode = function (shader, methodVO, targetReg, registerCache, sharedRegisters) {
         var code = "";
-        if (this._normalMap)
+        if (this._texture)
             code += methodVO.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
         code += "sub " + targetReg + ".xyz, " + targetReg + ".xyz, " + sharedRegisters.commons + ".xxx\n" + "nrm " + targetReg + ".xyz, " + targetReg + "\n";
         return code;
@@ -3385,7 +3305,7 @@ var NormalHeightMapMethod = (function (_super) {
      */
     function NormalHeightMapMethod(heightMap, worldWidth, worldHeight, worldDepth) {
         _super.call(this);
-        this.normalMap = heightMap;
+        this.texture = heightMap;
         this._worldXYRatio = worldWidth / worldHeight;
         this._worldXZRatio = worldDepth / worldHeight;
     }
@@ -3395,8 +3315,8 @@ var NormalHeightMapMethod = (function (_super) {
     NormalHeightMapMethod.prototype.iInitConstants = function (shader, methodVO) {
         var index = methodVO.fragmentConstantsIndex;
         var data = shader.fragmentConstantData;
-        data[index] = 1 / this.normalMap.image2D.width;
-        data[index + 1] = 1 / this.normalMap.image2D.height;
+        data[index] = 1 / this.texture.image2D.width;
+        data[index + 1] = 1 / this.texture.image2D.height;
         data[index + 2] = 0;
         data[index + 3] = 1;
         data[index + 4] = this._worldXYRatio;
@@ -3580,7 +3500,7 @@ var NormalSimpleWaterMethod = (function (_super) {
         data[index + 6] = this._water2OffsetX;
         data[index + 7] = this._water2OffsetY;
         if (this._secondaryNormalMap)
-            methodVO.secondaryTextureVO.activate();
+            methodVO.secondaryTextureVO.activate(methodVO.pass._render);
     };
     /**
      * @inheritDoc
@@ -3601,7 +3521,7 @@ var NormalSimpleWaterMethod = (function (_super) {
         var dataReg2 = registerCache.getFreeFragmentConstant();
         methodVO.fragmentConstantsIndex = dataReg.index * 4;
         code += "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg2 + ".xyxy\n";
-        if (this.normalMap)
+        if (this.texture)
             code += methodVO.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, temp);
         code += "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg2 + ".zwzw\n";
         if (this._secondaryNormalMap)
@@ -3691,7 +3611,7 @@ var ShadingMethodBase = (function (_super) {
             //add textures
             var len = this._textures.length;
             for (var i = 0; i < len; i++)
-                this._textures[i].iAddOwner(owner);
+                owner.addTexture(this._textures[i]);
         }
     };
     ShadingMethodBase.prototype.iRemoveOwner = function (owner) {
@@ -3705,7 +3625,7 @@ var ShadingMethodBase = (function (_super) {
             //remove textures
             var len = this._textures.length;
             for (var i = 0; i < len; i++)
-                this._textures[i].iRemoveOwner(owner);
+                owner.removeTexture(this._textures[i]);
         }
     };
     /**
@@ -3715,7 +3635,7 @@ var ShadingMethodBase = (function (_super) {
         this._textures.push(texture);
         var len = this._owners.length;
         for (var i = 0; i < len; i++)
-            texture.iAddOwner(this._owners[i]);
+            this._owners[i].addTexture(texture);
     };
     /**
      *
@@ -3724,7 +3644,7 @@ var ShadingMethodBase = (function (_super) {
         this._textures.splice(this._textures.indexOf(texture), 1);
         var len = this._owners.length;
         for (var i = 0; i < len; i++)
-            texture.iRemoveOwner(this._owners[i]);
+            this._owners[i].removeTexture(texture);
     };
     /**
      * Resets the compilation state of the method.
@@ -3870,7 +3790,7 @@ var ShadowCascadeMethod = (function (_super) {
      * @inheritDoc
      */
     ShadowCascadeMethod.prototype.iInitVO = function (shader, methodVO) {
-        var tempVO = new MethodVO(this._baseMethod);
+        var tempVO = new MethodVO(this._baseMethod, methodVO.pass);
         this._baseMethod.iInitVO(shader, tempVO);
         methodVO.needsGlobalVertexPos = true;
         methodVO.needsProjection = true;
@@ -3965,7 +3885,7 @@ var ShadowCascadeMethod = (function (_super) {
      * @inheritDoc
      */
     ShadowCascadeMethod.prototype.iActivate = function (shader, methodVO, stage) {
-        methodVO.textureVO.activate();
+        methodVO.textureVO.activate(methodVO.pass._render);
         var vertexData = shader.vertexConstantData;
         var vertexIndex = methodVO.vertexConstantsIndex;
         shader.vertexConstantData[methodVO.vertexConstantsIndex + 3] = -1 / (this._cascadeShadowMapper.depth * this._pEpsilon);
@@ -4140,7 +4060,7 @@ var ShadowDitheredMethod = (function (_super) {
         data[index + 9] = (stage.width - 1) / 63;
         data[index + 10] = (stage.height - 1) / 63;
         data[index + 11] = 2 * this._range / this._depthMapSize;
-        methodVO.secondaryTextureVO.activate();
+        methodVO.secondaryTextureVO.activate(methodVO.pass._render);
     };
     /**
      * @inheritDoc
@@ -4237,7 +4157,7 @@ var ShadowDitheredMethod = (function (_super) {
         data[index + 1] = (stage.width - 1) / 63;
         data[index + 2] = (stage.height - 1) / 63;
         data[index + 3] = 2 * this._range / this._depthMapSize;
-        methodVO.secondaryTextureVO.activate();
+        methodVO.secondaryTextureVO.activate(methodVO.pass._render);
     };
     /**
      * @inheritDoc
@@ -4665,7 +4585,7 @@ var ShadowMethodBase = (function (_super) {
             var f = this._pCastingLight.fallOff;
             fragmentData[index + 11] = 1 / (2 * f * f);
         }
-        methodVO.textureVO.activate();
+        methodVO.textureVO.activate(methodVO.pass._render);
     };
     /**
      * Sets the method state for cascade shadow mapping.
@@ -5118,8 +5038,8 @@ var SpecularBasicMethod = (function (_super) {
     function SpecularBasicMethod() {
         _super.call(this);
         this._gloss = 50;
-        this._specular = 1;
-        this._specularColor = 0xffffff;
+        this._strength = 1;
+        this._color = 0xffffff;
         this._iSpecularR = 1;
         this._iSpecularG = 1;
         this._iSpecularB = 1;
@@ -5146,7 +5066,7 @@ var SpecularBasicMethod = (function (_super) {
     };
     Object.defineProperty(SpecularBasicMethod.prototype, "gloss", {
         /**
-         * The sharpness of the specular highlight.
+         * The glossiness of the material (sharpness of the specular highlight).
          */
         get: function () {
             return this._gloss;
@@ -5157,36 +5077,36 @@ var SpecularBasicMethod = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(SpecularBasicMethod.prototype, "specular", {
+    Object.defineProperty(SpecularBasicMethod.prototype, "strength", {
         /**
          * The overall strength of the specular highlights.
          */
         get: function () {
-            return this._specular;
+            return this._strength;
         },
         set: function (value) {
-            if (value == this._specular)
+            if (value == this._strength)
                 return;
-            this._specular = value;
+            this._strength = value;
             this.updateSpecular();
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(SpecularBasicMethod.prototype, "specularColor", {
+    Object.defineProperty(SpecularBasicMethod.prototype, "color", {
         /**
          * The colour of the specular reflection of the surface.
          */
         get: function () {
-            return this._specularColor;
+            return this._color;
         },
         set: function (value) {
-            if (this._specularColor == value)
+            if (this._color == value)
                 return;
             // specular is now either enabled or disabled
-            if (this._specularColor == 0 || value == 0)
+            if (this._color == 0 || value == 0)
                 this.iInvalidateShaderProgram();
-            this._specularColor = value;
+            this._color = value;
             this.updateSpecular();
         },
         enumerable: true,
@@ -5194,9 +5114,9 @@ var SpecularBasicMethod = (function (_super) {
     });
     Object.defineProperty(SpecularBasicMethod.prototype, "texture", {
         /**
-         * The bitmapData that encodes the specular highlight strength per texel in the red channel, and the sharpness
-         * in the green channel. You can use SpecularTextureBase if you want to easily set specular and gloss maps
-         * from grayscale images, but prepared images are preferred.
+         * A texture that defines the strength of specular reflections for each texel in the red channel,
+         * and the gloss factor (sharpness) in the green channel. You can use Specular2DTexture if you want to easily set
+         * specular and gloss maps from grayscale images, but correctly authored images are preferred.
          */
         get: function () {
             return this._texture;
@@ -5222,8 +5142,8 @@ var SpecularBasicMethod = (function (_super) {
         var bsm = method;
         var spec = bsm; //SpecularBasicMethod(method);
         this.texture = spec.texture;
-        this.specular = spec.specular;
-        this.specularColor = spec.specularColor;
+        this.strength = spec.strength;
+        this.color = spec.color;
         this.gloss = spec.gloss;
     };
     /**
@@ -5305,7 +5225,7 @@ var SpecularBasicMethod = (function (_super) {
         }
         var normalReg = sharedRegisters.normalFragment;
         var viewDirReg = sharedRegisters.viewDirFragment;
-        code += "dp3 " + t + ".w, " + normalReg + ", " + viewDirReg + "\n" + "add " + t + ".w, " + t + ".w, " + t + ".w\n" + "mul " + t + ", " + t + ".w, " + normalReg + "\n" + "sub " + t + ", " + t + ", " + viewDirReg + "\n" + "tex " + t + ", " + t + ", " + cubeMapReg + " <cube," + (shader.useSmoothTextures ? "linear" : "nearest") + ",miplinear>\n" + "mul " + t + ".xyz, " + t + ", " + weightRegister + "\n";
+        code += "dp3 " + t + ".w, " + normalReg + ", " + viewDirReg + "\n" + "add " + t + ".w, " + t + ".w, " + t + ".w\n" + "mul " + t + ", " + t + ".w, " + normalReg + "\n" + "sub " + t + ", " + t + ", " + viewDirReg + "\n" + "tex " + t + ", " + t + ", " + cubeMapReg + " <cube," + "linear" + ",miplinear>\n" + "mul " + t + ".xyz, " + t + ", " + weightRegister + "\n";
         if (this._iModulateMethod != null)
             code += this._iModulateMethod(shader, methodVO, t, registerCache, sharedRegisters);
         if (!this._pIsFirstLight) {
@@ -5337,7 +5257,7 @@ var SpecularBasicMethod = (function (_super) {
      */
     SpecularBasicMethod.prototype.iActivate = function (shader, methodVO, stage) {
         if (this._texture)
-            methodVO.textureVO.activate();
+            methodVO.textureVO.activate(methodVO.pass._render);
         var index = methodVO.fragmentConstantsIndex;
         var data = shader.fragmentConstantData;
         data[index] = this._iSpecularR;
@@ -5353,9 +5273,9 @@ var SpecularBasicMethod = (function (_super) {
      * Updates the specular color data used by the render state.
      */
     SpecularBasicMethod.prototype.updateSpecular = function () {
-        this._iSpecularR = ((this._specularColor >> 16) & 0xff) / 0xff * this._specular;
-        this._iSpecularG = ((this._specularColor >> 8) & 0xff) / 0xff * this._specular;
-        this._iSpecularB = (this._specularColor & 0xff) / 0xff * this._specular;
+        this._iSpecularR = ((this._color >> 16) & 0xff) / 0xff * this._strength;
+        this._iSpecularG = ((this._color >> 8) & 0xff) / 0xff * this._strength;
+        this._iSpecularB = (this._color & 0xff) / 0xff * this._strength;
     };
     return SpecularBasicMethod;
 })(LightingMethodBase);
@@ -5536,15 +5456,31 @@ var SpecularCompositeMethod = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(SpecularCompositeMethod.prototype, "specular", {
+    Object.defineProperty(SpecularCompositeMethod.prototype, "strength", {
         /**
          * @inheritDoc
          */
         get: function () {
-            return this._baseMethod.specular;
+            return this._baseMethod.strength;
         },
         set: function (value) {
-            this._baseMethod.specular = value;
+            this._baseMethod.strength = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(SpecularCompositeMethod.prototype, "color", {
+        /**
+         * @inheritDoc
+         */
+        get: function () {
+            return this._baseMethod.color;
+        },
+        /**
+         * @inheritDoc
+         */
+        set: function (value) {
+            this._baseMethod.color = value;
         },
         enumerable: true,
         configurable: true
@@ -6290,7 +6226,7 @@ var MethodPass = (function (_super) {
                 this._iColorTransformMethodVO = null;
             }
             if (value) {
-                this._iColorTransformMethodVO = new MethodVO(value);
+                this._iColorTransformMethodVO = new MethodVO(value, this);
                 this._addDependency(this._iColorTransformMethodVO);
             }
         },
@@ -6328,7 +6264,7 @@ var MethodPass = (function (_super) {
      * methods added prior.
      */
     MethodPass.prototype.addEffectMethod = function (method) {
-        this._addDependency(new MethodVO(method), true);
+        this._addDependency(new MethodVO(method, this), true);
     };
     Object.defineProperty(MethodPass.prototype, "numEffectMethods", {
         /**
@@ -6365,7 +6301,7 @@ var MethodPass = (function (_super) {
      * etc. The method will be applied to the result of the methods with a lower index.
      */
     MethodPass.prototype.addEffectMethodAt = function (method, index) {
-        this._addDependency(new MethodVO(method), true, index);
+        this._addDependency(new MethodVO(method, this), true, index);
     };
     /**
      * Removes an effect method from the material.
@@ -6408,7 +6344,7 @@ var MethodPass = (function (_super) {
                 this._iNormalMethodVO = null;
             }
             if (value) {
-                this._iNormalMethodVO = new MethodVO(value);
+                this._iNormalMethodVO = new MethodVO(value, this);
                 this._addDependency(this._iNormalMethodVO);
             }
         },
@@ -6430,7 +6366,7 @@ var MethodPass = (function (_super) {
                 this._iAmbientMethodVO = null;
             }
             if (value) {
-                this._iAmbientMethodVO = new MethodVO(value);
+                this._iAmbientMethodVO = new MethodVO(value, this);
                 this._addDependency(this._iAmbientMethodVO);
             }
         },
@@ -6452,7 +6388,7 @@ var MethodPass = (function (_super) {
                 this._iShadowMethodVO = null;
             }
             if (value) {
-                this._iShadowMethodVO = new MethodVO(value);
+                this._iShadowMethodVO = new MethodVO(value, this);
                 this._addDependency(this._iShadowMethodVO);
             }
         },
@@ -6474,7 +6410,7 @@ var MethodPass = (function (_super) {
                 this._iDiffuseMethodVO = null;
             }
             if (value) {
-                this._iDiffuseMethodVO = new MethodVO(value);
+                this._iDiffuseMethodVO = new MethodVO(value, this);
                 this._addDependency(this._iDiffuseMethodVO);
             }
         },
@@ -6496,7 +6432,7 @@ var MethodPass = (function (_super) {
                 this._iSpecularMethodVO = null;
             }
             if (value) {
-                this._iSpecularMethodVO = new MethodVO(value);
+                this._iSpecularMethodVO = new MethodVO(value, this);
                 this._addDependency(this._iSpecularMethodVO);
             }
         },

@@ -45,8 +45,7 @@ declare module "awayjs-methodmaterials/lib/MethodMaterial" {
 	     * @param repeat Indicates whether the texture should be tiled when sampled. Defaults to false.
 	     * @param mipmap Indicates whether or not any used textures should use mipmapping. Defaults to false.
 	     */
-	    constructor(texture?: Image2D, smooth?: boolean, repeat?: boolean, mipmap?: boolean);
-	    constructor(texture?: TextureBase, smooth?: boolean, repeat?: boolean, mipmap?: boolean);
+	    constructor(image?: Image2D, alpha?: number);
 	    constructor(color?: number, alpha?: number);
 	    mode: string;
 	    /**
@@ -103,41 +102,6 @@ declare module "awayjs-methodmaterials/lib/MethodMaterial" {
 	     * @param method The method to be removed.
 	     */
 	    removeEffectMethod(method: EffectMethodBase): void;
-	    /**
-	     * The normal map to modulate the direction of the surface for each texel. The default normal method expects
-	     * tangent-space normal maps, but others could expect object-space maps.
-	     */
-	    normalMap: TextureBase;
-	    /**
-	     * A specular map that defines the strength of specular reflections for each texel in the red channel,
-	     * and the gloss factor in the green channel. You can use Specular2DTexture if you want to easily set
-	     * specular and gloss maps from grayscale images, but correctly authored images are preferred.
-	     */
-	    specularMap: TextureBase;
-	    /**
-	     * The glossiness of the material (sharpness of the specular highlight).
-	     */
-	    gloss: number;
-	    /**
-	     * The strength of the ambient reflection.
-	     */
-	    ambient: number;
-	    /**
-	     * The overall strength of the specular reflection.
-	     */
-	    specular: number;
-	    /**
-	     * The colour of the ambient reflection.
-	     */
-	    ambientColor: number;
-	    /**
-	     * The colour of the diffuse reflection.
-	     */
-	    diffuseColor: number;
-	    /**
-	     * The colour of the specular reflection.
-	     */
-	    specularColor: number;
 	}
 	export = MethodMaterial;
 	
@@ -160,6 +124,7 @@ declare module "awayjs-methodmaterials/lib/MethodMaterialMode" {
 
 declare module "awayjs-methodmaterials/lib/data/MethodVO" {
 	import TextureVOBase = require("awayjs-renderergl/lib/vos/TextureVOBase");
+	import MethodPass = require("awayjs-methodmaterials/lib/render/passes/MethodPass");
 	import ShadingMethodBase = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
 	/**
 	 * MethodVO contains data for a given shader object for the use within a single material.
@@ -168,6 +133,7 @@ declare module "awayjs-methodmaterials/lib/data/MethodVO" {
 	class MethodVO {
 	    useMethod: boolean;
 	    method: ShadingMethodBase;
+	    pass: MethodPass;
 	    textureVO: TextureVOBase;
 	    secondaryTextureVO: TextureVOBase;
 	    vertexConstantsIndex: number;
@@ -183,7 +149,7 @@ declare module "awayjs-methodmaterials/lib/data/MethodVO" {
 	    /**
 	     * Creates a new MethodVO object.
 	     */
-	    constructor(method: ShadingMethodBase);
+	    constructor(method: ShadingMethodBase, pass: MethodPass);
 	    /**
 	     * Resets the values of the value object to their "unused" state.
 	     */
@@ -195,6 +161,7 @@ declare module "awayjs-methodmaterials/lib/data/MethodVO" {
 
 declare module "awayjs-methodmaterials/lib/methods/AmbientBasicMethod" {
 	import Camera = require("awayjs-display/lib/entities/Camera");
+	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
@@ -209,10 +176,11 @@ declare module "awayjs-methodmaterials/lib/methods/AmbientBasicMethod" {
 	class AmbientBasicMethod extends ShadingMethodBase {
 	    private _color;
 	    private _alpha;
+	    _texture: TextureBase;
 	    private _colorR;
 	    private _colorG;
 	    private _colorB;
-	    private _ambient;
+	    private _strength;
 	    /**
 	     * Creates a new AmbientBasicMethod object.
 	     */
@@ -228,11 +196,15 @@ declare module "awayjs-methodmaterials/lib/methods/AmbientBasicMethod" {
 	    /**
 	     * The strength of the ambient reflection of the surface.
 	     */
-	    ambient: number;
+	    strength: number;
 	    /**
 	     * The alpha component of the surface.
 	     */
 	    alpha: number;
+	    /**
+	     * The texture to use to define the diffuse reflection color per texel.
+	     */
+	    texture: TextureBase;
 	    /**
 	     * @inheritDoc
 	     */
@@ -288,6 +260,7 @@ declare module "awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod" {
 
 declare module "awayjs-methodmaterials/lib/methods/CurveBasicMethod" {
 	import Camera = require("awayjs-display/lib/entities/Camera");
+	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
@@ -302,6 +275,7 @@ declare module "awayjs-methodmaterials/lib/methods/CurveBasicMethod" {
 	class CurveBasicMethod extends ShadingMethodBase {
 	    private _color;
 	    private _alpha;
+	    _texture: TextureBase;
 	    private _colorR;
 	    private _colorG;
 	    private _colorB;
@@ -326,6 +300,10 @@ declare module "awayjs-methodmaterials/lib/methods/CurveBasicMethod" {
 	     * The alpha component of the surface.
 	     */
 	    alpha: number;
+	    /**
+	     * The texture to use to define the diffuse reflection color per texel.
+	     */
+	    texture: TextureBase;
 	    /**
 	     * @inheritDoc
 	     */
@@ -367,14 +345,14 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod" {
 	    private _multiply;
 	    _pTotalLightColorReg: ShaderRegisterElement;
 	    _texture: TextureBase;
-	    private _diffuseColor;
 	    private _ambientColor;
-	    private _diffuseR;
-	    private _diffuseG;
-	    private _diffuseB;
-	    private _ambientR;
-	    private _ambientG;
-	    private _ambientB;
+	    private _ambientColorR;
+	    private _ambientColorG;
+	    private _ambientColorB;
+	    private _color;
+	    private _colorR;
+	    private _colorG;
+	    private _colorB;
 	    _pIsFirstLight: boolean;
 	    /**
 	     * Creates a new DiffuseBasicMethod object.
@@ -387,15 +365,15 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod" {
 	    multiply: boolean;
 	    iInitVO(shader: LightingShader, methodVO: MethodVO): void;
 	    /**
+	     * @inheritDoc
+	     */
+	    iInitConstants(shader: LightingShader, methodVO: MethodVO): void;
+	    /**
 	     * The color of the diffuse reflection when not using a texture.
 	     */
-	    diffuseColor: number;
+	    color: number;
 	    /**
-	     * The color of the ambient reflection
-	     */
-	    ambientColor: number;
-	    /**
-	     * The bitmapData to use to define the diffuse reflection color per texel.
+	     * The texture to use to define the diffuse reflection color per texel.
 	     */
 	    texture: TextureBase;
 	    /**
@@ -439,11 +417,11 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod" {
 	    /**
 	     * Updates the diffuse color data used by the render state.
 	     */
-	    private updateDiffuse();
+	    private updateColor();
 	    /**
 	     * Updates the ambient color data used by the render state.
 	     */
-	    private updateAmbient();
+	    private updateAmbientColor();
 	    /**
 	     * @inheritDoc
 	     */
@@ -570,14 +548,7 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    diffuseColor: number;
-	    /**
-	     * @inheritDoc
-	     */
-	    /**
-	     * @inheritDoc
-	     */
-	    ambientColor: number;
+	    color: number;
 	    /**
 	     * @inheritDoc
 	     */
@@ -1568,11 +1539,11 @@ declare module "awayjs-methodmaterials/lib/methods/NormalBasicMethod" {
 	 * NormalBasicMethod is the default method for standard tangent-space normal mapping.
 	 */
 	class NormalBasicMethod extends ShadingMethodBase {
-	    private _normalMap;
+	    private _texture;
 	    /**
 	     * Creates a new NormalBasicMethod object.
 	     */
-	    constructor(normalMap?: TextureBase);
+	    constructor(texture?: TextureBase);
 	    iIsUsed(shader: ShaderBase): boolean;
 	    /**
 	     * @inheritDoc
@@ -1587,9 +1558,10 @@ declare module "awayjs-methodmaterials/lib/methods/NormalBasicMethod" {
 	     */
 	    copyFrom(method: ShadingMethodBase): void;
 	    /**
-	     * The texture containing the normals per pixel.
+	     * A texture to modulate the direction of the surface for each texel (normal map). The default normal method expects
+	     * tangent-space normal maps, but others could expect object-space maps.
 	     */
-	    normalMap: TextureBase;
+	    texture: TextureBase;
 	    /**
 	     * @inheritDoc
 	     */
@@ -2484,8 +2456,8 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularBasicMethod" {
 	    _pSpecularDataRegister: ShaderRegisterElement;
 	    private _texture;
 	    private _gloss;
-	    private _specular;
-	    private _specularColor;
+	    private _strength;
+	    private _color;
 	    _iSpecularR: number;
 	    _iSpecularG: number;
 	    _iSpecularB: number;
@@ -2500,21 +2472,21 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularBasicMethod" {
 	     */
 	    iInitVO(shader: LightingShader, methodVO: MethodVO): void;
 	    /**
-	     * The sharpness of the specular highlight.
+	     * The glossiness of the material (sharpness of the specular highlight).
 	     */
 	    gloss: number;
 	    /**
 	     * The overall strength of the specular highlights.
 	     */
-	    specular: number;
+	    strength: number;
 	    /**
 	     * The colour of the specular reflection of the surface.
 	     */
-	    specularColor: number;
+	    color: number;
 	    /**
-	     * The bitmapData that encodes the specular highlight strength per texel in the red channel, and the sharpness
-	     * in the green channel. You can use SpecularTextureBase if you want to easily set specular and gloss maps
-	     * from grayscale images, but prepared images are preferred.
+	     * A texture that defines the strength of specular reflections for each texel in the red channel,
+	     * and the gloss factor (sharpness) in the green channel. You can use Specular2DTexture if you want to easily set
+	     * specular and gloss maps from grayscale images, but correctly authored images are preferred.
 	     */
 	    texture: TextureBase;
 	    /**
@@ -2658,7 +2630,14 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularCompositeMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    specular: number;
+	    strength: number;
+	    /**
+	     * @inheritDoc
+	     */
+	    /**
+	     * @inheritDoc
+	     */
+	    color: number;
 	    /**
 	     * @inheritDoc
 	     */
