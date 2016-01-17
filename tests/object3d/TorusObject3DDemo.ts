@@ -1,4 +1,5 @@
 import BitmapImage2D				= require("awayjs-core/lib/image/BitmapImage2D");
+import Sampler2D					= require("awayjs-core/lib/image/Sampler2D");
 import URLLoader					= require("awayjs-core/lib/net/URLLoader");
 import URLLoaderDataFormat			= require("awayjs-core/lib/net/URLLoaderDataFormat");
 import URLRequest					= require("awayjs-core/lib/net/URLRequest");
@@ -109,7 +110,8 @@ class TorusObject3DDemo
 
 	private onImageLoadComplete(event:Event)
 	{
-		var matTx: MethodMaterial = new MethodMaterial(ParserUtils.imageToBitmapImage2D(this._image), true, true, false);
+		var matTx:MethodMaterial = new MethodMaterial(ParserUtils.imageToBitmapImage2D(this._image));
+		matTx.style.sampler = new Sampler2D(true, true, true);
 		matTx.lightPicker =  this.lightPicker;
 
 		for (var c:number = 0; c < this.meshes.length; c ++)

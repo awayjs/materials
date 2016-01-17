@@ -79,9 +79,8 @@ class SoftwarePrimitivesTest
     {
 
         var primitives:Array<PrimitivePrefabBase> = new Array<PrimitivePrefabBase>();
-        var material:MethodMaterial = new MethodMaterial(DefaultMaterialManager.getDefaultTexture());
+        var material:MethodMaterial = new MethodMaterial(DefaultMaterialManager.getDefaultImage());
         material.lightPicker = this.staticLightPicker;
-        material.smooth = false;
 
         primitives.push(new PrimitiveTorusPrefab());
         primitives.push(new PrimitiveSpherePrefab());
@@ -102,7 +101,7 @@ class SoftwarePrimitivesTest
             mesh.x = Math.cos(t)*this.radius;
             mesh.y = Math.sin(t)*this.radius;
             mesh.z = 0;
-            mesh.transform.scale = new Vector3D(2, 2, 2);
+            mesh.transform.scaleTo(2, 2, 2);
 
             this.view.scene.addChild(mesh);
             this.meshes.push(mesh);

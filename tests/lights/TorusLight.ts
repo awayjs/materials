@@ -1,4 +1,5 @@
 import BitmapImage2D				= require("awayjs-core/lib/image/BitmapImage2D");
+import Sampler2D					= require("awayjs-core/lib/image/Sampler2D");
 import Vector3D						= require("awayjs-core/lib/geom/Vector3D");
 import URLLoader					= require("awayjs-core/lib/net/URLLoader");
 import URLLoaderDataFormat			= require("awayjs-core/lib/net/URLLoaderDataFormat");
@@ -69,7 +70,8 @@ class TorusLight
 
 		var lightPicker:StaticLightPicker = new StaticLightPicker([light]);
 
-		var matTx:MethodMaterial = new MethodMaterial(ParserUtils.imageToBitmapImage2D(this._image), true, true, false);
+		var matTx:MethodMaterial = new MethodMaterial(ParserUtils.imageToBitmapImage2D(this._image));
+		matTx.style.sampler = new Sampler2D(true, true, true);
 		matTx.lightPicker = lightPicker;
 
 		this._torus.material = matTx;

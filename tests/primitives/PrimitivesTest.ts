@@ -1,4 +1,5 @@
 import Vector3D						= require("awayjs-core/lib/geom/Vector3D");
+import Sampler2D					= require("awayjs-core/lib/image/Sampler2D");
 import URLLoaderEvent				= require("awayjs-core/lib/events/URLLoaderEvent");
 import RequestAnimationFrame		= require("awayjs-core/lib/utils/RequestAnimationFrame");
 import Debug						= require("awayjs-core/lib/utils/Debug");
@@ -75,9 +76,9 @@ class PrimitivesTest
 	{
 
 		var primitives:Array<PrimitivePrefabBase> = new Array<PrimitivePrefabBase>();
-		var material:MethodMaterial = new MethodMaterial(DefaultMaterialManager.getDefaultTexture());
+		var material:MethodMaterial = new MethodMaterial(DefaultMaterialManager.getDefaultImage());
+		material.style.sampler = new Sampler2D(false, false, true);
 		material.lightPicker = this.staticLightPicker;
-		material.smooth = false;
 
 		primitives.push(new PrimitiveTorusPrefab());
 		primitives.push(new PrimitiveSpherePrefab());
@@ -98,7 +99,7 @@ class PrimitivesTest
 			mesh.x = Math.cos(t)*this.radius;
 			mesh.y = Math.sin(t)*this.radius;
 			mesh.z = 0;
-			mesh.transform.scale = new Vector3D(2, 2, 2);
+			mesh.transform.scaleTo(2, 2, 2);
 
 			this.view.scene.addChild(mesh);
 			this.meshes.push(mesh);

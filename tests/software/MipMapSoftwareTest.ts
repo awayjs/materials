@@ -1,4 +1,5 @@
 import Vector3D                        = require("awayjs-core/lib/geom/Vector3D");
+import Sampler2D					= require("awayjs-core/lib/image/Sampler2D");
 import URLLoaderEvent				= require("awayjs-core/lib/events/URLLoaderEvent");
 import RequestAnimationFrame        = require("awayjs-core/lib/utils/RequestAnimationFrame");
 import Debug                        = require("awayjs-core/lib/utils/Debug");
@@ -71,9 +72,7 @@ class MipMapSoftwareTest {
     private initMeshes():void {
         //var material:BasicMaterial = new BasicMaterial(DefaultMaterialManager.getDefaultTexture());
         var material:BasicMaterial = new BasicMaterial(ParserUtils.imageToBitmapImage2D(this.image));
-        material.smooth = true;
-        material.repeat = true;
-        material.mipmap = true;
+        material.style.sampler = new Sampler2D(true, true, true);
         var plane:PrimitivePlanePrefab = new PrimitivePlanePrefab(1000,1000,1000);
         //var plane:PrimitiveCubePrefab = new PrimitiveCubePrefab();
         plane.material = material;
