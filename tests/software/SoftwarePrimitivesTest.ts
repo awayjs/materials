@@ -79,7 +79,7 @@ class SoftwarePrimitivesTest
     {
 
         var primitives:Array<PrimitivePrefabBase> = new Array<PrimitivePrefabBase>();
-        var material:MethodMaterial = new MethodMaterial(DefaultMaterialManager.getDefaultImage());
+        var material:MethodMaterial = new MethodMaterial(DefaultMaterialManager.getDefaultImage2D());
         material.lightPicker = this.staticLightPicker;
 
         primitives.push(new PrimitiveTorusPrefab());

@@ -76,7 +76,7 @@ class PrimitivesTest
 	{
 
 		var primitives:Array<PrimitivePrefabBase> = new Array<PrimitivePrefabBase>();
-		var material:MethodMaterial = new MethodMaterial(DefaultMaterialManager.getDefaultImage());
+		var material:MethodMaterial = new MethodMaterial(DefaultMaterialManager.getDefaultImage2D());
 		material.style.sampler = new Sampler2D(false, false, true);
 		material.lightPicker = this.staticLightPicker;
 
