@@ -552,6 +552,13 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod" {
 	    /**
 	     * @inheritDoc
 	     */
+	    /**
+	     * @inheritDoc
+	     */
+	    multiply: boolean;
+	    /**
+	     * @inheritDoc
+	     */
 	    iGetFragmentPreLightingCode(shader: LightingShader, methodVO: MethodVO, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 	    /**
 	     * @inheritDoc
