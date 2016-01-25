@@ -135,6 +135,22 @@ class DiffuseCompositeMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
+	public get multiply():boolean
+	{
+		return this.pBaseMethod.multiply;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public set multiply(value:boolean)
+	{
+		this.pBaseMethod.multiply = value;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public iGetFragmentPreLightingCode(shader:LightingShader, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		return this.pBaseMethod.iGetFragmentPreLightingCode(shader, methodVO, registerCache, sharedRegisters);

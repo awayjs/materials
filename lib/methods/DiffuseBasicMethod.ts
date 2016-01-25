@@ -261,41 +261,46 @@ class DiffuseBasicMethod extends LightingMethodBase
 	{
 		var code:string = "";
 
-		var albedo:ShaderRegisterElement;
+		var diffuseColor:ShaderRegisterElement;
 		var cutOffReg:ShaderRegisterElement;
 
 		// incorporate input from ambient
 		if (sharedRegisters.shadowTarget)
 			code += this.pApplyShadow(shader, methodVO, registerCache, sharedRegisters);
 
-		registerCache.addFragmentTempUsages(albedo = registerCache.getFreeFragmentVectorTemp(), 1);
+		registerCache.addFragmentTempUsages(diffuseColor = registerCache.getFreeFragmentVectorTemp(), 1);
 
 		var ambientColorRegister:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 		methodVO.fragmentConstantsIndex = ambientColorRegister.index*4;
 
 		if (this._texture) {
-			code += methodVO.textureVO._iGetFragmentCode(albedo, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+			code += methodVO.textureVO._iGetFragmentCode(diffuseColor, registerCache, sharedRegisters, sharedRegisters.uvVarying);
 		} else {
 			var diffuseInputRegister:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 
-			code += "mov " + albedo + ", " + diffuseInputRegister + "\n";
+			code += "mov " + diffuseColor + ", " + diffuseInputRegister + "\n";
 		}
 
 		code += "sat " + this._pTotalLightColorReg + ", " + this._pTotalLightColorReg + "\n" +
-			"mul " + albedo + ".xyz, " + albedo + ", " + this._pTotalLightColorReg + "\n";
+			"mul " + diffuseColor + ".xyz, " + diffuseColor + ", " + this._pTotalLightColorReg + "\n";
 
 		if (this._multiply) {
-			code += "add " + albedo + ".xyz, " + albedo + ", " + ambientColorRegister + "\n" +
-				"mul " + targetReg + ".xyz, " + targetReg + ", " + albedo + "\n";
-		} else {
-			code += "mul " + targetReg + ".xyz, " + targetReg + ", " + ambientColorRegister + "\n" +
+			code += "add " + diffuseColor + ".xyz, " + diffuseColor + ", " + ambientColorRegister + "\n" +
+				"mul " + targetReg + ".xyz, " + targetReg + ", " + diffuseColor + "\n";
+		} else if (this._texture) {
+			code += "mul " + targetReg + ".xyz, " + targetReg + ", " + ambientColorRegister + "\n" + // multiply target by ambient for total ambient
 				"mul " + this._pTotalLightColorReg + ".xyz, " + targetReg + ", " + this._pTotalLightColorReg + "\n" +
-				"sub " + targetReg + ".xyz, " + targetReg + ", " + this._pTotalLightColorReg + "\n" +
-				"add " + targetReg + ".xyz, " + targetReg + ", " + albedo + "\n";
+				"sub " + targetReg + ".xyz, " + targetReg + ", " + this._pTotalLightColorReg + "\n" + // ambient * (1 - totalLightColor)
+				"add " + targetReg + ".xyz, " + targetReg + ", " + diffuseColor + "\n"; //add diffuse color and ambient color
+		} else {
+			code += "mul " + this._pTotalLightColorReg + ".xyz, " + ambientColorRegister + ", " + this._pTotalLightColorReg + "\n" +
+				"sub " + this._pTotalLightColorReg + ".xyz, " + ambientColorRegister + ", " + this._pTotalLightColorReg + "\n" + // ambient * (1 - totalLightColor)
+				"add " + diffuseColor + ".xyz, " + diffuseColor + ", " + this._pTotalLightColorReg + "\n" + // add diffuse color and  ambient color
+				"mul " + targetReg + ".xyz, " + targetReg + ", " + diffuseColor + "\n"; // multiply by target which could be texture or white
 		}
 
 		registerCache.removeFragmentTempUsage(this._pTotalLightColorReg);
-		registerCache.removeFragmentTempUsage(albedo);
+		registerCache.removeFragmentTempUsage(diffuseColor);
 
 		return code;
 	}
@@ -320,9 +325,15 @@ class DiffuseBasicMethod extends LightingMethodBase
 		} else {
 			var index:number = methodVO.fragmentConstantsIndex;
 			var data:Float32Array = shader.fragmentConstantData;
-			data[index + 4] = this._colorR;
-			data[index + 5] = this._colorG;
-			data[index + 6] = this._colorB;
+			if (this._multiply) {
+				data[index + 4] = this._colorR*this._ambientColorR;
+				data[index + 5] = this._colorG*this._ambientColorG;
+				data[index + 6] = this._colorB*this._ambientColorB;
+			} else {
+				data[index + 4] = this._colorR;
+				data[index + 5] = this._colorG;
+				data[index + 6] = this._colorB;
+			}
 			data[index + 7] = 1;
 		}
 	}
@@ -357,20 +368,12 @@ class DiffuseBasicMethod extends LightingMethodBase
 			methodVO.textureVO._setRenderState(renderable);
 
 		//TODO move this to Activate (ambientR/G/B currently calc'd in render state)
-		if (shader.numLights > 0) {
-			var index:number = methodVO.fragmentConstantsIndex;
-			var data:Float32Array = shader.fragmentConstantData;
-			if (this._ambientColor != null) {
-				data[index] = shader.ambientR*this._ambientColorR;
-				data[index + 1] = shader.ambientG*this._ambientColorG;
-				data[index + 2] = shader.ambientB*this._ambientColorB;
-			} else {
-				data[index] = shader.ambientR;
-				data[index + 1] = shader.ambientG;
-				data[index + 2] = shader.ambientB;
-			}
-			data[index + 3] = 1;
-		}
+		var index:number = methodVO.fragmentConstantsIndex;
+		var data:Float32Array = shader.fragmentConstantData;
+		data[index] = shader.ambientR*this._ambientColorR;
+		data[index + 1] = shader.ambientG*this._ambientColorG;
+		data[index + 2] = shader.ambientB*this._ambientColorB;
+		data[index + 3] = 1;
 	}
 }
 
