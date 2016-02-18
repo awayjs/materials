@@ -83,16 +83,16 @@ class NormalHeightMapMethod extends NormalBasicMethod
 
 		methodVO.fragmentConstantsIndex = dataReg.index*4;
 
-		code+= methodVO.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying) +
+		code+= methodVO.textureGL._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying) +
 
 			"add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg + ".xzzz\n" +
 
-		methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, temp) +
+		methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, temp) +
 
 			"sub " + targetReg + ".x, " + targetReg + ".x, " + temp + ".x\n" +
 			"add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg + ".zyzz\n" +
 
-		methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, temp) +
+		methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, temp) +
 
 			"sub " + targetReg + ".z, " + targetReg + ".z, " + temp + ".x\n" +
 			"mov " + targetReg + ".y, " + dataReg + ".w\n" +

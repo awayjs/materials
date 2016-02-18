@@ -49,7 +49,7 @@ class ShadowMethodBase extends ShadowMapMethodBase
 		methodVO.needsGlobalFragmentPos = this._pUsePoint;
 		methodVO.needsNormals = shader.numLights > 0;
 
-		methodVO.textureVO = shader.getAbstraction(this._pCastingLight.shadowMapper.depthMap);
+		methodVO.textureGL = shader.getAbstraction(this._pCastingLight.shadowMapper.depthMap);
 	}
 
 	/**
@@ -201,7 +201,7 @@ class ShadowMethodBase extends ShadowMapMethodBase
 		if (!this._pUsePoint)
 			(<DirectionalShadowMapper> this._pShadowMapper).iDepthProjection.copyRawDataTo(shader.vertexConstantData, methodVO.vertexConstantsIndex + 4, true);
 
-		methodVO.textureVO._setRenderState(renderable);
+		methodVO.textureGL._setRenderState(renderable);
 	}
 
 	/**
@@ -244,7 +244,7 @@ class ShadowMethodBase extends ShadowMapMethodBase
 			fragmentData[index + 11] = 1/(2*f*f);
 		}
 
-		methodVO.textureVO.activate(methodVO.pass._render);
+		methodVO.textureGL.activate(methodVO.pass._render);
 	}
 
 	/**

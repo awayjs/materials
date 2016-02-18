@@ -228,8 +228,8 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	 */
 	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
-		methodVO.secondaryTextureVO = shader.getAbstraction(this._depthPass._iGetDepthMap(renderable));
-		methodVO.secondaryTextureVO._setRenderState(renderable);
+		methodVO.secondaryTextureGL = shader.getAbstraction(this._depthPass._iGetDepthMap(renderable));
+		methodVO.secondaryTextureGL._setRenderState(renderable);
 
 		this._depthPass._iGetProjection(renderable).copyRawDataTo(shader.vertexConstantData, methodVO.secondaryVertexConstantsIndex + 4, true);
 	}
@@ -254,7 +254,7 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 
-		code += methodVO.secondaryTextureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, this._lightProjVarying) +
+		code += methodVO.secondaryTextureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, this._lightProjVarying) +
 			// reencode RGBA
 			"dp4 " + targetReg + ".z, " + temp + ", " + this._decReg + "\n";
 		// currentDistanceToLight - closestDistanceToLight

@@ -42,11 +42,11 @@ class AmbientBasicMethod extends ShadingMethodBase
 	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
 	{
 		if (this._texture) {
-			methodVO.textureVO = shader.getAbstraction(this._texture);
+			methodVO.textureGL = shader.getAbstraction(this._texture);
 			shader.uvDependencies++;
-		} else if (methodVO.textureVO) {
-			methodVO.textureVO.onClear(new AssetEvent(AssetEvent.CLEAR, this._texture));
-			methodVO.textureVO = null;
+		} else if (methodVO.textureGL) {
+			methodVO.textureGL.onClear(new AssetEvent(AssetEvent.CLEAR, this._texture));
+			methodVO.textureGL = null;
 		}
 	}
 
@@ -55,7 +55,7 @@ class AmbientBasicMethod extends ShadingMethodBase
 	 */
 	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
 	{
-		if (!methodVO.textureVO) {
+		if (!methodVO.textureGL) {
 			this._color = shader.numLights? 0xFFFFFF : methodVO.pass._renderOwner.style.color;
 			this.updateColor();
 		}
@@ -137,8 +137,8 @@ class AmbientBasicMethod extends ShadingMethodBase
 	{
 		var code:string = "";
 
-		if (methodVO.textureVO) {
-			code += methodVO.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+		if (methodVO.textureGL) {
+			code += methodVO.textureGL._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
 
 			if (shader.alphaThreshold > 0) {
 				var cutOffReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
@@ -164,8 +164,8 @@ class AmbientBasicMethod extends ShadingMethodBase
 	 */
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
-		if (methodVO.textureVO) {
-			methodVO.textureVO.activate(methodVO.pass._render);
+		if (methodVO.textureGL) {
+			methodVO.textureGL.activate(methodVO.pass._render);
 
 			if (shader.alphaThreshold > 0)
 				shader.fragmentConstantData[methodVO.fragmentConstantsIndex] = shader.alphaThreshold;
@@ -181,8 +181,8 @@ class AmbientBasicMethod extends ShadingMethodBase
 
 	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
-		if (methodVO.textureVO)
-			methodVO.textureVO._setRenderState(renderable);
+		if (methodVO.textureGL)
+			methodVO.textureGL._setRenderState(renderable);
 	}
 
 	/**

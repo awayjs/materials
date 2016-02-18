@@ -2,12 +2,12 @@ import Image2D							= require("awayjs-core/lib/image/Image2D");
 import Matrix3D							= require("awayjs-core/lib/geom/Matrix3D");
 
 import LightBase						= require("awayjs-display/lib/base/LightBase");
-import TriangleSubGeometry				= require("awayjs-display/lib/base/TriangleSubGeometry");
 import Camera							= require("awayjs-display/lib/entities/Camera");
 import MaterialBase						= require("awayjs-display/lib/materials/MaterialBase");
 import IRenderOwner						= require("awayjs-display/lib/base/IRenderOwner");
 import Single2DTexture					= require("awayjs-display/lib/textures/Single2DTexture");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
+import TriangleElements					= require("awayjs-display/lib/graphics/TriangleElements");
 
 import ContextGLDrawMode				= require("awayjs-stagegl/lib/base/ContextGLDrawMode");
 import ContextGLProgramType				= require("awayjs-stagegl/lib/base/ContextGLProgramType");
@@ -19,10 +19,10 @@ import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
 import PassBase							= require("awayjs-renderergl/lib/render/passes/PassBase");
-import IRenderableClass					= require("awayjs-renderergl/lib/renderables/IRenderableClass");
+import IElementsClassGL					= require("awayjs-renderergl/lib/elements/IElementsClassGL");
 import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
 import RenderBase						= require("awayjs-renderergl/lib/render/RenderBase");
-import SubGeometryVOBase				= require("awayjs-renderergl/lib/vos/SubGeometryVOBase");
+import GL_ElementsBase					= require("awayjs-renderergl/lib/elements/GL_ElementsBase");
 
 /**
  * The SingleObjectDepthPass provides a material pass that renders a single object to a depth map from the point
@@ -66,9 +66,9 @@ class SingleObjectDepthPass extends PassBase
 	/**
 	 * Creates a new SingleObjectDepthPass object.
 	 */
-	constructor(render:RenderBase, renderOwner:IRenderOwner, renderableClass:IRenderableClass, stage:Stage)
+	constructor(render:RenderBase, renderOwner:IRenderOwner, elementsClass:IElementsClassGL, stage:Stage)
 	{
-		super(render, renderOwner, renderableClass, stage);
+		super(render, renderOwner, elementsClass, stage);
 
 		//this._pNumUsedStreams = 2;
 		//this._pNumUsedVertexConstants = 7;
@@ -197,12 +197,12 @@ class SingleObjectDepthPass extends PassBase
 		context.setProgramConstantsFromMatrix(ContextGLProgramType.VERTEX, 0, matrix, true);
 		context.setProgramConstantsFromArray(ContextGLProgramType.FRAGMENT, 0, this._enc, 2);
 
-		var subGeometryVO:SubGeometryVOBase = renderable.subGeometryVO;
-		var subGeom:TriangleSubGeometry = <TriangleSubGeometry> subGeometryVO.subGeometry;
+		var elements:TriangleElements = <TriangleElements> renderable.elements;
+		var elementsGL:GL_ElementsBase = this._shader._elementsPool.getAbstraction(elements);
 
-		subGeometryVO.activateVertexBufferVO(0, subGeom.positions);
-		subGeometryVO.activateVertexBufferVO(1, subGeom.normals);
-		subGeometryVO.getIndexBufferVO().draw(ContextGLDrawMode.TRIANGLES, 0, subGeometryVO.subGeometry.numElements);
+		elementsGL.activateVertexBufferVO(0, elements.positions);
+		elementsGL.activateVertexBufferVO(1, elements.normals);
+		elementsGL.getIndexBufferVO().draw(ContextGLDrawMode.TRIANGLES, 0, elements.numElements);
 	}
 
 	/**

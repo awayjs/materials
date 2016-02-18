@@ -91,7 +91,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 		methodVO.needsGlobalVertexPos = true;
 		methodVO.needsProjection = true;
 
-		methodVO.textureVO = shader.getAbstraction(this._pCastingLight.shadowMapper.depthMap);
+		methodVO.textureGL = shader.getAbstraction(this._pCastingLight.shadowMapper.depthMap);
 	}
 
 	/**
@@ -219,7 +219,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	 */
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
-		methodVO.textureVO.activate(methodVO.pass._render);
+		methodVO.textureGL.activate(methodVO.pass._render);
 
 		var vertexData:Float32Array = shader.vertexConstantData;
 		var vertexIndex:number = methodVO.vertexConstantsIndex;

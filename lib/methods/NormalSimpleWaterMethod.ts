@@ -59,7 +59,7 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 		super.iInitVO(shader, methodVO);
 		
 		if (this._secondaryNormalMap) {
-			methodVO.secondaryTextureVO = shader.getAbstraction(this._secondaryNormalMap);
+			methodVO.secondaryTextureGL = shader.getAbstraction(this._secondaryNormalMap);
 			shader.uvDependencies++;
 		}
 	}
@@ -166,7 +166,7 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 		data[index + 7] = this._water2OffsetY;
 
 		if (this._secondaryNormalMap)
-			methodVO.secondaryTextureVO.activate(methodVO.pass._render);
+			methodVO.secondaryTextureGL.activate(methodVO.pass._render);
 	}
 
 	/**
@@ -177,7 +177,7 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 		super.iSetRenderState(shader, methodVO, renderable, stage, camera);
 
 		if (this._secondaryNormalMap)
-			methodVO.secondaryTextureVO._setRenderState(renderable);
+			methodVO.secondaryTextureGL._setRenderState(renderable);
 	}
 
 	/**
@@ -196,12 +196,12 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 		code += "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg2 + ".xyxy\n";
 
 		if (this.texture)
-			code += methodVO.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, temp);
+			code += methodVO.textureGL._iGetFragmentCode(targetReg, registerCache, sharedRegisters, temp);
 
 		code += "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg2 + ".zwzw\n";
 
 		if (this._secondaryNormalMap)
-			code += methodVO.secondaryTextureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, temp);
+			code += methodVO.secondaryTextureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, temp);
 
 		code +=	"add " + targetReg + ", " + targetReg + ", " + temp + "		\n" +
 			"mul " + targetReg + ", " + targetReg + ", " + dataReg + ".x	\n" +

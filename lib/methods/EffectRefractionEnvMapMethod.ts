@@ -69,7 +69,7 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 		methodVO.needsNormals = true;
 		methodVO.needsView = true;
 
-		methodVO.textureVO = shader.getAbstraction(this._envMap);
+		methodVO.textureGL = shader.getAbstraction(this._envMap);
 	}
 
 	/**
@@ -194,12 +194,12 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 		}
 		data[index + 3] = this._alpha;
 
-		methodVO.textureVO.activate(methodVO.pass._render);
+		methodVO.textureGL.activate(methodVO.pass._render);
 	}
 
 	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
-		methodVO.textureVO._setRenderState(renderable);
+		methodVO.textureGL._setRenderState(renderable);
 	}
 
 	/**
@@ -244,7 +244,7 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 			"mul " + refractionDir + ", " + data + ".x, " + viewDirReg + "\n" +
 			"sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" +
 			"nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" +
-		methodVO.textureVO._iGetFragmentCode(refractionColor, registerCache, sharedRegisters, refractionDir) +
+		methodVO.textureGL._iGetFragmentCode(refractionColor, registerCache, sharedRegisters, refractionDir) +
 			"sub " + refractionColor + ".w, " + refractionColor + ".w, fc0.x	\n" +
 			"kil " + refractionColor + ".w\n";
 
@@ -265,7 +265,7 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 				"mul " + refractionDir + ", " + data + ".y, " + viewDirReg + "\n" +
 				"sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" +
 				"nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" +
-			methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, refractionDir) +
+			methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, refractionDir) +
 				"mov " + refractionColor + ".y, " + temp + ".y\n";
 
 			// BLUE
@@ -284,7 +284,7 @@ class EffectRefractionEnvMapMethod extends EffectMethodBase
 				"mul " + refractionDir + ", " + data + ".z, " + viewDirReg + "\n" +
 				"sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" +
 				"nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" +
-			methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, refractionDir) +
+			methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, refractionDir) +
 				"mov " + refractionColor + ".z, " + temp + ".z\n";
 		}
 

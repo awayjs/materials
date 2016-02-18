@@ -125,7 +125,7 @@ class ShadowSoftMethod extends ShadowMethodBase
 	private addSample(shader:ShaderBase, methodVO:MethodVO, decodeRegister:ShaderRegisterElement, targetRegister:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData, uvReg:ShaderRegisterElement):string
 	{
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
-		return methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, uvReg) +
+		return methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, uvReg) +
 			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
 			"slt " + uvReg + ".w, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n" + // 0 if in shadow
 			"add " + targetRegister + ".w, " + targetRegister + ".w, " + uvReg + ".w\n";
@@ -196,7 +196,7 @@ class ShadowSoftMethod extends ShadowMethodBase
 				var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 
 				code = "add " + uvReg + ", " + this._pDepthMapCoordReg + ", " + dataReg + ".zwyy\n" +
-					methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, uvReg) +
+					methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, uvReg) +
 					"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
 					"slt " + targetRegister + ".w, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n"; // 0 if in shadow;
 			} else {

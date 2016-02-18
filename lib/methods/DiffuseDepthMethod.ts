@@ -61,7 +61,7 @@ class DiffuseDepthMethod extends DiffuseBasicMethod
 		decReg = registerCache.getFreeFragmentConstant();
 		methodVO.fragmentConstantsIndex = decReg.index*4;
 
-		code += methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, sharedRegisters.uvVarying) +
+		code += methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, sharedRegisters.uvVarying) +
 			"dp4 " + temp + ".x, " + temp + ", " + decReg + "\n" +
 			"mov " + temp + ".yz, " + temp + ".xx			\n" +
 			"mov " + temp + ".w, " + decReg + ".x\n" +

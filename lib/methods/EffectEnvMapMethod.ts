@@ -69,10 +69,10 @@ class EffectEnvMapMethod extends EffectMethodBase
 		methodVO.needsView = true;
 
 		if (this._envMap)
-			methodVO.textureVO = shader.getAbstraction(this._envMap);
+			methodVO.textureGL = shader.getAbstraction(this._envMap);
 
 		if (this._mask) {
-			methodVO.secondaryTextureVO = shader.getAbstraction(this._mask);
+			methodVO.secondaryTextureGL = shader.getAbstraction(this._mask);
 			shader.uvDependencies++;
 		}
 	}
@@ -128,18 +128,18 @@ class EffectEnvMapMethod extends EffectMethodBase
 	{
 		shader.fragmentConstantData[methodVO.fragmentConstantsIndex] = this._alpha;
 
-		methodVO.textureVO.activate(methodVO.pass._render);
+		methodVO.textureGL.activate(methodVO.pass._render);
 
 		if (this._mask)
-			methodVO.secondaryTextureVO.activate(methodVO.pass._render);
+			methodVO.secondaryTextureGL.activate(methodVO.pass._render);
 	}
 
 	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
-		methodVO.textureVO._setRenderState(renderable);
+		methodVO.textureGL._setRenderState(renderable);
 
 		if (this._mask)
-			methodVO.secondaryTextureVO._setRenderState(renderable);
+			methodVO.secondaryTextureGL._setRenderState(renderable);
 	}
 
 	/**
@@ -162,13 +162,13 @@ class EffectEnvMapMethod extends EffectMethodBase
 			"add " + temp + ".w, " + temp + ".w, " + temp + ".w\n" +
 			"mul " + temp + ".xyz, " + sharedRegisters.normalFragment + ".xyz, " + temp + ".w\n" +
 			"sub " + temp + ".xyz, " + temp + ".xyz, " + sharedRegisters.viewDirFragment + ".xyz\n" +
-			methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, temp) +
+			methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, temp) +
 			"sub " + temp2 + ".w, " + temp + ".w, fc0.x\n" + // -.5
 			"kil " + temp2 + ".w\n" +	// used for real time reflection mapping - if alpha is not 1 (mock texture) kil output
 			"sub " + temp + ", " + temp + ", " + targetReg + "\n";
 
 		if (this._mask) {
-			code += methodVO.secondaryTextureVO._iGetFragmentCode(temp2, registerCache, sharedRegisters, sharedRegisters.uvVarying) +
+			code += methodVO.secondaryTextureGL._iGetFragmentCode(temp2, registerCache, sharedRegisters, sharedRegisters.uvVarying) +
 				"mul " + temp + ", " + temp2 + ", " + temp + "\n";
 		}
 

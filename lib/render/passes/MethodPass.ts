@@ -24,7 +24,7 @@ import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRe
 import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
 import PassBase							= require("awayjs-renderergl/lib/render/passes/PassBase");
 import ILightingPass					= require("awayjs-renderergl/lib/render/passes/ILightingPass");
-import IRenderableClass					= require("awayjs-renderergl/lib/renderables/IRenderableClass");
+import IElementsClassGL					= require("awayjs-renderergl/lib/elements/IElementsClassGL");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import AmbientBasicMethod				= require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
@@ -174,9 +174,9 @@ class MethodPass extends PassBase implements ILightingPass
 	 *
 	 * @param material The material to which this pass belongs.
 	 */
-	constructor(mode:number, render:MethodMaterialRender, renderOwner:MaterialBase, renderableClass:IRenderableClass, stage:Stage)
+	constructor(mode:number, render:MethodMaterialRender, renderOwner:MaterialBase, elementsClass:IElementsClassGL, stage:Stage)
 	{
-		super(render, renderOwner, renderableClass, stage);
+		super(render, renderOwner, elementsClass, stage);
 
 		this._mode = mode;
 
@@ -198,12 +198,12 @@ class MethodPass extends PassBase implements ILightingPass
 			if (this._shader != null)
 				this._shader.dispose();
 
-			this._shader = new LightingShader(this._renderableClass, this, this._stage);
+			this._shader = new LightingShader(this._elementsClass, this, this._stage);
 		} else if (!(this._shader instanceof ShaderBase)) {
 			if (this._shader != null)
 				this._shader.dispose();
 
-			this._shader = new ShaderBase(this._renderableClass, this, this._stage);
+			this._shader = new ShaderBase(this._elementsClass, this, this._stage);
 		}
 	}
 

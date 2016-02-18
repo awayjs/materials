@@ -41,7 +41,7 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 	{
 		super.iInitVO(shader, methodVO);
 
-		methodVO.secondaryTextureVO = shader.getAbstraction(this._gradient);
+		methodVO.secondaryTextureGL = shader.getAbstraction(this._gradient);
 	}
 
 	/**
@@ -112,7 +112,7 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 		if (this._iModulateMethod != null)
 			code += this._iModulateMethod(shader, methodVO, t, registerCache, sharedRegisters);
 
-		code += methodVO.secondaryTextureVO._iGetFragmentCode(t, registerCache, sharedRegisters, t) +
+		code += methodVO.secondaryTextureGL._iGetFragmentCode(t, registerCache, sharedRegisters, t) +
 			//					"mul " + t + ".xyz, " + t + ".xyz, " + t + ".w\n" +
 			"mul " + t + ".xyz, " + t + ".xyz, " + lightColReg + ".xyz\n";
 
@@ -134,7 +134,7 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 		var t:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
 
 		return "mov " + t + ", " + sharedRegisters.shadowTarget + ".wwww\n" +
-			methodVO.secondaryTextureVO._iGetFragmentCode(t, regCache, sharedRegisters, sharedRegisters.uvVarying) +
+			methodVO.secondaryTextureGL._iGetFragmentCode(t, regCache, sharedRegisters, sharedRegisters.uvVarying) +
 			"mul " + this._pTotalLightColorReg + ".xyz, " + this._pTotalLightColorReg + ", " + t + "\n";
 	}
 
@@ -145,7 +145,7 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 	{
 		super.iActivate(shader, methodVO, stage);
 
-		methodVO.secondaryTextureVO.activate(methodVO.pass._render);
+		methodVO.secondaryTextureGL.activate(methodVO.pass._render);
 	}
 
 
@@ -157,7 +157,7 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 		super.iSetRenderState(shader, methodVO, renderable, stage, camera);
 
 		if (shader.numLights > 0)
-			methodVO.secondaryTextureVO._setRenderState(renderable);
+			methodVO.secondaryTextureGL._setRenderState(renderable);
 	}
 }
 

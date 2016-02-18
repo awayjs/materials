@@ -73,11 +73,11 @@ class DiffuseBasicMethod extends LightingMethodBase
 	public iInitVO(shader:LightingShader, methodVO:MethodVO)
 	{
 		if (this._texture) {
-			methodVO.textureVO = shader.getAbstraction(this._texture);
+			methodVO.textureGL = shader.getAbstraction(this._texture);
 			shader.uvDependencies++;
-		} else if (methodVO.textureVO) {
-			methodVO.textureVO.onClear(new AssetEvent(AssetEvent.CLEAR, null));
-			methodVO.textureVO = null;
+		} else if (methodVO.textureGL) {
+			methodVO.textureGL.onClear(new AssetEvent(AssetEvent.CLEAR, null));
+			methodVO.textureGL = null;
 		}
 
 		if (shader.numLights > 0) {
@@ -274,7 +274,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 		methodVO.fragmentConstantsIndex = ambientColorRegister.index*4;
 
 		if (this._texture) {
-			code += methodVO.textureVO._iGetFragmentCode(diffuseColor, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+			code += methodVO.textureGL._iGetFragmentCode(diffuseColor, registerCache, sharedRegisters, sharedRegisters.uvVarying);
 		} else {
 			var diffuseInputRegister:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 
@@ -321,7 +321,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
 	{
 		if (this._texture) {
-			methodVO.textureVO.activate(methodVO.pass._render);
+			methodVO.textureGL.activate(methodVO.pass._render);
 		} else {
 			var index:number = methodVO.fragmentConstantsIndex;
 			var data:Float32Array = shader.fragmentConstantData;
@@ -365,7 +365,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
 		if (this._texture)
-			methodVO.textureVO._setRenderState(renderable);
+			methodVO.textureGL._setRenderState(renderable);
 
 		//TODO move this to Activate (ambientR/G/B currently calc'd in render state)
 		var index:number = methodVO.fragmentConstantsIndex;

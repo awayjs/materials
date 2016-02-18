@@ -17,7 +17,7 @@ import RendererBase						= require("awayjs-renderergl/lib/RendererBase");
 import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
 import ShadingMethodEvent				= require("awayjs-renderergl/lib/events/ShadingMethodEvent");
 import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
-import IRenderableClass					= require("awayjs-renderergl/lib/renderables/IRenderableClass");
+import IElementsClassGL					= require("awayjs-renderergl/lib/elements/IElementsClassGL");
 import RenderBase						= require("awayjs-renderergl/lib/render/RenderBase");
 import RenderPool						= require("awayjs-renderergl/lib/render/RenderPool");
 
@@ -66,9 +66,9 @@ class MethodMaterialRender extends RenderBase
 	 *
 	 * @param material The material to which this pass belongs.
 	 */
-	constructor(material:MethodMaterial, renderableClass:IRenderableClass, pool:RenderPool)
+	constructor(material:MethodMaterial, elementsClass:IElementsClassGL, pool:RenderPool)
 	{
-		super(material, renderableClass, pool);
+		super(material, elementsClass, pool);
 
 		this._material = material;
 	}
@@ -186,7 +186,7 @@ class MethodMaterialRender extends RenderBase
 	{
 
 		if (this._casterLightPass == null)
-			this._casterLightPass = new MethodPass(MethodPassMode.LIGHTING, this, this._material, this._renderableClass, this._stage);
+			this._casterLightPass = new MethodPass(MethodPassMode.LIGHTING, this, this._material, this._elementsClass, this._stage);
 
 		this._casterLightPass.lightPicker = new StaticLightPicker([this._material.shadowMethod.castingLight]);
 		this._casterLightPass.shadowMethod = this._material.shadowMethod;
@@ -222,7 +222,7 @@ class MethodMaterialRender extends RenderBase
 		this._nonCasterLightPasses = new Array<MethodPass>();
 
 		while (dirLightOffset < numDirLights || pointLightOffset < numPointLights || probeOffset < numLightProbes) {
-			pass = new MethodPass(MethodPassMode.LIGHTING, this, this._material, this._renderableClass, this._stage);
+			pass = new MethodPass(MethodPassMode.LIGHTING, this, this._material, this._elementsClass, this._stage);
 			pass.includeCasters = this._material.shadowMethod == null;
 			pass.directionalLightsOffset = dirLightOffset;
 			pass.pointLightsOffset = pointLightOffset;
@@ -272,7 +272,7 @@ class MethodMaterialRender extends RenderBase
 	private initEffectPass()
 	{
 		if (this._pass == null)
-			this._pass = new MethodPass(MethodPassMode.SUPER_SHADER, this, this._material, this._renderableClass, this._stage);
+			this._pass = new MethodPass(MethodPassMode.SUPER_SHADER, this, this._material, this._elementsClass, this._stage);
 
 		if (this._material.mode == MethodMaterialMode.SINGLE_PASS) {
 			this._pass.ambientMethod = this._material.ambientMethod;

@@ -61,7 +61,7 @@ class EffectLightMapMethod extends EffectMethodBase
 	 */
 	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
 	{
-		methodVO.textureVO = shader.getAbstraction(this._lightMap);
+		methodVO.textureGL = shader.getAbstraction(this._lightMap);
 
 		if (this._useSecondaryUV)
 			shader.secondaryUVDependencies++;
@@ -143,7 +143,7 @@ class EffectLightMapMethod extends EffectMethodBase
 		var code:string;
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 
-		code = methodVO.secondaryTextureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
+		code = methodVO.secondaryTextureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
 
 		switch (this._blendMode) {
 			case EffectLightMapMethod.MULTIPLY:
@@ -162,13 +162,13 @@ class EffectLightMapMethod extends EffectMethodBase
 	 */
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
 	{
-		methodVO.textureVO.activate(methodVO.pass._render);
+		methodVO.textureGL.activate(methodVO.pass._render);
 	}
 
 
 	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
 	{
-		methodVO.textureVO._setRenderState(renderable);
+		methodVO.textureGL._setRenderState(renderable);
 	}
 }
 

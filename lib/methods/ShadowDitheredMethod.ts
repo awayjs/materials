@@ -81,7 +81,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 
 		methodVO.needsProjection = true;
 
-		methodVO.secondaryTextureVO = shader.getAbstraction(ShadowDitheredMethod._grainTexture);
+		methodVO.secondaryTextureGL = shader.getAbstraction(ShadowDitheredMethod._grainTexture);
 	}
 
 	/**
@@ -167,7 +167,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 		data[index + 10] = (stage.height - 1)/63;
 		data[index + 11] = 2*this._range/this._depthMapSize;
 
-		methodVO.secondaryTextureVO.activate(methodVO.pass._render);
+		methodVO.secondaryTextureGL.activate(methodVO.pass._render);
 	}
 
 
@@ -178,7 +178,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 	{
 		super.iSetRenderState(shader, methodVO, renderable, stage, camera);
 
-		methodVO.secondaryTextureVO._setRenderState(renderable);
+		methodVO.secondaryTextureGL._setRenderState(renderable);
 	}
 
 	/**
@@ -218,10 +218,10 @@ class ShadowDitheredMethod extends ShadowMethodBase
 
 		while (numSamples > 0) {
 			if (numSamples == this._numSamples) {
-				code += methodVO.secondaryTextureVO._iGetFragmentCode(uvReg, regCache, sharedRegisters, uvReg);
+				code += methodVO.secondaryTextureGL._iGetFragmentCode(uvReg, regCache, sharedRegisters, uvReg);
 			} else {
 				code += "mov " + temp + ", " + uvReg + ".zwxy \n" +
-					methodVO.secondaryTextureVO._iGetFragmentCode(uvReg, regCache, sharedRegisters, temp);
+					methodVO.secondaryTextureGL._iGetFragmentCode(uvReg, regCache, sharedRegisters, temp);
 			}
 
 			// keep grain in uvReg.zw
@@ -231,7 +231,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 			if (numSamples == this._numSamples) {
 				// first sample
 				code += "add " + uvReg + ".xy, " + uvReg + ".zw, " + this._pDepthMapCoordReg + ".xy\n" +
-					methodVO.textureVO._iGetFragmentCode(temp, regCache, sharedRegisters, uvReg) +
+					methodVO.textureGL._iGetFragmentCode(temp, regCache, sharedRegisters, uvReg) +
 					"dp4 " + temp + ".z, " + temp + ", " + decReg + "\n" +
 					"slt " + targetReg + ".w, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n"; // 0 if in shadow
 			} else {
@@ -283,7 +283,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 	{
 		var temp:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
 
-		return methodVO.textureVO._iGetFragmentCode(temp, regCache, sharedRegisters, uvReg) +
+		return methodVO.textureGL._iGetFragmentCode(temp, regCache, sharedRegisters, uvReg) +
 			"dp4 " + temp + ".z, " + temp + ", " + decReg + "\n" +
 			"slt " + temp + ".z, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n" + // 0 if in shadow
 			"add " + targetReg + ".w, " + targetReg + ".w, " + temp + ".z\n";
@@ -301,7 +301,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 		data[index + 2] = (stage.height - 1)/63;
 		data[index + 3] = 2*this._range/this._depthMapSize;
 
-		methodVO.secondaryTextureVO.activate(methodVO.pass._render);
+		methodVO.secondaryTextureGL.activate(methodVO.pass._render);
 	}
 
 	/**
