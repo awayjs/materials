@@ -339,19 +339,19 @@ var AmbientBasicMethod = (function (_super) {
      */
     AmbientBasicMethod.prototype.iInitVO = function (shader, methodVO) {
         if (this._texture) {
-            methodVO.textureVO = shader.getAbstraction(this._texture);
+            methodVO.textureGL = shader.getAbstraction(this._texture);
             shader.uvDependencies++;
         }
-        else if (methodVO.textureVO) {
-            methodVO.textureVO.onClear(new AssetEvent(AssetEvent.CLEAR, this._texture));
-            methodVO.textureVO = null;
+        else if (methodVO.textureGL) {
+            methodVO.textureGL.onClear(new AssetEvent(AssetEvent.CLEAR, this._texture));
+            methodVO.textureGL = null;
         }
     };
     /**
      * @inheritDoc
      */
     AmbientBasicMethod.prototype.iInitConstants = function (shader, methodVO) {
-        if (!methodVO.textureVO) {
+        if (!methodVO.textureGL) {
             this._color = shader.numLights ? 0xFFFFFF : methodVO.pass._renderOwner.style.color;
             this.updateColor();
         }
@@ -420,8 +420,8 @@ var AmbientBasicMethod = (function (_super) {
      */
     AmbientBasicMethod.prototype.iGetFragmentCode = function (shader, methodVO, targetReg, registerCache, sharedRegisters) {
         var code = "";
-        if (methodVO.textureVO) {
-            code += methodVO.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+        if (methodVO.textureGL) {
+            code += methodVO.textureGL._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
             if (shader.alphaThreshold > 0) {
                 var cutOffReg = registerCache.getFreeFragmentConstant();
                 methodVO.fragmentConstantsIndex = cutOffReg.index * 4;
@@ -439,8 +439,8 @@ var AmbientBasicMethod = (function (_super) {
      * @inheritDoc
      */
     AmbientBasicMethod.prototype.iActivate = function (shader, methodVO, stage) {
-        if (methodVO.textureVO) {
-            methodVO.textureVO.activate(methodVO.pass._render);
+        if (methodVO.textureGL) {
+            methodVO.textureGL.activate(methodVO.pass._render);
             if (shader.alphaThreshold > 0)
                 shader.fragmentConstantData[methodVO.fragmentConstantsIndex] = shader.alphaThreshold;
         }
@@ -454,8 +454,8 @@ var AmbientBasicMethod = (function (_super) {
         }
     };
     AmbientBasicMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
-        if (methodVO.textureVO)
-            methodVO.textureVO._setRenderState(renderable);
+        if (methodVO.textureGL)
+            methodVO.textureGL._setRenderState(renderable);
     };
     /**
      * Updates the ambient color data used by the render state.
@@ -498,19 +498,19 @@ var AmbientEnvMapMethod = (function (_super) {
     AmbientEnvMapMethod.prototype.iInitVO = function (shader, methodVO) {
         methodVO.needsNormals = true;
         if (this._texture) {
-            methodVO.textureVO = shader.getAbstraction(this._texture);
+            methodVO.textureGL = shader.getAbstraction(this._texture);
             shader.uvDependencies++;
         }
-        else if (methodVO.textureVO) {
-            methodVO.textureVO.onClear(new AssetEvent(AssetEvent.CLEAR, this._texture));
-            methodVO.textureVO = null;
+        else if (methodVO.textureGL) {
+            methodVO.textureGL.onClear(new AssetEvent(AssetEvent.CLEAR, this._texture));
+            methodVO.textureGL = null;
         }
     };
     /**
      * @inheritDoc
      */
     AmbientEnvMapMethod.prototype.iGetFragmentCode = function (shader, methodVO, targetReg, regCache, sharedRegisters) {
-        return (this._texture) ? methodVO.textureVO._iGetFragmentCode(targetReg, regCache, sharedRegisters, sharedRegisters.normalFragment) : "";
+        return (this._texture) ? methodVO.textureGL._iGetFragmentCode(targetReg, regCache, sharedRegisters, sharedRegisters.normalFragment) : "";
     };
     return AmbientEnvMapMethod;
 })(AmbientBasicMethod);
@@ -547,19 +547,19 @@ var CurveBasicMethod = (function (_super) {
      */
     CurveBasicMethod.prototype.iInitVO = function (shader, methodVO) {
         if (this._texture) {
-            methodVO.textureVO = shader.getAbstraction(this._texture);
+            methodVO.textureGL = shader.getAbstraction(this._texture);
             shader.uvDependencies++;
         }
-        else if (methodVO.textureVO) {
-            methodVO.textureVO.onClear(new AssetEvent(AssetEvent.CLEAR, this._texture));
-            methodVO.textureVO = null;
+        else if (methodVO.textureGL) {
+            methodVO.textureGL.onClear(new AssetEvent(AssetEvent.CLEAR, this._texture));
+            methodVO.textureGL = null;
         }
     };
     /**
      * @inheritDoc
      */
     CurveBasicMethod.prototype.iInitConstants = function (shader, methodVO) {
-        if (!methodVO.textureVO) {
+        if (!methodVO.textureGL) {
             this._color = methodVO.pass._renderOwner.style.color;
             this.updateColor();
         }
@@ -634,8 +634,8 @@ var CurveBasicMethod = (function (_super) {
     CurveBasicMethod.prototype.iGetFragmentCode = function (shader, methodVO, targetReg, registerCache, sharedRegisters) {
         var code = "";
         var ambientInputRegister;
-        if (methodVO.textureVO) {
-            code += methodVO.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+        if (methodVO.textureGL) {
+            code += methodVO.textureGL._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
             if (shader.alphaThreshold > 0) {
                 var cutOffReg = registerCache.getFreeFragmentConstant();
                 methodVO.fragmentConstantsIndex = cutOffReg.index * 4;
@@ -654,8 +654,8 @@ var CurveBasicMethod = (function (_super) {
      * @inheritDoc
      */
     CurveBasicMethod.prototype.iActivate = function (shader, methodVO, stage) {
-        if (methodVO.textureVO) {
-            methodVO.textureVO.activate(methodVO.pass._render);
+        if (methodVO.textureGL) {
+            methodVO.textureGL.activate(methodVO.pass._render);
             if (shader.alphaThreshold > 0)
                 shader.fragmentConstantData[methodVO.fragmentConstantsIndex] = shader.alphaThreshold;
         }
@@ -669,8 +669,8 @@ var CurveBasicMethod = (function (_super) {
         }
     };
     CurveBasicMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
-        if (methodVO.textureVO)
-            methodVO.textureVO._setRenderState(renderable);
+        if (methodVO.textureGL)
+            methodVO.textureGL._setRenderState(renderable);
     };
     /**
      * Updates the ambient color data used by the render state.
@@ -735,12 +735,12 @@ var DiffuseBasicMethod = (function (_super) {
     });
     DiffuseBasicMethod.prototype.iInitVO = function (shader, methodVO) {
         if (this._texture) {
-            methodVO.textureVO = shader.getAbstraction(this._texture);
+            methodVO.textureGL = shader.getAbstraction(this._texture);
             shader.uvDependencies++;
         }
-        else if (methodVO.textureVO) {
-            methodVO.textureVO.onClear(new AssetEvent(AssetEvent.CLEAR, null));
-            methodVO.textureVO = null;
+        else if (methodVO.textureGL) {
+            methodVO.textureGL.onClear(new AssetEvent(AssetEvent.CLEAR, null));
+            methodVO.textureGL = null;
         }
         if (shader.numLights > 0) {
             shader.usesCommonData = true;
@@ -891,7 +891,7 @@ var DiffuseBasicMethod = (function (_super) {
         var ambientColorRegister = registerCache.getFreeFragmentConstant();
         methodVO.fragmentConstantsIndex = ambientColorRegister.index * 4;
         if (this._texture) {
-            code += methodVO.textureVO._iGetFragmentCode(diffuseColor, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+            code += methodVO.textureGL._iGetFragmentCode(diffuseColor, registerCache, sharedRegisters, sharedRegisters.uvVarying);
         }
         else {
             var diffuseInputRegister = registerCache.getFreeFragmentConstant();
@@ -924,7 +924,7 @@ var DiffuseBasicMethod = (function (_super) {
      */
     DiffuseBasicMethod.prototype.iActivate = function (shader, methodVO, stage) {
         if (this._texture) {
-            methodVO.textureVO.activate(methodVO.pass._render);
+            methodVO.textureGL.activate(methodVO.pass._render);
         }
         else {
             var index = methodVO.fragmentConstantsIndex;
@@ -963,7 +963,7 @@ var DiffuseBasicMethod = (function (_super) {
      */
     DiffuseBasicMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
         if (this._texture)
-            methodVO.textureVO._setRenderState(renderable);
+            methodVO.textureGL._setRenderState(renderable);
         //TODO move this to Activate (ambientR/G/B currently calc'd in render state)
         var index = methodVO.fragmentConstantsIndex;
         var data = shader.fragmentConstantData;
@@ -1329,7 +1329,7 @@ var DiffuseDepthMethod = (function (_super) {
         }
         decReg = registerCache.getFreeFragmentConstant();
         methodVO.fragmentConstantsIndex = decReg.index * 4;
-        code += methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, sharedRegisters.uvVarying) + "dp4 " + temp + ".x, " + temp + ", " + decReg + "\n" + "mov " + temp + ".yz, " + temp + ".xx			\n" + "mov " + temp + ".w, " + decReg + ".x\n" + "sub " + temp + ".xyz, " + decReg + ".xxx, " + temp + ".xyz\n";
+        code += methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, sharedRegisters.uvVarying) + "dp4 " + temp + ".x, " + temp + ", " + decReg + "\n" + "mov " + temp + ".yz, " + temp + ".xx			\n" + "mov " + temp + ".w, " + decReg + ".x\n" + "sub " + temp + ".xyz, " + decReg + ".xxx, " + temp + ".xyz\n";
         if (shader.numLights == 0)
             return code;
         code += "mul " + targetReg + ".xyz, " + temp + ".xyz, " + targetReg + ".xyz\n" + "mov " + targetReg + ".w, " + temp + ".w\n";
@@ -1370,7 +1370,7 @@ var DiffuseGradientMethod = (function (_super) {
     }
     DiffuseGradientMethod.prototype.iInitVO = function (shader, methodVO) {
         _super.prototype.iInitVO.call(this, shader, methodVO);
-        methodVO.secondaryTextureVO = shader.getAbstraction(this._gradient);
+        methodVO.secondaryTextureGL = shader.getAbstraction(this._gradient);
     };
     Object.defineProperty(DiffuseGradientMethod.prototype, "gradient", {
         /**
@@ -1423,7 +1423,7 @@ var DiffuseGradientMethod = (function (_super) {
         code += "dp3 " + t + ".w, " + lightDirReg + ".xyz, " + sharedRegisters.normalFragment + ".xyz\n" + "mul " + t + ".w, " + t + ".w, " + sharedRegisters.commons + ".x\n" + "add " + t + ".w, " + t + ".w, " + sharedRegisters.commons + ".x\n" + "mul " + t + ".xyz, " + t + ".w, " + lightDirReg + ".w\n";
         if (this._iModulateMethod != null)
             code += this._iModulateMethod(shader, methodVO, t, registerCache, sharedRegisters);
-        code += methodVO.secondaryTextureVO._iGetFragmentCode(t, registerCache, sharedRegisters, t) + "mul " + t + ".xyz, " + t + ".xyz, " + lightColReg + ".xyz\n";
+        code += methodVO.secondaryTextureGL._iGetFragmentCode(t, registerCache, sharedRegisters, t) + "mul " + t + ".xyz, " + t + ".xyz, " + lightColReg + ".xyz\n";
         if (!this._pIsFirstLight) {
             code += "add " + this._pTotalLightColorReg + ".xyz, " + this._pTotalLightColorReg + ".xyz, " + t + ".xyz\n";
             registerCache.removeFragmentTempUsage(t);
@@ -1436,14 +1436,14 @@ var DiffuseGradientMethod = (function (_super) {
      */
     DiffuseGradientMethod.prototype.pApplyShadow = function (shader, methodVO, regCache, sharedRegisters) {
         var t = regCache.getFreeFragmentVectorTemp();
-        return "mov " + t + ", " + sharedRegisters.shadowTarget + ".wwww\n" + methodVO.secondaryTextureVO._iGetFragmentCode(t, regCache, sharedRegisters, sharedRegisters.uvVarying) + "mul " + this._pTotalLightColorReg + ".xyz, " + this._pTotalLightColorReg + ", " + t + "\n";
+        return "mov " + t + ", " + sharedRegisters.shadowTarget + ".wwww\n" + methodVO.secondaryTextureGL._iGetFragmentCode(t, regCache, sharedRegisters, sharedRegisters.uvVarying) + "mul " + this._pTotalLightColorReg + ".xyz, " + this._pTotalLightColorReg + ", " + t + "\n";
     };
     /**
      * @inheritDoc
      */
     DiffuseGradientMethod.prototype.iActivate = function (shader, methodVO, stage) {
         _super.prototype.iActivate.call(this, shader, methodVO, stage);
-        methodVO.secondaryTextureVO.activate(methodVO.pass._render);
+        methodVO.secondaryTextureGL.activate(methodVO.pass._render);
     };
     /**
      * @inheritDoc
@@ -1451,7 +1451,7 @@ var DiffuseGradientMethod = (function (_super) {
     DiffuseGradientMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
         _super.prototype.iSetRenderState.call(this, shader, methodVO, renderable, stage, camera);
         if (shader.numLights > 0)
-            methodVO.secondaryTextureVO._setRenderState(renderable);
+            methodVO.secondaryTextureGL._setRenderState(renderable);
     };
     return DiffuseGradientMethod;
 })(DiffuseBasicMethod);
@@ -1495,7 +1495,7 @@ var DiffuseLightMapMethod = (function (_super) {
      * @inheritDoc
      */
     DiffuseLightMapMethod.prototype.iInitVO = function (shader, methodVO) {
-        methodVO.secondaryTextureVO = shader.getAbstraction(this._lightMap);
+        methodVO.secondaryTextureGL = shader.getAbstraction(this._lightMap);
         if (this._useSecondaryUV)
             shader.secondaryUVDependencies++;
         else
@@ -1564,7 +1564,7 @@ var DiffuseLightMapMethod = (function (_super) {
     DiffuseLightMapMethod.prototype.iGetFragmentPostLightingCode = function (shader, methodVO, targetReg, registerCache, sharedRegisters) {
         var code;
         var temp = registerCache.getFreeFragmentVectorTemp();
-        code = methodVO.secondaryTextureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, this._useSecondaryUV ? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
+        code = methodVO.secondaryTextureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, this._useSecondaryUV ? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
         switch (this._blendMode) {
             case DiffuseLightMapMethod.MULTIPLY:
                 code += "mul " + this._pTotalLightColorReg + ", " + this._pTotalLightColorReg + ", " + temp + "\n";
@@ -1581,14 +1581,14 @@ var DiffuseLightMapMethod = (function (_super) {
      */
     DiffuseLightMapMethod.prototype.iActivate = function (shader, methodVO, stage) {
         _super.prototype.iActivate.call(this, shader, methodVO, stage);
-        methodVO.secondaryTextureVO.activate(methodVO.pass._render);
+        methodVO.secondaryTextureGL.activate(methodVO.pass._render);
     };
     /**
      * @inheritDoc
      */
     DiffuseLightMapMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
         _super.prototype.iSetRenderState.call(this, shader, methodVO, renderable, stage, camera);
-        methodVO.secondaryTextureVO._setRenderState(renderable);
+        methodVO.secondaryTextureGL._setRenderState(renderable);
     };
     /**
      * Indicates the light map should be multiplied with the calculated shading result.
@@ -1783,8 +1783,8 @@ var DiffuseSubSurfaceMethod = (function (_super) {
      * @inheritDoc
      */
     DiffuseSubSurfaceMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
-        methodVO.secondaryTextureVO = shader.getAbstraction(this._depthPass._iGetDepthMap(renderable));
-        methodVO.secondaryTextureVO._setRenderState(renderable);
+        methodVO.secondaryTextureGL = shader.getAbstraction(this._depthPass._iGetDepthMap(renderable));
+        methodVO.secondaryTextureGL._setRenderState(renderable);
         this._depthPass._iGetProjection(renderable).copyRawDataTo(shader.vertexConstantData, methodVO.secondaryVertexConstantsIndex + 4, true);
     };
     /**
@@ -1801,7 +1801,7 @@ var DiffuseSubSurfaceMethod = (function (_super) {
         else
             registerCache.addFragmentTempUsages(this._targetReg = registerCache.getFreeFragmentVectorTemp(), 1);
         var temp = registerCache.getFreeFragmentVectorTemp();
-        code += methodVO.secondaryTextureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, this._lightProjVarying) + "dp4 " + targetReg + ".z, " + temp + ", " + this._decReg + "\n";
+        code += methodVO.secondaryTextureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, this._lightProjVarying) + "dp4 " + targetReg + ".z, " + temp + ", " + this._decReg + "\n";
         // currentDistanceToLight - closestDistanceToLight
         code += "sub " + targetReg + ".z, " + this._lightProjVarying + ".z, " + targetReg + ".z\n" + "sub " + targetReg + ".z, " + this._propReg + ".x, " + targetReg + ".z\n" + "mul " + targetReg + ".z, " + this._propReg + ".y, " + targetReg + ".z\n" + "sat " + targetReg + ".z, " + targetReg + ".z\n" + "neg " + targetReg + ".y, " + targetReg + ".x\n" + "mul " + targetReg + ".y, " + targetReg + ".y, " + this._propReg + ".z\n" + "add " + targetReg + ".y, " + targetReg + ".y, " + this._propReg + ".z\n" + "mul " + this._targetReg + ".w, " + targetReg + ".z, " + targetReg + ".y\n" + "sub " + targetReg + ".y, " + this._colorReg + ".w, " + this._targetReg + ".w\n" + "mul " + targetReg + ".w, " + targetReg + ".w, " + targetReg + ".y\n";
         return code;
@@ -1936,7 +1936,7 @@ var EffectAlphaMaskMethod = (function (_super) {
      * @inheritDoc
      */
     EffectAlphaMaskMethod.prototype.iInitVO = function (shader, methodVO) {
-        methodVO.textureVO = shader.getAbstraction(this._texture);
+        methodVO.textureGL = shader.getAbstraction(this._texture);
         if (this._useSecondaryUV)
             shader.secondaryUVDependencies++;
         else
@@ -1985,17 +1985,17 @@ var EffectAlphaMaskMethod = (function (_super) {
      */
     EffectAlphaMaskMethod.prototype.iGetFragmentCode = function (shader, methodVO, targetReg, registerCache, sharedRegisters) {
         var temp = registerCache.getFreeFragmentVectorTemp();
-        return methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, this._useSecondaryUV ? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying) + "mul " + targetReg + ", " + targetReg + ", " + temp + ".x\n";
+        return methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, this._useSecondaryUV ? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying) + "mul " + targetReg + ", " + targetReg + ", " + temp + ".x\n";
     };
     /**
      * @inheritDoc
      */
     EffectAlphaMaskMethod.prototype.iActivate = function (shader, methodVO, stage) {
         _super.prototype.iActivate.call(this, shader, methodVO, stage);
-        methodVO.textureVO.activate(methodVO.pass._render);
+        methodVO.textureGL.activate(methodVO.pass._render);
     };
     EffectAlphaMaskMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
-        methodVO.textureVO._setRenderState(renderable);
+        methodVO.textureGL._setRenderState(renderable);
     };
     return EffectAlphaMaskMethod;
 })(EffectMethodBase);
@@ -2208,9 +2208,9 @@ var EffectEnvMapMethod = (function (_super) {
         methodVO.needsNormals = true;
         methodVO.needsView = true;
         if (this._envMap)
-            methodVO.textureVO = shader.getAbstraction(this._envMap);
+            methodVO.textureGL = shader.getAbstraction(this._envMap);
         if (this._mask) {
-            methodVO.secondaryTextureVO = shader.getAbstraction(this._mask);
+            methodVO.secondaryTextureGL = shader.getAbstraction(this._mask);
             shader.uvDependencies++;
         }
     };
@@ -2257,14 +2257,14 @@ var EffectEnvMapMethod = (function (_super) {
      */
     EffectEnvMapMethod.prototype.iActivate = function (shader, methodVO, stage) {
         shader.fragmentConstantData[methodVO.fragmentConstantsIndex] = this._alpha;
-        methodVO.textureVO.activate(methodVO.pass._render);
+        methodVO.textureGL.activate(methodVO.pass._render);
         if (this._mask)
-            methodVO.secondaryTextureVO.activate(methodVO.pass._render);
+            methodVO.secondaryTextureGL.activate(methodVO.pass._render);
     };
     EffectEnvMapMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
-        methodVO.textureVO._setRenderState(renderable);
+        methodVO.textureGL._setRenderState(renderable);
         if (this._mask)
-            methodVO.secondaryTextureVO._setRenderState(renderable);
+            methodVO.secondaryTextureGL._setRenderState(renderable);
     };
     /**
      * @inheritDoc
@@ -2278,9 +2278,9 @@ var EffectEnvMapMethod = (function (_super) {
         var temp2 = registerCache.getFreeFragmentVectorTemp();
         registerCache.addFragmentTempUsages(temp2, 1);
         // r = I - 2(I.N)*N
-        code += "dp3 " + temp + ".w, " + sharedRegisters.viewDirFragment + ".xyz, " + sharedRegisters.normalFragment + ".xyz\n" + "add " + temp + ".w, " + temp + ".w, " + temp + ".w\n" + "mul " + temp + ".xyz, " + sharedRegisters.normalFragment + ".xyz, " + temp + ".w\n" + "sub " + temp + ".xyz, " + temp + ".xyz, " + sharedRegisters.viewDirFragment + ".xyz\n" + methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, temp) + "sub " + temp2 + ".w, " + temp + ".w, fc0.x\n" + "kil " + temp2 + ".w\n" + "sub " + temp + ", " + temp + ", " + targetReg + "\n";
+        code += "dp3 " + temp + ".w, " + sharedRegisters.viewDirFragment + ".xyz, " + sharedRegisters.normalFragment + ".xyz\n" + "add " + temp + ".w, " + temp + ".w, " + temp + ".w\n" + "mul " + temp + ".xyz, " + sharedRegisters.normalFragment + ".xyz, " + temp + ".w\n" + "sub " + temp + ".xyz, " + temp + ".xyz, " + sharedRegisters.viewDirFragment + ".xyz\n" + methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, temp) + "sub " + temp2 + ".w, " + temp + ".w, fc0.x\n" + "kil " + temp2 + ".w\n" + "sub " + temp + ", " + temp + ", " + targetReg + "\n";
         if (this._mask) {
-            code += methodVO.secondaryTextureVO._iGetFragmentCode(temp2, registerCache, sharedRegisters, sharedRegisters.uvVarying) + "mul " + temp + ", " + temp2 + ", " + temp + "\n";
+            code += methodVO.secondaryTextureGL._iGetFragmentCode(temp2, registerCache, sharedRegisters, sharedRegisters.uvVarying) + "mul " + temp + ", " + temp2 + ", " + temp + "\n";
         }
         code += "mul " + temp + ", " + temp + ", " + dataRegister + ".x\n" + "add " + targetReg + ", " + targetReg + ", " + temp + "\n";
         registerCache.removeFragmentTempUsage(temp);
@@ -2444,9 +2444,9 @@ var EffectFresnelEnvMapMethod = (function (_super) {
     EffectFresnelEnvMapMethod.prototype.iInitVO = function (shader, methodVO) {
         methodVO.needsNormals = true;
         methodVO.needsView = true;
-        methodVO.textureVO = shader.getAbstraction(this._envMap);
+        methodVO.textureGL = shader.getAbstraction(this._envMap);
         if (this._mask != null) {
-            methodVO.secondaryTextureVO = shader.getAbstraction(this._mask);
+            methodVO.secondaryTextureGL = shader.getAbstraction(this._mask);
             shader.uvDependencies++;
         }
     };
@@ -2543,14 +2543,14 @@ var EffectFresnelEnvMapMethod = (function (_super) {
         data[index] = this._alpha;
         data[index + 1] = this._normalReflectance;
         data[index + 2] = this._fresnelPower;
-        methodVO.textureVO.activate(methodVO.pass._render);
+        methodVO.textureGL.activate(methodVO.pass._render);
         if (this._mask)
-            methodVO.secondaryTextureVO.activate(methodVO.pass._render);
+            methodVO.secondaryTextureGL.activate(methodVO.pass._render);
     };
     EffectFresnelEnvMapMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
-        methodVO.textureVO._setRenderState(renderable);
+        methodVO.textureGL._setRenderState(renderable);
         if (this._mask)
-            methodVO.secondaryTextureVO._setRenderState(renderable);
+            methodVO.secondaryTextureGL._setRenderState(renderable);
     };
     /**
      * @inheritDoc
@@ -2566,11 +2566,11 @@ var EffectFresnelEnvMapMethod = (function (_super) {
         var temp2 = registerCache.getFreeFragmentVectorTemp();
         registerCache.addFragmentTempUsages(temp2, 1);
         // r = V - 2(V.N)*N
-        code += "dp3 " + temp + ".w, " + viewDirReg + ".xyz, " + normalReg + ".xyz\n" + "add " + temp + ".w, " + temp + ".w, " + temp + ".w\n" + "mul " + temp + ".xyz, " + normalReg + ".xyz, " + temp + ".w\n" + "sub " + temp + ".xyz, " + temp + ".xyz, " + viewDirReg + ".xyz\n" + methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, temp) + "sub " + temp2 + ".w, " + temp + ".w, fc0.x\n" + "kil " + temp2 + ".w\n" + "sub " + temp + ", " + temp + ", " + targetReg + "\n";
+        code += "dp3 " + temp + ".w, " + viewDirReg + ".xyz, " + normalReg + ".xyz\n" + "add " + temp + ".w, " + temp + ".w, " + temp + ".w\n" + "mul " + temp + ".xyz, " + normalReg + ".xyz, " + temp + ".w\n" + "sub " + temp + ".xyz, " + temp + ".xyz, " + viewDirReg + ".xyz\n" + methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, temp) + "sub " + temp2 + ".w, " + temp + ".w, fc0.x\n" + "kil " + temp2 + ".w\n" + "sub " + temp + ", " + temp + ", " + targetReg + "\n";
         // calculate fresnel term
         code += "dp3 " + viewDirReg + ".w, " + viewDirReg + ".xyz, " + normalReg + ".xyz\n" + "sub " + viewDirReg + ".w, " + dataRegister + ".w, " + viewDirReg + ".w\n" + "pow " + viewDirReg + ".w, " + viewDirReg + ".w, " + dataRegister + ".z\n" + "sub " + normalReg + ".w, " + dataRegister + ".w, " + viewDirReg + ".w\n" + "mul " + normalReg + ".w, " + dataRegister + ".y, " + normalReg + ".w\n" + "add " + viewDirReg + ".w, " + viewDirReg + ".w, " + normalReg + ".w\n" + "mul " + viewDirReg + ".w, " + dataRegister + ".x, " + viewDirReg + ".w\n";
         if (this._mask) {
-            code += methodVO.secondaryTextureVO._iGetFragmentCode(temp2, registerCache, sharedRegisters, sharedRegisters.uvVarying) + "mul " + viewDirReg + ".w, " + temp2 + ".x, " + viewDirReg + ".w\n";
+            code += methodVO.secondaryTextureGL._iGetFragmentCode(temp2, registerCache, sharedRegisters, sharedRegisters.uvVarying) + "mul " + viewDirReg + ".w, " + temp2 + ".x, " + viewDirReg + ".w\n";
         }
         // blend
         code += "mul " + temp + ", " + temp + ", " + viewDirReg + ".w\n" + "add " + targetReg + ", " + targetReg + ", " + temp + "\n";
@@ -2620,7 +2620,7 @@ var EffectLightMapMethod = (function (_super) {
      * @inheritDoc
      */
     EffectLightMapMethod.prototype.iInitVO = function (shader, methodVO) {
-        methodVO.textureVO = shader.getAbstraction(this._lightMap);
+        methodVO.textureGL = shader.getAbstraction(this._lightMap);
         if (this._useSecondaryUV)
             shader.secondaryUVDependencies++;
         else
@@ -2689,7 +2689,7 @@ var EffectLightMapMethod = (function (_super) {
     EffectLightMapMethod.prototype.iGetFragmentCode = function (shader, methodVO, targetReg, registerCache, sharedRegisters) {
         var code;
         var temp = registerCache.getFreeFragmentVectorTemp();
-        code = methodVO.secondaryTextureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, this._useSecondaryUV ? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
+        code = methodVO.secondaryTextureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, this._useSecondaryUV ? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
         switch (this._blendMode) {
             case EffectLightMapMethod.MULTIPLY:
                 code += "mul " + targetReg + ", " + targetReg + ", " + temp + "\n";
@@ -2704,10 +2704,10 @@ var EffectLightMapMethod = (function (_super) {
      * @inheritDoc
      */
     EffectLightMapMethod.prototype.iActivate = function (shader, methodVO, stage) {
-        methodVO.textureVO.activate(methodVO.pass._render);
+        methodVO.textureGL.activate(methodVO.pass._render);
     };
     EffectLightMapMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
-        methodVO.textureVO._setRenderState(renderable);
+        methodVO.textureGL._setRenderState(renderable);
     };
     /**
      * Indicates the light map should be multiplied with the calculated shading result.
@@ -2822,7 +2822,7 @@ var EffectRefractionEnvMapMethod = (function (_super) {
     EffectRefractionEnvMapMethod.prototype.iInitVO = function (shader, methodVO) {
         methodVO.needsNormals = true;
         methodVO.needsView = true;
-        methodVO.textureVO = shader.getAbstraction(this._envMap);
+        methodVO.textureGL = shader.getAbstraction(this._envMap);
     };
     Object.defineProperty(EffectRefractionEnvMapMethod.prototype, "envMap", {
         /**
@@ -2936,10 +2936,10 @@ var EffectRefractionEnvMapMethod = (function (_super) {
             data[index + 2] = this._dispersionB + this._refractionIndex;
         }
         data[index + 3] = this._alpha;
-        methodVO.textureVO.activate(methodVO.pass._render);
+        methodVO.textureGL.activate(methodVO.pass._render);
     };
     EffectRefractionEnvMapMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
-        methodVO.textureVO._setRenderState(renderable);
+        methodVO.textureGL._setRenderState(renderable);
     };
     /**
      * @inheritDoc
@@ -2962,12 +2962,12 @@ var EffectRefractionEnvMapMethod = (function (_super) {
         var viewDirReg = sharedRegisters.viewDirFragment;
         var normalReg = sharedRegisters.normalFragment;
         code += "neg " + viewDirReg + ".xyz, " + viewDirReg + ".xyz\n";
-        code += "dp3 " + temp + ".x, " + viewDirReg + ".xyz, " + normalReg + ".xyz\n" + "mul " + temp + ".w, " + temp + ".x, " + temp + ".x\n" + "sub " + temp + ".w, " + data2 + ".x, " + temp + ".w\n" + "mul " + temp + ".w, " + data + ".x, " + temp + ".w\n" + "mul " + temp + ".w, " + data + ".x, " + temp + ".w\n" + "sub " + temp + ".w, " + data2 + ".x, " + temp + ".w\n" + "sqt " + temp + ".y, " + temp + ".w\n" + "mul " + temp + ".x, " + data + ".x, " + temp + ".x\n" + "add " + temp + ".x, " + temp + ".x, " + temp + ".y\n" + "mul " + temp + ".xyz, " + temp + ".x, " + normalReg + ".xyz\n" + "mul " + refractionDir + ", " + data + ".x, " + viewDirReg + "\n" + "sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" + "nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" + methodVO.textureVO._iGetFragmentCode(refractionColor, registerCache, sharedRegisters, refractionDir) + "sub " + refractionColor + ".w, " + refractionColor + ".w, fc0.x	\n" + "kil " + refractionColor + ".w\n";
+        code += "dp3 " + temp + ".x, " + viewDirReg + ".xyz, " + normalReg + ".xyz\n" + "mul " + temp + ".w, " + temp + ".x, " + temp + ".x\n" + "sub " + temp + ".w, " + data2 + ".x, " + temp + ".w\n" + "mul " + temp + ".w, " + data + ".x, " + temp + ".w\n" + "mul " + temp + ".w, " + data + ".x, " + temp + ".w\n" + "sub " + temp + ".w, " + data2 + ".x, " + temp + ".w\n" + "sqt " + temp + ".y, " + temp + ".w\n" + "mul " + temp + ".x, " + data + ".x, " + temp + ".x\n" + "add " + temp + ".x, " + temp + ".x, " + temp + ".y\n" + "mul " + temp + ".xyz, " + temp + ".x, " + normalReg + ".xyz\n" + "mul " + refractionDir + ", " + data + ".x, " + viewDirReg + "\n" + "sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" + "nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" + methodVO.textureGL._iGetFragmentCode(refractionColor, registerCache, sharedRegisters, refractionDir) + "sub " + refractionColor + ".w, " + refractionColor + ".w, fc0.x	\n" + "kil " + refractionColor + ".w\n";
         if (this._useDispersion) {
             // GREEN
-            code += "dp3 " + temp + ".x, " + viewDirReg + ".xyz, " + normalReg + ".xyz\n" + "mul " + temp + ".w, " + temp + ".x, " + temp + ".x\n" + "sub " + temp + ".w, " + data2 + ".x, " + temp + ".w\n" + "mul " + temp + ".w, " + data + ".y, " + temp + ".w\n" + "mul " + temp + ".w, " + data + ".y, " + temp + ".w\n" + "sub " + temp + ".w, " + data2 + ".x, " + temp + ".w\n" + "sqt " + temp + ".y, " + temp + ".w\n" + "mul " + temp + ".x, " + data + ".y, " + temp + ".x\n" + "add " + temp + ".x, " + temp + ".x, " + temp + ".y\n" + "mul " + temp + ".xyz, " + temp + ".x, " + normalReg + ".xyz\n" + "mul " + refractionDir + ", " + data + ".y, " + viewDirReg + "\n" + "sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" + "nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" + methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, refractionDir) + "mov " + refractionColor + ".y, " + temp + ".y\n";
+            code += "dp3 " + temp + ".x, " + viewDirReg + ".xyz, " + normalReg + ".xyz\n" + "mul " + temp + ".w, " + temp + ".x, " + temp + ".x\n" + "sub " + temp + ".w, " + data2 + ".x, " + temp + ".w\n" + "mul " + temp + ".w, " + data + ".y, " + temp + ".w\n" + "mul " + temp + ".w, " + data + ".y, " + temp + ".w\n" + "sub " + temp + ".w, " + data2 + ".x, " + temp + ".w\n" + "sqt " + temp + ".y, " + temp + ".w\n" + "mul " + temp + ".x, " + data + ".y, " + temp + ".x\n" + "add " + temp + ".x, " + temp + ".x, " + temp + ".y\n" + "mul " + temp + ".xyz, " + temp + ".x, " + normalReg + ".xyz\n" + "mul " + refractionDir + ", " + data + ".y, " + viewDirReg + "\n" + "sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" + "nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" + methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, refractionDir) + "mov " + refractionColor + ".y, " + temp + ".y\n";
             // BLUE
-            code += "dp3 " + temp + ".x, " + viewDirReg + ".xyz, " + normalReg + ".xyz\n" + "mul " + temp + ".w, " + temp + ".x, " + temp + ".x\n" + "sub " + temp + ".w, " + data2 + ".x, " + temp + ".w\n" + "mul " + temp + ".w, " + data + ".z, " + temp + ".w\n" + "mul " + temp + ".w, " + data + ".z, " + temp + ".w\n" + "sub " + temp + ".w, " + data2 + ".x, " + temp + ".w\n" + "sqt " + temp + ".y, " + temp + ".w\n" + "mul " + temp + ".x, " + data + ".z, " + temp + ".x\n" + "add " + temp + ".x, " + temp + ".x, " + temp + ".y\n" + "mul " + temp + ".xyz, " + temp + ".x, " + normalReg + ".xyz\n" + "mul " + refractionDir + ", " + data + ".z, " + viewDirReg + "\n" + "sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" + "nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" + methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, refractionDir) + "mov " + refractionColor + ".z, " + temp + ".z\n";
+            code += "dp3 " + temp + ".x, " + viewDirReg + ".xyz, " + normalReg + ".xyz\n" + "mul " + temp + ".w, " + temp + ".x, " + temp + ".x\n" + "sub " + temp + ".w, " + data2 + ".x, " + temp + ".w\n" + "mul " + temp + ".w, " + data + ".z, " + temp + ".w\n" + "mul " + temp + ".w, " + data + ".z, " + temp + ".w\n" + "sub " + temp + ".w, " + data2 + ".x, " + temp + ".w\n" + "sqt " + temp + ".y, " + temp + ".w\n" + "mul " + temp + ".x, " + data + ".z, " + temp + ".x\n" + "add " + temp + ".x, " + temp + ".x, " + temp + ".y\n" + "mul " + temp + ".xyz, " + temp + ".x, " + normalReg + ".xyz\n" + "mul " + refractionDir + ", " + data + ".z, " + viewDirReg + "\n" + "sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" + "nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" + methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, refractionDir) + "mov " + refractionColor + ".z, " + temp + ".z\n";
         }
         code += "sub " + refractionColor + ".xyz, " + refractionColor + ".xyz, " + targetReg + ".xyz\n" + "mul " + refractionColor + ".xyz, " + refractionColor + ".xyz, " + data + ".w\n" + "add " + targetReg + ".xyz, " + targetReg + ".xyz, " + refractionColor + ".xyz\n";
         registerCache.removeFragmentTempUsage(temp);
@@ -3227,7 +3227,7 @@ var NormalBasicMethod = (function (_super) {
      */
     NormalBasicMethod.prototype.iInitVO = function (shader, methodVO) {
         if (this._texture) {
-            methodVO.textureVO = shader.getAbstraction(this._texture);
+            methodVO.textureGL = shader.getAbstraction(this._texture);
             shader.uvDependencies++;
         }
     };
@@ -3279,11 +3279,11 @@ var NormalBasicMethod = (function (_super) {
      */
     NormalBasicMethod.prototype.iActivate = function (shader, methodVO, stage) {
         if (this._texture)
-            methodVO.textureVO.activate(methodVO.pass._render);
+            methodVO.textureGL.activate(methodVO.pass._render);
     };
     NormalBasicMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
         if (this._texture)
-            methodVO.textureVO._setRenderState(renderable);
+            methodVO.textureGL._setRenderState(renderable);
     };
     /**
      * @inheritDoc
@@ -3291,7 +3291,7 @@ var NormalBasicMethod = (function (_super) {
     NormalBasicMethod.prototype.iGetFragmentCode = function (shader, methodVO, targetReg, registerCache, sharedRegisters) {
         var code = "";
         if (this._texture)
-            code += methodVO.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+            code += methodVO.textureGL._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
         code += "sub " + targetReg + ".xyz, " + targetReg + ".xyz, " + sharedRegisters.commons + ".xxx\n" + "nrm " + targetReg + ".xyz, " + targetReg + "\n";
         return code;
     };
@@ -3367,7 +3367,7 @@ var NormalHeightMapMethod = (function (_super) {
         var dataReg = registerCache.getFreeFragmentConstant();
         var dataReg2 = registerCache.getFreeFragmentConstant();
         methodVO.fragmentConstantsIndex = dataReg.index * 4;
-        code += methodVO.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying) + "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg + ".xzzz\n" + methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, temp) + "sub " + targetReg + ".x, " + targetReg + ".x, " + temp + ".x\n" + "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg + ".zyzz\n" + methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, temp) + "sub " + targetReg + ".z, " + targetReg + ".z, " + temp + ".x\n" + "mov " + targetReg + ".y, " + dataReg + ".w\n" + "mul " + targetReg + ".xz, " + targetReg + ".xz, " + dataReg2 + ".xy\n" + "nrm " + targetReg + ".xyz, " + targetReg + ".xyz\n";
+        code += methodVO.textureGL._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying) + "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg + ".xzzz\n" + methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, temp) + "sub " + targetReg + ".x, " + targetReg + ".x, " + temp + ".x\n" + "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg + ".zyzz\n" + methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, temp) + "sub " + targetReg + ".z, " + targetReg + ".z, " + temp + ".x\n" + "mov " + targetReg + ".y, " + dataReg + ".w\n" + "mul " + targetReg + ".xz, " + targetReg + ".xz, " + dataReg2 + ".xy\n" + "nrm " + targetReg + ".xyz, " + targetReg + ".xyz\n";
         registerCache.removeFragmentTempUsage(temp);
         return code;
     };
@@ -3422,7 +3422,7 @@ var NormalSimpleWaterMethod = (function (_super) {
     NormalSimpleWaterMethod.prototype.iInitVO = function (shader, methodVO) {
         _super.prototype.iInitVO.call(this, shader, methodVO);
         if (this._secondaryNormalMap) {
-            methodVO.secondaryTextureVO = shader.getAbstraction(this._secondaryNormalMap);
+            methodVO.secondaryTextureGL = shader.getAbstraction(this._secondaryNormalMap);
             shader.uvDependencies++;
         }
     };
@@ -3517,7 +3517,7 @@ var NormalSimpleWaterMethod = (function (_super) {
         data[index + 6] = this._water2OffsetX;
         data[index + 7] = this._water2OffsetY;
         if (this._secondaryNormalMap)
-            methodVO.secondaryTextureVO.activate(methodVO.pass._render);
+            methodVO.secondaryTextureGL.activate(methodVO.pass._render);
     };
     /**
      * @inheritDoc
@@ -3525,7 +3525,7 @@ var NormalSimpleWaterMethod = (function (_super) {
     NormalSimpleWaterMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
         _super.prototype.iSetRenderState.call(this, shader, methodVO, renderable, stage, camera);
         if (this._secondaryNormalMap)
-            methodVO.secondaryTextureVO._setRenderState(renderable);
+            methodVO.secondaryTextureGL._setRenderState(renderable);
     };
     /**
      * @inheritDoc
@@ -3539,10 +3539,10 @@ var NormalSimpleWaterMethod = (function (_super) {
         methodVO.fragmentConstantsIndex = dataReg.index * 4;
         code += "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg2 + ".xyxy\n";
         if (this.texture)
-            code += methodVO.textureVO._iGetFragmentCode(targetReg, registerCache, sharedRegisters, temp);
+            code += methodVO.textureGL._iGetFragmentCode(targetReg, registerCache, sharedRegisters, temp);
         code += "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg2 + ".zwzw\n";
         if (this._secondaryNormalMap)
-            code += methodVO.secondaryTextureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, temp);
+            code += methodVO.secondaryTextureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, temp);
         code += "add " + targetReg + ", " + targetReg + ", " + temp + "		\n" + "mul " + targetReg + ", " + targetReg + ", " + dataReg + ".x	\n" + "sub " + targetReg + ".xyz, " + targetReg + ".xyz, " + sharedRegisters.commons + ".xxx	\n" + "nrm " + targetReg + ".xyz, " + targetReg + ".xyz							\n";
         return code;
     };
@@ -3811,7 +3811,7 @@ var ShadowCascadeMethod = (function (_super) {
         this._baseMethod.iInitVO(shader, tempVO);
         methodVO.needsGlobalVertexPos = true;
         methodVO.needsProjection = true;
-        methodVO.textureVO = shader.getAbstraction(this._pCastingLight.shadowMapper.depthMap);
+        methodVO.textureGL = shader.getAbstraction(this._pCastingLight.shadowMapper.depthMap);
     };
     /**
      * @inheritDoc
@@ -3902,7 +3902,7 @@ var ShadowCascadeMethod = (function (_super) {
      * @inheritDoc
      */
     ShadowCascadeMethod.prototype.iActivate = function (shader, methodVO, stage) {
-        methodVO.textureVO.activate(methodVO.pass._render);
+        methodVO.textureGL.activate(methodVO.pass._render);
         var vertexData = shader.vertexConstantData;
         var vertexIndex = methodVO.vertexConstantsIndex;
         shader.vertexConstantData[methodVO.vertexConstantsIndex + 3] = -1 / (this._cascadeShadowMapper.depth * this._pEpsilon);
@@ -4000,7 +4000,7 @@ var ShadowDitheredMethod = (function (_super) {
     ShadowDitheredMethod.prototype.iInitVO = function (shader, methodVO) {
         _super.prototype.iInitVO.call(this, shader, methodVO);
         methodVO.needsProjection = true;
-        methodVO.secondaryTextureVO = shader.getAbstraction(ShadowDitheredMethod._grainTexture);
+        methodVO.secondaryTextureGL = shader.getAbstraction(ShadowDitheredMethod._grainTexture);
     };
     /**
      * @inheritDoc
@@ -4077,14 +4077,14 @@ var ShadowDitheredMethod = (function (_super) {
         data[index + 9] = (stage.width - 1) / 63;
         data[index + 10] = (stage.height - 1) / 63;
         data[index + 11] = 2 * this._range / this._depthMapSize;
-        methodVO.secondaryTextureVO.activate(methodVO.pass._render);
+        methodVO.secondaryTextureGL.activate(methodVO.pass._render);
     };
     /**
      * @inheritDoc
      */
     ShadowDitheredMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
         _super.prototype.iSetRenderState.call(this, shader, methodVO, renderable, stage, camera);
-        methodVO.secondaryTextureVO._setRenderState(renderable);
+        methodVO.secondaryTextureGL._setRenderState(renderable);
     };
     /**
      * @inheritDoc
@@ -4114,16 +4114,16 @@ var ShadowDitheredMethod = (function (_super) {
         code += "div " + uvReg + ", " + projectionReg + ", " + projectionReg + ".w\n" + "mul " + uvReg + ".xy, " + uvReg + ".xy, " + customDataReg + ".yz\n";
         while (numSamples > 0) {
             if (numSamples == this._numSamples) {
-                code += methodVO.secondaryTextureVO._iGetFragmentCode(uvReg, regCache, sharedRegisters, uvReg);
+                code += methodVO.secondaryTextureGL._iGetFragmentCode(uvReg, regCache, sharedRegisters, uvReg);
             }
             else {
-                code += "mov " + temp + ", " + uvReg + ".zwxy \n" + methodVO.secondaryTextureVO._iGetFragmentCode(uvReg, regCache, sharedRegisters, temp);
+                code += "mov " + temp + ", " + uvReg + ".zwxy \n" + methodVO.secondaryTextureGL._iGetFragmentCode(uvReg, regCache, sharedRegisters, temp);
             }
             // keep grain in uvReg.zw
             code += "sub " + uvReg + ".zw, " + uvReg + ".xy, fc0.xx\n" + "mul " + uvReg + ".zw, " + uvReg + ".zw, " + customDataReg + ".w\n"; // (tex unpack scale and tex scale in one)
             if (numSamples == this._numSamples) {
                 // first sample
-                code += "add " + uvReg + ".xy, " + uvReg + ".zw, " + this._pDepthMapCoordReg + ".xy\n" + methodVO.textureVO._iGetFragmentCode(temp, regCache, sharedRegisters, uvReg) + "dp4 " + temp + ".z, " + temp + ", " + decReg + "\n" + "slt " + targetReg + ".w, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n"; // 0 if in shadow
+                code += "add " + uvReg + ".xy, " + uvReg + ".zw, " + this._pDepthMapCoordReg + ".xy\n" + methodVO.textureGL._iGetFragmentCode(temp, regCache, sharedRegisters, uvReg) + "dp4 " + temp + ".z, " + temp + ", " + decReg + "\n" + "slt " + targetReg + ".w, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n"; // 0 if in shadow
             }
             else {
                 code += this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache, sharedRegisters);
@@ -4162,7 +4162,7 @@ var ShadowDitheredMethod = (function (_super) {
      */
     ShadowDitheredMethod.prototype.addSample = function (shader, methodVO, uvReg, decReg, targetReg, regCache, sharedRegisters) {
         var temp = regCache.getFreeFragmentVectorTemp();
-        return methodVO.textureVO._iGetFragmentCode(temp, regCache, sharedRegisters, uvReg) + "dp4 " + temp + ".z, " + temp + ", " + decReg + "\n" + "slt " + temp + ".z, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n" + "add " + targetReg + ".w, " + targetReg + ".w, " + temp + ".z\n";
+        return methodVO.textureGL._iGetFragmentCode(temp, regCache, sharedRegisters, uvReg) + "dp4 " + temp + ".z, " + temp + ", " + decReg + "\n" + "slt " + temp + ".z, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n" + "add " + targetReg + ".w, " + targetReg + ".w, " + temp + ".z\n";
     };
     /**
      * @inheritDoc
@@ -4174,7 +4174,7 @@ var ShadowDitheredMethod = (function (_super) {
         data[index + 1] = (stage.width - 1) / 63;
         data[index + 2] = (stage.height - 1) / 63;
         data[index + 3] = 2 * this._range / this._depthMapSize;
-        methodVO.secondaryTextureVO.activate(methodVO.pass._render);
+        methodVO.secondaryTextureGL.activate(methodVO.pass._render);
     };
     /**
      * @inheritDoc
@@ -4236,7 +4236,7 @@ var ShadowFilteredMethod = (function (_super) {
         regCache.addFragmentTempUsages(depthCol, 1);
         var uvReg = regCache.getFreeFragmentVectorTemp();
         regCache.addFragmentTempUsages(uvReg, 1);
-        code += "mov " + uvReg + ", " + this._pDepthMapCoordReg + "\n" + methodVO.textureVO._iGetFragmentCode(depthCol, regCache, sharedRegisters, this._pDepthMapCoordReg) + "dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" + "slt " + uvReg + ".z, " + this._pDepthMapCoordReg + ".z, " + depthCol + ".z\n" + "add " + uvReg + ".x, " + this._pDepthMapCoordReg + ".x, " + customDataReg + ".z\n" + methodVO.textureVO._iGetFragmentCode(depthCol, regCache, sharedRegisters, uvReg) + "dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" + "slt " + uvReg + ".w, " + this._pDepthMapCoordReg + ".z, " + depthCol + ".z\n" + "mul " + depthCol + ".x, " + this._pDepthMapCoordReg + ".x, " + customDataReg + ".y\n" + "frc " + depthCol + ".x, " + depthCol + ".x\n" + "sub " + uvReg + ".w, " + uvReg + ".w, " + uvReg + ".z\n" + "mul " + uvReg + ".w, " + uvReg + ".w, " + depthCol + ".x\n" + "add " + targetReg + ".w, " + uvReg + ".z, " + uvReg + ".w\n" + "mov " + uvReg + ".x, " + this._pDepthMapCoordReg + ".x\n" + "add " + uvReg + ".y, " + this._pDepthMapCoordReg + ".y, " + customDataReg + ".z\n" + methodVO.textureVO._iGetFragmentCode(depthCol, regCache, sharedRegisters, uvReg) + "dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" + "slt " + uvReg + ".z, " + this._pDepthMapCoordReg + ".z, " + depthCol + ".z\n" + "add " + uvReg + ".x, " + this._pDepthMapCoordReg + ".x, " + customDataReg + ".z\n" + methodVO.textureVO._iGetFragmentCode(depthCol, regCache, sharedRegisters, uvReg) + "dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" + "slt " + uvReg + ".w, " + this._pDepthMapCoordReg + ".z, " + depthCol + ".z\n" + "mul " + depthCol + ".x, " + this._pDepthMapCoordReg + ".x, " + customDataReg + ".y\n" + "frc " + depthCol + ".x, " + depthCol + ".x\n" + "sub " + uvReg + ".w, " + uvReg + ".w, " + uvReg + ".z\n" + "mul " + uvReg + ".w, " + uvReg + ".w, " + depthCol + ".x\n" + "add " + uvReg + ".w, " + uvReg + ".z, " + uvReg + ".w\n" + "mul " + depthCol + ".x, " + this._pDepthMapCoordReg + ".y, " + customDataReg + ".y\n" + "frc " + depthCol + ".x, " + depthCol + ".x\n" + "sub " + uvReg + ".w, " + uvReg + ".w, " + targetReg + ".w\n" + "mul " + uvReg + ".w, " + uvReg + ".w, " + depthCol + ".x\n" + "add " + targetReg + ".w, " + targetReg + ".w, " + uvReg + ".w\n";
+        code += "mov " + uvReg + ", " + this._pDepthMapCoordReg + "\n" + methodVO.textureGL._iGetFragmentCode(depthCol, regCache, sharedRegisters, this._pDepthMapCoordReg) + "dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" + "slt " + uvReg + ".z, " + this._pDepthMapCoordReg + ".z, " + depthCol + ".z\n" + "add " + uvReg + ".x, " + this._pDepthMapCoordReg + ".x, " + customDataReg + ".z\n" + methodVO.textureGL._iGetFragmentCode(depthCol, regCache, sharedRegisters, uvReg) + "dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" + "slt " + uvReg + ".w, " + this._pDepthMapCoordReg + ".z, " + depthCol + ".z\n" + "mul " + depthCol + ".x, " + this._pDepthMapCoordReg + ".x, " + customDataReg + ".y\n" + "frc " + depthCol + ".x, " + depthCol + ".x\n" + "sub " + uvReg + ".w, " + uvReg + ".w, " + uvReg + ".z\n" + "mul " + uvReg + ".w, " + uvReg + ".w, " + depthCol + ".x\n" + "add " + targetReg + ".w, " + uvReg + ".z, " + uvReg + ".w\n" + "mov " + uvReg + ".x, " + this._pDepthMapCoordReg + ".x\n" + "add " + uvReg + ".y, " + this._pDepthMapCoordReg + ".y, " + customDataReg + ".z\n" + methodVO.textureGL._iGetFragmentCode(depthCol, regCache, sharedRegisters, uvReg) + "dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" + "slt " + uvReg + ".z, " + this._pDepthMapCoordReg + ".z, " + depthCol + ".z\n" + "add " + uvReg + ".x, " + this._pDepthMapCoordReg + ".x, " + customDataReg + ".z\n" + methodVO.textureGL._iGetFragmentCode(depthCol, regCache, sharedRegisters, uvReg) + "dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" + "slt " + uvReg + ".w, " + this._pDepthMapCoordReg + ".z, " + depthCol + ".z\n" + "mul " + depthCol + ".x, " + this._pDepthMapCoordReg + ".x, " + customDataReg + ".y\n" + "frc " + depthCol + ".x, " + depthCol + ".x\n" + "sub " + uvReg + ".w, " + uvReg + ".w, " + uvReg + ".z\n" + "mul " + uvReg + ".w, " + uvReg + ".w, " + depthCol + ".x\n" + "add " + uvReg + ".w, " + uvReg + ".z, " + uvReg + ".w\n" + "mul " + depthCol + ".x, " + this._pDepthMapCoordReg + ".y, " + customDataReg + ".y\n" + "frc " + depthCol + ".x, " + depthCol + ".x\n" + "sub " + uvReg + ".w, " + uvReg + ".w, " + targetReg + ".w\n" + "mul " + uvReg + ".w, " + uvReg + ".w, " + depthCol + ".x\n" + "add " + targetReg + ".w, " + targetReg + ".w, " + uvReg + ".w\n";
         regCache.removeFragmentTempUsage(depthCol);
         regCache.removeFragmentTempUsage(uvReg);
         return code;
@@ -4262,7 +4262,7 @@ var ShadowFilteredMethod = (function (_super) {
         registerCache.addFragmentTempUsages(temp, 1);
         var predicate = registerCache.getFreeFragmentVectorTemp();
         registerCache.addFragmentTempUsages(predicate, 1);
-        code = methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) + "dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" + "slt " + predicate + ".x, " + depthProjection + ".z, " + temp + ".z\n" + "add " + depthProjection + ".x, " + depthProjection + ".x, " + dataReg + ".y\n" + methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) + "dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" + "slt " + predicate + ".z, " + depthProjection + ".z, " + temp + ".z\n" + "add " + depthProjection + ".y, " + depthProjection + ".y, " + dataReg + ".y\n" + methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) + "dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" + "slt " + predicate + ".w, " + depthProjection + ".z, " + temp + ".z\n" + "sub " + depthProjection + ".x, " + depthProjection + ".x, " + dataReg + ".y\n" + methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) + "dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" + "slt " + predicate + ".y, " + depthProjection + ".z, " + temp + ".z\n" + "mul " + temp + ".xy, " + depthProjection + ".xy, " + dataReg + ".x\n" + "frc " + temp + ".xy, " + temp + ".xy\n" + "sub " + depthProjection + ", " + predicate + ".xyzw, " + predicate + ".zwxy\n" + "mul " + depthProjection + ", " + depthProjection + ", " + temp + ".x\n" + "add " + predicate + ".xy, " + predicate + ".xy, " + depthProjection + ".zw\n" + "sub " + predicate + ".y, " + predicate + ".y, " + predicate + ".x\n" + "mul " + predicate + ".y, " + predicate + ".y, " + temp + ".y\n" + "add " + targetRegister + ".w, " + predicate + ".x, " + predicate + ".y\n";
+        code = methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) + "dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" + "slt " + predicate + ".x, " + depthProjection + ".z, " + temp + ".z\n" + "add " + depthProjection + ".x, " + depthProjection + ".x, " + dataReg + ".y\n" + methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) + "dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" + "slt " + predicate + ".z, " + depthProjection + ".z, " + temp + ".z\n" + "add " + depthProjection + ".y, " + depthProjection + ".y, " + dataReg + ".y\n" + methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) + "dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" + "slt " + predicate + ".w, " + depthProjection + ".z, " + temp + ".z\n" + "sub " + depthProjection + ".x, " + depthProjection + ".x, " + dataReg + ".y\n" + methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) + "dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" + "slt " + predicate + ".y, " + depthProjection + ".z, " + temp + ".z\n" + "mul " + temp + ".xy, " + depthProjection + ".xy, " + dataReg + ".x\n" + "frc " + temp + ".xy, " + temp + ".xy\n" + "sub " + depthProjection + ", " + predicate + ".xyzw, " + predicate + ".zwxy\n" + "mul " + depthProjection + ", " + depthProjection + ", " + temp + ".x\n" + "add " + predicate + ".xy, " + predicate + ".xy, " + depthProjection + ".zw\n" + "sub " + predicate + ".y, " + predicate + ".y, " + predicate + ".x\n" + "mul " + predicate + ".y, " + predicate + ".y, " + temp + ".y\n" + "add " + targetRegister + ".w, " + predicate + ".x, " + predicate + ".y\n";
         registerCache.removeFragmentTempUsage(temp);
         registerCache.removeFragmentTempUsage(predicate);
         return code;
@@ -4299,7 +4299,7 @@ var ShadowHardMethod = (function (_super) {
         regCache.getFreeFragmentConstant();
         var depthCol = regCache.getFreeFragmentVectorTemp();
         methodVO.fragmentConstantsIndex = decReg.index * 4;
-        code += methodVO.textureVO._iGetFragmentCode(depthCol, regCache, sharedRegisters, this._pDepthMapCoordReg) + "dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" + "slt " + targetReg + ".w, " + this._pDepthMapCoordReg + ".z, " + depthCol + ".z\n"; // 0 if in shadow
+        code += methodVO.textureGL._iGetFragmentCode(depthCol, regCache, sharedRegisters, this._pDepthMapCoordReg) + "dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" + "slt " + targetReg + ".w, " + this._pDepthMapCoordReg + ".z, " + depthCol + ".z\n"; // 0 if in shadow
         return code;
     };
     /**
@@ -4315,7 +4315,7 @@ var ShadowHardMethod = (function (_super) {
         var lightDir = regCache.getFreeFragmentVectorTemp();
         regCache.addFragmentTempUsages(lightDir, 1);
         methodVO.fragmentConstantsIndex = decReg.index * 4;
-        code += "sub " + lightDir + ", " + sharedRegisters.globalPositionVarying + ", " + posReg + "\n" + "dp3 " + lightDir + ".w, " + lightDir + ".xyz, " + lightDir + ".xyz\n" + "mul " + lightDir + ".w, " + lightDir + ".w, " + posReg + ".w\n" + "nrm " + lightDir + ".xyz, " + lightDir + ".xyz\n" + methodVO.textureVO._iGetFragmentCode(depthSampleCol, regCache, sharedRegisters, lightDir) + "dp4 " + depthSampleCol + ".z, " + depthSampleCol + ", " + decReg + "\n" + "add " + targetReg + ".w, " + lightDir + ".w, " + epsReg + ".x\n" + "slt " + targetReg + ".w, " + targetReg + ".w, " + depthSampleCol + ".z\n"; // 0 if in shadow
+        code += "sub " + lightDir + ", " + sharedRegisters.globalPositionVarying + ", " + posReg + "\n" + "dp3 " + lightDir + ".w, " + lightDir + ".xyz, " + lightDir + ".xyz\n" + "mul " + lightDir + ".w, " + lightDir + ".w, " + posReg + ".w\n" + "nrm " + lightDir + ".xyz, " + lightDir + ".xyz\n" + methodVO.textureGL._iGetFragmentCode(depthSampleCol, regCache, sharedRegisters, lightDir) + "dp4 " + depthSampleCol + ".z, " + depthSampleCol + ", " + decReg + "\n" + "add " + targetReg + ".w, " + lightDir + ".w, " + epsReg + ".x\n" + "slt " + targetReg + ".w, " + targetReg + ".w, " + depthSampleCol + ".z\n"; // 0 if in shadow
         regCache.removeFragmentTempUsage(lightDir);
         regCache.removeFragmentTempUsage(depthSampleCol);
         return code;
@@ -4325,7 +4325,7 @@ var ShadowHardMethod = (function (_super) {
      */
     ShadowHardMethod.prototype._iGetCascadeFragmentCode = function (shader, methodVO, decodeRegister, depthProjection, targetRegister, registerCache, sharedRegisters) {
         var temp = registerCache.getFreeFragmentVectorTemp();
-        return methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) + "dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" + "slt " + targetRegister + ".w, " + depthProjection + ".z, " + temp + ".z\n"; // 0 if in shadow
+        return methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) + "dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" + "slt " + targetRegister + ".w, " + depthProjection + ".z, " + temp + ".z\n"; // 0 if in shadow
     };
     /**
      * @inheritDoc
@@ -4445,7 +4445,7 @@ var ShadowMethodBase = (function (_super) {
         methodVO.needsGlobalVertexPos = true;
         methodVO.needsGlobalFragmentPos = this._pUsePoint;
         methodVO.needsNormals = shader.numLights > 0;
-        methodVO.textureVO = shader.getAbstraction(this._pCastingLight.shadowMapper.depthMap);
+        methodVO.textureGL = shader.getAbstraction(this._pCastingLight.shadowMapper.depthMap);
     };
     /**
      * @inheritDoc
@@ -4567,7 +4567,7 @@ var ShadowMethodBase = (function (_super) {
     ShadowMethodBase.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
         if (!this._pUsePoint)
             this._pShadowMapper.iDepthProjection.copyRawDataTo(shader.vertexConstantData, methodVO.vertexConstantsIndex + 4, true);
-        methodVO.textureVO._setRenderState(renderable);
+        methodVO.textureGL._setRenderState(renderable);
     };
     /**
      * Gets the fragment code for combining this method with a cascaded shadow map method.
@@ -4602,7 +4602,7 @@ var ShadowMethodBase = (function (_super) {
             var f = this._pCastingLight.fallOff;
             fragmentData[index + 11] = 1 / (2 * f * f);
         }
-        methodVO.textureVO.activate(methodVO.pass._render);
+        methodVO.textureGL.activate(methodVO.pass._render);
     };
     /**
      * Sets the method state for cascade shadow mapping.
@@ -4902,7 +4902,7 @@ var ShadowSoftMethod = (function (_super) {
      */
     ShadowSoftMethod.prototype.addSample = function (shader, methodVO, decodeRegister, targetRegister, registerCache, sharedRegisters, uvReg) {
         var temp = registerCache.getFreeFragmentVectorTemp();
-        return methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, uvReg) + "dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" + "slt " + uvReg + ".w, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n" + "add " + targetRegister + ".w, " + targetRegister + ".w, " + uvReg + ".w\n";
+        return methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, uvReg) + "dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" + "slt " + uvReg + ".w, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n" + "add " + targetRegister + ".w, " + targetRegister + ".w, " + uvReg + ".w\n";
     };
     /**
      * @inheritDoc
@@ -4954,7 +4954,7 @@ var ShadowSoftMethod = (function (_super) {
         for (i = 0; i < this._numSamples; ++i) {
             if (i == 0) {
                 var temp = registerCache.getFreeFragmentVectorTemp();
-                code = "add " + uvReg + ", " + this._pDepthMapCoordReg + ", " + dataReg + ".zwyy\n" + methodVO.textureVO._iGetFragmentCode(temp, registerCache, sharedRegisters, uvReg) + "dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" + "slt " + targetRegister + ".w, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n"; // 0 if in shadow;
+                code = "add " + uvReg + ", " + this._pDepthMapCoordReg + ", " + dataReg + ".zwyy\n" + methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, uvReg) + "dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" + "slt " + targetRegister + ".w, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n"; // 0 if in shadow;
             }
             else {
                 code += "add " + uvReg + ".xy, " + this._pDepthMapCoordReg + ".xy, " + offsets[i] + "\n" + this.addSample(shader, methodVO, decodeRegister, targetRegister, registerCache, sharedRegisters, uvReg);
@@ -5073,12 +5073,12 @@ var SpecularBasicMethod = (function (_super) {
         methodVO.needsNormals = shader.numLights > 0;
         methodVO.needsView = shader.numLights > 0;
         if (this._texture) {
-            methodVO.textureVO = shader.getAbstraction(this._texture);
+            methodVO.textureGL = shader.getAbstraction(this._texture);
             shader.uvDependencies++;
         }
-        else if (methodVO.textureVO) {
-            methodVO.textureVO.onClear(new AssetEvent(AssetEvent.CLEAR, null));
-            methodVO.textureVO = null;
+        else if (methodVO.textureGL) {
+            methodVO.textureGL.onClear(new AssetEvent(AssetEvent.CLEAR, null));
+            methodVO.textureGL = null;
         }
     };
     Object.defineProperty(SpecularBasicMethod.prototype, "gloss", {
@@ -5183,7 +5183,7 @@ var SpecularBasicMethod = (function (_super) {
         if (this._texture) {
             this._pSpecularTexData = registerCache.getFreeFragmentVectorTemp();
             registerCache.addFragmentTempUsages(this._pSpecularTexData, 1);
-            code += methodVO.textureVO._iGetFragmentCode(this._pSpecularTexData, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+            code += methodVO.textureGL._iGetFragmentCode(this._pSpecularTexData, registerCache, sharedRegisters, sharedRegisters.uvVarying);
         }
         this._pTotalLightColorReg = registerCache.getFreeFragmentVectorTemp();
         registerCache.addFragmentTempUsages(this._pTotalLightColorReg, 1);
@@ -5274,7 +5274,7 @@ var SpecularBasicMethod = (function (_super) {
      */
     SpecularBasicMethod.prototype.iActivate = function (shader, methodVO, stage) {
         if (this._texture)
-            methodVO.textureVO.activate(methodVO.pass._render);
+            methodVO.textureGL.activate(methodVO.pass._render);
         var index = methodVO.fragmentConstantsIndex;
         var data = shader.fragmentConstantData;
         data[index] = this._iSpecularR;
@@ -5284,7 +5284,7 @@ var SpecularBasicMethod = (function (_super) {
     };
     SpecularBasicMethod.prototype.iSetRenderState = function (shader, methodVO, renderable, stage, camera) {
         if (this._texture)
-            methodVO.textureVO._setRenderState(renderable);
+            methodVO.textureGL._setRenderState(renderable);
     };
     /**
      * Updates the specular color data used by the render state.
@@ -5800,8 +5800,8 @@ var MethodMaterialRender = (function (_super) {
      *
      * @param material The material to which this pass belongs.
      */
-    function MethodMaterialRender(material, renderableClass, pool) {
-        _super.call(this, material, renderableClass, pool);
+    function MethodMaterialRender(material, elementsClass, pool) {
+        _super.call(this, material, elementsClass, pool);
         this._material = material;
     }
     Object.defineProperty(MethodMaterialRender.prototype, "numLights", {
@@ -5914,7 +5914,7 @@ var MethodMaterialRender = (function (_super) {
     };
     MethodMaterialRender.prototype.initCasterLightPass = function () {
         if (this._casterLightPass == null)
-            this._casterLightPass = new MethodPass(MethodPassMode.LIGHTING, this, this._material, this._renderableClass, this._stage);
+            this._casterLightPass = new MethodPass(MethodPassMode.LIGHTING, this, this._material, this._elementsClass, this._stage);
         this._casterLightPass.lightPicker = new StaticLightPicker([this._material.shadowMethod.castingLight]);
         this._casterLightPass.shadowMethod = this._material.shadowMethod;
         this._casterLightPass.diffuseMethod = this._material.diffuseMethod;
@@ -5942,7 +5942,7 @@ var MethodMaterialRender = (function (_super) {
         }
         this._nonCasterLightPasses = new Array();
         while (dirLightOffset < numDirLights || pointLightOffset < numPointLights || probeOffset < numLightProbes) {
-            pass = new MethodPass(MethodPassMode.LIGHTING, this, this._material, this._renderableClass, this._stage);
+            pass = new MethodPass(MethodPassMode.LIGHTING, this, this._material, this._elementsClass, this._stage);
             pass.includeCasters = this._material.shadowMethod == null;
             pass.directionalLightsOffset = dirLightOffset;
             pass.pointLightsOffset = pointLightOffset;
@@ -5979,7 +5979,7 @@ var MethodMaterialRender = (function (_super) {
     };
     MethodMaterialRender.prototype.initEffectPass = function () {
         if (this._pass == null)
-            this._pass = new MethodPass(MethodPassMode.SUPER_SHADER, this, this._material, this._renderableClass, this._stage);
+            this._pass = new MethodPass(MethodPassMode.SUPER_SHADER, this, this._material, this._elementsClass, this._stage);
         if (this._material.mode == MethodMaterialMode.SINGLE_PASS) {
             this._pass.ambientMethod = this._material.ambientMethod;
             this._pass.diffuseMethod = this._material.diffuseMethod;
@@ -6073,9 +6073,9 @@ var MethodPass = (function (_super) {
      *
      * @param material The material to which this pass belongs.
      */
-    function MethodPass(mode, render, renderOwner, renderableClass, stage) {
+    function MethodPass(mode, render, renderOwner, elementsClass, stage) {
         var _this = this;
-        _super.call(this, render, renderOwner, renderableClass, stage);
+        _super.call(this, render, renderOwner, elementsClass, stage);
         this._maxLights = 3;
         this._mode = 0x03;
         this._includeCasters = true;
@@ -6189,12 +6189,12 @@ var MethodPass = (function (_super) {
         if ((this.numDirectionalLights || this.numPointLights || this.numLightProbes) && !(this._shader instanceof LightingShader)) {
             if (this._shader != null)
                 this._shader.dispose();
-            this._shader = new LightingShader(this._renderableClass, this, this._stage);
+            this._shader = new LightingShader(this._elementsClass, this, this._stage);
         }
         else if (!(this._shader instanceof ShaderBase)) {
             if (this._shader != null)
                 this._shader.dispose();
-            this._shader = new ShaderBase(this._renderableClass, this, this._stage);
+            this._shader = new ShaderBase(this._elementsClass, this, this._stage);
         }
     };
     /**
@@ -6801,8 +6801,8 @@ var SingleObjectDepthPass = (function (_super) {
     /**
      * Creates a new SingleObjectDepthPass object.
      */
-    function SingleObjectDepthPass(render, renderOwner, renderableClass, stage) {
-        _super.call(this, render, renderOwner, renderableClass, stage);
+    function SingleObjectDepthPass(render, renderOwner, elementsClass, stage) {
+        _super.call(this, render, renderOwner, elementsClass, stage);
         this._textureSize = 512;
         this._polyOffset = new Float32Array([15, 0, 0, 0]);
         this._projectionTexturesInvalid = true;
@@ -6926,11 +6926,11 @@ var SingleObjectDepthPass = (function (_super) {
         context.clear(1.0, 1.0, 1.0);
         context.setProgramConstantsFromMatrix(ContextGLProgramType.VERTEX, 0, matrix, true);
         context.setProgramConstantsFromArray(ContextGLProgramType.FRAGMENT, 0, this._enc, 2);
-        var subGeometryVO = renderable.subGeometryVO;
-        var subGeom = subGeometryVO.subGeometry;
-        subGeometryVO.activateVertexBufferVO(0, subGeom.positions);
-        subGeometryVO.activateVertexBufferVO(1, subGeom.normals);
-        subGeometryVO.getIndexBufferVO().draw(ContextGLDrawMode.TRIANGLES, 0, subGeometryVO.subGeometry.numElements);
+        var elements = renderable.elements;
+        var elementsGL = this._shader._elementsPool.getAbstraction(elements);
+        elementsGL.activateVertexBufferVO(0, elements.positions);
+        elementsGL.activateVertexBufferVO(1, elements.normals);
+        elementsGL.getIndexBufferVO().draw(ContextGLDrawMode.TRIANGLES, 0, elements.numElements);
     };
     /**
      * @inheritDoc

@@ -123,7 +123,7 @@ declare module "awayjs-methodmaterials/lib/MethodMaterialMode" {
 }
 
 declare module "awayjs-methodmaterials/lib/data/MethodVO" {
-	import TextureVOBase = require("awayjs-renderergl/lib/vos/TextureVOBase");
+	import GL_TextureBase = require("awayjs-renderergl/lib/textures/GL_TextureBase");
 	import MethodPass = require("awayjs-methodmaterials/lib/render/passes/MethodPass");
 	import ShadingMethodBase = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
 	/**
@@ -134,8 +134,8 @@ declare module "awayjs-methodmaterials/lib/data/MethodVO" {
 	    useMethod: boolean;
 	    method: ShadingMethodBase;
 	    pass: MethodPass;
-	    textureVO: TextureVOBase;
-	    secondaryTextureVO: TextureVOBase;
+	    textureGL: GL_TextureBase;
+	    secondaryTextureGL: GL_TextureBase;
 	    vertexConstantsIndex: number;
 	    secondaryVertexConstantsIndex: number;
 	    fragmentConstantsIndex: number;
@@ -2795,7 +2795,7 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularPhongMethod" {
 
 declare module "awayjs-methodmaterials/lib/render/MethodMaterialRender" {
 	import AssetEvent = require("awayjs-core/lib/events/AssetEvent");
-	import IRenderableClass = require("awayjs-renderergl/lib/renderables/IRenderableClass");
+	import IElementsClassGL = require("awayjs-renderergl/lib/elements/IElementsClassGL");
 	import RenderBase = require("awayjs-renderergl/lib/render/RenderBase");
 	import RenderPool = require("awayjs-renderergl/lib/render/RenderPool");
 	import MethodMaterial = require("awayjs-methodmaterials/lib/MethodMaterial");
@@ -2821,7 +2821,7 @@ declare module "awayjs-methodmaterials/lib/render/MethodMaterialRender" {
 	     *
 	     * @param material The material to which this pass belongs.
 	     */
-	    constructor(material: MethodMaterial, renderableClass: IRenderableClass, pool: RenderPool);
+	    constructor(material: MethodMaterial, elementsClass: IElementsClassGL, pool: RenderPool);
 	    /**
 	     * @inheritDoc
 	     */
@@ -2864,7 +2864,7 @@ declare module "awayjs-methodmaterials/lib/render/passes/MethodPass" {
 	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
 	import PassBase = require("awayjs-renderergl/lib/render/passes/PassBase");
 	import ILightingPass = require("awayjs-renderergl/lib/render/passes/ILightingPass");
-	import IRenderableClass = require("awayjs-renderergl/lib/renderables/IRenderableClass");
+	import IElementsClassGL = require("awayjs-renderergl/lib/elements/IElementsClassGL");
 	import MethodVO = require("awayjs-methodmaterials/lib/data/MethodVO");
 	import AmbientBasicMethod = require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
 	import DiffuseBasicMethod = require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
@@ -2937,7 +2937,7 @@ declare module "awayjs-methodmaterials/lib/render/passes/MethodPass" {
 	     *
 	     * @param material The material to which this pass belongs.
 	     */
-	    constructor(mode: number, render: MethodMaterialRender, renderOwner: MaterialBase, renderableClass: IRenderableClass, stage: Stage);
+	    constructor(mode: number, render: MethodMaterialRender, renderOwner: MaterialBase, elementsClass: IElementsClassGL, stage: Stage);
 	    private _updateShader();
 	    /**
 	     * Initializes the unchanging constant data for this material.
@@ -3127,7 +3127,7 @@ declare module "awayjs-methodmaterials/lib/render/passes/SingleObjectDepthPass" 
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
 	import PassBase = require("awayjs-renderergl/lib/render/passes/PassBase");
-	import IRenderableClass = require("awayjs-renderergl/lib/renderables/IRenderableClass");
+	import IElementsClassGL = require("awayjs-renderergl/lib/elements/IElementsClassGL");
 	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
 	import RenderBase = require("awayjs-renderergl/lib/render/RenderBase");
 	/**
@@ -3152,7 +3152,7 @@ declare module "awayjs-methodmaterials/lib/render/passes/SingleObjectDepthPass" 
 	    /**
 	     * Creates a new SingleObjectDepthPass object.
 	     */
-	    constructor(render: RenderBase, renderOwner: IRenderOwner, renderableClass: IRenderableClass, stage: Stage);
+	    constructor(render: RenderBase, renderOwner: IRenderOwner, elementsClass: IElementsClassGL, stage: Stage);
 	    /**
 	     * @inheritDoc
 	     */
