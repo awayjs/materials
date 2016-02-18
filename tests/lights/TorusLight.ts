@@ -19,11 +19,11 @@ import PrimitiveTorusPrefab			= require("awayjs-display/lib/prefabs/PrimitiveTor
 import DefaultRenderer				= require("awayjs-renderergl/lib/DefaultRenderer");
 
 import MethodMaterial				= require("awayjs-methodmaterials/lib/MethodMaterial");
+import ElementsType = require("awayjs-display/lib/graphics/ElementsType");
 
 class TorusLight
 {
 	private _view:View;
-	private _torus:PrimitiveTorusPrefab;
 	private _mesh:Mesh;
 	private _raf:RequestAnimationFrame;
 	private _image:HTMLImageElement;
@@ -36,7 +36,6 @@ class TorusLight
 
 		this._view = new View(new DefaultRenderer());
 		this._view.camera.projection = new PerspectiveProjection(60);
-		this._torus = new PrimitiveTorusPrefab(220, 80, 32, 16, false);
 
 		this.loadResources();
 	}
@@ -74,9 +73,9 @@ class TorusLight
 		matTx.style.sampler = new Sampler2D(true, true, true);
 		matTx.lightPicker = lightPicker;
 
-		this._torus.material = matTx;
+		var torus:PrimitiveTorusPrefab = new PrimitiveTorusPrefab(matTx, ElementsType.TRIANGLE, 220, 80, 32, 16, false);
 
-		this._mesh = <Mesh> this._torus.getNewObject();
+		this._mesh = <Mesh> torus.getNewObject();
 
 		this._view.scene.addChild(this._mesh);
 

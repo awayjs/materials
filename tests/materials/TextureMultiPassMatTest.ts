@@ -15,11 +15,11 @@ import PrimitiveTorusPrefab			= require("awayjs-display/lib/prefabs/PrimitiveTor
 import BasicMaterial				= require("awayjs-display/lib/materials/BasicMaterial");
 
 import DefaultRenderer				= require("awayjs-renderergl/lib/DefaultRenderer");
+import ElementsType = require("awayjs-display/lib/graphics/ElementsType");
 
 class TextureMultiPassMatTest
 {
 	private view:View;
-	private torus:PrimitiveTorusPrefab;
 	private light:PointLight;
 	private raf:RequestAnimationFrame;
 	private counter:number = 0;
@@ -53,18 +53,15 @@ class TextureMultiPassMatTest
 		this.view = new View(new DefaultRenderer());
 		this.view.camera.z = -1000;
 		this.view.backgroundColor = 0x000000;
-		this.torus = new PrimitiveTorusPrefab(50 , 10, 32 , 32 , false);
+		var mat:BasicMaterial = new BasicMaterial(ParserUtils.imageToBitmapImage2D(this.image));
+		var torus:PrimitiveTorusPrefab = new PrimitiveTorusPrefab(mat, ElementsType.TRIANGLE, 50 , 10, 32 , 32 , false);
 
 		var l:number = 20;
 		var radius:number = 500;
 
-		var mat:BasicMaterial = new BasicMaterial(ParserUtils.imageToBitmapImage2D(this.image));
-
-		this.torus.material = mat;
-
 		for (var c:number = 0; c < l ; c++) {
 			var t:number = Math.PI*2*c/l;
-			var m:Mesh = <Mesh> this.torus.getNewObject();
+			var m:Mesh = <Mesh> torus.getNewObject();
 
 			m.x = Math.cos(t)*radius;
 			m.y = 0;

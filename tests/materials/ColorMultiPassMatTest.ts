@@ -10,6 +10,7 @@ import Mesh							= require("awayjs-display/lib/entities/Mesh");
 import PointLight					= require("awayjs-display/lib/entities/PointLight");
 import StaticLightPicker			= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
 import PrimitiveTorusPrefab			= require("awayjs-display/lib/prefabs/PrimitiveTorusPrefab");
+import ElementsType					= require("awayjs-display/lib/graphics/ElementsType");
 
 import DefaultRenderer				= require("awayjs-renderergl/lib/DefaultRenderer");
 
@@ -18,7 +19,6 @@ import MethodMaterial				= require("awayjs-methodmaterials/lib/MethodMaterial");
 class ColorMultiPassMatTest
 {
 	private view:View;
-	private torus:PrimitiveTorusPrefab;
 	private light:PointLight;
 	private raf:RequestAnimationFrame;
 	private counter:number = 0;
@@ -33,7 +33,6 @@ class ColorMultiPassMatTest
 		this.view = new View(new DefaultRenderer());
 		this.view.camera.z = -1000;
 		this.view.backgroundColor = 0x000000;
-		this.torus = new PrimitiveTorusPrefab(50 , 10, 32 , 32 , false);
 
 		var l:number = 20;
 		var radius:number = 500;
@@ -42,11 +41,11 @@ class ColorMultiPassMatTest
 
 		mat.lightPicker = new StaticLightPicker([this.light]);
 
-		this.torus.material = mat;
+		var torus:PrimitiveTorusPrefab = new PrimitiveTorusPrefab(mat, ElementsType.TRIANGLE, 50 , 10, 32 , 32 , false);
 
 		for (var c:number = 0; c < l ; c++) {
 			var t:number = Math.PI*2*c/l;
-			var m:Mesh = <Mesh> this.torus.getNewObject();
+			var m:Mesh = <Mesh> torus.getNewObject();
 
 			m.x = Math.cos(t)*radius;
 			m.y = 0;

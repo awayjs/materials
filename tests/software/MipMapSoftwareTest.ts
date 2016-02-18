@@ -26,6 +26,7 @@ import URLLoader					= require("awayjs-core/lib/net/URLLoader");
 import URLLoaderDataFormat			= require("awayjs-core/lib/net/URLLoaderDataFormat");
 import URLRequest					= require("awayjs-core/lib/net/URLRequest");
 import ParserUtils					= require("awayjs-core/lib/parsers/ParserUtils");
+import ElementsType                 = require("awayjs-display/lib/graphics/ElementsType");
 
 class MipMapSoftwareTest {
 
@@ -73,7 +74,7 @@ class MipMapSoftwareTest {
         //var material:BasicMaterial = new BasicMaterial(DefaultMaterialManager.getDefaultTexture());
         var material:BasicMaterial = new BasicMaterial(ParserUtils.imageToBitmapImage2D(this.image));
         material.style.sampler = new Sampler2D(true, true, true);
-        var plane:PrimitivePlanePrefab = new PrimitivePlanePrefab(1000,1000,1000);
+        var plane:PrimitivePlanePrefab = new PrimitivePlanePrefab(material, ElementsType.TRIANGLE, 1000,1000,1000);
         //var plane:PrimitiveCubePrefab = new PrimitiveCubePrefab();
         plane.material = material;
 

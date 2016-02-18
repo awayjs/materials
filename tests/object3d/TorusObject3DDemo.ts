@@ -19,11 +19,11 @@ import Single2DTexture				= require("awayjs-display/lib/textures/Single2DTexture
 import DefaultRenderer				= require("awayjs-renderergl/lib/DefaultRenderer");
 
 import MethodMaterial				= require("awayjs-methodmaterials/lib/MethodMaterial");
+import ElementsType = require("awayjs-display/lib/graphics/ElementsType");
 
 class TorusObject3DDemo
 {
 	private view:View;
-	private torus:PrimitiveTorusPrefab;
 
 	private light:PointLight;
 	private raf:RequestAnimationFrame;
@@ -58,24 +58,6 @@ class TorusObject3DDemo
 		this.view.camera.z = 0;
 		this.view.backgroundColor = 0x000000;
 		this.view.backgroundAlpha = 1;
-		this.torus = new PrimitiveTorusPrefab(150, 50, 32, 32, false);
-
-		var l:number = 10;
-		//var radius:number = 1000;
-
-		for (var c : number = 0; c < l ; c++) {
-
-			var t : number=Math.PI * 2 * c / l;
-
-			var mesh:Mesh = <Mesh> this.torus.getNewObject();
-			mesh.x = Math.cos(t)*this.radius;
-			mesh.y = 0;
-			mesh.z = Math.sin(t)*this.radius;
-
-			this.view.scene.addChild(mesh);
-			this.meshes.push(mesh);
-
-		}
 
 		this.view.scene.addChild(this.light);
 
@@ -114,8 +96,24 @@ class TorusObject3DDemo
 		matTx.style.sampler = new Sampler2D(true, true, true);
 		matTx.lightPicker =  this.lightPicker;
 
-		for (var c:number = 0; c < this.meshes.length; c ++)
-			this.meshes[c].material = matTx;
+		var torus:PrimitiveTorusPrefab = new PrimitiveTorusPrefab(matTx, ElementsType.TRIANGLE, 150, 50, 32, 32, false);
+
+		var l:number = 10;
+		//var radius:number = 1000;
+
+		for (var c : number = 0; c < l ; c++) {
+
+			var t : number=Math.PI * 2 * c / l;
+
+			var mesh:Mesh = <Mesh> torus.getNewObject();
+			mesh.x = Math.cos(t)*this.radius;
+			mesh.y = 0;
+			mesh.z = Math.sin(t)*this.radius;
+
+			this.view.scene.addChild(mesh);
+			this.meshes.push(mesh);
+
+		}
 	}
 
 	private tick(dt:number)
@@ -135,12 +133,12 @@ class TorusObject3DDemo
 			this.meshes[c].x = Math.cos(objPos + this.tPos)*this.radius;
 			this.meshes[c].y = Math.sin(this.t)*500;
 			this.meshes[c].z = Math.sin(objPos + this.tPos)*this.radius;
+
+			if (this.follow && c == 0)
+				this.view.camera.lookAt(this.meshes[c].transform.position);
 		}
 
 		//this.view.camera.y = Math.sin( this.tPos ) * 1500;
-
-		if (this.follow)
-			this.view.camera.lookAt(this.meshes[0].transform.position);
 
 		this.view.camera.y = Math.sin(this.tPos) * 1500;
 
