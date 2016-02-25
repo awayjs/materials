@@ -4,9 +4,9 @@ import URLLoaderEvent				= require("awayjs-core/lib/events/URLLoaderEvent");
 import RequestAnimationFrame		= require("awayjs-core/lib/utils/RequestAnimationFrame");
 import Debug						= require("awayjs-core/lib/utils/Debug");
 
-import View							= require("awayjs-display/lib/containers/View");
-import Mesh							= require("awayjs-display/lib/entities/Mesh");
-import DirectionalLight				= require("awayjs-display/lib/entities/DirectionalLight");
+import View							= require("awayjs-display/lib/View");
+import Mesh							= require("awayjs-display/lib/display/Mesh");
+import DirectionalLight				= require("awayjs-display/lib/display/DirectionalLight");
 import DefaultMaterialManager		= require("awayjs-display/lib/managers/DefaultMaterialManager");
 import StaticLightPicker			= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
 import PrimitivePrefabBase			= require("awayjs-display/lib/prefabs/PrimitivePrefabBase");

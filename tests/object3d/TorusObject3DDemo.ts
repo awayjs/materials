@@ -9,9 +9,9 @@ import PerspectiveProjection		= require("awayjs-core/lib/projections/Perspective
 import RequestAnimationFrame		= require("awayjs-core/lib/utils/RequestAnimationFrame");
 import Debug						= require("awayjs-core/lib/utils/Debug");
 
-import View							= require("awayjs-display/lib/containers/View");
-import Mesh							= require("awayjs-display/lib/entities/Mesh");
-import PointLight					= require("awayjs-display/lib/entities/PointLight");
+import View							= require("awayjs-display/lib/View");
+import Mesh							= require("awayjs-display/lib/display/Mesh");
+import PointLight					= require("awayjs-display/lib/display/PointLight");
 import StaticLightPicker			= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
 import PrimitiveTorusPrefab			= require("awayjs-display/lib/prefabs/PrimitiveTorusPrefab");
 import Single2DTexture				= require("awayjs-display/lib/textures/Single2DTexture");
