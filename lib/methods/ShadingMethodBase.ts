@@ -1,12 +1,12 @@
 import AssetBase					= require("awayjs-core/lib/library/AssetBase");
 
-import Camera						= require("awayjs-display/lib/entities/Camera");
-import IRenderOwner					= require("awayjs-display/lib/base/IRenderOwner");
+import Camera						= require("awayjs-display/lib/display/Camera");
+import ISurface						= require("awayjs-display/lib/base/ISurface");
 import TextureBase					= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage						= require("awayjs-stagegl/lib/base/Stage");
 
-import RenderableBase				= require("awayjs-renderergl/lib/renderables/RenderableBase");
+import GL_RenderableBase			= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 import ShadingMethodEvent			= require("awayjs-renderergl/lib/events/ShadingMethodEvent");
 import ShaderBase					= require("awayjs-renderergl/lib/shaders/ShaderBase");
 import ShaderRegisterCache			= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
@@ -24,7 +24,7 @@ class ShadingMethodBase extends AssetBase
 {
 	public _textures:Array<TextureBase> = new Array<TextureBase>();
 
-	public _owners:Array<IRenderOwner> = new Array<IRenderOwner>();
+	public _owners:Array<ISurface> = new Array<ISurface>();
 	public _counts:Array<number> = new Array<number>();
 
 	public static assetType:string = "[asset ShadingMethod]";
@@ -92,7 +92,7 @@ class ShadingMethodBase extends AssetBase
 	}
 
 
-	public iAddOwner(owner:IRenderOwner)
+	public iAddOwner(owner:ISurface)
 	{
 		//a method can be used more than once in the same material, so we check for this
 		var index:number = this._owners.indexOf(owner);
@@ -110,7 +110,7 @@ class ShadingMethodBase extends AssetBase
 		}
 	}
 
-	public iRemoveOwner(owner:IRenderOwner)
+	public iRemoveOwner(owner:ISurface)
 	{
 		var index:number = this._owners.indexOf(owner);
 
@@ -214,7 +214,7 @@ class ShadingMethodBase extends AssetBase
 	 *
 	 * @internal
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
 	{
 
 	}

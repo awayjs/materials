@@ -1,10 +1,10 @@
-import Camera							= require("awayjs-display/lib/entities/Camera");
+import Camera							= require("awayjs-display/lib/display/Camera");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
-import IRenderOwner						= require("awayjs-display/lib/base/IRenderOwner");
+import ISurface							= require("awayjs-display/lib/base/ISurface");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
+import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 import ShadingMethodEvent				= require("awayjs-renderergl/lib/events/ShadingMethodEvent");
 import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
 import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
@@ -59,14 +59,14 @@ class SpecularCompositeMethod extends SpecularBasicMethod
 	}
 
 
-	public iAddOwner(owner:IRenderOwner)
+	public iAddOwner(owner:ISurface)
 	{
 		super.iAddOwner(owner);
 
 		this._baseMethod.iAddOwner(owner);
 	}
 
-	public iRemoveOwner(owner:IRenderOwner)
+	public iRemoveOwner(owner:ISurface)
 	{
 		super.iRemoveOwner(owner);
 
@@ -170,7 +170,7 @@ class SpecularCompositeMethod extends SpecularBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
 	{
 		this._baseMethod.iSetRenderState(shader, methodVO, renderable, stage, camera);
 	}

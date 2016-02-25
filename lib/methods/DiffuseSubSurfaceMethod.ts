@@ -1,8 +1,8 @@
-import Camera							= require("awayjs-display/lib/entities/Camera");
+import Camera							= require("awayjs-display/lib/display/Camera");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
+import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
 import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
@@ -12,7 +12,7 @@ import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRe
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
 import DiffuseCompositeMethod			= require("awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod");
-import SingleObjectDepthPass			= require("awayjs-methodmaterials/lib/render/passes/SingleObjectDepthPass");
+import SingleObjectDepthPass			= require("awayjs-methodmaterials/lib/surfaces/passes/SingleObjectDepthPass");
 
 /**
  * DiffuseSubSurfaceMethod provides a depth map-based diffuse shading method that mimics the scattering of
@@ -226,7 +226,7 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
 	{
 		methodVO.secondaryTextureGL = shader.getAbstraction(this._depthPass._iGetDepthMap(renderable));
 		methodVO.secondaryTextureGL._setRenderState(renderable);

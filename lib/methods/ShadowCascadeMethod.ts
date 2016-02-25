@@ -1,13 +1,13 @@
 import AssetEvent						= require("awayjs-core/lib/events/AssetEvent");
 
-import Camera							= require("awayjs-display/lib/entities/Camera");
-import DirectionalLight					= require("awayjs-display/lib/entities/DirectionalLight");
+import Camera							= require("awayjs-display/lib/display/Camera");
+import DirectionalLight					= require("awayjs-display/lib/display/DirectionalLight");
 import CascadeShadowMapper				= require("awayjs-display/lib/materials/shadowmappers/CascadeShadowMapper");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
+import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 import ShadingMethodEvent				= require("awayjs-renderergl/lib/events/ShadingMethodEvent");
 import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
 import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
@@ -249,7 +249,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
 	{
 	}
 

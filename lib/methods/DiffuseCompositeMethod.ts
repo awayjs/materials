@@ -1,6 +1,6 @@
-import Camera							= require("awayjs-display/lib/entities/Camera");
+import Camera							= require("awayjs-display/lib/display/Camera");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
-import IRenderOwner						= require("awayjs-display/lib/base/IRenderOwner");
+import ISurface							= require("awayjs-display/lib/base/ISurface");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
@@ -10,7 +10,7 @@ import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderReg
 import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
 import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
 import ShadingMethodEvent				= require("awayjs-renderergl/lib/events/ShadingMethodEvent");
-import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
+import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
 import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
@@ -77,14 +77,14 @@ class DiffuseCompositeMethod extends DiffuseBasicMethod
 		this.pBaseMethod.iInitConstants(shader, methodVO);
 	}
 
-	public iAddOwner(owner:IRenderOwner)
+	public iAddOwner(owner:ISurface)
 	{
 		super.iAddOwner(owner);
 
 		this.pBaseMethod.iAddOwner(owner);
 	}
 
-	public iRemoveOwner(owner:IRenderOwner)
+	public iRemoveOwner(owner:ISurface)
 	{
 		super.iRemoveOwner(owner);
 
@@ -187,7 +187,7 @@ class DiffuseCompositeMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
 	{
 		this.pBaseMethod.iSetRenderState(shader, methodVO, renderable, stage, camera);
 	}

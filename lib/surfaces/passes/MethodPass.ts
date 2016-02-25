@@ -7,8 +7,8 @@ import AbstractMethodError				= require("awayjs-core/lib/errors/AbstractMethodEr
 import AssetEvent						= require("awayjs-core/lib/events/AssetEvent");
 import MaterialBase						= require("awayjs-display/lib/materials/MaterialBase");
 
-import Camera							= require("awayjs-display/lib/entities/Camera");
-import IRenderOwner						= require("awayjs-display/lib/base/IRenderOwner");
+import Camera							= require("awayjs-display/lib/display/Camera");
+import ISurface							= require("awayjs-display/lib/base/ISurface");
 import LightPickerBase					= require("awayjs-display/lib/materials/lightpickers/LightPickerBase");
 import LightSources						= require("awayjs-display/lib/materials/LightSources");
 
@@ -21,9 +21,9 @@ import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
 import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
-import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
-import PassBase							= require("awayjs-renderergl/lib/render/passes/PassBase");
-import ILightingPass					= require("awayjs-renderergl/lib/render/passes/ILightingPass");
+import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
+import PassBase							= require("awayjs-renderergl/lib/surfaces/passes/PassBase");
+import ILightingPass					= require("awayjs-renderergl/lib/surfaces/passes/ILightingPass");
 import IElementsClassGL					= require("awayjs-renderergl/lib/elements/IElementsClassGL");
 
 import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
@@ -35,8 +35,8 @@ import LightingMethodBase				= require("awayjs-methodmaterials/lib/methods/Light
 import NormalBasicMethod				= require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
 import ShadowMapMethodBase				= require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
 import SpecularBasicMethod				= require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
-import MethodPassMode					= require("awayjs-methodmaterials/lib/render/passes/MethodPassMode");
-import MethodMaterialRender				= require("awayjs-methodmaterials/lib/render/MethodMaterialRender");
+import MethodPassMode					= require("awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode");
+import GL_MethodMaterialSurface				= require("awayjs-methodmaterials/lib/surfaces/GL_MethodMaterialSurface");
 
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
@@ -174,7 +174,7 @@ class MethodPass extends PassBase implements ILightingPass
 	 *
 	 * @param material The material to which this pass belongs.
 	 */
-	constructor(mode:number, render:MethodMaterialRender, renderOwner:MaterialBase, elementsClass:IElementsClassGL, stage:Stage)
+	constructor(mode:number, render:GL_MethodMaterialSurface, renderOwner:MaterialBase, elementsClass:IElementsClassGL, stage:Stage)
 	{
 		super(render, renderOwner, elementsClass, stage);
 
@@ -555,7 +555,7 @@ class MethodPass extends PassBase implements ILightingPass
 	 * @param stage
 	 * @param camera
 	 */
-	public _iRender(renderable:RenderableBase, camera:Camera, viewProjection:Matrix3D)
+	public _iRender(renderable:GL_RenderableBase, camera:Camera, viewProjection:Matrix3D)
 	{
 		super._iRender(renderable, camera, viewProjection);
 

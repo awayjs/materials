@@ -1,9 +1,9 @@
 import NearDirectionalShadowMapper		= require("awayjs-display/lib/materials/shadowmappers/NearDirectionalShadowMapper");
-import Camera							= require("awayjs-display/lib/entities/Camera");
+import Camera							= require("awayjs-display/lib/display/Camera");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
+import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 import ShadingMethodEvent				= require("awayjs-renderergl/lib/events/ShadingMethodEvent");
 import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
 import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
@@ -184,7 +184,7 @@ class ShadowNearMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
 	{
 		// todo: move this to activate (needs camera)
 		var near:number = camera.projection.near;

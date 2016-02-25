@@ -1,4 +1,4 @@
-import LightBase						= require("awayjs-display/lib/base/LightBase");
+import LightBase						= require("awayjs-display/lib/display/LightBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 

@@ -1,9 +1,9 @@
-import Camera							= require("awayjs-display/lib/entities/Camera");
+import Camera							= require("awayjs-display/lib/display/Camera");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
+import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -152,7 +152,7 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
 	{
 		super.iSetRenderState(shader, methodVO, renderable, stage, camera);
 

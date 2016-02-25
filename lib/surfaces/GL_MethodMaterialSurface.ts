@@ -7,8 +7,8 @@ import Vector3D							= require("awayjs-core/lib/geom/Vector3D");
 import AbstractMethodError				= require("awayjs-core/lib/errors/AbstractMethodError");
 import AssetEvent						= require("awayjs-core/lib/events/AssetEvent");
 
-import Camera							= require("awayjs-display/lib/entities/Camera");
-import IRenderOwner						= require("awayjs-display/lib/base/IRenderOwner");
+import Camera							= require("awayjs-display/lib/display/Camera");
+import ISurface							= require("awayjs-display/lib/base/ISurface");
 import StaticLightPicker				= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
 
 import ContextGLCompareMode				= require("awayjs-stagegl/lib/base/ContextGLCompareMode");
@@ -16,15 +16,15 @@ import ContextGLCompareMode				= require("awayjs-stagegl/lib/base/ContextGLCompa
 import RendererBase						= require("awayjs-renderergl/lib/RendererBase");
 import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
 import ShadingMethodEvent				= require("awayjs-renderergl/lib/events/ShadingMethodEvent");
-import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
+import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 import IElementsClassGL					= require("awayjs-renderergl/lib/elements/IElementsClassGL");
-import RenderBase						= require("awayjs-renderergl/lib/render/RenderBase");
-import RenderPool						= require("awayjs-renderergl/lib/render/RenderPool");
+import GL_SurfaceBase					= require("awayjs-renderergl/lib/surfaces/GL_SurfaceBase");
+import SurfacePool						= require("awayjs-renderergl/lib/surfaces/SurfacePool");
 
 import MethodMaterial					= require("awayjs-methodmaterials/lib/MethodMaterial");
 import MethodMaterialMode				= require("awayjs-methodmaterials/lib/MethodMaterialMode");
-import MethodPassMode					= require("awayjs-methodmaterials/lib/render/passes/MethodPassMode");
-import MethodPass						= require("awayjs-methodmaterials/lib/render/passes/MethodPass");
+import MethodPassMode					= require("awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode");
+import MethodPass						= require("awayjs-methodmaterials/lib/surfaces/passes/MethodPass");
 import AmbientBasicMethod				= require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
 import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
 import EffectColorTransformMethod		= require("awayjs-methodmaterials/lib/methods/EffectColorTransformMethod");
@@ -38,7 +38,7 @@ import SpecularBasicMethod				= require("awayjs-methodmaterials/lib/methods/Spec
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
  * using material methods to define their appearance.
  */
-class MethodMaterialRender extends RenderBase
+class GL_MethodMaterialSurface extends GL_SurfaceBase
 {
 	private _material:MethodMaterial;
 	private _pass:MethodPass;
@@ -66,7 +66,7 @@ class MethodMaterialRender extends RenderBase
 	 *
 	 * @param material The material to which this pass belongs.
 	 */
-	constructor(material:MethodMaterial, elementsClass:IElementsClassGL, pool:RenderPool)
+	constructor(material:MethodMaterial, elementsClass:IElementsClassGL, pool:SurfacePool)
 	{
 		super(material, elementsClass, pool);
 
@@ -324,4 +324,4 @@ class MethodMaterialRender extends RenderBase
 	}
 }
 
-export = MethodMaterialRender;
+export = GL_MethodMaterialSurface;

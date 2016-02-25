@@ -1,4 +1,4 @@
-import DirectionalLight					= require("awayjs-display/lib/entities/DirectionalLight");
+import DirectionalLight					= require("awayjs-display/lib/display/DirectionalLight");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 

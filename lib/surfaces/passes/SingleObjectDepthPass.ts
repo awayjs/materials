@@ -1,10 +1,10 @@
 import Image2D							= require("awayjs-core/lib/image/Image2D");
 import Matrix3D							= require("awayjs-core/lib/geom/Matrix3D");
 
-import LightBase						= require("awayjs-display/lib/base/LightBase");
-import Camera							= require("awayjs-display/lib/entities/Camera");
+import LightBase						= require("awayjs-display/lib/display/LightBase");
+import Camera							= require("awayjs-display/lib/display/Camera");
 import MaterialBase						= require("awayjs-display/lib/materials/MaterialBase");
-import IRenderOwner						= require("awayjs-display/lib/base/IRenderOwner");
+import ISurface							= require("awayjs-display/lib/base/ISurface");
 import Single2DTexture					= require("awayjs-display/lib/textures/Single2DTexture");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 import TriangleElements					= require("awayjs-display/lib/graphics/TriangleElements");
@@ -18,10 +18,10 @@ import RendererBase						= require("awayjs-renderergl/lib/RendererBase");
 import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import PassBase							= require("awayjs-renderergl/lib/render/passes/PassBase");
+import PassBase							= require("awayjs-renderergl/lib/surfaces/passes/PassBase");
 import IElementsClassGL					= require("awayjs-renderergl/lib/elements/IElementsClassGL");
-import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
-import RenderBase						= require("awayjs-renderergl/lib/render/RenderBase");
+import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
+import GL_SurfaceBase					= require("awayjs-renderergl/lib/surfaces/GL_SurfaceBase");
 import GL_ElementsBase					= require("awayjs-renderergl/lib/elements/GL_ElementsBase");
 
 /**
@@ -66,7 +66,7 @@ class SingleObjectDepthPass extends PassBase
 	/**
 	 * Creates a new SingleObjectDepthPass object.
 	 */
-	constructor(render:RenderBase, renderOwner:IRenderOwner, elementsClass:IElementsClassGL, stage:Stage)
+	constructor(render:GL_SurfaceBase, renderOwner:ISurface, elementsClass:IElementsClassGL, stage:Stage)
 	{
 		super(render, renderOwner, elementsClass, stage);
 
@@ -148,36 +148,36 @@ class SingleObjectDepthPass extends PassBase
 
 	/**
 	 * Gets the depth maps rendered for this object from all lights.
-	 * @param renderable The renderable for which to retrieve the depth maps.
+	 * @param renderableGL The renderableGL for which to retrieve the depth maps.
 	 * @param stage3DProxy The Stage3DProxy object currently used for rendering.
 	 * @return A list of depth map textures for all supported lights.
 	 */
-	public _iGetDepthMap(renderable:RenderableBase):TextureBase
+	public _iGetDepthMap(renderableGL:GL_RenderableBase):TextureBase
 	{
-		return this._textures[renderable.renderableOwner.id];
+		return this._textures[renderableGL.renderable.id];
 	}
 
 	/**
 	 * Retrieves the depth map projection maps for all lights.
-	 * @param renderable The renderable for which to retrieve the projection maps.
+	 * @param renderableGL The renderableGL for which to retrieve the projection maps.
 	 * @return A list of projection maps for all supported lights.
 	 */
-	public _iGetProjection(renderable:RenderableBase):Matrix3D
+	public _iGetProjection(renderableGL:GL_RenderableBase):Matrix3D
 	{
-		return this._projections[renderable.renderableOwner.id];
+		return this._projections[renderableGL.renderable.id];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public _iRender(renderable:RenderableBase, camera:Camera, viewProjection:Matrix3D)
+	public _iRender(renderableGL:GL_RenderableBase, camera:Camera, viewProjection:Matrix3D)
 	{
 		var matrix:Matrix3D;
 		var context:IContextGL = this._stage.context;
 		var len:number /*uint*/;
 		var light:LightBase;
-		var lights:Array<LightBase> = this._renderOwner.lightPicker.allPickedLights;
-		var rId:number = renderable.renderableOwner.id;
+		var lights:Array<LightBase> = this._surface.lightPicker.allPickedLights;
+		var rId:number = renderableGL.renderable.id;
 
 		if (!this._textures[rId])
 			this._textures[rId] = new Single2DTexture(new Image2D(this._textureSize, this._textureSize));
@@ -190,14 +190,14 @@ class SingleObjectDepthPass extends PassBase
 		// local position = enough
 		light = lights[0];
 
-		matrix = light.iGetObjectProjectionMatrix(renderable.sourceEntity, camera, this._projections[rId]);
+		matrix = light.iGetObjectProjectionMatrix(renderableGL.sourceEntity, camera, this._projections[rId]);
 
 		this._stage.setRenderTarget(this._textures[rId], true);
 		context.clear(1.0, 1.0, 1.0);
 		context.setProgramConstantsFromMatrix(ContextGLProgramType.VERTEX, 0, matrix, true);
 		context.setProgramConstantsFromArray(ContextGLProgramType.FRAGMENT, 0, this._enc, 2);
 
-		var elements:TriangleElements = <TriangleElements> renderable.elements;
+		var elements:TriangleElements = <TriangleElements> renderableGL.elements;
 		var elementsGL:GL_ElementsBase = this._shader._elementsPool.getAbstraction(elements);
 
 		elementsGL.activateVertexBufferVO(0, elements.positions);

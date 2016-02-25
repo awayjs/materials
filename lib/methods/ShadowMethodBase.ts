@@ -1,16 +1,16 @@
 import Vector3D							= require("awayjs-core/lib/geom/Vector3D");
 import AbstractMethodError				= require("awayjs-core/lib/errors/AbstractMethodError");
 
-import LightBase						= require("awayjs-display/lib/base/LightBase");
-import Camera							= require("awayjs-display/lib/entities/Camera");
-import DirectionalLight					= require("awayjs-display/lib/entities/DirectionalLight");
-import PointLight						= require("awayjs-display/lib/entities/PointLight");
+import LightBase						= require("awayjs-display/lib/display/LightBase");
+import Camera							= require("awayjs-display/lib/display/Camera");
+import DirectionalLight					= require("awayjs-display/lib/display/DirectionalLight");
+import PointLight						= require("awayjs-display/lib/display/PointLight");
 import DirectionalShadowMapper			= require("awayjs-display/lib/materials/shadowmappers/DirectionalShadowMapper");
 import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
+import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
 import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
@@ -196,7 +196,7 @@ class ShadowMethodBase extends ShadowMapMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
 	{
 		if (!this._pUsePoint)
 			(<DirectionalShadowMapper> this._pShadowMapper).iDepthProjection.copyRawDataTo(shader.vertexConstantData, methodVO.vertexConstantsIndex + 4, true);

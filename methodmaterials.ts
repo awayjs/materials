@@ -1,9 +1,9 @@
-import RenderPool					= require("awayjs-renderergl/lib/render/RenderPool");
+import SurfacePool					= require("awayjs-renderergl/lib/surfaces/SurfacePool");
 
 import MethodMaterial				= require("awayjs-methodmaterials/lib/MethodMaterial");
-import MethodMaterialRender			= require("awayjs-methodmaterials/lib/render/MethodMaterialRender");
+import GL_MethodMaterialSurface		= require("awayjs-methodmaterials/lib/surfaces/GL_MethodMaterialSurface");
 
-RenderPool.registerAbstraction(MethodMaterialRender, MethodMaterial);
+SurfacePool.registerAbstraction(GL_MethodMaterialSurface, MethodMaterial);
 
 
 

@@ -1,4 +1,4 @@
-import Camera							= require("awayjs-display/lib/entities/Camera");
+import Camera							= require("awayjs-display/lib/display/Camera");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 

@@ -1,12 +1,12 @@
 import BitmapImage2D					= require("awayjs-core/lib/image/BitmapImage2D");
 
-import Camera							= require("awayjs-display/lib/entities/Camera");
-import DirectionalLight					= require("awayjs-display/lib/entities/DirectionalLight");
+import Camera							= require("awayjs-display/lib/display/Camera");
+import DirectionalLight					= require("awayjs-display/lib/display/DirectionalLight");
 import Single2DTexture					= require("awayjs-display/lib/textures/Single2DTexture");
 
 import Stage							= require("awayjs-stagegl/lib/base/Stage");
 
-import RenderableBase					= require("awayjs-renderergl/lib/renderables/RenderableBase");
+import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
 import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
 import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
@@ -174,7 +174,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
 	{
 		super.iSetRenderState(shader, methodVO, renderable, stage, camera);
 

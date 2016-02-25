@@ -1,6 +1,6 @@
 import GL_TextureBase				= require("awayjs-renderergl/lib/textures/GL_TextureBase");
 
-import MethodPass					= require("awayjs-methodmaterials/lib/render/passes/MethodPass");
+import MethodPass					= require("awayjs-methodmaterials/lib/surfaces/passes/MethodPass");
 import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
 
 /**

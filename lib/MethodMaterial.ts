@@ -1,7 +1,7 @@
 ﻿import Image2D						= require("awayjs-core/lib/image/Image2D");
 
-import IRenderOwner					= require("awayjs-display/lib/base/IRenderOwner");
-import Camera						= require("awayjs-display/lib/entities/Camera");
+import ISurface						= require("awayjs-display/lib/base/ISurface");
+import Camera						= require("awayjs-display/lib/display/Camera");
 import StaticLightPicker			= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
 import MaterialBase					= require("awayjs-display/lib/materials/MaterialBase");
 import Single2DTexture				= require("awayjs-display/lib/textures/Single2DTexture");
@@ -9,7 +9,7 @@ import TextureBase					= require("awayjs-display/lib/textures/TextureBase");
 
 import ContextGLCompareMode			= require("awayjs-stagegl/lib/base/ContextGLCompareMode");
 
-import RenderPool					= require("awayjs-renderergl/lib/render/RenderPool");
+import SurfacePool					= require("awayjs-renderergl/lib/surfaces/SurfacePool");
 
 import MethodMaterialMode			= require("awayjs-methodmaterials/lib/MethodMaterialMode");
 import AmbientBasicMethod			= require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
