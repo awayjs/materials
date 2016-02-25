@@ -1,8 +1,8 @@
 require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./methodmaterials.ts":[function(require,module,exports){
-var RenderPool = require("awayjs-renderergl/lib/render/RenderPool");
+var SurfacePool = require("awayjs-renderergl/lib/surfaces/SurfacePool");
 var MethodMaterial = require("awayjs-methodmaterials/lib/MethodMaterial");
-var MethodMaterialRender = require("awayjs-methodmaterials/lib/render/MethodMaterialRender");
-RenderPool.registerAbstraction(MethodMaterialRender, MethodMaterial);
+var GL_MethodMaterialSurface = require("awayjs-methodmaterials/lib/surfaces/GL_MethodMaterialSurface");
+SurfacePool.registerAbstraction(GL_MethodMaterialSurface, MethodMaterial);
 /**
  *
  * static shim
@@ -14,7 +14,7 @@ var methodmaterials = (function () {
 })();
 module.exports = methodmaterials;
 
-},{"awayjs-methodmaterials/lib/MethodMaterial":"awayjs-methodmaterials/lib/MethodMaterial","awayjs-methodmaterials/lib/render/MethodMaterialRender":"awayjs-methodmaterials/lib/render/MethodMaterialRender","awayjs-renderergl/lib/render/RenderPool":undefined}],"awayjs-methodmaterials/lib/MethodMaterialMode":[function(require,module,exports){
+},{"awayjs-methodmaterials/lib/MethodMaterial":"awayjs-methodmaterials/lib/MethodMaterial","awayjs-methodmaterials/lib/surfaces/GL_MethodMaterialSurface":"awayjs-methodmaterials/lib/surfaces/GL_MethodMaterialSurface","awayjs-renderergl/lib/surfaces/SurfacePool":undefined}],"awayjs-methodmaterials/lib/MethodMaterialMode":[function(require,module,exports){
 var MethodMaterialMode = (function () {
     function MethodMaterialMode() {
     }
@@ -352,7 +352,7 @@ var AmbientBasicMethod = (function (_super) {
      */
     AmbientBasicMethod.prototype.iInitConstants = function (shader, methodVO) {
         if (!methodVO.textureGL) {
-            this._color = shader.numLights ? 0xFFFFFF : methodVO.pass._renderOwner.style.color;
+            this._color = shader.numLights ? 0xFFFFFF : methodVO.pass._surface.style.color;
             this.updateColor();
         }
     };
@@ -560,7 +560,7 @@ var CurveBasicMethod = (function (_super) {
      */
     CurveBasicMethod.prototype.iInitConstants = function (shader, methodVO) {
         if (!methodVO.textureGL) {
-            this._color = methodVO.pass._renderOwner.style.color;
+            this._color = methodVO.pass._surface.style.color;
             this.updateColor();
         }
     };
@@ -752,7 +752,7 @@ var DiffuseBasicMethod = (function (_super) {
      */
     DiffuseBasicMethod.prototype.iInitConstants = function (shader, methodVO) {
         if (shader.numLights > 0) {
-            this._ambientColor = methodVO.pass._renderOwner.style.color;
+            this._ambientColor = methodVO.pass._surface.style.color;
             this.updateAmbientColor();
         }
         else {
@@ -3751,7 +3751,7 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 var AssetEvent = require("awayjs-core/lib/events/AssetEvent");
-var DirectionalLight = require("awayjs-display/lib/entities/DirectionalLight");
+var DirectionalLight = require("awayjs-display/lib/display/DirectionalLight");
 var ShadingMethodEvent = require("awayjs-renderergl/lib/events/ShadingMethodEvent");
 var MethodVO = require("awayjs-methodmaterials/lib/data/MethodVO");
 var ShadowMapMethodBase = require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
@@ -3942,7 +3942,7 @@ var ShadowCascadeMethod = (function (_super) {
 })(ShadowMapMethodBase);
 module.exports = ShadowCascadeMethod;
 
-},{"awayjs-core/lib/events/AssetEvent":undefined,"awayjs-display/lib/entities/DirectionalLight":undefined,"awayjs-methodmaterials/lib/data/MethodVO":"awayjs-methodmaterials/lib/data/MethodVO","awayjs-methodmaterials/lib/methods/ShadowMapMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase","awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/ShadowDitheredMethod":[function(require,module,exports){
+},{"awayjs-core/lib/events/AssetEvent":undefined,"awayjs-display/lib/display/DirectionalLight":undefined,"awayjs-methodmaterials/lib/data/MethodVO":"awayjs-methodmaterials/lib/data/MethodVO","awayjs-methodmaterials/lib/methods/ShadowMapMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase","awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/ShadowDitheredMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -4422,7 +4422,7 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 var AbstractMethodError = require("awayjs-core/lib/errors/AbstractMethodError");
-var PointLight = require("awayjs-display/lib/entities/PointLight");
+var PointLight = require("awayjs-display/lib/display/PointLight");
 var ShadowMapMethodBase = require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
 /**
  * ShadowMethodBase provides an abstract method for simple (non-wrapping) shadow map methods.
@@ -4614,7 +4614,7 @@ var ShadowMethodBase = (function (_super) {
 })(ShadowMapMethodBase);
 module.exports = ShadowMethodBase;
 
-},{"awayjs-core/lib/errors/AbstractMethodError":undefined,"awayjs-display/lib/entities/PointLight":undefined,"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowNearMethod":[function(require,module,exports){
+},{"awayjs-core/lib/errors/AbstractMethodError":undefined,"awayjs-display/lib/display/PointLight":undefined,"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowNearMethod":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -5775,7 +5775,7 @@ var SpecularPhongMethod = (function (_super) {
 })(SpecularBasicMethod);
 module.exports = SpecularPhongMethod;
 
-},{"awayjs-methodmaterials/lib/methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod"}],"awayjs-methodmaterials/lib/render/MethodMaterialRender":[function(require,module,exports){
+},{"awayjs-methodmaterials/lib/methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod"}],"awayjs-methodmaterials/lib/surfaces/GL_MethodMaterialSurface":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -5785,26 +5785,26 @@ var __extends = this.__extends || function (d, b) {
 var BlendMode = require("awayjs-core/lib/image/BlendMode");
 var StaticLightPicker = require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
 var ContextGLCompareMode = require("awayjs-stagegl/lib/base/ContextGLCompareMode");
-var RenderBase = require("awayjs-renderergl/lib/render/RenderBase");
+var GL_SurfaceBase = require("awayjs-renderergl/lib/surfaces/GL_SurfaceBase");
 var MethodMaterialMode = require("awayjs-methodmaterials/lib/MethodMaterialMode");
-var MethodPassMode = require("awayjs-methodmaterials/lib/render/passes/MethodPassMode");
-var MethodPass = require("awayjs-methodmaterials/lib/render/passes/MethodPass");
+var MethodPassMode = require("awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode");
+var MethodPass = require("awayjs-methodmaterials/lib/surfaces/passes/MethodPass");
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
  * using material methods to define their appearance.
  */
-var MethodMaterialRender = (function (_super) {
-    __extends(MethodMaterialRender, _super);
+var GL_MethodMaterialSurface = (function (_super) {
+    __extends(GL_MethodMaterialSurface, _super);
     /**
      * Creates a new CompiledPass object.
      *
      * @param material The material to which this pass belongs.
      */
-    function MethodMaterialRender(material, elementsClass, pool) {
+    function GL_MethodMaterialSurface(material, elementsClass, pool) {
         _super.call(this, material, elementsClass, pool);
         this._material = material;
     }
-    Object.defineProperty(MethodMaterialRender.prototype, "numLights", {
+    Object.defineProperty(GL_MethodMaterialSurface.prototype, "numLights", {
         /**
          * The maximum total number of lights provided by the light picker.
          */
@@ -5814,7 +5814,7 @@ var MethodMaterialRender = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(MethodMaterialRender.prototype, "numNonCasters", {
+    Object.defineProperty(GL_MethodMaterialSurface.prototype, "numNonCasters", {
         /**
          * The amount of lights that don't cast shadows.
          */
@@ -5827,7 +5827,7 @@ var MethodMaterialRender = (function (_super) {
     /**
      * @inheritDoc
      */
-    MethodMaterialRender.prototype._pUpdateRender = function () {
+    GL_MethodMaterialSurface.prototype._pUpdateRender = function () {
         _super.prototype._pUpdateRender.call(this);
         this.initPasses();
         this.setBlendAndCompareModes();
@@ -5845,7 +5845,7 @@ var MethodMaterialRender = (function (_super) {
     /**
      * Initializes all the passes and their dependent passes.
      */
-    MethodMaterialRender.prototype.initPasses = function () {
+    GL_MethodMaterialSurface.prototype.initPasses = function () {
         // let the effects pass handle everything if there are no lights, when there are effect methods applied
         // after shading, or when the material mode is single pass.
         if (this.numLights == 0 || this._material.numEffectMethods > 0 || this._material.mode == MethodMaterialMode.SINGLE_PASS)
@@ -5866,7 +5866,7 @@ var MethodMaterialRender = (function (_super) {
     /**
      * Sets up the various blending modes for all screen passes, based on whether or not there are previous passes.
      */
-    MethodMaterialRender.prototype.setBlendAndCompareModes = function () {
+    GL_MethodMaterialSurface.prototype.setBlendAndCompareModes = function () {
         var forceSeparateMVP = Boolean(this._casterLightPass || this._pass);
         // caster light pass is always first if it exists, hence it uses normal blending
         if (this._casterLightPass) {
@@ -5912,7 +5912,7 @@ var MethodMaterialRender = (function (_super) {
             this._pass.shader.depthCompareMode = this._material.depthCompareMode;
         }
     };
-    MethodMaterialRender.prototype.initCasterLightPass = function () {
+    GL_MethodMaterialSurface.prototype.initCasterLightPass = function () {
         if (this._casterLightPass == null)
             this._casterLightPass = new MethodPass(MethodPassMode.LIGHTING, this, this._material, this._elementsClass, this._stage);
         this._casterLightPass.lightPicker = new StaticLightPicker([this._material.shadowMethod.castingLight]);
@@ -5922,12 +5922,12 @@ var MethodMaterialRender = (function (_super) {
         this._casterLightPass.normalMethod = this._material.normalMethod;
         this._casterLightPass.specularMethod = this._material.specularMethod;
     };
-    MethodMaterialRender.prototype.removeCasterLightPass = function () {
+    GL_MethodMaterialSurface.prototype.removeCasterLightPass = function () {
         this._casterLightPass.dispose();
         this._pRemovePass(this._casterLightPass);
         this._casterLightPass = null;
     };
-    MethodMaterialRender.prototype.initNonCasterLightPasses = function () {
+    GL_MethodMaterialSurface.prototype.initNonCasterLightPasses = function () {
         this.removeNonCasterLightPasses();
         var pass;
         var numDirLights = this._material.lightPicker.numDirectionalLights;
@@ -5958,14 +5958,14 @@ var MethodMaterialRender = (function (_super) {
             probeOffset += pass.numLightProbes;
         }
     };
-    MethodMaterialRender.prototype.removeNonCasterLightPasses = function () {
+    GL_MethodMaterialSurface.prototype.removeNonCasterLightPasses = function () {
         if (!this._nonCasterLightPasses)
             return;
         for (var i = 0; i < this._nonCasterLightPasses.length; ++i)
             this._pRemovePass(this._nonCasterLightPasses[i]);
         this._nonCasterLightPasses = null;
     };
-    MethodMaterialRender.prototype.removeEffectPass = function () {
+    GL_MethodMaterialSurface.prototype.removeEffectPass = function () {
         if (this._pass.ambientMethod != this._material.ambientMethod)
             this._pass.ambientMethod.dispose();
         if (this._pass.diffuseMethod != this._material.diffuseMethod)
@@ -5977,7 +5977,7 @@ var MethodMaterialRender = (function (_super) {
         this._pRemovePass(this._pass);
         this._pass = null;
     };
-    MethodMaterialRender.prototype.initEffectPass = function () {
+    GL_MethodMaterialSurface.prototype.initEffectPass = function () {
         if (this._pass == null)
             this._pass = new MethodPass(MethodPassMode.SUPER_SHADER, this, this._material, this._elementsClass, this._stage);
         if (this._material.mode == MethodMaterialMode.SINGLE_PASS) {
@@ -6018,15 +6018,15 @@ var MethodMaterialRender = (function (_super) {
     /**
      * @inheritDoc
      */
-    MethodMaterialRender.prototype.onClear = function (event) {
+    GL_MethodMaterialSurface.prototype.onClear = function (event) {
         _super.prototype.onClear.call(this, event);
         //TODO
     };
-    return MethodMaterialRender;
-})(RenderBase);
-module.exports = MethodMaterialRender;
+    return GL_MethodMaterialSurface;
+})(GL_SurfaceBase);
+module.exports = GL_MethodMaterialSurface;
 
-},{"awayjs-core/lib/image/BlendMode":undefined,"awayjs-display/lib/materials/lightpickers/StaticLightPicker":undefined,"awayjs-methodmaterials/lib/MethodMaterialMode":"awayjs-methodmaterials/lib/MethodMaterialMode","awayjs-methodmaterials/lib/render/passes/MethodPass":"awayjs-methodmaterials/lib/render/passes/MethodPass","awayjs-methodmaterials/lib/render/passes/MethodPassMode":"awayjs-methodmaterials/lib/render/passes/MethodPassMode","awayjs-renderergl/lib/render/RenderBase":undefined,"awayjs-stagegl/lib/base/ContextGLCompareMode":undefined}],"awayjs-methodmaterials/lib/render/passes/MethodPassMode":[function(require,module,exports){
+},{"awayjs-core/lib/image/BlendMode":undefined,"awayjs-display/lib/materials/lightpickers/StaticLightPicker":undefined,"awayjs-methodmaterials/lib/MethodMaterialMode":"awayjs-methodmaterials/lib/MethodMaterialMode","awayjs-methodmaterials/lib/surfaces/passes/MethodPass":"awayjs-methodmaterials/lib/surfaces/passes/MethodPass","awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode":"awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode","awayjs-renderergl/lib/surfaces/GL_SurfaceBase":undefined,"awayjs-stagegl/lib/base/ContextGLCompareMode":undefined}],"awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode":[function(require,module,exports){
 var PassMode = (function () {
     function PassMode() {
     }
@@ -6046,7 +6046,7 @@ var PassMode = (function () {
 })();
 module.exports = PassMode;
 
-},{}],"awayjs-methodmaterials/lib/render/passes/MethodPass":[function(require,module,exports){
+},{}],"awayjs-methodmaterials/lib/surfaces/passes/MethodPass":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -6058,10 +6058,10 @@ var LightSources = require("awayjs-display/lib/materials/LightSources");
 var LightingShader = require("awayjs-renderergl/lib/shaders/LightingShader");
 var ShadingMethodEvent = require("awayjs-renderergl/lib/events/ShadingMethodEvent");
 var ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
-var PassBase = require("awayjs-renderergl/lib/render/passes/PassBase");
+var PassBase = require("awayjs-renderergl/lib/surfaces/passes/PassBase");
 var MethodVO = require("awayjs-methodmaterials/lib/data/MethodVO");
 var EffectColorTransformMethod = require("awayjs-methodmaterials/lib/methods/EffectColorTransformMethod");
-var MethodPassMode = require("awayjs-methodmaterials/lib/render/passes/MethodPassMode");
+var MethodPassMode = require("awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode");
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
  * using material methods to define their appearance.
@@ -6779,7 +6779,7 @@ var MethodPass = (function (_super) {
 })(PassBase);
 module.exports = MethodPass;
 
-},{"awayjs-core/lib/events/AssetEvent":undefined,"awayjs-display/lib/materials/LightSources":undefined,"awayjs-methodmaterials/lib/data/MethodVO":"awayjs-methodmaterials/lib/data/MethodVO","awayjs-methodmaterials/lib/methods/EffectColorTransformMethod":"awayjs-methodmaterials/lib/methods/EffectColorTransformMethod","awayjs-methodmaterials/lib/render/passes/MethodPassMode":"awayjs-methodmaterials/lib/render/passes/MethodPassMode","awayjs-renderergl/lib/events/ShadingMethodEvent":undefined,"awayjs-renderergl/lib/render/passes/PassBase":undefined,"awayjs-renderergl/lib/shaders/LightingShader":undefined,"awayjs-renderergl/lib/shaders/ShaderBase":undefined}],"awayjs-methodmaterials/lib/render/passes/SingleObjectDepthPass":[function(require,module,exports){
+},{"awayjs-core/lib/events/AssetEvent":undefined,"awayjs-display/lib/materials/LightSources":undefined,"awayjs-methodmaterials/lib/data/MethodVO":"awayjs-methodmaterials/lib/data/MethodVO","awayjs-methodmaterials/lib/methods/EffectColorTransformMethod":"awayjs-methodmaterials/lib/methods/EffectColorTransformMethod","awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode":"awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode","awayjs-renderergl/lib/events/ShadingMethodEvent":undefined,"awayjs-renderergl/lib/shaders/LightingShader":undefined,"awayjs-renderergl/lib/shaders/ShaderBase":undefined,"awayjs-renderergl/lib/surfaces/passes/PassBase":undefined}],"awayjs-methodmaterials/lib/surfaces/passes/SingleObjectDepthPass":[function(require,module,exports){
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -6791,7 +6791,7 @@ var Matrix3D = require("awayjs-core/lib/geom/Matrix3D");
 var Single2DTexture = require("awayjs-display/lib/textures/Single2DTexture");
 var ContextGLDrawMode = require("awayjs-stagegl/lib/base/ContextGLDrawMode");
 var ContextGLProgramType = require("awayjs-stagegl/lib/base/ContextGLProgramType");
-var PassBase = require("awayjs-renderergl/lib/render/passes/PassBase");
+var PassBase = require("awayjs-renderergl/lib/surfaces/passes/PassBase");
 /**
  * The SingleObjectDepthPass provides a material pass that renders a single object to a depth map from the point
  * of view from a light.
@@ -6889,31 +6889,31 @@ var SingleObjectDepthPass = (function (_super) {
     };
     /**
      * Gets the depth maps rendered for this object from all lights.
-     * @param renderable The renderable for which to retrieve the depth maps.
+     * @param renderableGL The renderableGL for which to retrieve the depth maps.
      * @param stage3DProxy The Stage3DProxy object currently used for rendering.
      * @return A list of depth map textures for all supported lights.
      */
-    SingleObjectDepthPass.prototype._iGetDepthMap = function (renderable) {
-        return this._textures[renderable.renderableOwner.id];
+    SingleObjectDepthPass.prototype._iGetDepthMap = function (renderableGL) {
+        return this._textures[renderableGL.renderable.id];
     };
     /**
      * Retrieves the depth map projection maps for all lights.
-     * @param renderable The renderable for which to retrieve the projection maps.
+     * @param renderableGL The renderableGL for which to retrieve the projection maps.
      * @return A list of projection maps for all supported lights.
      */
-    SingleObjectDepthPass.prototype._iGetProjection = function (renderable) {
-        return this._projections[renderable.renderableOwner.id];
+    SingleObjectDepthPass.prototype._iGetProjection = function (renderableGL) {
+        return this._projections[renderableGL.renderable.id];
     };
     /**
      * @inheritDoc
      */
-    SingleObjectDepthPass.prototype._iRender = function (renderable, camera, viewProjection) {
+    SingleObjectDepthPass.prototype._iRender = function (renderableGL, camera, viewProjection) {
         var matrix;
         var context = this._stage.context;
         var len /*uint*/;
         var light;
-        var lights = this._renderOwner.lightPicker.allPickedLights;
-        var rId = renderable.renderableOwner.id;
+        var lights = this._surface.lightPicker.allPickedLights;
+        var rId = renderableGL.renderable.id;
         if (!this._textures[rId])
             this._textures[rId] = new Single2DTexture(new Image2D(this._textureSize, this._textureSize));
         if (!this._projections[rId])
@@ -6921,12 +6921,12 @@ var SingleObjectDepthPass = (function (_super) {
         len = lights.length;
         // local position = enough
         light = lights[0];
-        matrix = light.iGetObjectProjectionMatrix(renderable.sourceEntity, camera, this._projections[rId]);
+        matrix = light.iGetObjectProjectionMatrix(renderableGL.sourceEntity, camera, this._projections[rId]);
         this._stage.setRenderTarget(this._textures[rId], true);
         context.clear(1.0, 1.0, 1.0);
         context.setProgramConstantsFromMatrix(ContextGLProgramType.VERTEX, 0, matrix, true);
         context.setProgramConstantsFromArray(ContextGLProgramType.FRAGMENT, 0, this._enc, 2);
-        var elements = renderable.elements;
+        var elements = renderableGL.elements;
         var elementsGL = this._shader._elementsPool.getAbstraction(elements);
         elementsGL.activateVertexBufferVO(0, elements.positions);
         elementsGL.activateVertexBufferVO(1, elements.normals);
@@ -6946,7 +6946,7 @@ var SingleObjectDepthPass = (function (_super) {
 })(PassBase);
 module.exports = SingleObjectDepthPass;
 
-},{"awayjs-core/lib/geom/Matrix3D":undefined,"awayjs-core/lib/image/Image2D":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-renderergl/lib/render/passes/PassBase":undefined,"awayjs-stagegl/lib/base/ContextGLDrawMode":undefined,"awayjs-stagegl/lib/base/ContextGLProgramType":undefined}]},{},["./methodmaterials.ts"])
+},{"awayjs-core/lib/geom/Matrix3D":undefined,"awayjs-core/lib/image/Image2D":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-renderergl/lib/surfaces/passes/PassBase":undefined,"awayjs-stagegl/lib/base/ContextGLDrawMode":undefined,"awayjs-stagegl/lib/base/ContextGLProgramType":undefined}]},{},["./methodmaterials.ts"])
 
 
 //# sourceMappingURL=awayjs-methodmaterials.js.map

@@ -124,7 +124,7 @@ declare module "awayjs-methodmaterials/lib/MethodMaterialMode" {
 
 declare module "awayjs-methodmaterials/lib/data/MethodVO" {
 	import GL_TextureBase = require("awayjs-renderergl/lib/textures/GL_TextureBase");
-	import MethodPass = require("awayjs-methodmaterials/lib/render/passes/MethodPass");
+	import MethodPass = require("awayjs-methodmaterials/lib/surfaces/passes/MethodPass");
 	import ShadingMethodBase = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
 	/**
 	 * MethodVO contains data for a given shader object for the use within a single material.
@@ -160,10 +160,10 @@ declare module "awayjs-methodmaterials/lib/data/MethodVO" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/AmbientBasicMethod" {
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -217,7 +217,7 @@ declare module "awayjs-methodmaterials/lib/methods/AmbientBasicMethod" {
 	     * @inheritDoc
 	     */
 	    iActivate(shader: ShaderBase, methodVO: MethodVO, stage: Stage): void;
-	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	    /**
 	     * Updates the ambient color data used by the render state.
 	     */
@@ -259,10 +259,10 @@ declare module "awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/CurveBasicMethod" {
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -316,7 +316,7 @@ declare module "awayjs-methodmaterials/lib/methods/CurveBasicMethod" {
 	     * @inheritDoc
 	     */
 	    iActivate(shader: ShaderBase, methodVO: MethodVO, stage: Stage): void;
-	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	    /**
 	     * Updates the ambient color data used by the render state.
 	     */
@@ -327,10 +327,10 @@ declare module "awayjs-methodmaterials/lib/methods/CurveBasicMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod" {
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import LightingShader = require("awayjs-renderergl/lib/shaders/LightingShader");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -425,7 +425,7 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    iSetRenderState(shader: LightingShader, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: LightingShader, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	}
 	export = DiffuseBasicMethod;
 	
@@ -491,16 +491,16 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseCelMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod" {
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
-	import IRenderOwner = require("awayjs-display/lib/base/IRenderOwner");
+	import ISurface = require("awayjs-display/lib/base/ISurface");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import LightingShader = require("awayjs-renderergl/lib/shaders/LightingShader");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
 	import ShaderRegisterElement = require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import MethodVO = require("awayjs-methodmaterials/lib/data/MethodVO");
 	import DiffuseBasicMethod = require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
 	/**
@@ -529,8 +529,8 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod" {
 	     * @inheritDoc
 	     */
 	    iInitConstants(shader: LightingShader, methodVO: MethodVO): void;
-	    iAddOwner(owner: IRenderOwner): void;
-	    iRemoveOwner(owner: IRenderOwner): void;
+	    iAddOwner(owner: ISurface): void;
+	    iRemoveOwner(owner: ISurface): void;
 	    /**
 	     * @inheritDoc
 	     */
@@ -575,7 +575,7 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    iSetRenderState(shader: LightingShader, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: LightingShader, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	    /**
 	     * @inheritDoc
 	     */
@@ -635,10 +635,10 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseDepthMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/DiffuseGradientMethod" {
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import LightingShader = require("awayjs-renderergl/lib/shaders/LightingShader");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -688,17 +688,17 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseGradientMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    iSetRenderState(shader: LightingShader, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: LightingShader, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	}
 	export = DiffuseGradientMethod;
 	
 }
 
 declare module "awayjs-methodmaterials/lib/methods/DiffuseLightMapMethod" {
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import LightingShader = require("awayjs-renderergl/lib/shaders/LightingShader");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -764,16 +764,16 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseLightMapMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    iSetRenderState(shader: LightingShader, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: LightingShader, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	}
 	export = DiffuseLightMapMethod;
 	
 }
 
 declare module "awayjs-methodmaterials/lib/methods/DiffuseSubSurfaceMethod" {
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import LightingShader = require("awayjs-renderergl/lib/shaders/LightingShader");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
@@ -850,7 +850,7 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseSubSurfaceMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	    /**
 	     * Generates the code for this method
 	     */
@@ -906,10 +906,10 @@ declare module "awayjs-methodmaterials/lib/methods/DiffuseWrapMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/EffectAlphaMaskMethod" {
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import LightingShader = require("awayjs-renderergl/lib/shaders/LightingShader");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
@@ -954,7 +954,7 @@ declare module "awayjs-methodmaterials/lib/methods/EffectAlphaMaskMethod" {
 	     * @inheritDoc
 	     */
 	    iActivate(shader: LightingShader, methodVO: MethodVO, stage: Stage): void;
-	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	}
 	export = EffectAlphaMaskMethod;
 	
@@ -1033,10 +1033,10 @@ declare module "awayjs-methodmaterials/lib/methods/EffectColorTransformMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/EffectEnvMapMethod" {
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -1080,7 +1080,7 @@ declare module "awayjs-methodmaterials/lib/methods/EffectEnvMapMethod" {
 	     * @inheritDoc
 	     */
 	    iActivate(shader: ShaderBase, methodVO: MethodVO, stage: Stage): void;
-	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	    /**
 	     * @inheritDoc
 	     */
@@ -1150,10 +1150,10 @@ declare module "awayjs-methodmaterials/lib/methods/EffectFogMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/EffectFresnelEnvMapMethod" {
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -1209,7 +1209,7 @@ declare module "awayjs-methodmaterials/lib/methods/EffectFresnelEnvMapMethod" {
 	     * @inheritDoc
 	     */
 	    iActivate(shader: ShaderBase, methodVO: MethodVO, stage: Stage): void;
-	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	    /**
 	     * @inheritDoc
 	     */
@@ -1220,10 +1220,10 @@ declare module "awayjs-methodmaterials/lib/methods/EffectFresnelEnvMapMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/EffectLightMapMethod" {
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -1282,7 +1282,7 @@ declare module "awayjs-methodmaterials/lib/methods/EffectLightMapMethod" {
 	     * @inheritDoc
 	     */
 	    iActivate(shader: ShaderBase, methodVO: MethodVO, stage: Stage): void;
-	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	}
 	export = EffectLightMapMethod;
 	
@@ -1321,10 +1321,10 @@ declare module "awayjs-methodmaterials/lib/methods/EffectMethodBase" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/EffectRefractionEnvMapMethod" {
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -1389,7 +1389,7 @@ declare module "awayjs-methodmaterials/lib/methods/EffectRefractionEnvMapMethod"
 	     * @inheritDoc
 	     */
 	    iActivate(shader: ShaderBase, methodVO: MethodVO, stage: Stage): void;
-	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	    /**
 	     * @inheritDoc
 	     */
@@ -1532,10 +1532,10 @@ declare module "awayjs-methodmaterials/lib/methods/LightingMethodBase" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/NormalBasicMethod" {
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -1577,7 +1577,7 @@ declare module "awayjs-methodmaterials/lib/methods/NormalBasicMethod" {
 	     * @inheritDoc
 	     */
 	    iActivate(shader: ShaderBase, methodVO: MethodVO, stage: Stage): void;
-	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	    /**
 	     * @inheritDoc
 	     */
@@ -1633,10 +1633,10 @@ declare module "awayjs-methodmaterials/lib/methods/NormalHeightMapMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/NormalSimpleWaterMethod" {
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -1697,7 +1697,7 @@ declare module "awayjs-methodmaterials/lib/methods/NormalSimpleWaterMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	    /**
 	     * @inheritDoc
 	     */
@@ -1709,11 +1709,11 @@ declare module "awayjs-methodmaterials/lib/methods/NormalSimpleWaterMethod" {
 
 declare module "awayjs-methodmaterials/lib/methods/ShadingMethodBase" {
 	import AssetBase = require("awayjs-core/lib/library/AssetBase");
-	import Camera = require("awayjs-display/lib/entities/Camera");
-	import IRenderOwner = require("awayjs-display/lib/base/IRenderOwner");
+	import Camera = require("awayjs-display/lib/display/Camera");
+	import ISurface = require("awayjs-display/lib/base/ISurface");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -1725,7 +1725,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadingMethodBase" {
 	 */
 	class ShadingMethodBase extends AssetBase {
 	    _textures: Array<TextureBase>;
-	    _owners: Array<IRenderOwner>;
+	    _owners: Array<ISurface>;
 	    _counts: Array<number>;
 	    static assetType: string;
 	    /**
@@ -1761,8 +1761,8 @@ declare module "awayjs-methodmaterials/lib/methods/ShadingMethodBase" {
 	     * Cleans up any resources used by the current object.
 	     */
 	    dispose(): void;
-	    iAddOwner(owner: IRenderOwner): void;
-	    iRemoveOwner(owner: IRenderOwner): void;
+	    iAddOwner(owner: ISurface): void;
+	    iRemoveOwner(owner: ISurface): void;
 	    /**
 	     *
 	     */
@@ -1814,7 +1814,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadingMethodBase" {
 	     *
 	     * @internal
 	     */
-	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	    /**
 	     * Clears the render state for this method.
 	     * @param vo The MethodVO object linking this method with the pass currently being compiled.
@@ -1839,9 +1839,9 @@ declare module "awayjs-methodmaterials/lib/methods/ShadingMethodBase" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/ShadowCascadeMethod" {
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import LightingShader = require("awayjs-renderergl/lib/shaders/LightingShader");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
@@ -1906,7 +1906,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowCascadeMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	    /**
 	     * Called when the shadow mappers cascade configuration changes.
 	     */
@@ -1921,10 +1921,10 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowCascadeMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/ShadowDitheredMethod" {
-	import Camera = require("awayjs-display/lib/entities/Camera");
-	import DirectionalLight = require("awayjs-display/lib/entities/DirectionalLight");
+	import Camera = require("awayjs-display/lib/display/Camera");
+	import DirectionalLight = require("awayjs-display/lib/display/DirectionalLight");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import LightingShader = require("awayjs-renderergl/lib/shaders/LightingShader");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
@@ -1980,7 +1980,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowDitheredMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	    /**
 	     * @inheritDoc
 	     */
@@ -2017,7 +2017,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowDitheredMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/ShadowFilteredMethod" {
-	import DirectionalLight = require("awayjs-display/lib/entities/DirectionalLight");
+	import DirectionalLight = require("awayjs-display/lib/display/DirectionalLight");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import LightingShader = require("awayjs-renderergl/lib/shaders/LightingShader");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
@@ -2059,7 +2059,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowFilteredMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/ShadowHardMethod" {
-	import LightBase = require("awayjs-display/lib/base/LightBase");
+	import LightBase = require("awayjs-display/lib/display/LightBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
@@ -2098,7 +2098,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowHardMethod" {
 
 declare module "awayjs-methodmaterials/lib/methods/ShadowMapMethodBase" {
 	import IAsset = require("awayjs-core/lib/library/IAsset");
-	import LightBase = require("awayjs-display/lib/base/LightBase");
+	import LightBase = require("awayjs-display/lib/display/LightBase");
 	import ShadowMapperBase = require("awayjs-display/lib/materials/shadowmappers/ShadowMapperBase");
 	import ShadingMethodBase = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
 	/**
@@ -2138,10 +2138,10 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowMapMethodBase" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/ShadowMethodBase" {
-	import LightBase = require("awayjs-display/lib/base/LightBase");
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import LightBase = require("awayjs-display/lib/display/LightBase");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import LightingShader = require("awayjs-renderergl/lib/shaders/LightingShader");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
@@ -2217,7 +2217,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowMethodBase" {
 	    /**
 	     * @inheritDoc
 	     */
-	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	    /**
 	     * Gets the fragment code for combining this method with a cascaded shadow map method.
 	     * @param methodVO The MethodVO object linking this method with the pass currently being compiled.
@@ -2243,9 +2243,9 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowMethodBase" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/ShadowNearMethod" {
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import LightingShader = require("awayjs-renderergl/lib/shaders/LightingShader");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
@@ -2313,7 +2313,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowNearMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: ShaderBase, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	    /**
 	     * @inheritDoc
 	     */
@@ -2336,7 +2336,7 @@ declare module "awayjs-methodmaterials/lib/methods/ShadowNearMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/ShadowSoftMethod" {
-	import DirectionalLight = require("awayjs-display/lib/entities/DirectionalLight");
+	import DirectionalLight = require("awayjs-display/lib/display/DirectionalLight");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
@@ -2442,10 +2442,10 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularAnisotropicMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/SpecularBasicMethod" {
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import LightingShader = require("awayjs-renderergl/lib/shaders/LightingShader");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
@@ -2524,7 +2524,7 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularBasicMethod" {
 	     * @inheritDoc
 	     */
 	    iActivate(shader: LightingShader, methodVO: MethodVO, stage: Stage): void;
-	    iSetRenderState(shader: LightingShader, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: LightingShader, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	    /**
 	     * Updates the specular color data used by the render state.
 	     */
@@ -2590,11 +2590,11 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularCelMethod" {
 }
 
 declare module "awayjs-methodmaterials/lib/methods/SpecularCompositeMethod" {
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
-	import IRenderOwner = require("awayjs-display/lib/base/IRenderOwner");
+	import ISurface = require("awayjs-display/lib/base/ISurface");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
 	import LightingShader = require("awayjs-renderergl/lib/shaders/LightingShader");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
@@ -2624,8 +2624,8 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularCompositeMethod" {
 	     * @inheritDoc
 	     */
 	    iInitConstants(shader: ShaderBase, methodVO: MethodVO): void;
-	    iAddOwner(owner: IRenderOwner): void;
-	    iRemoveOwner(owner: IRenderOwner): void;
+	    iAddOwner(owner: ISurface): void;
+	    iRemoveOwner(owner: ISurface): void;
 	    /**
 	     * The base specular method on which this method's shading is based.
 	     */
@@ -2660,7 +2660,7 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularCompositeMethod" {
 	    /**
 	     * @inheritDoc
 	     */
-	    iSetRenderState(shader: LightingShader, methodVO: MethodVO, renderable: RenderableBase, stage: Stage, camera: Camera): void;
+	    iSetRenderState(shader: LightingShader, methodVO: MethodVO, renderable: GL_RenderableBase, stage: Stage, camera: Camera): void;
 	    /**
 	     * @inheritDoc
 	     */
@@ -2793,17 +2793,17 @@ declare module "awayjs-methodmaterials/lib/methods/SpecularPhongMethod" {
 	
 }
 
-declare module "awayjs-methodmaterials/lib/render/MethodMaterialRender" {
+declare module "awayjs-methodmaterials/lib/surfaces/GL_MethodMaterialSurface" {
 	import AssetEvent = require("awayjs-core/lib/events/AssetEvent");
 	import IElementsClassGL = require("awayjs-renderergl/lib/elements/IElementsClassGL");
-	import RenderBase = require("awayjs-renderergl/lib/render/RenderBase");
-	import RenderPool = require("awayjs-renderergl/lib/render/RenderPool");
+	import GL_SurfaceBase = require("awayjs-renderergl/lib/surfaces/GL_SurfaceBase");
+	import SurfacePool = require("awayjs-renderergl/lib/surfaces/SurfacePool");
 	import MethodMaterial = require("awayjs-methodmaterials/lib/MethodMaterial");
 	/**
 	 * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
 	 * using material methods to define their appearance.
 	 */
-	class MethodMaterialRender extends RenderBase {
+	class GL_MethodMaterialSurface extends GL_SurfaceBase {
 	    private _material;
 	    private _pass;
 	    private _casterLightPass;
@@ -2821,7 +2821,7 @@ declare module "awayjs-methodmaterials/lib/render/MethodMaterialRender" {
 	     *
 	     * @param material The material to which this pass belongs.
 	     */
-	    constructor(material: MethodMaterial, elementsClass: IElementsClassGL, pool: RenderPool);
+	    constructor(material: MethodMaterial, elementsClass: IElementsClassGL, pool: SurfacePool);
 	    /**
 	     * @inheritDoc
 	     */
@@ -2845,15 +2845,15 @@ declare module "awayjs-methodmaterials/lib/render/MethodMaterialRender" {
 	     */
 	    onClear(event: AssetEvent): void;
 	}
-	export = MethodMaterialRender;
+	export = GL_MethodMaterialSurface;
 	
 }
 
-declare module "awayjs-methodmaterials/lib/render/passes/MethodPass" {
+declare module "awayjs-methodmaterials/lib/surfaces/passes/MethodPass" {
 	import ColorTransform = require("awayjs-core/lib/geom/ColorTransform");
 	import Matrix3D = require("awayjs-core/lib/geom/Matrix3D");
 	import MaterialBase = require("awayjs-display/lib/materials/MaterialBase");
-	import Camera = require("awayjs-display/lib/entities/Camera");
+	import Camera = require("awayjs-display/lib/display/Camera");
 	import LightPickerBase = require("awayjs-display/lib/materials/lightpickers/LightPickerBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import LightingShader = require("awayjs-renderergl/lib/shaders/LightingShader");
@@ -2861,9 +2861,9 @@ declare module "awayjs-methodmaterials/lib/render/passes/MethodPass" {
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
 	import ShaderRegisterElement = require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
-	import PassBase = require("awayjs-renderergl/lib/render/passes/PassBase");
-	import ILightingPass = require("awayjs-renderergl/lib/render/passes/ILightingPass");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
+	import PassBase = require("awayjs-renderergl/lib/surfaces/passes/PassBase");
+	import ILightingPass = require("awayjs-renderergl/lib/surfaces/passes/ILightingPass");
 	import IElementsClassGL = require("awayjs-renderergl/lib/elements/IElementsClassGL");
 	import MethodVO = require("awayjs-methodmaterials/lib/data/MethodVO");
 	import AmbientBasicMethod = require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
@@ -2873,7 +2873,7 @@ declare module "awayjs-methodmaterials/lib/render/passes/MethodPass" {
 	import NormalBasicMethod = require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
 	import ShadowMapMethodBase = require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
 	import SpecularBasicMethod = require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
-	import MethodMaterialRender = require("awayjs-methodmaterials/lib/render/MethodMaterialRender");
+	import GL_MethodMaterialSurface = require("awayjs-methodmaterials/lib/surfaces/GL_MethodMaterialSurface");
 	/**
 	 * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
 	 * using material methods to define their appearance.
@@ -2937,7 +2937,7 @@ declare module "awayjs-methodmaterials/lib/render/passes/MethodPass" {
 	     *
 	     * @param material The material to which this pass belongs.
 	     */
-	    constructor(mode: number, render: MethodMaterialRender, renderOwner: MaterialBase, elementsClass: IElementsClassGL, stage: Stage);
+	    constructor(mode: number, render: GL_MethodMaterialSurface, renderOwner: MaterialBase, elementsClass: IElementsClassGL, stage: Stage);
 	    private _updateShader();
 	    /**
 	     * Initializes the unchanging constant data for this material.
@@ -3031,7 +3031,7 @@ declare module "awayjs-methodmaterials/lib/render/passes/MethodPass" {
 	     * @param stage
 	     * @param camera
 	     */
-	    _iRender(renderable: RenderableBase, camera: Camera, viewProjection: Matrix3D): void;
+	    _iRender(renderable: GL_RenderableBase, camera: Camera, viewProjection: Matrix3D): void;
 	    /**
 	     * @inheritDoc
 	     */
@@ -3098,7 +3098,7 @@ declare module "awayjs-methodmaterials/lib/render/passes/MethodPass" {
 	
 }
 
-declare module "awayjs-methodmaterials/lib/render/passes/MethodPassMode" {
+declare module "awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode" {
 	class PassMode {
 	    /**
 	     *
@@ -3117,19 +3117,19 @@ declare module "awayjs-methodmaterials/lib/render/passes/MethodPassMode" {
 	
 }
 
-declare module "awayjs-methodmaterials/lib/render/passes/SingleObjectDepthPass" {
+declare module "awayjs-methodmaterials/lib/surfaces/passes/SingleObjectDepthPass" {
 	import Matrix3D = require("awayjs-core/lib/geom/Matrix3D");
-	import Camera = require("awayjs-display/lib/entities/Camera");
-	import IRenderOwner = require("awayjs-display/lib/base/IRenderOwner");
+	import Camera = require("awayjs-display/lib/display/Camera");
+	import ISurface = require("awayjs-display/lib/base/ISurface");
 	import TextureBase = require("awayjs-display/lib/textures/TextureBase");
 	import Stage = require("awayjs-stagegl/lib/base/Stage");
 	import ShaderBase = require("awayjs-renderergl/lib/shaders/ShaderBase");
 	import ShaderRegisterCache = require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
 	import ShaderRegisterData = require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-	import PassBase = require("awayjs-renderergl/lib/render/passes/PassBase");
+	import PassBase = require("awayjs-renderergl/lib/surfaces/passes/PassBase");
 	import IElementsClassGL = require("awayjs-renderergl/lib/elements/IElementsClassGL");
-	import RenderableBase = require("awayjs-renderergl/lib/renderables/RenderableBase");
-	import RenderBase = require("awayjs-renderergl/lib/render/RenderBase");
+	import GL_RenderableBase = require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
+	import GL_SurfaceBase = require("awayjs-renderergl/lib/surfaces/GL_SurfaceBase");
 	/**
 	 * The SingleObjectDepthPass provides a material pass that renders a single object to a depth map from the point
 	 * of view from a light.
@@ -3152,7 +3152,7 @@ declare module "awayjs-methodmaterials/lib/render/passes/SingleObjectDepthPass" 
 	    /**
 	     * Creates a new SingleObjectDepthPass object.
 	     */
-	    constructor(render: RenderBase, renderOwner: IRenderOwner, elementsClass: IElementsClassGL, stage: Stage);
+	    constructor(render: GL_SurfaceBase, renderOwner: ISurface, elementsClass: IElementsClassGL, stage: Stage);
 	    /**
 	     * @inheritDoc
 	     */
@@ -3171,21 +3171,21 @@ declare module "awayjs-methodmaterials/lib/render/passes/SingleObjectDepthPass" 
 	    _iGetFragmentCode(shader: ShaderBase, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 	    /**
 	     * Gets the depth maps rendered for this object from all lights.
-	     * @param renderable The renderable for which to retrieve the depth maps.
+	     * @param renderableGL The renderableGL for which to retrieve the depth maps.
 	     * @param stage3DProxy The Stage3DProxy object currently used for rendering.
 	     * @return A list of depth map textures for all supported lights.
 	     */
-	    _iGetDepthMap(renderable: RenderableBase): TextureBase;
+	    _iGetDepthMap(renderableGL: GL_RenderableBase): TextureBase;
 	    /**
 	     * Retrieves the depth map projection maps for all lights.
-	     * @param renderable The renderable for which to retrieve the projection maps.
+	     * @param renderableGL The renderableGL for which to retrieve the projection maps.
 	     * @return A list of projection maps for all supported lights.
 	     */
-	    _iGetProjection(renderable: RenderableBase): Matrix3D;
+	    _iGetProjection(renderableGL: GL_RenderableBase): Matrix3D;
 	    /**
 	     * @inheritDoc
 	     */
-	    _iRender(renderable: RenderableBase, camera: Camera, viewProjection: Matrix3D): void;
+	    _iRender(renderableGL: GL_RenderableBase, camera: Camera, viewProjection: Matrix3D): void;
 	    /**
 	     * @inheritDoc
 	     */
