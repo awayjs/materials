@@ -4,7 +4,7 @@ import RequestAnimationFrame		= require("awayjs-core/lib/utils/RequestAnimationF
 import Debug						= require("awayjs-core/lib/utils/Debug");
 
 import View							= require("awayjs-display/lib/View");
-import Mesh							= require("awayjs-display/lib/display/Mesh");
+import Sprite						= require("awayjs-display/lib/display/Sprite");
 import DirectionalLight				= require("awayjs-display/lib/display/DirectionalLight");
 import DefaultMaterialManager		= require("awayjs-display/lib/managers/DefaultMaterialManager");
 import StaticLightPicker			= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
@@ -26,7 +26,7 @@ class SoftwarePrimitivesTest
 
     private view:View;
     private raf:RequestAnimationFrame;
-    private meshes:Array<Mesh> = new Array<Mesh>();
+    private sprites:Array<Sprite> = new Array<Sprite>();
     private light:DirectionalLight;
     private lightB:DirectionalLight;
     private staticLightPicker:StaticLightPicker;
@@ -70,12 +70,12 @@ class SoftwarePrimitivesTest
 
         window.onresize = (event:UIEvent) => this.onResize(event);
 
-        this.initMeshes();
+        this.initSpritees();
         this.raf.start();
         this.onResize();
     }
 
-    private initMeshes():void
+    private initSpritees():void
     {
 
         var primitives:Array<PrimitivePrefabBase> = new Array<PrimitivePrefabBase>();
@@ -90,21 +90,21 @@ class SoftwarePrimitivesTest
         primitives.push(new PrimitiveConePrefab());
         primitives.push(new PrimitiveCubePrefab());
 
-        var mesh:Mesh;
+        var sprite:Sprite;
 
         for (var c:number = 0; c < primitives.length; c ++) {
             primitives[c].material = material;
 
             var t:number = Math.PI*2*c/primitives.length;
 
-            mesh = <Mesh> primitives[c].getNewObject();
-            mesh.x = Math.cos(t)*this.radius;
-            mesh.y = Math.sin(t)*this.radius;
-            mesh.z = 0;
-            mesh.transform.scaleTo(2, 2, 2);
+            sprite = <Sprite> primitives[c].getNewObject();
+            sprite.x = Math.cos(t)*this.radius;
+            sprite.y = Math.sin(t)*this.radius;
+            sprite.z = 0;
+            sprite.transform.scaleTo(2, 2, 2);
 
-            this.view.scene.addChild(mesh);
-            this.meshes.push(mesh);
+            this.view.scene.addChild(sprite);
+            this.sprites.push(sprite);
         }
 
 
@@ -112,9 +112,9 @@ class SoftwarePrimitivesTest
 
     private render()
     {
-        //if (this.meshes)
-        //    for (var c:number = 0; c < this.meshes.length; c++)
-        //        this.meshes[c].rotationY += 1;
+        //if (this.sprites)
+        //    for (var c:number = 0; c < this.sprites.length; c++)
+        //        this.sprites[c].rotationY += 1;
 
         this.view.render();
     }

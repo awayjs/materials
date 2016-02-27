@@ -9,7 +9,7 @@ import RequestAnimationFrame		= require("awayjs-core/lib/utils/RequestAnimationF
 import Debug						= require("awayjs-core/lib/utils/Debug");
 
 import View							= require("awayjs-display/lib/View");
-import Mesh							= require("awayjs-display/lib/display/Mesh");
+import Sprite						= require("awayjs-display/lib/display/Sprite");
 import PointLight					= require("awayjs-display/lib/display/PointLight");
 import PrimitiveTorusPrefab			= require("awayjs-display/lib/prefabs/PrimitiveTorusPrefab");
 import BasicMaterial				= require("awayjs-display/lib/materials/BasicMaterial");
@@ -61,7 +61,7 @@ class TextureMultiPassMatTest
 
 		for (var c:number = 0; c < l ; c++) {
 			var t:number = Math.PI*2*c/l;
-			var m:Mesh = <Mesh> torus.getNewObject();
+			var m:Sprite = <Sprite> torus.getNewObject();
 
 			m.x = Math.cos(t)*radius;
 			m.y = 0;

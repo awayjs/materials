@@ -5,7 +5,7 @@ import RequestAnimationFrame        = require("awayjs-core/lib/utils/RequestAnim
 import Debug                        = require("awayjs-core/lib/utils/Debug");
 
 import View                            = require("awayjs-display/lib/View");
-import Mesh                            = require("awayjs-display/lib/display/Mesh");
+import Sprite                            = require("awayjs-display/lib/display/Sprite");
 import DirectionalLight                = require("awayjs-display/lib/display/DirectionalLight");
 import DefaultMaterialManager        = require("awayjs-display/lib/managers/DefaultMaterialManager");
 import StaticLightPicker            = require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
@@ -65,12 +65,12 @@ class MipMapSoftwareTest {
 
         window.onresize = (event:UIEvent) => this.onResize(event);
 
-        this.initMeshes();
+        this.initSpritees();
         this.raf.start();
         this.onResize();
     }
 
-    private initMeshes():void {
+    private initSpritees():void {
         //var material:BasicMaterial = new BasicMaterial(DefaultMaterialManager.getDefaultTexture());
         var material:BasicMaterial = new BasicMaterial(ParserUtils.imageToBitmapImage2D(this.image));
         material.style.sampler = new Sampler2D(true, true, true);
@@ -78,9 +78,9 @@ class MipMapSoftwareTest {
         //var plane:PrimitiveCubePrefab = new PrimitiveCubePrefab();
         plane.material = material;
 
-        var mesh:Mesh = <Mesh>plane.getNewObject();
-        mesh.y = -100;
-        this.view.scene.addChild(mesh);
+        var sprite:Sprite = <Sprite>plane.getNewObject();
+        sprite.y = -100;
+        this.view.scene.addChild(sprite);
     }
 
     private c:number = 100;

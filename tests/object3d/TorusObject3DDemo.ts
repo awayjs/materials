@@ -10,7 +10,7 @@ import RequestAnimationFrame		= require("awayjs-core/lib/utils/RequestAnimationF
 import Debug						= require("awayjs-core/lib/utils/Debug");
 
 import View							= require("awayjs-display/lib/View");
-import Mesh							= require("awayjs-display/lib/display/Mesh");
+import Sprite						= require("awayjs-display/lib/display/Sprite");
 import PointLight					= require("awayjs-display/lib/display/PointLight");
 import StaticLightPicker			= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
 import PrimitiveTorusPrefab			= require("awayjs-display/lib/prefabs/PrimitiveTorusPrefab");
@@ -27,7 +27,7 @@ class TorusObject3DDemo
 
 	private light:PointLight;
 	private raf:RequestAnimationFrame;
-	private meshes:Array<Mesh>;
+	private sprites:Array<Sprite>;
 
 	private t:number = 0;
 	private tPos:number = 0;
@@ -44,7 +44,7 @@ class TorusObject3DDemo
 		Debug.THROW_ERRORS = false;
 		Debug.LOG_PI_ERRORS = false;
 
-		this.meshes = new Array<Mesh>();
+		this.sprites = new Array<Sprite>();
 		this.light = new PointLight();
 		this.view = new View(new DefaultRenderer());
 		this.pointLight = new PointLight();
@@ -105,13 +105,13 @@ class TorusObject3DDemo
 
 			var t : number=Math.PI * 2 * c / l;
 
-			var mesh:Mesh = <Mesh> torus.getNewObject();
-			mesh.x = Math.cos(t)*this.radius;
-			mesh.y = 0;
-			mesh.z = Math.sin(t)*this.radius;
+			var sprite:Sprite = <Sprite> torus.getNewObject();
+			sprite.x = Math.cos(t)*this.radius;
+			sprite.y = 0;
+			sprite.z = Math.sin(t)*this.radius;
 
-			this.view.scene.addChild(mesh);
-			this.meshes.push(mesh);
+			this.view.scene.addChild(sprite);
+			this.sprites.push(sprite);
 
 		}
 	}
@@ -120,22 +120,22 @@ class TorusObject3DDemo
 	{
 		this.tPos += .02;
 
-		for (var c:number = 0 ; c < this.meshes.length ; c ++) {
-			var objPos:number=Math.PI*2*c/this.meshes.length;
+		for (var c:number = 0 ; c < this.sprites.length ; c ++) {
+			var objPos:number=Math.PI*2*c/this.sprites.length;
 
 			this.t += .005;
 			var s:number = 1.2 + Math.sin(this.t + objPos);
 
-			this.meshes[c].rotationY += 2*(c/this.meshes.length);
-			this.meshes[c].rotationX += 2*(c/this.meshes.length);
-			this.meshes[c].rotationZ += 2*(c/this.meshes.length);
-			this.meshes[c].scaleX = this.meshes[c].scaleY = this.meshes[c].scaleZ = s;
-			this.meshes[c].x = Math.cos(objPos + this.tPos)*this.radius;
-			this.meshes[c].y = Math.sin(this.t)*500;
-			this.meshes[c].z = Math.sin(objPos + this.tPos)*this.radius;
+			this.sprites[c].rotationY += 2*(c/this.sprites.length);
+			this.sprites[c].rotationX += 2*(c/this.sprites.length);
+			this.sprites[c].rotationZ += 2*(c/this.sprites.length);
+			this.sprites[c].scaleX = this.sprites[c].scaleY = this.sprites[c].scaleZ = s;
+			this.sprites[c].x = Math.cos(objPos + this.tPos)*this.radius;
+			this.sprites[c].y = Math.sin(this.t)*500;
+			this.sprites[c].z = Math.sin(objPos + this.tPos)*this.radius;
 
 			if (this.follow && c == 0)
-				this.view.camera.lookAt(this.meshes[c].transform.position);
+				this.view.camera.lookAt(this.sprites[c].transform.position);
 		}
 
 		//this.view.camera.y = Math.sin( this.tPos ) * 1500;

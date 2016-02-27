@@ -11,7 +11,7 @@ import RequestAnimationFrame		= require("awayjs-core/lib/utils/RequestAnimationF
 import Debug						= require("awayjs-core/lib/utils/Debug");
 
 import View							= require("awayjs-display/lib/View");
-import Mesh							= require("awayjs-display/lib/display/Mesh");
+import Sprite						= require("awayjs-display/lib/display/Sprite");
 import DirectionalLight				= require("awayjs-display/lib/display/DirectionalLight");
 import ElementsType					= require("awayjs-display/lib/graphics/ElementsType");
 import StaticLightPicker			= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
@@ -24,7 +24,7 @@ import MethodMaterial				= require("awayjs-methodmaterials/lib/MethodMaterial");
 class TorusLight
 {
 	private _view:View;
-	private _mesh:Mesh;
+	private _sprite:Sprite;
 	private _raf:RequestAnimationFrame;
 	private _image:HTMLImageElement;
 
@@ -75,9 +75,9 @@ class TorusLight
 
 		var torus:PrimitiveTorusPrefab = new PrimitiveTorusPrefab(matTx, ElementsType.TRIANGLE, 220, 80, 32, 16, false);
 
-		this._mesh = <Mesh> torus.getNewObject();
+		this._sprite = <Sprite> torus.getNewObject();
 
-		this._view.scene.addChild(this._mesh);
+		this._view.scene.addChild(this._sprite);
 
 		this._raf = new RequestAnimationFrame(this.render , this);
 		this._raf.start();
@@ -90,7 +90,7 @@ class TorusLight
 
 	public render(dt:number = null):void
 	{
-		this._mesh.rotationY += 1;
+		this._sprite.rotationY += 1;
 		this._view.render();
 	}
 
