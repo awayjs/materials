@@ -4358,7 +4358,7 @@ var ShadowMapMethodBase = (function (_super) {
         this._pEpsilon = .02;
         this._pAlpha = 1;
         this._pCastingLight = castingLight;
-        castingLight.castsShadows = true;
+        castingLight.shadowsEnabled = true;
         this._pShadowMapper = castingLight.shadowMapper;
         this.iAddTexture(castingLight.shadowMapper.depthMap);
     }
