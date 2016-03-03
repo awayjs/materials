@@ -26,7 +26,7 @@ class ShadowMapMethodBase extends ShadingMethodBase implements IAsset
 	{
 		super();
 		this._pCastingLight = castingLight;
-		castingLight.castsShadows = true;
+		castingLight.shadowsEnabled = true;
 		this._pShadowMapper = castingLight.shadowMapper;
 
 		this.iAddTexture(castingLight.shadowMapper.depthMap);
