@@ -1,23 +1,18 @@
-﻿import Image2D						= require("awayjs-core/lib/image/Image2D");
+﻿import Image2D						from "awayjs-core/lib/image/Image2D";
 
-import ISurface						= require("awayjs-display/lib/base/ISurface");
-import Camera						= require("awayjs-display/lib/display/Camera");
-import StaticLightPicker			= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
-import MaterialBase					= require("awayjs-display/lib/materials/MaterialBase");
-import Single2DTexture				= require("awayjs-display/lib/textures/Single2DTexture");
-import TextureBase					= require("awayjs-display/lib/textures/TextureBase");
+import MaterialBase					from "awayjs-display/lib/materials/MaterialBase";
+import Single2DTexture				from "awayjs-display/lib/textures/Single2DTexture";
+import TextureBase					from "awayjs-display/lib/textures/TextureBase";
 
-import ContextGLCompareMode			= require("awayjs-stagegl/lib/base/ContextGLCompareMode");
+import ContextGLCompareMode			from "awayjs-stagegl/lib/base/ContextGLCompareMode";
 
-import SurfacePool					= require("awayjs-renderergl/lib/surfaces/SurfacePool");
-
-import MethodMaterialMode			= require("awayjs-methodmaterials/lib/MethodMaterialMode");
-import AmbientBasicMethod			= require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
-import DiffuseBasicMethod			= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
-import EffectMethodBase				= require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
-import NormalBasicMethod			= require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
-import ShadowMapMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
-import SpecularBasicMethod			= require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
+import MethodMaterialMode			from "awayjs-methodmaterials/lib/MethodMaterialMode";
+import AmbientBasicMethod			from "awayjs-methodmaterials/lib/methods/AmbientBasicMethod";
+import DiffuseBasicMethod			from "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod";
+import EffectMethodBase				from "awayjs-methodmaterials/lib/methods/EffectMethodBase";
+import NormalBasicMethod			from "awayjs-methodmaterials/lib/methods/NormalBasicMethod";
+import ShadowMapMethodBase			from "awayjs-methodmaterials/lib/methods/ShadowMapMethodBase";
+import SpecularBasicMethod			from "awayjs-methodmaterials/lib/methods/SpecularBasicMethod";
 
 /**
  * MethodMaterial forms an abstract base class for the default shaded materials provided by Stage,
@@ -301,4 +296,4 @@ class MethodMaterial extends MaterialBase
 	}
 }
 
-export = MethodMaterial;
+export default MethodMaterial;

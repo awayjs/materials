@@ -1,13 +1,13 @@
-import IAsset						= require("awayjs-core/lib/library/IAsset");
-import AbstractMethodError			= require("awayjs-core/lib/errors/AbstractMethodError");
+import IAsset						from "awayjs-core/lib/library/IAsset";
+import AbstractMethodError			from "awayjs-core/lib/errors/AbstractMethodError";
 
-import ShaderBase					= require("awayjs-renderergl/lib/shaders/ShaderBase");
-import ShaderRegisterCache			= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData			= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement		= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import ShaderBase					from "awayjs-renderergl/lib/shaders/ShaderBase";
+import ShaderRegisterCache			from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import ShaderRegisterData			from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import ShaderRegisterElement		from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
-import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
+import MethodVO						from "awayjs-methodmaterials/lib/data/MethodVO";
+import ShadingMethodBase			from "awayjs-methodmaterials/lib/methods/ShadingMethodBase";
 
 /**
  * EffectMethodBase forms an abstract base class for shader methods that are not dependent on light sources,
@@ -40,8 +40,7 @@ class EffectMethodBase extends ShadingMethodBase implements IAsset
 	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		throw new AbstractMethodError();
-		return "";
 	}
 }
 
-export = EffectMethodBase;
+export default EffectMethodBase;

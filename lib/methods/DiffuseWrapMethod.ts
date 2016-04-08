@@ -1,12 +1,12 @@
-import Stage							= require("awayjs-stagegl/lib/base/Stage");
+import Stage							from "awayjs-stagegl/lib/base/Stage";
 
-import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
+import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
-import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
+import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
+import DiffuseBasicMethod				from "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod";
 
 /**
  * DiffuseWrapMethod is an alternative to DiffuseBasicMethod in which the light is allowed to be "wrapped around" the normally dark area, to some extent.
@@ -116,4 +116,4 @@ class DiffuseWrapMethod extends DiffuseBasicMethod
 	}
 }
 
-export = DiffuseWrapMethod;
+export default DiffuseWrapMethod;

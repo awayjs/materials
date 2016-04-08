@@ -1,17 +1,17 @@
-import Camera							= require("awayjs-display/lib/display/Camera");
-import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
+import Camera							from "awayjs-display/lib/display/Camera";
+import TextureBase						from "awayjs-display/lib/textures/TextureBase";
 
-import Stage							= require("awayjs-stagegl/lib/base/Stage");
+import Stage							from "awayjs-stagegl/lib/base/Stage";
 
-import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
-import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
+import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
-import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
-import DiffuseCompositeMethod			= require("awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod");
+import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
+import DiffuseBasicMethod				from "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod";
+import DiffuseCompositeMethod			from "awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod";
 
 /**
  * DiffuseLightMapMethod provides a diffuse shading method that uses a light map to modulate the calculated diffuse
@@ -180,4 +180,4 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	}
 }
 
-export = DiffuseLightMapMethod;
+export default DiffuseLightMapMethod;

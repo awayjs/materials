@@ -1,12 +1,12 @@
-import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
-import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
-import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
+import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
-import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
+import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
+import DiffuseBasicMethod				from "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod";
 
 /**
  * DiffuseDepthMethod provides a debug method to visualise depth maps
@@ -80,4 +80,4 @@ class DiffuseDepthMethod extends DiffuseBasicMethod
 	}
 }
 
-export = DiffuseDepthMethod;
+export default DiffuseDepthMethod;

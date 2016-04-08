@@ -16,4 +16,4 @@ class PassMode
 	public static SUPER_SHADER:number = 0x03;
 }
 
-export = PassMode;
+export default PassMode;

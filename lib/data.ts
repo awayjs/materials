@@ -1,0 +1,1 @@
+export {default as MethodVO}						from "awayjs-methodmaterials/lib/data/MethodVO";

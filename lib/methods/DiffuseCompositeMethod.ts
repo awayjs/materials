@@ -1,19 +1,19 @@
-import Camera							= require("awayjs-display/lib/display/Camera");
-import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
-import ISurface							= require("awayjs-display/lib/base/ISurface");
+import Camera							from "awayjs-display/lib/display/Camera";
+import TextureBase						from "awayjs-display/lib/textures/TextureBase";
+import ISurface							from "awayjs-display/lib/base/ISurface";
 
-import Stage							= require("awayjs-stagegl/lib/base/Stage");
+import Stage							from "awayjs-stagegl/lib/base/Stage";
 
-import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
-import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
-import ShadingMethodEvent				= require("awayjs-renderergl/lib/events/ShadingMethodEvent");
-import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
+import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
+import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import ShadingMethodEvent				from "awayjs-renderergl/lib/events/ShadingMethodEvent";
+import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
 
-import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
-import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
+import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
+import DiffuseBasicMethod				from "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod";
 
 /**
  * DiffuseCompositeMethod provides a base class for diffuse methods that wrap a diffuse method to alter the
@@ -242,4 +242,4 @@ class DiffuseCompositeMethod extends DiffuseBasicMethod
 	}
 }
 
-export = DiffuseCompositeMethod;
+export default DiffuseCompositeMethod;

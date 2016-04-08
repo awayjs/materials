@@ -1,38 +1,19 @@
-import BlendMode						= require("awayjs-core/lib/image/BlendMode");
-import ColorTransform					= require("awayjs-core/lib/geom/ColorTransform");
-import Matrix							= require("awayjs-core/lib/geom/Matrix");
-import Matrix3D							= require("awayjs-core/lib/geom/Matrix3D");
-import Matrix3DUtils					= require("awayjs-core/lib/geom/Matrix3DUtils");
-import Vector3D							= require("awayjs-core/lib/geom/Vector3D");
-import AbstractMethodError				= require("awayjs-core/lib/errors/AbstractMethodError");
-import AssetEvent						= require("awayjs-core/lib/events/AssetEvent");
+import BlendMode						from "awayjs-core/lib/image/BlendMode";
+import AssetEvent						from "awayjs-core/lib/events/AssetEvent";
 
-import Camera							= require("awayjs-display/lib/display/Camera");
-import ISurface							= require("awayjs-display/lib/base/ISurface");
-import StaticLightPicker				= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
+import StaticLightPicker				from "awayjs-display/lib/materials/lightpickers/StaticLightPicker";
 
-import ContextGLCompareMode				= require("awayjs-stagegl/lib/base/ContextGLCompareMode");
+import ContextGLCompareMode				from "awayjs-stagegl/lib/base/ContextGLCompareMode";
 
-import RendererBase						= require("awayjs-renderergl/lib/RendererBase");
-import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
-import ShadingMethodEvent				= require("awayjs-renderergl/lib/events/ShadingMethodEvent");
-import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
-import IElementsClassGL					= require("awayjs-renderergl/lib/elements/IElementsClassGL");
-import GL_SurfaceBase					= require("awayjs-renderergl/lib/surfaces/GL_SurfaceBase");
-import SurfacePool						= require("awayjs-renderergl/lib/surfaces/SurfacePool");
+import IElementsClassGL					from "awayjs-renderergl/lib/elements/IElementsClassGL";
+import GL_SurfaceBase					from "awayjs-renderergl/lib/surfaces/GL_SurfaceBase";
+import SurfacePool						from "awayjs-renderergl/lib/surfaces/SurfacePool";
 
-import MethodMaterial					= require("awayjs-methodmaterials/lib/MethodMaterial");
-import MethodMaterialMode				= require("awayjs-methodmaterials/lib/MethodMaterialMode");
-import MethodPassMode					= require("awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode");
-import MethodPass						= require("awayjs-methodmaterials/lib/surfaces/passes/MethodPass");
-import AmbientBasicMethod				= require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
-import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
-import EffectColorTransformMethod		= require("awayjs-methodmaterials/lib/methods/EffectColorTransformMethod");
-import EffectMethodBase					= require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
-import LightingMethodBase				= require("awayjs-methodmaterials/lib/methods/LightingMethodBase");
-import NormalBasicMethod				= require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
-import ShadowMapMethodBase				= require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
-import SpecularBasicMethod				= require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
+import MethodMaterial					from "awayjs-methodmaterials/lib/MethodMaterial";
+import MethodMaterialMode				from "awayjs-methodmaterials/lib/MethodMaterialMode";
+import MethodPassMode					from "awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode";
+import MethodPass						from "awayjs-methodmaterials/lib/surfaces/passes/MethodPass";
+import EffectMethodBase					from "awayjs-methodmaterials/lib/methods/EffectMethodBase";
 
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
@@ -324,4 +305,4 @@ class GL_MethodMaterialSurface extends GL_SurfaceBase
 	}
 }
 
-export = GL_MethodMaterialSurface;
+export default GL_MethodMaterialSurface;

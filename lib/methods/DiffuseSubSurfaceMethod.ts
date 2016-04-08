@@ -1,18 +1,18 @@
-import Camera							= require("awayjs-display/lib/display/Camera");
+import Camera							from "awayjs-display/lib/display/Camera";
 
-import Stage							= require("awayjs-stagegl/lib/base/Stage");
+import Stage							from "awayjs-stagegl/lib/base/Stage";
 
-import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
-import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
-import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
+import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
-import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
-import DiffuseCompositeMethod			= require("awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod");
-import SingleObjectDepthPass			= require("awayjs-methodmaterials/lib/surfaces/passes/SingleObjectDepthPass");
+import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
+import DiffuseBasicMethod				from "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod";
+import DiffuseCompositeMethod			from "awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod";
+import SingleObjectDepthPass			from "awayjs-methodmaterials/lib/surfaces/passes/SingleObjectDepthPass";
 
 /**
  * DiffuseSubSurfaceMethod provides a depth map-based diffuse shading method that mimics the scattering of
@@ -279,4 +279,4 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	}
 }
 
-export = DiffuseSubSurfaceMethod;
+export default DiffuseSubSurfaceMethod;

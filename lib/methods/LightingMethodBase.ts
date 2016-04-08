@@ -1,11 +1,11 @@
-import ShaderBase					= require("awayjs-renderergl/lib/shaders/ShaderBase");
-import LightingShader				= require("awayjs-renderergl/lib/shaders/LightingShader");
-import ShaderRegisterCache			= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData			= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement		= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import ShaderBase					from "awayjs-renderergl/lib/shaders/ShaderBase";
+import LightingShader				from "awayjs-renderergl/lib/shaders/LightingShader";
+import ShaderRegisterCache			from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import ShaderRegisterData			from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import ShaderRegisterElement		from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO						= require("awayjs-methodmaterials/lib/data/MethodVO");
-import ShadingMethodBase			= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
+import MethodVO						from "awayjs-methodmaterials/lib/data/MethodVO";
+import ShadingMethodBase			from "awayjs-methodmaterials/lib/methods/ShadingMethodBase";
 
 /**
  * LightingMethodBase provides an abstract base method for shading methods that uses lights.
@@ -77,4 +77,4 @@ class LightingMethodBase extends ShadingMethodBase
 	}
 }
 
-export = LightingMethodBase;
+export default LightingMethodBase;

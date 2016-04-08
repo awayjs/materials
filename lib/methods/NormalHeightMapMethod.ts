@@ -1,14 +1,14 @@
-import Single2DTexture					= require("awayjs-display/lib/textures/Single2DTexture");
-import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
+import Single2DTexture					from "awayjs-display/lib/textures/Single2DTexture";
+import TextureBase						from "awayjs-display/lib/textures/TextureBase";
 
-import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
-import NormalBasicMethod				= require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
-import ShadingMethodBase				= require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
+import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
+import NormalBasicMethod				from "awayjs-methodmaterials/lib/methods/NormalBasicMethod";
+import ShadingMethodBase				from "awayjs-methodmaterials/lib/methods/ShadingMethodBase";
 
 /**
  * NormalHeightMapMethod provides a normal map method that uses a height map to calculate the normals.
@@ -105,4 +105,4 @@ class NormalHeightMapMethod extends NormalBasicMethod
 	}
 }
 
-export = NormalHeightMapMethod;
+export default NormalHeightMapMethod;

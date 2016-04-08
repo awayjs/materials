@@ -1,16 +1,16 @@
-import PoissonLookup					= require("awayjs-core/lib/geom/PoissonLookup");
+import PoissonLookup					from "awayjs-core/lib/geom/PoissonLookup";
 
-import DirectionalLight					= require("awayjs-display/lib/display/DirectionalLight");
+import DirectionalLight					from "awayjs-display/lib/display/DirectionalLight";
 
-import Stage							= require("awayjs-stagegl/lib/base/Stage");
+import Stage							from "awayjs-stagegl/lib/base/Stage";
 
-import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
-import ShadowMethodBase					= require("awayjs-methodmaterials/lib/methods/ShadowMethodBase");
+import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
+import ShadowMethodBase					from "awayjs-methodmaterials/lib/methods/ShadowMethodBase";
 
 /**
  * ShadowSoftMethod provides a soft shadowing technique by randomly distributing sample points.
@@ -213,4 +213,4 @@ class ShadowSoftMethod extends ShadowMethodBase
 	}
 }
 
-export = ShadowSoftMethod;
+export default ShadowSoftMethod;

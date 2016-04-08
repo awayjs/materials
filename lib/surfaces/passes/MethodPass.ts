@@ -1,42 +1,42 @@
-import ColorTransform					= require("awayjs-core/lib/geom/ColorTransform");
-import Matrix							= require("awayjs-core/lib/geom/Matrix");
-import Matrix3D							= require("awayjs-core/lib/geom/Matrix3D");
-import Matrix3DUtils					= require("awayjs-core/lib/geom/Matrix3DUtils");
-import Vector3D							= require("awayjs-core/lib/geom/Vector3D");
-import AbstractMethodError				= require("awayjs-core/lib/errors/AbstractMethodError");
-import AssetEvent						= require("awayjs-core/lib/events/AssetEvent");
-import MaterialBase						= require("awayjs-display/lib/materials/MaterialBase");
+import ColorTransform					from "awayjs-core/lib/geom/ColorTransform";
+import Matrix							from "awayjs-core/lib/geom/Matrix";
+import Matrix3D							from "awayjs-core/lib/geom/Matrix3D";
+import Matrix3DUtils					from "awayjs-core/lib/geom/Matrix3DUtils";
+import Vector3D							from "awayjs-core/lib/geom/Vector3D";
+import AbstractMethodError				from "awayjs-core/lib/errors/AbstractMethodError";
+import AssetEvent						from "awayjs-core/lib/events/AssetEvent";
+import MaterialBase						from "awayjs-display/lib/materials/MaterialBase";
 
-import Camera							= require("awayjs-display/lib/display/Camera");
-import ISurface							= require("awayjs-display/lib/base/ISurface");
-import LightPickerBase					= require("awayjs-display/lib/materials/lightpickers/LightPickerBase");
-import LightSources						= require("awayjs-display/lib/materials/LightSources");
+import Camera							from "awayjs-display/lib/display/Camera";
+import ISurface							from "awayjs-display/lib/base/ISurface";
+import LightPickerBase					from "awayjs-display/lib/materials/lightpickers/LightPickerBase";
+import LightSources						from "awayjs-display/lib/materials/LightSources";
 
-import Stage							= require("awayjs-stagegl/lib/base/Stage");
+import Stage							from "awayjs-stagegl/lib/base/Stage";
 
-import RendererBase						= require("awayjs-renderergl/lib/RendererBase");
-import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
-import ShadingMethodEvent				= require("awayjs-renderergl/lib/events/ShadingMethodEvent");
-import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
-import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
-import PassBase							= require("awayjs-renderergl/lib/surfaces/passes/PassBase");
-import ILightingPass					= require("awayjs-renderergl/lib/surfaces/passes/ILightingPass");
-import IElementsClassGL					= require("awayjs-renderergl/lib/elements/IElementsClassGL");
+import RendererBase						from "awayjs-renderergl/lib/RendererBase";
+import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
+import ShadingMethodEvent				from "awayjs-renderergl/lib/events/ShadingMethodEvent";
+import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import PassBase							from "awayjs-renderergl/lib/surfaces/passes/PassBase";
+import ILightingPass					from "awayjs-renderergl/lib/surfaces/passes/ILightingPass";
+import IElementsClassGL					from "awayjs-renderergl/lib/elements/IElementsClassGL";
 
-import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
-import AmbientBasicMethod				= require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
-import DiffuseBasicMethod				= require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
-import EffectColorTransformMethod		= require("awayjs-methodmaterials/lib/methods/EffectColorTransformMethod");
-import EffectMethodBase					= require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
-import LightingMethodBase				= require("awayjs-methodmaterials/lib/methods/LightingMethodBase");
-import NormalBasicMethod				= require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
-import ShadowMapMethodBase				= require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
-import SpecularBasicMethod				= require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
-import MethodPassMode					= require("awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode");
-import GL_MethodMaterialSurface				= require("awayjs-methodmaterials/lib/surfaces/GL_MethodMaterialSurface");
+import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
+import AmbientBasicMethod				from "awayjs-methodmaterials/lib/methods/AmbientBasicMethod";
+import DiffuseBasicMethod				from "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod";
+import EffectColorTransformMethod		from "awayjs-methodmaterials/lib/methods/EffectColorTransformMethod";
+import EffectMethodBase					from "awayjs-methodmaterials/lib/methods/EffectMethodBase";
+import LightingMethodBase				from "awayjs-methodmaterials/lib/methods/LightingMethodBase";
+import NormalBasicMethod				from "awayjs-methodmaterials/lib/methods/NormalBasicMethod";
+import ShadowMapMethodBase				from "awayjs-methodmaterials/lib/methods/ShadowMapMethodBase";
+import SpecularBasicMethod				from "awayjs-methodmaterials/lib/methods/SpecularBasicMethod";
+import MethodPassMode					from "awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode";
+import GL_MethodMaterialSurface				from "awayjs-methodmaterials/lib/surfaces/GL_MethodMaterialSurface";
 
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
@@ -948,4 +948,4 @@ class MethodPass extends PassBase implements ILightingPass
 	}
 }
 
-export = MethodPass;
+export default MethodPass;

@@ -1,23 +1,23 @@
-import AssetEvent						= require("awayjs-core/lib/events/AssetEvent");
+import AssetEvent						from "awayjs-core/lib/events/AssetEvent";
 
-import Camera							= require("awayjs-display/lib/display/Camera");
-import DirectionalLight					= require("awayjs-display/lib/display/DirectionalLight");
-import CascadeShadowMapper				= require("awayjs-display/lib/materials/shadowmappers/CascadeShadowMapper");
-import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
+import Camera							from "awayjs-display/lib/display/Camera";
+import DirectionalLight					from "awayjs-display/lib/display/DirectionalLight";
+import CascadeShadowMapper				from "awayjs-display/lib/materials/shadowmappers/CascadeShadowMapper";
+import TextureBase						from "awayjs-display/lib/textures/TextureBase";
 
-import Stage							= require("awayjs-stagegl/lib/base/Stage");
+import Stage							from "awayjs-stagegl/lib/base/Stage";
 
-import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
-import ShadingMethodEvent				= require("awayjs-renderergl/lib/events/ShadingMethodEvent");
-import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
-import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import ShadingMethodEvent				from "awayjs-renderergl/lib/events/ShadingMethodEvent";
+import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
+import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
-import ShadowMapMethodBase				= require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
-import ShadowMethodBase					= require("awayjs-methodmaterials/lib/methods/ShadowMethodBase");
+import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
+import ShadowMapMethodBase				from "awayjs-methodmaterials/lib/methods/ShadowMapMethodBase";
+import ShadowMethodBase					from "awayjs-methodmaterials/lib/methods/ShadowMethodBase";
 
 /**
  * ShadowCascadeMethod is a shadow map method to apply cascade shadow mapping on materials.
@@ -270,4 +270,4 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	}
 }
 
-export = ShadowCascadeMethod;
+export default ShadowCascadeMethod;

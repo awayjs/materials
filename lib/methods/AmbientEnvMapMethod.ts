@@ -1,11 +1,11 @@
-import AssetEvent						= require("awayjs-core/lib/events/AssetEvent");
-import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import AssetEvent						from "awayjs-core/lib/events/AssetEvent";
+import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
-import AmbientBasicMethod				= require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
+import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
+import AmbientBasicMethod				from "awayjs-methodmaterials/lib/methods/AmbientBasicMethod";
 
 /**
  * AmbientEnvMapMethod provides a diffuse shading method that uses a diffuse irradiance environment map to
@@ -48,4 +48,4 @@ class AmbientEnvMapMethod extends AmbientBasicMethod
 	}
 }
 
-export = AmbientEnvMapMethod;
+export default AmbientEnvMapMethod;

@@ -1,16 +1,16 @@
-import Camera							= require("awayjs-display/lib/display/Camera");
+import Camera							from "awayjs-display/lib/display/Camera";
 
-import Stage							= require("awayjs-stagegl/lib/base/Stage");
+import Stage							from "awayjs-stagegl/lib/base/Stage";
 
-import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
-import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
+import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
-import SpecularBasicMethod				= require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
-import SpecularCompositeMethod			= require("awayjs-methodmaterials/lib/methods/SpecularCompositeMethod");
+import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
+import SpecularBasicMethod				from "awayjs-methodmaterials/lib/methods/SpecularBasicMethod";
+import SpecularCompositeMethod			from "awayjs-methodmaterials/lib/methods/SpecularCompositeMethod";
 
 /**
  * SpecularFresnelMethod provides a specular shading method that causes stronger highlights on grazing view angles.
@@ -153,4 +153,4 @@ class SpecularFresnelMethod extends SpecularCompositeMethod
 
 }
 
-export = SpecularFresnelMethod;
+export default SpecularFresnelMethod;

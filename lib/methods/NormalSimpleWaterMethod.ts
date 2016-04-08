@@ -1,16 +1,16 @@
-import Camera							= require("awayjs-display/lib/display/Camera");
-import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
+import Camera							from "awayjs-display/lib/display/Camera";
+import TextureBase						from "awayjs-display/lib/textures/TextureBase";
 
-import Stage							= require("awayjs-stagegl/lib/base/Stage");
+import Stage							from "awayjs-stagegl/lib/base/Stage";
 
-import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
-import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
-import NormalBasicMethod				= require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
+import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
+import NormalBasicMethod				from "awayjs-methodmaterials/lib/methods/NormalBasicMethod";
 
 /**
  * NormalSimpleWaterMethod provides a basic normal map method to create water ripples by translating two wave normal maps.
@@ -212,4 +212,4 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 	}
 }
 
-export = NormalSimpleWaterMethod;
+export default NormalSimpleWaterMethod;

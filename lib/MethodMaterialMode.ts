@@ -11,4 +11,4 @@ class MethodMaterialMode
 	public static MULTI_PASS:string = "multiPass";
 }
 
-export = MethodMaterialMode;
+export default MethodMaterialMode;

@@ -1,10 +1,10 @@
-import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
+import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
-import SpecularBasicMethod				= require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
+import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
+import SpecularBasicMethod				from "awayjs-methodmaterials/lib/methods/SpecularBasicMethod";
 
 /**
  * SpecularAnisotropicMethod provides a specular method resulting in anisotropic highlights. These are typical for
@@ -90,4 +90,4 @@ class SpecularAnisotropicMethod extends SpecularBasicMethod
 	}
 }
 
-export = SpecularAnisotropicMethod;
+export default SpecularAnisotropicMethod;

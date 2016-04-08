@@ -1,15 +1,15 @@
-import DirectionalLight					= require("awayjs-display/lib/display/DirectionalLight");
+import DirectionalLight					from "awayjs-display/lib/display/DirectionalLight";
 
-import Stage							= require("awayjs-stagegl/lib/base/Stage");
+import Stage							from "awayjs-stagegl/lib/base/Stage";
 
-import LightingShader					= require("awayjs-renderergl/lib/shaders/LightingShader");
-import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import ShaderRegisterElement			= require("awayjs-renderergl/lib/shaders/ShaderRegisterElement");
+import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
+import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							= require("awayjs-methodmaterials/lib/data/MethodVO");
-import ShadowMethodBase					= require("awayjs-methodmaterials/lib/methods/ShadowMethodBase");
+import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
+import ShadowMethodBase					from "awayjs-methodmaterials/lib/methods/ShadowMethodBase";
 
 /**
  * ShadowFilteredMethod provides a softened shadowing technique by bilinearly interpolating shadow comparison
@@ -169,4 +169,4 @@ class ShadowFilteredMethod extends ShadowMethodBase
 	}
 }
 
-export = ShadowFilteredMethod;
+export default ShadowFilteredMethod;

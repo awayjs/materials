@@ -1,28 +1,28 @@
-import Image2D							= require("awayjs-core/lib/image/Image2D");
-import Matrix3D							= require("awayjs-core/lib/geom/Matrix3D");
+import Image2D							from "awayjs-core/lib/image/Image2D";
+import Matrix3D							from "awayjs-core/lib/geom/Matrix3D";
 
-import LightBase						= require("awayjs-display/lib/display/LightBase");
-import Camera							= require("awayjs-display/lib/display/Camera");
-import MaterialBase						= require("awayjs-display/lib/materials/MaterialBase");
-import ISurface							= require("awayjs-display/lib/base/ISurface");
-import Single2DTexture					= require("awayjs-display/lib/textures/Single2DTexture");
-import TextureBase						= require("awayjs-display/lib/textures/TextureBase");
-import TriangleElements					= require("awayjs-display/lib/graphics/TriangleElements");
+import LightBase						from "awayjs-display/lib/display/LightBase";
+import Camera							from "awayjs-display/lib/display/Camera";
+import MaterialBase						from "awayjs-display/lib/materials/MaterialBase";
+import ISurface							from "awayjs-display/lib/base/ISurface";
+import Single2DTexture					from "awayjs-display/lib/textures/Single2DTexture";
+import TextureBase						from "awayjs-display/lib/textures/TextureBase";
+import TriangleElements					from "awayjs-display/lib/graphics/TriangleElements";
 
-import ContextGLDrawMode				= require("awayjs-stagegl/lib/base/ContextGLDrawMode");
-import ContextGLProgramType				= require("awayjs-stagegl/lib/base/ContextGLProgramType");
-import IContextGL						= require("awayjs-stagegl/lib/base/IContextGL");
-import Stage							= require("awayjs-stagegl/lib/base/Stage");
+import ContextGLDrawMode				from "awayjs-stagegl/lib/base/ContextGLDrawMode";
+import ContextGLProgramType				from "awayjs-stagegl/lib/base/ContextGLProgramType";
+import IContextGL						from "awayjs-stagegl/lib/base/IContextGL";
+import Stage							from "awayjs-stagegl/lib/base/Stage";
 
-import RendererBase						= require("awayjs-renderergl/lib/RendererBase");
-import ShaderBase						= require("awayjs-renderergl/lib/shaders/ShaderBase");
-import ShaderRegisterCache				= require("awayjs-renderergl/lib/shaders/ShaderRegisterCache");
-import ShaderRegisterData				= require("awayjs-renderergl/lib/shaders/ShaderRegisterData");
-import PassBase							= require("awayjs-renderergl/lib/surfaces/passes/PassBase");
-import IElementsClassGL					= require("awayjs-renderergl/lib/elements/IElementsClassGL");
-import GL_RenderableBase				= require("awayjs-renderergl/lib/renderables/GL_RenderableBase");
-import GL_SurfaceBase					= require("awayjs-renderergl/lib/surfaces/GL_SurfaceBase");
-import GL_ElementsBase					= require("awayjs-renderergl/lib/elements/GL_ElementsBase");
+import RendererBase						from "awayjs-renderergl/lib/RendererBase";
+import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import PassBase							from "awayjs-renderergl/lib/surfaces/passes/PassBase";
+import IElementsClassGL					from "awayjs-renderergl/lib/elements/IElementsClassGL";
+import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import GL_SurfaceBase					from "awayjs-renderergl/lib/surfaces/GL_SurfaceBase";
+import GL_ElementsBase					from "awayjs-renderergl/lib/elements/GL_ElementsBase";
 
 /**
  * The SingleObjectDepthPass provides a material pass that renders a single object to a depth map from the point
@@ -74,8 +74,8 @@ class SingleObjectDepthPass extends PassBase
 		//this._pNumUsedVertexConstants = 7;
 		//this._enc = Array<number>(1.0, 255.0, 65025.0, 16581375.0, 1.0/255.0, 1.0/255.0, 1.0/255.0, 0.0);
 		//
-		//this._pAnimatableAttributes = Array<string>("va0", "va1");
-		//this._pAnimationTargetRegisters = Array<string>("vt0", "vt1");
+		//this._pAnimatableAttributes = Array<string>("va0", "va1";
+		//this._pAnimationTargetRegisters = Array<string>("vt0", "vt1";
 	}
 
 	/**
@@ -202,7 +202,7 @@ class SingleObjectDepthPass extends PassBase
 
 		elementsGL.activateVertexBufferVO(0, elements.positions);
 		elementsGL.activateVertexBufferVO(1, elements.normals);
-		elementsGL.getIndexBufferVO().draw(ContextGLDrawMode.TRIANGLES, 0, elements.numElements);
+		elementsGL.getIndexBufferGL().draw(ContextGLDrawMode.TRIANGLES, 0, elements.numElements);
 	}
 
 	/**
@@ -220,4 +220,4 @@ class SingleObjectDepthPass extends PassBase
 	}
 }
 
-export = SingleObjectDepthPass;
+export default SingleObjectDepthPass;
