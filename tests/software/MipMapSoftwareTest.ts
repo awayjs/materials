@@ -1,32 +1,20 @@
-import Vector3D                        = require("awayjs-core/lib/geom/Vector3D");
-import Sampler2D					= require("awayjs-core/lib/image/Sampler2D");
-import URLLoaderEvent				= require("awayjs-core/lib/events/URLLoaderEvent");
-import RequestAnimationFrame        = require("awayjs-core/lib/utils/RequestAnimationFrame");
-import Debug                        = require("awayjs-core/lib/utils/Debug");
+import Sampler2D					from "awayjs-core/lib/image/Sampler2D";
+import URLLoaderEvent				from "awayjs-core/lib/events/URLLoaderEvent";
+import RequestAnimationFrame        from "awayjs-core/lib/utils/RequestAnimationFrame";
+import Debug                        from "awayjs-core/lib/utils/Debug";
 
-import View                            = require("awayjs-display/lib/View");
-import Sprite                            = require("awayjs-display/lib/display/Sprite");
-import DirectionalLight                = require("awayjs-display/lib/display/DirectionalLight");
-import DefaultMaterialManager        = require("awayjs-display/lib/managers/DefaultMaterialManager");
-import StaticLightPicker            = require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
-import PrimitivePrefabBase            = require("awayjs-display/lib/prefabs/PrimitivePrefabBase");
-import PrimitiveCapsulePrefab        = require("awayjs-display/lib/prefabs/PrimitiveCapsulePrefab");
-import PrimitiveConePrefab            = require("awayjs-display/lib/prefabs/PrimitiveConePrefab");
-import PrimitiveCubePrefab            = require("awayjs-display/lib/prefabs/PrimitiveCubePrefab");
-import PrimitiveCylinderPrefab        = require("awayjs-display/lib/prefabs/PrimitiveCylinderPrefab");
-import PrimitivePlanePrefab            = require("awayjs-display/lib/prefabs/PrimitivePlanePrefab");
-import PrimitiveSpherePrefab        = require("awayjs-display/lib/prefabs/PrimitiveSpherePrefab");
-import PrimitiveTorusPrefab            = require("awayjs-display/lib/prefabs/PrimitiveTorusPrefab");
+import View                         from "awayjs-display/lib/View";
+import Sprite                       from "awayjs-display/lib/display/Sprite";
+import PrimitivePlanePrefab         from "awayjs-display/lib/prefabs/PrimitivePlanePrefab";
 
-import DefaultRenderer                = require("awayjs-renderergl/lib/DefaultRenderer");
+import DefaultRenderer              from "awayjs-renderergl/lib/DefaultRenderer";
 
-import MethodMaterial                = require("awayjs-methodmaterials/lib/MethodMaterial");
-import BasicMaterial                = require("awayjs-display/lib/materials/BasicMaterial");
-import URLLoader					= require("awayjs-core/lib/net/URLLoader");
-import URLLoaderDataFormat			= require("awayjs-core/lib/net/URLLoaderDataFormat");
-import URLRequest					= require("awayjs-core/lib/net/URLRequest");
-import ParserUtils					= require("awayjs-core/lib/parsers/ParserUtils");
-import ElementsType                 = require("awayjs-display/lib/graphics/ElementsType");
+import BasicMaterial                from "awayjs-display/lib/materials/BasicMaterial";
+import URLLoader					from "awayjs-core/lib/net/URLLoader";
+import URLLoaderDataFormat			from "awayjs-core/lib/net/URLLoaderDataFormat";
+import URLRequest					from "awayjs-core/lib/net/URLRequest";
+import ParserUtils					from "awayjs-core/lib/parsers/ParserUtils";
+import ElementsType                 from "awayjs-display/lib/graphics/ElementsType";
 
 class MipMapSoftwareTest {
 

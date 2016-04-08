@@ -1,20 +1,17 @@
-import Vector3D						= require("awayjs-core/lib/geom/Vector3D");
-import URLLoader					= require("awayjs-core/lib/net/URLLoader");
-import URLRequest					= require("awayjs-core/lib/net/URLRequest");
-import URLLoaderEvent				= require("awayjs-core/lib/events/URLLoaderEvent");
-import RequestAnimationFrame		= require("awayjs-core/lib/utils/RequestAnimationFrame");
-import Debug						= require("awayjs-core/lib/utils/Debug");
+import Vector3D						from "awayjs-core/lib/geom/Vector3D";
+import RequestAnimationFrame		from "awayjs-core/lib/utils/RequestAnimationFrame";
+import Debug						from "awayjs-core/lib/utils/Debug";
 
-import View							= require("awayjs-display/lib/View");
-import Sprite						= require("awayjs-display/lib/display/Sprite");
-import PointLight					= require("awayjs-display/lib/display/PointLight");
-import StaticLightPicker			= require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
-import PrimitiveTorusPrefab			= require("awayjs-display/lib/prefabs/PrimitiveTorusPrefab");
-import ElementsType					= require("awayjs-display/lib/graphics/ElementsType");
+import View							from "awayjs-display/lib/View";
+import Sprite						from "awayjs-display/lib/display/Sprite";
+import PointLight					from "awayjs-display/lib/display/PointLight";
+import StaticLightPicker			from "awayjs-display/lib/materials/lightpickers/StaticLightPicker";
+import PrimitiveTorusPrefab			from "awayjs-display/lib/prefabs/PrimitiveTorusPrefab";
+import ElementsType					from "awayjs-display/lib/graphics/ElementsType";
 
-import DefaultRenderer				= require("awayjs-renderergl/lib/DefaultRenderer");
+import DefaultRenderer				from "awayjs-renderergl/lib/DefaultRenderer";
 
-import MethodMaterial				= require("awayjs-methodmaterials/lib/MethodMaterial");
+import MethodMaterial				from "awayjs-methodmaterials/lib/MethodMaterial";
 
 class ColorMultiPassMatTest
 {
