@@ -1,19 +1,19 @@
 require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
-var data = require("awayjs-methodmaterials/lib/data");
+var data = require("./lib/data");
 exports.data = data;
-var methods = require("awayjs-methodmaterials/lib/methods");
+var methods = require("./lib/methods");
 exports.methods = methods;
-var surfaces = require("awayjs-methodmaterials/lib/surfaces");
+var surfaces = require("./lib/surfaces");
 exports.surfaces = surfaces;
-var MethodMaterial_1 = require("awayjs-methodmaterials/lib/MethodMaterial");
+var MethodMaterial_1 = require("./lib/MethodMaterial");
 exports.MethodMaterial = MethodMaterial_1.default;
-var MethodMaterialMode_1 = require("awayjs-methodmaterials/lib/MethodMaterialMode");
+var MethodMaterialMode_1 = require("./lib/MethodMaterialMode");
 exports.MethodMaterialMode = MethodMaterialMode_1.default;
 var SurfacePool_1 = require("awayjs-renderergl/lib/surfaces/SurfacePool");
 SurfacePool_1.default.registerAbstraction(surfaces.GL_MethodMaterialSurface, MethodMaterial_1.default);
 
-},{"awayjs-methodmaterials/lib/MethodMaterial":"awayjs-methodmaterials/lib/MethodMaterial","awayjs-methodmaterials/lib/MethodMaterialMode":"awayjs-methodmaterials/lib/MethodMaterialMode","awayjs-methodmaterials/lib/data":"awayjs-methodmaterials/lib/data","awayjs-methodmaterials/lib/methods":"awayjs-methodmaterials/lib/methods","awayjs-methodmaterials/lib/surfaces":"awayjs-methodmaterials/lib/surfaces","awayjs-renderergl/lib/surfaces/SurfacePool":undefined}],"awayjs-methodmaterials/lib/MethodMaterialMode":[function(require,module,exports){
+},{"./lib/MethodMaterial":"awayjs-methodmaterials/lib/MethodMaterial","./lib/MethodMaterialMode":"awayjs-methodmaterials/lib/MethodMaterialMode","./lib/data":"awayjs-methodmaterials/lib/data","./lib/methods":"awayjs-methodmaterials/lib/methods","./lib/surfaces":"awayjs-methodmaterials/lib/surfaces","awayjs-renderergl/lib/surfaces/SurfacePool":undefined}],"awayjs-methodmaterials/lib/MethodMaterialMode":[function(require,module,exports){
 "use strict";
 var MethodMaterialMode = (function () {
     function MethodMaterialMode() {
@@ -42,11 +42,11 @@ var Image2D_1 = require("awayjs-core/lib/image/Image2D");
 var MaterialBase_1 = require("awayjs-display/lib/materials/MaterialBase");
 var Single2DTexture_1 = require("awayjs-display/lib/textures/Single2DTexture");
 var ContextGLCompareMode_1 = require("awayjs-stagegl/lib/base/ContextGLCompareMode");
-var MethodMaterialMode_1 = require("awayjs-methodmaterials/lib/MethodMaterialMode");
-var AmbientBasicMethod_1 = require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
-var DiffuseBasicMethod_1 = require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
-var NormalBasicMethod_1 = require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
-var SpecularBasicMethod_1 = require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
+var MethodMaterialMode_1 = require("./MethodMaterialMode");
+var AmbientBasicMethod_1 = require("./methods/AmbientBasicMethod");
+var DiffuseBasicMethod_1 = require("./methods/DiffuseBasicMethod");
+var NormalBasicMethod_1 = require("./methods/NormalBasicMethod");
+var SpecularBasicMethod_1 = require("./methods/SpecularBasicMethod");
 /**
  * MethodMaterial forms an abstract base class for the default shaded materials provided by Stage,
  * using material methods to define their appearance.
@@ -277,7 +277,7 @@ var MethodMaterial = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = MethodMaterial;
 
-},{"awayjs-core/lib/image/Image2D":undefined,"awayjs-display/lib/materials/MaterialBase":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-methodmaterials/lib/MethodMaterialMode":"awayjs-methodmaterials/lib/MethodMaterialMode","awayjs-methodmaterials/lib/methods/AmbientBasicMethod":"awayjs-methodmaterials/lib/methods/AmbientBasicMethod","awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod","awayjs-methodmaterials/lib/methods/NormalBasicMethod":"awayjs-methodmaterials/lib/methods/NormalBasicMethod","awayjs-methodmaterials/lib/methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod","awayjs-stagegl/lib/base/ContextGLCompareMode":undefined}],"awayjs-methodmaterials/lib/data/MethodVO":[function(require,module,exports){
+},{"./MethodMaterialMode":"awayjs-methodmaterials/lib/MethodMaterialMode","./methods/AmbientBasicMethod":"awayjs-methodmaterials/lib/methods/AmbientBasicMethod","./methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod","./methods/NormalBasicMethod":"awayjs-methodmaterials/lib/methods/NormalBasicMethod","./methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod","awayjs-core/lib/image/Image2D":undefined,"awayjs-display/lib/materials/MaterialBase":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-stagegl/lib/base/ContextGLCompareMode":undefined}],"awayjs-methodmaterials/lib/data/MethodVO":[function(require,module,exports){
 "use strict";
 /**
  * MethodVO contains data for a given shader object for the use within a single material.
@@ -315,10 +315,10 @@ exports.default = MethodVO;
 
 },{}],"awayjs-methodmaterials/lib/data":[function(require,module,exports){
 "use strict";
-var MethodVO_1 = require("awayjs-methodmaterials/lib/data/MethodVO");
+var MethodVO_1 = require("./data/MethodVO");
 exports.MethodVO = MethodVO_1.default;
 
-},{"awayjs-methodmaterials/lib/data/MethodVO":"awayjs-methodmaterials/lib/data/MethodVO"}],"awayjs-methodmaterials/lib/methods/AmbientBasicMethod":[function(require,module,exports){
+},{"./data/MethodVO":"awayjs-methodmaterials/lib/data/MethodVO"}],"awayjs-methodmaterials/lib/methods/AmbientBasicMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -326,7 +326,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var AssetEvent_1 = require("awayjs-core/lib/events/AssetEvent");
-var ShadingMethodBase_1 = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
+var ShadingMethodBase_1 = require("../methods/ShadingMethodBase");
 /**
  * AmbientBasicMethod provides the default shading method for uniform ambient lighting.
  */
@@ -481,7 +481,7 @@ var AmbientBasicMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = AmbientBasicMethod;
 
-},{"awayjs-core/lib/events/AssetEvent":undefined,"awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod":[function(require,module,exports){
+},{"../methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase","awayjs-core/lib/events/AssetEvent":undefined}],"awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -489,7 +489,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var AssetEvent_1 = require("awayjs-core/lib/events/AssetEvent");
-var AmbientBasicMethod_1 = require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
+var AmbientBasicMethod_1 = require("../methods/AmbientBasicMethod");
 /**
  * AmbientEnvMapMethod provides a diffuse shading method that uses a diffuse irradiance environment map to
  * approximate global lighting rather than lights.
@@ -529,7 +529,7 @@ var AmbientEnvMapMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = AmbientEnvMapMethod;
 
-},{"awayjs-core/lib/events/AssetEvent":undefined,"awayjs-methodmaterials/lib/methods/AmbientBasicMethod":"awayjs-methodmaterials/lib/methods/AmbientBasicMethod"}],"awayjs-methodmaterials/lib/methods/CurveBasicMethod":[function(require,module,exports){
+},{"../methods/AmbientBasicMethod":"awayjs-methodmaterials/lib/methods/AmbientBasicMethod","awayjs-core/lib/events/AssetEvent":undefined}],"awayjs-methodmaterials/lib/methods/CurveBasicMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -537,7 +537,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var AssetEvent_1 = require("awayjs-core/lib/events/AssetEvent");
-var ShadingMethodBase_1 = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
+var ShadingMethodBase_1 = require("../methods/ShadingMethodBase");
 /**
  * AmbientBasicMethod provides the default shading method for uniform ambient lighting.
  */
@@ -700,7 +700,7 @@ var CurveBasicMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = CurveBasicMethod;
 
-},{"awayjs-core/lib/events/AssetEvent":undefined,"awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":[function(require,module,exports){
+},{"../methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase","awayjs-core/lib/events/AssetEvent":undefined}],"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -708,7 +708,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var AssetEvent_1 = require("awayjs-core/lib/events/AssetEvent");
-var LightingMethodBase_1 = require("awayjs-methodmaterials/lib/methods/LightingMethodBase");
+var LightingMethodBase_1 = require("../methods/LightingMethodBase");
 /**
  * DiffuseBasicMethod provides the default shading method for Lambert (dot3) diffuse lighting.
  */
@@ -1003,14 +1003,14 @@ var DiffuseBasicMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = DiffuseBasicMethod;
 
-},{"awayjs-core/lib/events/AssetEvent":undefined,"awayjs-methodmaterials/lib/methods/LightingMethodBase":"awayjs-methodmaterials/lib/methods/LightingMethodBase"}],"awayjs-methodmaterials/lib/methods/DiffuseCelMethod":[function(require,module,exports){
+},{"../methods/LightingMethodBase":"awayjs-methodmaterials/lib/methods/LightingMethodBase","awayjs-core/lib/events/AssetEvent":undefined}],"awayjs-methodmaterials/lib/methods/DiffuseCelMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var DiffuseCompositeMethod_1 = require("awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod");
+var DiffuseCompositeMethod_1 = require("../methods/DiffuseCompositeMethod");
 /**
  * DiffuseCelMethod provides a shading method to add diffuse cel (cartoon) shading.
  */
@@ -1124,7 +1124,7 @@ var DiffuseCelMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = DiffuseCelMethod;
 
-},{"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod":"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod"}],"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod":[function(require,module,exports){
+},{"../methods/DiffuseCompositeMethod":"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod"}],"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -1132,7 +1132,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var ShadingMethodEvent_1 = require("awayjs-renderergl/lib/events/ShadingMethodEvent");
-var DiffuseBasicMethod_1 = require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
+var DiffuseBasicMethod_1 = require("../methods/DiffuseBasicMethod");
 /**
  * DiffuseCompositeMethod provides a base class for diffuse methods that wrap a diffuse method to alter the
  * calculated diffuse reflection strength.
@@ -1323,14 +1323,14 @@ var DiffuseCompositeMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = DiffuseCompositeMethod;
 
-},{"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod","awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/DiffuseDepthMethod":[function(require,module,exports){
+},{"../methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod","awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/DiffuseDepthMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var DiffuseBasicMethod_1 = require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
+var DiffuseBasicMethod_1 = require("../methods/DiffuseBasicMethod");
 /**
  * DiffuseDepthMethod provides a debug method to visualise depth maps
  */
@@ -1394,14 +1394,14 @@ var DiffuseDepthMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = DiffuseDepthMethod;
 
-},{"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod"}],"awayjs-methodmaterials/lib/methods/DiffuseGradientMethod":[function(require,module,exports){
+},{"../methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod"}],"awayjs-methodmaterials/lib/methods/DiffuseGradientMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var DiffuseBasicMethod_1 = require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
+var DiffuseBasicMethod_1 = require("../methods/DiffuseBasicMethod");
 /**
  * DiffuseGradientMethod is an alternative to DiffuseBasicMethod in which the shading can be modulated with a gradient
  * to introduce color-tinted shading as opposed to the single-channel diffuse strength. This can be used as a crude
@@ -1518,14 +1518,14 @@ var DiffuseGradientMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = DiffuseGradientMethod;
 
-},{"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod"}],"awayjs-methodmaterials/lib/methods/DiffuseLightMapMethod":[function(require,module,exports){
+},{"../methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod"}],"awayjs-methodmaterials/lib/methods/DiffuseLightMapMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var DiffuseCompositeMethod_1 = require("awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod");
+var DiffuseCompositeMethod_1 = require("../methods/DiffuseCompositeMethod");
 /**
  * DiffuseLightMapMethod provides a diffuse shading method that uses a light map to modulate the calculated diffuse
  * lighting. It is different from EffectLightMapMethod in that the latter modulates the entire calculated pixel color, rather
@@ -1666,14 +1666,14 @@ var DiffuseLightMapMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = DiffuseLightMapMethod;
 
-},{"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod":"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod"}],"awayjs-methodmaterials/lib/methods/DiffuseSubSurfaceMethod":[function(require,module,exports){
+},{"../methods/DiffuseCompositeMethod":"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod"}],"awayjs-methodmaterials/lib/methods/DiffuseSubSurfaceMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var DiffuseCompositeMethod_1 = require("awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod");
+var DiffuseCompositeMethod_1 = require("../methods/DiffuseCompositeMethod");
 /**
  * DiffuseSubSurfaceMethod provides a depth map-based diffuse shading method that mimics the scattering of
  * light inside translucent surfaces. It allows light to shine through an object and to soften the diffuse shading.
@@ -1894,14 +1894,14 @@ var DiffuseSubSurfaceMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = DiffuseSubSurfaceMethod;
 
-},{"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod":"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod"}],"awayjs-methodmaterials/lib/methods/DiffuseWrapMethod":[function(require,module,exports){
+},{"../methods/DiffuseCompositeMethod":"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod"}],"awayjs-methodmaterials/lib/methods/DiffuseWrapMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var DiffuseBasicMethod_1 = require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
+var DiffuseBasicMethod_1 = require("../methods/DiffuseBasicMethod");
 /**
  * DiffuseWrapMethod is an alternative to DiffuseBasicMethod in which the light is allowed to be "wrapped around" the normally dark area, to some extent.
  * It can be used as a crude approximation to Oren-Nayar or simple subsurface scattering.
@@ -1992,14 +1992,14 @@ var DiffuseWrapMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = DiffuseWrapMethod;
 
-},{"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod"}],"awayjs-methodmaterials/lib/methods/EffectAlphaMaskMethod":[function(require,module,exports){
+},{"../methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod"}],"awayjs-methodmaterials/lib/methods/EffectAlphaMaskMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var EffectMethodBase_1 = require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
+var EffectMethodBase_1 = require("../methods/EffectMethodBase");
 /**
  * EffectAlphaMaskMethod allows the use of an additional texture to specify the alpha value of the material. When used
  * with the secondary uv set, it allows for a tiled main texture with independently varying alpha (useful for water
@@ -2092,14 +2092,14 @@ var EffectAlphaMaskMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EffectAlphaMaskMethod;
 
-},{"awayjs-methodmaterials/lib/methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectColorMatrixMethod":[function(require,module,exports){
+},{"../methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectColorMatrixMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var EffectMethodBase_1 = require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
+var EffectMethodBase_1 = require("../methods/EffectMethodBase");
 /**
  * EffectColorMatrixMethod provides a shading method that changes the colour of a material analogous to a ColorMatrixFilter.
  */
@@ -2183,14 +2183,14 @@ var EffectColorMatrixMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EffectColorMatrixMethod;
 
-},{"awayjs-methodmaterials/lib/methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectColorTransformMethod":[function(require,module,exports){
+},{"../methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectColorTransformMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var EffectMethodBase_1 = require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
+var EffectMethodBase_1 = require("../methods/EffectMethodBase");
 /**
  * EffectColorTransformMethod provides a shading method that changes the colour of a material analogous to a
  * ColorTransform object.
@@ -2249,14 +2249,14 @@ var EffectColorTransformMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EffectColorTransformMethod;
 
-},{"awayjs-methodmaterials/lib/methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectEnvMapMethod":[function(require,module,exports){
+},{"../methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectEnvMapMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var EffectMethodBase_1 = require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
+var EffectMethodBase_1 = require("../methods/EffectMethodBase");
 /**
  * EffectEnvMapMethod provides a material method to perform reflection mapping using cube maps.
  */
@@ -2395,14 +2395,14 @@ var EffectEnvMapMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EffectEnvMapMethod;
 
-},{"awayjs-methodmaterials/lib/methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectFogMethod":[function(require,module,exports){
+},{"../methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectFogMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var EffectMethodBase_1 = require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
+var EffectMethodBase_1 = require("../methods/EffectMethodBase");
 /**
  * EffectFogMethod provides a method to add distance-based fog to a material.
  */
@@ -2518,14 +2518,14 @@ var EffectFogMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EffectFogMethod;
 
-},{"awayjs-methodmaterials/lib/methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectFresnelEnvMapMethod":[function(require,module,exports){
+},{"../methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectFresnelEnvMapMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var EffectMethodBase_1 = require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
+var EffectMethodBase_1 = require("../methods/EffectMethodBase");
 /**
  * EffectFresnelEnvMapMethod provides a method to add fresnel-based reflectivity to an object using cube maps, which gets
  * stronger as the viewing angle becomes more grazing.
@@ -2709,14 +2709,14 @@ var EffectFresnelEnvMapMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EffectFresnelEnvMapMethod;
 
-},{"awayjs-methodmaterials/lib/methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectLightMapMethod":[function(require,module,exports){
+},{"../methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectLightMapMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var EffectMethodBase_1 = require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
+var EffectMethodBase_1 = require("../methods/EffectMethodBase");
 /**
  * EffectLightMapMethod provides a method that allows applying a light map texture to the calculated pixel colour.
  * It is different from DiffuseLightMapMethod in that the latter only modulates the diffuse shading value rather
@@ -2849,7 +2849,7 @@ var EffectLightMapMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EffectLightMapMethod;
 
-},{"awayjs-methodmaterials/lib/methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectMethodBase":[function(require,module,exports){
+},{"../methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectMethodBase":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -2857,7 +2857,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var AbstractMethodError_1 = require("awayjs-core/lib/errors/AbstractMethodError");
-var ShadingMethodBase_1 = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
+var ShadingMethodBase_1 = require("../methods/ShadingMethodBase");
 /**
  * EffectMethodBase forms an abstract base class for shader methods that are not dependent on light sources,
  * and are in essence post-process effects on the materials.
@@ -2893,14 +2893,14 @@ var EffectMethodBase = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EffectMethodBase;
 
-},{"awayjs-core/lib/errors/AbstractMethodError":undefined,"awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectRefractionEnvMapMethod":[function(require,module,exports){
+},{"../methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase","awayjs-core/lib/errors/AbstractMethodError":undefined}],"awayjs-methodmaterials/lib/methods/EffectRefractionEnvMapMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var EffectMethodBase_1 = require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
+var EffectMethodBase_1 = require("../methods/EffectMethodBase");
 /**
  * EffectRefractionEnvMapMethod provides a method to add refracted transparency based on cube maps.
  */
@@ -3155,14 +3155,14 @@ var EffectRefractionEnvMapMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EffectRefractionEnvMapMethod;
 
-},{"awayjs-methodmaterials/lib/methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectRimLightMethod":[function(require,module,exports){
+},{"../methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectRimLightMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var EffectMethodBase_1 = require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
+var EffectMethodBase_1 = require("../methods/EffectMethodBase");
 /**
  * EffectRimLightMethod provides a method to add rim lighting to a material. This adds a glow-like effect to edges of objects.
  */
@@ -3314,14 +3314,14 @@ var EffectRimLightMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EffectRimLightMethod;
 
-},{"awayjs-methodmaterials/lib/methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/LightingMethodBase":[function(require,module,exports){
+},{"../methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/LightingMethodBase":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var ShadingMethodBase_1 = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
+var ShadingMethodBase_1 = require("../methods/ShadingMethodBase");
 /**
  * LightingMethodBase provides an abstract base method for shading methods that uses lights.
  * Used for diffuse and specular shaders only.
@@ -3381,14 +3381,14 @@ var LightingMethodBase = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = LightingMethodBase;
 
-},{"awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/NormalBasicMethod":[function(require,module,exports){
+},{"../methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/NormalBasicMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var ShadingMethodBase_1 = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
+var ShadingMethodBase_1 = require("../methods/ShadingMethodBase");
 /**
  * NormalBasicMethod is the default method for standard tangent-space normal mapping.
  */
@@ -3488,14 +3488,14 @@ var NormalBasicMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = NormalBasicMethod;
 
-},{"awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/NormalHeightMapMethod":[function(require,module,exports){
+},{"../methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/NormalHeightMapMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var NormalBasicMethod_1 = require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
+var NormalBasicMethod_1 = require("../methods/NormalBasicMethod");
 /**
  * NormalHeightMapMethod provides a normal map method that uses a height map to calculate the normals.
  */
@@ -3574,14 +3574,14 @@ var NormalHeightMapMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = NormalHeightMapMethod;
 
-},{"awayjs-methodmaterials/lib/methods/NormalBasicMethod":"awayjs-methodmaterials/lib/methods/NormalBasicMethod"}],"awayjs-methodmaterials/lib/methods/NormalSimpleWaterMethod":[function(require,module,exports){
+},{"../methods/NormalBasicMethod":"awayjs-methodmaterials/lib/methods/NormalBasicMethod"}],"awayjs-methodmaterials/lib/methods/NormalSimpleWaterMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var NormalBasicMethod_1 = require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
+var NormalBasicMethod_1 = require("../methods/NormalBasicMethod");
 /**
  * NormalSimpleWaterMethod provides a basic normal map method to create water ripples by translating two wave normal maps.
  */
@@ -3753,7 +3753,7 @@ var NormalSimpleWaterMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = NormalSimpleWaterMethod;
 
-},{"awayjs-methodmaterials/lib/methods/NormalBasicMethod":"awayjs-methodmaterials/lib/methods/NormalBasicMethod"}],"awayjs-methodmaterials/lib/methods/ShadingMethodBase":[function(require,module,exports){
+},{"../methods/NormalBasicMethod":"awayjs-methodmaterials/lib/methods/NormalBasicMethod"}],"awayjs-methodmaterials/lib/methods/ShadingMethodBase":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -3957,8 +3957,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 var AssetEvent_1 = require("awayjs-core/lib/events/AssetEvent");
 var DirectionalLight_1 = require("awayjs-display/lib/display/DirectionalLight");
 var ShadingMethodEvent_1 = require("awayjs-renderergl/lib/events/ShadingMethodEvent");
-var MethodVO_1 = require("awayjs-methodmaterials/lib/data/MethodVO");
-var ShadowMapMethodBase_1 = require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
+var MethodVO_1 = require("../data/MethodVO");
+var ShadowMapMethodBase_1 = require("../methods/ShadowMapMethodBase");
 /**
  * ShadowCascadeMethod is a shadow map method to apply cascade shadow mapping on materials.
  * Must be used with a DirectionalLight with a CascadeShadowMapper assigned to its shadowMapper property.
@@ -4153,7 +4153,7 @@ var ShadowCascadeMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ShadowCascadeMethod;
 
-},{"awayjs-core/lib/events/AssetEvent":undefined,"awayjs-display/lib/display/DirectionalLight":undefined,"awayjs-methodmaterials/lib/data/MethodVO":"awayjs-methodmaterials/lib/data/MethodVO","awayjs-methodmaterials/lib/methods/ShadowMapMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase","awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/ShadowDitheredMethod":[function(require,module,exports){
+},{"../data/MethodVO":"awayjs-methodmaterials/lib/data/MethodVO","../methods/ShadowMapMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase","awayjs-core/lib/events/AssetEvent":undefined,"awayjs-display/lib/display/DirectionalLight":undefined,"awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/ShadowDitheredMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -4162,7 +4162,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var BitmapImage2D_1 = require("awayjs-core/lib/image/BitmapImage2D");
 var Single2DTexture_1 = require("awayjs-display/lib/textures/Single2DTexture");
-var ShadowMethodBase_1 = require("awayjs-methodmaterials/lib/methods/ShadowMethodBase");
+var ShadowMethodBase_1 = require("../methods/ShadowMethodBase");
 /**
  * ShadowDitheredMethod provides a soft shadowing technique by randomly distributing sample points differently for each fragment.
  */
@@ -4410,14 +4410,14 @@ var ShadowDitheredMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ShadowDitheredMethod;
 
-},{"awayjs-core/lib/image/BitmapImage2D":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-methodmaterials/lib/methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowFilteredMethod":[function(require,module,exports){
+},{"../methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase","awayjs-core/lib/image/BitmapImage2D":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined}],"awayjs-methodmaterials/lib/methods/ShadowFilteredMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var ShadowMethodBase_1 = require("awayjs-methodmaterials/lib/methods/ShadowMethodBase");
+var ShadowMethodBase_1 = require("../methods/ShadowMethodBase");
 /**
  * ShadowFilteredMethod provides a softened shadowing technique by bilinearly interpolating shadow comparison
  * results of neighbouring pixels.
@@ -4547,14 +4547,14 @@ var ShadowFilteredMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ShadowFilteredMethod;
 
-},{"awayjs-methodmaterials/lib/methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowHardMethod":[function(require,module,exports){
+},{"../methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowHardMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var ShadowMethodBase_1 = require("awayjs-methodmaterials/lib/methods/ShadowMethodBase");
+var ShadowMethodBase_1 = require("../methods/ShadowMethodBase");
 /**
  * ShadowHardMethod provides the cheapest shadow map method by using a single tap without any filtering.
  */
@@ -4624,14 +4624,14 @@ var ShadowHardMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ShadowHardMethod;
 
-},{"awayjs-methodmaterials/lib/methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase":[function(require,module,exports){
+},{"../methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var ShadingMethodBase_1 = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
+var ShadingMethodBase_1 = require("../methods/ShadingMethodBase");
 /**
  * ShadowMapMethodBase provides an abstract base method for shadow map methods.
  */
@@ -4703,7 +4703,7 @@ var ShadowMapMethodBase = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ShadowMapMethodBase;
 
-},{"awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowMethodBase":[function(require,module,exports){
+},{"../methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowMethodBase":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -4712,7 +4712,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var AbstractMethodError_1 = require("awayjs-core/lib/errors/AbstractMethodError");
 var PointLight_1 = require("awayjs-display/lib/display/PointLight");
-var ShadowMapMethodBase_1 = require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
+var ShadowMapMethodBase_1 = require("../methods/ShadowMapMethodBase");
 /**
  * ShadowMethodBase provides an abstract method for simple (non-wrapping) shadow map methods.
  */
@@ -4906,7 +4906,7 @@ var ShadowMethodBase = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ShadowMethodBase;
 
-},{"awayjs-core/lib/errors/AbstractMethodError":undefined,"awayjs-display/lib/display/PointLight":undefined,"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowNearMethod":[function(require,module,exports){
+},{"../methods/ShadowMapMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase","awayjs-core/lib/errors/AbstractMethodError":undefined,"awayjs-display/lib/display/PointLight":undefined}],"awayjs-methodmaterials/lib/methods/ShadowNearMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -4914,7 +4914,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var ShadingMethodEvent_1 = require("awayjs-renderergl/lib/events/ShadingMethodEvent");
-var ShadowMethodBase_1 = require("awayjs-methodmaterials/lib/methods/ShadowMethodBase");
+var ShadowMethodBase_1 = require("../methods/ShadowMethodBase");
 // TODO: shadow mappers references in materials should be an interface so that this class should NOT extend ShadowMapMethodBase just for some delegation work
 /**
  * ShadowNearMethod provides a shadow map method that restricts the shadowed area near the camera to optimize
@@ -5099,7 +5099,7 @@ var ShadowNearMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ShadowNearMethod;
 
-},{"awayjs-methodmaterials/lib/methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase","awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/ShadowSoftMethod":[function(require,module,exports){
+},{"../methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase","awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/ShadowSoftMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -5107,7 +5107,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var PoissonLookup_1 = require("awayjs-core/lib/geom/PoissonLookup");
-var ShadowMethodBase_1 = require("awayjs-methodmaterials/lib/methods/ShadowMethodBase");
+var ShadowMethodBase_1 = require("../methods/ShadowMethodBase");
 /**
  * ShadowSoftMethod provides a soft shadowing technique by randomly distributing sample points.
  */
@@ -5276,14 +5276,14 @@ var ShadowSoftMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ShadowSoftMethod;
 
-},{"awayjs-core/lib/geom/PoissonLookup":undefined,"awayjs-methodmaterials/lib/methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase"}],"awayjs-methodmaterials/lib/methods/SpecularAnisotropicMethod":[function(require,module,exports){
+},{"../methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase","awayjs-core/lib/geom/PoissonLookup":undefined}],"awayjs-methodmaterials/lib/methods/SpecularAnisotropicMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var SpecularBasicMethod_1 = require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
+var SpecularBasicMethod_1 = require("../methods/SpecularBasicMethod");
 /**
  * SpecularAnisotropicMethod provides a specular method resulting in anisotropic highlights. These are typical for
  * surfaces with microfacet details such as tiny grooves. In particular, this uses the Heidrich-Seidel distrubution.
@@ -5356,7 +5356,7 @@ var SpecularAnisotropicMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = SpecularAnisotropicMethod;
 
-},{"awayjs-methodmaterials/lib/methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod"}],"awayjs-methodmaterials/lib/methods/SpecularBasicMethod":[function(require,module,exports){
+},{"../methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod"}],"awayjs-methodmaterials/lib/methods/SpecularBasicMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -5364,7 +5364,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var AssetEvent_1 = require("awayjs-core/lib/events/AssetEvent");
-var LightingMethodBase_1 = require("awayjs-methodmaterials/lib/methods/LightingMethodBase");
+var LightingMethodBase_1 = require("../methods/LightingMethodBase");
 /**
  * SpecularBasicMethod provides the default shading method for Blinn-Phong specular highlights (an optimized but approximated
  * version of Phong specularity).
@@ -5631,14 +5631,14 @@ var SpecularBasicMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = SpecularBasicMethod;
 
-},{"awayjs-core/lib/events/AssetEvent":undefined,"awayjs-methodmaterials/lib/methods/LightingMethodBase":"awayjs-methodmaterials/lib/methods/LightingMethodBase"}],"awayjs-methodmaterials/lib/methods/SpecularCelMethod":[function(require,module,exports){
+},{"../methods/LightingMethodBase":"awayjs-methodmaterials/lib/methods/LightingMethodBase","awayjs-core/lib/events/AssetEvent":undefined}],"awayjs-methodmaterials/lib/methods/SpecularCelMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var SpecularCompositeMethod_1 = require("awayjs-methodmaterials/lib/methods/SpecularCompositeMethod");
+var SpecularCompositeMethod_1 = require("../methods/SpecularCompositeMethod");
 /**
  * SpecularCelMethod provides a shading method to add specular cel (cartoon) shading.
  */
@@ -5730,7 +5730,7 @@ var SpecularCelMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = SpecularCelMethod;
 
-},{"awayjs-methodmaterials/lib/methods/SpecularCompositeMethod":"awayjs-methodmaterials/lib/methods/SpecularCompositeMethod"}],"awayjs-methodmaterials/lib/methods/SpecularCompositeMethod":[function(require,module,exports){
+},{"../methods/SpecularCompositeMethod":"awayjs-methodmaterials/lib/methods/SpecularCompositeMethod"}],"awayjs-methodmaterials/lib/methods/SpecularCompositeMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -5738,7 +5738,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var ShadingMethodEvent_1 = require("awayjs-renderergl/lib/events/ShadingMethodEvent");
-var SpecularBasicMethod_1 = require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
+var SpecularBasicMethod_1 = require("../methods/SpecularBasicMethod");
 /**
  * SpecularCompositeMethod provides a base class for specular methods that wrap a specular method to alter the
  * calculated specular reflection strength.
@@ -5933,14 +5933,14 @@ var SpecularCompositeMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = SpecularCompositeMethod;
 
-},{"awayjs-methodmaterials/lib/methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod","awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/SpecularFresnelMethod":[function(require,module,exports){
+},{"../methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod","awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/SpecularFresnelMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var SpecularCompositeMethod_1 = require("awayjs-methodmaterials/lib/methods/SpecularCompositeMethod");
+var SpecularCompositeMethod_1 = require("../methods/SpecularCompositeMethod");
 /**
  * SpecularFresnelMethod provides a specular shading method that causes stronger highlights on grazing view angles.
  */
@@ -6062,14 +6062,14 @@ var SpecularFresnelMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = SpecularFresnelMethod;
 
-},{"awayjs-methodmaterials/lib/methods/SpecularCompositeMethod":"awayjs-methodmaterials/lib/methods/SpecularCompositeMethod"}],"awayjs-methodmaterials/lib/methods/SpecularPhongMethod":[function(require,module,exports){
+},{"../methods/SpecularCompositeMethod":"awayjs-methodmaterials/lib/methods/SpecularCompositeMethod"}],"awayjs-methodmaterials/lib/methods/SpecularPhongMethod":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var SpecularBasicMethod_1 = require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
+var SpecularBasicMethod_1 = require("../methods/SpecularBasicMethod");
 /**
  * SpecularPhongMethod provides a specular method that provides Phong highlights.
  */
@@ -6134,90 +6134,90 @@ var SpecularPhongMethod = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = SpecularPhongMethod;
 
-},{"awayjs-methodmaterials/lib/methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod"}],"awayjs-methodmaterials/lib/methods":[function(require,module,exports){
+},{"../methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod"}],"awayjs-methodmaterials/lib/methods":[function(require,module,exports){
 "use strict";
-var AmbientBasicMethod_1 = require("awayjs-methodmaterials/lib/methods/AmbientBasicMethod");
+var AmbientBasicMethod_1 = require("./methods/AmbientBasicMethod");
 exports.AmbientBasicMethod = AmbientBasicMethod_1.default;
-var AmbientEnvMapMethod_1 = require("awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod");
+var AmbientEnvMapMethod_1 = require("./methods/AmbientEnvMapMethod");
 exports.AmbientEnvMapMethod = AmbientEnvMapMethod_1.default;
-var CurveBasicMethod_1 = require("awayjs-methodmaterials/lib/methods/CurveBasicMethod");
+var CurveBasicMethod_1 = require("./methods/CurveBasicMethod");
 exports.CurveBasicMethod = CurveBasicMethod_1.default;
-var DiffuseBasicMethod_1 = require("awayjs-methodmaterials/lib/methods/DiffuseBasicMethod");
+var DiffuseBasicMethod_1 = require("./methods/DiffuseBasicMethod");
 exports.DiffuseBasicMethod = DiffuseBasicMethod_1.default;
-var DiffuseCelMethod_1 = require("awayjs-methodmaterials/lib/methods/DiffuseCelMethod");
+var DiffuseCelMethod_1 = require("./methods/DiffuseCelMethod");
 exports.DiffuseCelMethod = DiffuseCelMethod_1.default;
-var DiffuseCompositeMethod_1 = require("awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod");
+var DiffuseCompositeMethod_1 = require("./methods/DiffuseCompositeMethod");
 exports.DiffuseCompositeMethod = DiffuseCompositeMethod_1.default;
-var DiffuseDepthMethod_1 = require("awayjs-methodmaterials/lib/methods/DiffuseDepthMethod");
+var DiffuseDepthMethod_1 = require("./methods/DiffuseDepthMethod");
 exports.DiffuseDepthMethod = DiffuseDepthMethod_1.default;
-var DiffuseGradientMethod_1 = require("awayjs-methodmaterials/lib/methods/DiffuseGradientMethod");
+var DiffuseGradientMethod_1 = require("./methods/DiffuseGradientMethod");
 exports.DiffuseGradientMethod = DiffuseGradientMethod_1.default;
-var DiffuseLightMapMethod_1 = require("awayjs-methodmaterials/lib/methods/DiffuseLightMapMethod");
+var DiffuseLightMapMethod_1 = require("./methods/DiffuseLightMapMethod");
 exports.DiffuseLightMapMethod = DiffuseLightMapMethod_1.default;
-var DiffuseSubSurfaceMethod_1 = require("awayjs-methodmaterials/lib/methods/DiffuseSubSurfaceMethod");
+var DiffuseSubSurfaceMethod_1 = require("./methods/DiffuseSubSurfaceMethod");
 exports.DiffuseSubSurfaceMethod = DiffuseSubSurfaceMethod_1.default;
-var DiffuseWrapMethod_1 = require("awayjs-methodmaterials/lib/methods/DiffuseWrapMethod");
+var DiffuseWrapMethod_1 = require("./methods/DiffuseWrapMethod");
 exports.DiffuseWrapMethod = DiffuseWrapMethod_1.default;
-var EffectAlphaMaskMethod_1 = require("awayjs-methodmaterials/lib/methods/EffectAlphaMaskMethod");
+var EffectAlphaMaskMethod_1 = require("./methods/EffectAlphaMaskMethod");
 exports.EffectAlphaMaskMethod = EffectAlphaMaskMethod_1.default;
-var EffectColorMatrixMethod_1 = require("awayjs-methodmaterials/lib/methods/EffectColorMatrixMethod");
+var EffectColorMatrixMethod_1 = require("./methods/EffectColorMatrixMethod");
 exports.EffectColorMatrixMethod = EffectColorMatrixMethod_1.default;
-var EffectColorTransformMethod_1 = require("awayjs-methodmaterials/lib/methods/EffectColorTransformMethod");
+var EffectColorTransformMethod_1 = require("./methods/EffectColorTransformMethod");
 exports.EffectColorTransformMethod = EffectColorTransformMethod_1.default;
-var EffectEnvMapMethod_1 = require("awayjs-methodmaterials/lib/methods/EffectEnvMapMethod");
+var EffectEnvMapMethod_1 = require("./methods/EffectEnvMapMethod");
 exports.EffectEnvMapMethod = EffectEnvMapMethod_1.default;
-var EffectFogMethod_1 = require("awayjs-methodmaterials/lib/methods/EffectFogMethod");
+var EffectFogMethod_1 = require("./methods/EffectFogMethod");
 exports.EffectFogMethod = EffectFogMethod_1.default;
-var EffectFresnelEnvMapMethod_1 = require("awayjs-methodmaterials/lib/methods/EffectFresnelEnvMapMethod");
+var EffectFresnelEnvMapMethod_1 = require("./methods/EffectFresnelEnvMapMethod");
 exports.EffectFresnelEnvMapMethod = EffectFresnelEnvMapMethod_1.default;
-var EffectLightMapMethod_1 = require("awayjs-methodmaterials/lib/methods/EffectLightMapMethod");
+var EffectLightMapMethod_1 = require("./methods/EffectLightMapMethod");
 exports.EffectLightMapMethod = EffectLightMapMethod_1.default;
-var EffectMethodBase_1 = require("awayjs-methodmaterials/lib/methods/EffectMethodBase");
+var EffectMethodBase_1 = require("./methods/EffectMethodBase");
 exports.EffectMethodBase = EffectMethodBase_1.default;
-var EffectRefractionEnvMapMethod_1 = require("awayjs-methodmaterials/lib/methods/EffectRefractionEnvMapMethod");
+var EffectRefractionEnvMapMethod_1 = require("./methods/EffectRefractionEnvMapMethod");
 exports.EffectRefractionEnvMapMethod = EffectRefractionEnvMapMethod_1.default;
-var EffectRimLightMethod_1 = require("awayjs-methodmaterials/lib/methods/EffectRimLightMethod");
+var EffectRimLightMethod_1 = require("./methods/EffectRimLightMethod");
 exports.EffectRimLightMethod = EffectRimLightMethod_1.default;
-var LightingMethodBase_1 = require("awayjs-methodmaterials/lib/methods/LightingMethodBase");
+var LightingMethodBase_1 = require("./methods/LightingMethodBase");
 exports.LightingMethodBase = LightingMethodBase_1.default;
-var NormalBasicMethod_1 = require("awayjs-methodmaterials/lib/methods/NormalBasicMethod");
+var NormalBasicMethod_1 = require("./methods/NormalBasicMethod");
 exports.NormalBasicMethod = NormalBasicMethod_1.default;
-var NormalHeightMapMethod_1 = require("awayjs-methodmaterials/lib/methods/NormalHeightMapMethod");
+var NormalHeightMapMethod_1 = require("./methods/NormalHeightMapMethod");
 exports.NormalHeightMapMethod = NormalHeightMapMethod_1.default;
-var NormalSimpleWaterMethod_1 = require("awayjs-methodmaterials/lib/methods/NormalSimpleWaterMethod");
+var NormalSimpleWaterMethod_1 = require("./methods/NormalSimpleWaterMethod");
 exports.NormalSimpleWaterMethod = NormalSimpleWaterMethod_1.default;
-var ShadingMethodBase_1 = require("awayjs-methodmaterials/lib/methods/ShadingMethodBase");
+var ShadingMethodBase_1 = require("./methods/ShadingMethodBase");
 exports.ShadingMethodBase = ShadingMethodBase_1.default;
-var ShadowCascadeMethod_1 = require("awayjs-methodmaterials/lib/methods/ShadowCascadeMethod");
+var ShadowCascadeMethod_1 = require("./methods/ShadowCascadeMethod");
 exports.ShadowCascadeMethod = ShadowCascadeMethod_1.default;
-var ShadowDitheredMethod_1 = require("awayjs-methodmaterials/lib/methods/ShadowDitheredMethod");
+var ShadowDitheredMethod_1 = require("./methods/ShadowDitheredMethod");
 exports.ShadowDitheredMethod = ShadowDitheredMethod_1.default;
-var ShadowFilteredMethod_1 = require("awayjs-methodmaterials/lib/methods/ShadowFilteredMethod");
+var ShadowFilteredMethod_1 = require("./methods/ShadowFilteredMethod");
 exports.ShadowFilteredMethod = ShadowFilteredMethod_1.default;
-var ShadowHardMethod_1 = require("awayjs-methodmaterials/lib/methods/ShadowHardMethod");
+var ShadowHardMethod_1 = require("./methods/ShadowHardMethod");
 exports.ShadowHardMethod = ShadowHardMethod_1.default;
-var ShadowMapMethodBase_1 = require("awayjs-methodmaterials/lib/methods/ShadowMapMethodBase");
+var ShadowMapMethodBase_1 = require("./methods/ShadowMapMethodBase");
 exports.ShadowMapMethodBase = ShadowMapMethodBase_1.default;
-var ShadowMethodBase_1 = require("awayjs-methodmaterials/lib/methods/ShadowMethodBase");
+var ShadowMethodBase_1 = require("./methods/ShadowMethodBase");
 exports.ShadowMethodBase = ShadowMethodBase_1.default;
-var ShadowNearMethod_1 = require("awayjs-methodmaterials/lib/methods/ShadowNearMethod");
+var ShadowNearMethod_1 = require("./methods/ShadowNearMethod");
 exports.ShadowNearMethod = ShadowNearMethod_1.default;
-var ShadowSoftMethod_1 = require("awayjs-methodmaterials/lib/methods/ShadowSoftMethod");
+var ShadowSoftMethod_1 = require("./methods/ShadowSoftMethod");
 exports.ShadowSoftMethod = ShadowSoftMethod_1.default;
-var SpecularAnisotropicMethod_1 = require("awayjs-methodmaterials/lib/methods/SpecularAnisotropicMethod");
+var SpecularAnisotropicMethod_1 = require("./methods/SpecularAnisotropicMethod");
 exports.SpecularAnisotropicMethod = SpecularAnisotropicMethod_1.default;
-var SpecularBasicMethod_1 = require("awayjs-methodmaterials/lib/methods/SpecularBasicMethod");
+var SpecularBasicMethod_1 = require("./methods/SpecularBasicMethod");
 exports.SpecularBasicMethod = SpecularBasicMethod_1.default;
-var SpecularCelMethod_1 = require("awayjs-methodmaterials/lib/methods/SpecularCelMethod");
+var SpecularCelMethod_1 = require("./methods/SpecularCelMethod");
 exports.SpecularCelMethod = SpecularCelMethod_1.default;
-var SpecularCompositeMethod_1 = require("awayjs-methodmaterials/lib/methods/SpecularCompositeMethod");
+var SpecularCompositeMethod_1 = require("./methods/SpecularCompositeMethod");
 exports.SpecularCompositeMethod = SpecularCompositeMethod_1.default;
-var SpecularFresnelMethod_1 = require("awayjs-methodmaterials/lib/methods/SpecularFresnelMethod");
+var SpecularFresnelMethod_1 = require("./methods/SpecularFresnelMethod");
 exports.SpecularFresnelMethod = SpecularFresnelMethod_1.default;
-var SpecularPhongMethod_1 = require("awayjs-methodmaterials/lib/methods/SpecularPhongMethod");
+var SpecularPhongMethod_1 = require("./methods/SpecularPhongMethod");
 exports.SpecularPhongMethod = SpecularPhongMethod_1.default;
 
-},{"awayjs-methodmaterials/lib/methods/AmbientBasicMethod":"awayjs-methodmaterials/lib/methods/AmbientBasicMethod","awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod":"awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod","awayjs-methodmaterials/lib/methods/CurveBasicMethod":"awayjs-methodmaterials/lib/methods/CurveBasicMethod","awayjs-methodmaterials/lib/methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod","awayjs-methodmaterials/lib/methods/DiffuseCelMethod":"awayjs-methodmaterials/lib/methods/DiffuseCelMethod","awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod":"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod","awayjs-methodmaterials/lib/methods/DiffuseDepthMethod":"awayjs-methodmaterials/lib/methods/DiffuseDepthMethod","awayjs-methodmaterials/lib/methods/DiffuseGradientMethod":"awayjs-methodmaterials/lib/methods/DiffuseGradientMethod","awayjs-methodmaterials/lib/methods/DiffuseLightMapMethod":"awayjs-methodmaterials/lib/methods/DiffuseLightMapMethod","awayjs-methodmaterials/lib/methods/DiffuseSubSurfaceMethod":"awayjs-methodmaterials/lib/methods/DiffuseSubSurfaceMethod","awayjs-methodmaterials/lib/methods/DiffuseWrapMethod":"awayjs-methodmaterials/lib/methods/DiffuseWrapMethod","awayjs-methodmaterials/lib/methods/EffectAlphaMaskMethod":"awayjs-methodmaterials/lib/methods/EffectAlphaMaskMethod","awayjs-methodmaterials/lib/methods/EffectColorMatrixMethod":"awayjs-methodmaterials/lib/methods/EffectColorMatrixMethod","awayjs-methodmaterials/lib/methods/EffectColorTransformMethod":"awayjs-methodmaterials/lib/methods/EffectColorTransformMethod","awayjs-methodmaterials/lib/methods/EffectEnvMapMethod":"awayjs-methodmaterials/lib/methods/EffectEnvMapMethod","awayjs-methodmaterials/lib/methods/EffectFogMethod":"awayjs-methodmaterials/lib/methods/EffectFogMethod","awayjs-methodmaterials/lib/methods/EffectFresnelEnvMapMethod":"awayjs-methodmaterials/lib/methods/EffectFresnelEnvMapMethod","awayjs-methodmaterials/lib/methods/EffectLightMapMethod":"awayjs-methodmaterials/lib/methods/EffectLightMapMethod","awayjs-methodmaterials/lib/methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase","awayjs-methodmaterials/lib/methods/EffectRefractionEnvMapMethod":"awayjs-methodmaterials/lib/methods/EffectRefractionEnvMapMethod","awayjs-methodmaterials/lib/methods/EffectRimLightMethod":"awayjs-methodmaterials/lib/methods/EffectRimLightMethod","awayjs-methodmaterials/lib/methods/LightingMethodBase":"awayjs-methodmaterials/lib/methods/LightingMethodBase","awayjs-methodmaterials/lib/methods/NormalBasicMethod":"awayjs-methodmaterials/lib/methods/NormalBasicMethod","awayjs-methodmaterials/lib/methods/NormalHeightMapMethod":"awayjs-methodmaterials/lib/methods/NormalHeightMapMethod","awayjs-methodmaterials/lib/methods/NormalSimpleWaterMethod":"awayjs-methodmaterials/lib/methods/NormalSimpleWaterMethod","awayjs-methodmaterials/lib/methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase","awayjs-methodmaterials/lib/methods/ShadowCascadeMethod":"awayjs-methodmaterials/lib/methods/ShadowCascadeMethod","awayjs-methodmaterials/lib/methods/ShadowDitheredMethod":"awayjs-methodmaterials/lib/methods/ShadowDitheredMethod","awayjs-methodmaterials/lib/methods/ShadowFilteredMethod":"awayjs-methodmaterials/lib/methods/ShadowFilteredMethod","awayjs-methodmaterials/lib/methods/ShadowHardMethod":"awayjs-methodmaterials/lib/methods/ShadowHardMethod","awayjs-methodmaterials/lib/methods/ShadowMapMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase","awayjs-methodmaterials/lib/methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase","awayjs-methodmaterials/lib/methods/ShadowNearMethod":"awayjs-methodmaterials/lib/methods/ShadowNearMethod","awayjs-methodmaterials/lib/methods/ShadowSoftMethod":"awayjs-methodmaterials/lib/methods/ShadowSoftMethod","awayjs-methodmaterials/lib/methods/SpecularAnisotropicMethod":"awayjs-methodmaterials/lib/methods/SpecularAnisotropicMethod","awayjs-methodmaterials/lib/methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod","awayjs-methodmaterials/lib/methods/SpecularCelMethod":"awayjs-methodmaterials/lib/methods/SpecularCelMethod","awayjs-methodmaterials/lib/methods/SpecularCompositeMethod":"awayjs-methodmaterials/lib/methods/SpecularCompositeMethod","awayjs-methodmaterials/lib/methods/SpecularFresnelMethod":"awayjs-methodmaterials/lib/methods/SpecularFresnelMethod","awayjs-methodmaterials/lib/methods/SpecularPhongMethod":"awayjs-methodmaterials/lib/methods/SpecularPhongMethod"}],"awayjs-methodmaterials/lib/surfaces/GL_MethodMaterialSurface":[function(require,module,exports){
+},{"./methods/AmbientBasicMethod":"awayjs-methodmaterials/lib/methods/AmbientBasicMethod","./methods/AmbientEnvMapMethod":"awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod","./methods/CurveBasicMethod":"awayjs-methodmaterials/lib/methods/CurveBasicMethod","./methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod","./methods/DiffuseCelMethod":"awayjs-methodmaterials/lib/methods/DiffuseCelMethod","./methods/DiffuseCompositeMethod":"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod","./methods/DiffuseDepthMethod":"awayjs-methodmaterials/lib/methods/DiffuseDepthMethod","./methods/DiffuseGradientMethod":"awayjs-methodmaterials/lib/methods/DiffuseGradientMethod","./methods/DiffuseLightMapMethod":"awayjs-methodmaterials/lib/methods/DiffuseLightMapMethod","./methods/DiffuseSubSurfaceMethod":"awayjs-methodmaterials/lib/methods/DiffuseSubSurfaceMethod","./methods/DiffuseWrapMethod":"awayjs-methodmaterials/lib/methods/DiffuseWrapMethod","./methods/EffectAlphaMaskMethod":"awayjs-methodmaterials/lib/methods/EffectAlphaMaskMethod","./methods/EffectColorMatrixMethod":"awayjs-methodmaterials/lib/methods/EffectColorMatrixMethod","./methods/EffectColorTransformMethod":"awayjs-methodmaterials/lib/methods/EffectColorTransformMethod","./methods/EffectEnvMapMethod":"awayjs-methodmaterials/lib/methods/EffectEnvMapMethod","./methods/EffectFogMethod":"awayjs-methodmaterials/lib/methods/EffectFogMethod","./methods/EffectFresnelEnvMapMethod":"awayjs-methodmaterials/lib/methods/EffectFresnelEnvMapMethod","./methods/EffectLightMapMethod":"awayjs-methodmaterials/lib/methods/EffectLightMapMethod","./methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase","./methods/EffectRefractionEnvMapMethod":"awayjs-methodmaterials/lib/methods/EffectRefractionEnvMapMethod","./methods/EffectRimLightMethod":"awayjs-methodmaterials/lib/methods/EffectRimLightMethod","./methods/LightingMethodBase":"awayjs-methodmaterials/lib/methods/LightingMethodBase","./methods/NormalBasicMethod":"awayjs-methodmaterials/lib/methods/NormalBasicMethod","./methods/NormalHeightMapMethod":"awayjs-methodmaterials/lib/methods/NormalHeightMapMethod","./methods/NormalSimpleWaterMethod":"awayjs-methodmaterials/lib/methods/NormalSimpleWaterMethod","./methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase","./methods/ShadowCascadeMethod":"awayjs-methodmaterials/lib/methods/ShadowCascadeMethod","./methods/ShadowDitheredMethod":"awayjs-methodmaterials/lib/methods/ShadowDitheredMethod","./methods/ShadowFilteredMethod":"awayjs-methodmaterials/lib/methods/ShadowFilteredMethod","./methods/ShadowHardMethod":"awayjs-methodmaterials/lib/methods/ShadowHardMethod","./methods/ShadowMapMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase","./methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase","./methods/ShadowNearMethod":"awayjs-methodmaterials/lib/methods/ShadowNearMethod","./methods/ShadowSoftMethod":"awayjs-methodmaterials/lib/methods/ShadowSoftMethod","./methods/SpecularAnisotropicMethod":"awayjs-methodmaterials/lib/methods/SpecularAnisotropicMethod","./methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod","./methods/SpecularCelMethod":"awayjs-methodmaterials/lib/methods/SpecularCelMethod","./methods/SpecularCompositeMethod":"awayjs-methodmaterials/lib/methods/SpecularCompositeMethod","./methods/SpecularFresnelMethod":"awayjs-methodmaterials/lib/methods/SpecularFresnelMethod","./methods/SpecularPhongMethod":"awayjs-methodmaterials/lib/methods/SpecularPhongMethod"}],"awayjs-methodmaterials/lib/surfaces/GL_MethodMaterialSurface":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -6228,9 +6228,9 @@ var BlendMode_1 = require("awayjs-core/lib/image/BlendMode");
 var StaticLightPicker_1 = require("awayjs-display/lib/materials/lightpickers/StaticLightPicker");
 var ContextGLCompareMode_1 = require("awayjs-stagegl/lib/base/ContextGLCompareMode");
 var GL_SurfaceBase_1 = require("awayjs-renderergl/lib/surfaces/GL_SurfaceBase");
-var MethodMaterialMode_1 = require("awayjs-methodmaterials/lib/MethodMaterialMode");
-var MethodPassMode_1 = require("awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode");
-var MethodPass_1 = require("awayjs-methodmaterials/lib/surfaces/passes/MethodPass");
+var MethodMaterialMode_1 = require("../MethodMaterialMode");
+var MethodPassMode_1 = require("../surfaces/passes/MethodPassMode");
+var MethodPass_1 = require("../surfaces/passes/MethodPass");
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
  * using material methods to define their appearance.
@@ -6470,7 +6470,7 @@ var GL_MethodMaterialSurface = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = GL_MethodMaterialSurface;
 
-},{"awayjs-core/lib/image/BlendMode":undefined,"awayjs-display/lib/materials/lightpickers/StaticLightPicker":undefined,"awayjs-methodmaterials/lib/MethodMaterialMode":"awayjs-methodmaterials/lib/MethodMaterialMode","awayjs-methodmaterials/lib/surfaces/passes/MethodPass":"awayjs-methodmaterials/lib/surfaces/passes/MethodPass","awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode":"awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode","awayjs-renderergl/lib/surfaces/GL_SurfaceBase":undefined,"awayjs-stagegl/lib/base/ContextGLCompareMode":undefined}],"awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode":[function(require,module,exports){
+},{"../MethodMaterialMode":"awayjs-methodmaterials/lib/MethodMaterialMode","../surfaces/passes/MethodPass":"awayjs-methodmaterials/lib/surfaces/passes/MethodPass","../surfaces/passes/MethodPassMode":"awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode","awayjs-core/lib/image/BlendMode":undefined,"awayjs-display/lib/materials/lightpickers/StaticLightPicker":undefined,"awayjs-renderergl/lib/surfaces/GL_SurfaceBase":undefined,"awayjs-stagegl/lib/base/ContextGLCompareMode":undefined}],"awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode":[function(require,module,exports){
 "use strict";
 var PassMode = (function () {
     function PassMode() {
@@ -6505,9 +6505,9 @@ var LightingShader_1 = require("awayjs-renderergl/lib/shaders/LightingShader");
 var ShadingMethodEvent_1 = require("awayjs-renderergl/lib/events/ShadingMethodEvent");
 var ShaderBase_1 = require("awayjs-renderergl/lib/shaders/ShaderBase");
 var PassBase_1 = require("awayjs-renderergl/lib/surfaces/passes/PassBase");
-var MethodVO_1 = require("awayjs-methodmaterials/lib/data/MethodVO");
-var EffectColorTransformMethod_1 = require("awayjs-methodmaterials/lib/methods/EffectColorTransformMethod");
-var MethodPassMode_1 = require("awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode");
+var MethodVO_1 = require("../../data/MethodVO");
+var EffectColorTransformMethod_1 = require("../../methods/EffectColorTransformMethod");
+var MethodPassMode_1 = require("../../surfaces/passes/MethodPassMode");
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
  * using material methods to define their appearance.
@@ -7229,7 +7229,7 @@ var MethodPass = (function (_super) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = MethodPass;
 
-},{"awayjs-core/lib/events/AssetEvent":undefined,"awayjs-display/lib/materials/LightSources":undefined,"awayjs-methodmaterials/lib/data/MethodVO":"awayjs-methodmaterials/lib/data/MethodVO","awayjs-methodmaterials/lib/methods/EffectColorTransformMethod":"awayjs-methodmaterials/lib/methods/EffectColorTransformMethod","awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode":"awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode","awayjs-renderergl/lib/events/ShadingMethodEvent":undefined,"awayjs-renderergl/lib/shaders/LightingShader":undefined,"awayjs-renderergl/lib/shaders/ShaderBase":undefined,"awayjs-renderergl/lib/surfaces/passes/PassBase":undefined}],"awayjs-methodmaterials/lib/surfaces/passes/SingleObjectDepthPass":[function(require,module,exports){
+},{"../../data/MethodVO":"awayjs-methodmaterials/lib/data/MethodVO","../../methods/EffectColorTransformMethod":"awayjs-methodmaterials/lib/methods/EffectColorTransformMethod","../../surfaces/passes/MethodPassMode":"awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode","awayjs-core/lib/events/AssetEvent":undefined,"awayjs-display/lib/materials/LightSources":undefined,"awayjs-renderergl/lib/events/ShadingMethodEvent":undefined,"awayjs-renderergl/lib/shaders/LightingShader":undefined,"awayjs-renderergl/lib/shaders/ShaderBase":undefined,"awayjs-renderergl/lib/surfaces/passes/PassBase":undefined}],"awayjs-methodmaterials/lib/surfaces/passes/SingleObjectDepthPass":[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -7406,14 +7406,14 @@ exports.default = SingleObjectDepthPass;
 
 },{"awayjs-core/lib/geom/Matrix3D":undefined,"awayjs-core/lib/image/Image2D":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-renderergl/lib/surfaces/passes/PassBase":undefined,"awayjs-stagegl/lib/base/ContextGLDrawMode":undefined,"awayjs-stagegl/lib/base/ContextGLProgramType":undefined}],"awayjs-methodmaterials/lib/surfaces":[function(require,module,exports){
 "use strict";
-var MethodPass_1 = require("awayjs-methodmaterials/lib/surfaces/passes/MethodPass");
+var MethodPass_1 = require("./surfaces/passes/MethodPass");
 exports.MethodPass = MethodPass_1.default;
-var MethodPassMode_1 = require("awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode");
+var MethodPassMode_1 = require("./surfaces/passes/MethodPassMode");
 exports.MethodPassMode = MethodPassMode_1.default;
-var SingleObjectDepthPass_1 = require("awayjs-methodmaterials/lib/surfaces/passes/SingleObjectDepthPass");
+var SingleObjectDepthPass_1 = require("./surfaces/passes/SingleObjectDepthPass");
 exports.SingleObjectDepthPass = SingleObjectDepthPass_1.default;
-var GL_MethodMaterialSurface_1 = require("awayjs-methodmaterials/lib/surfaces/GL_MethodMaterialSurface");
+var GL_MethodMaterialSurface_1 = require("./surfaces/GL_MethodMaterialSurface");
 exports.GL_MethodMaterialSurface = GL_MethodMaterialSurface_1.default;
 
-},{"awayjs-methodmaterials/lib/surfaces/GL_MethodMaterialSurface":"awayjs-methodmaterials/lib/surfaces/GL_MethodMaterialSurface","awayjs-methodmaterials/lib/surfaces/passes/MethodPass":"awayjs-methodmaterials/lib/surfaces/passes/MethodPass","awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode":"awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode","awayjs-methodmaterials/lib/surfaces/passes/SingleObjectDepthPass":"awayjs-methodmaterials/lib/surfaces/passes/SingleObjectDepthPass"}]},{},[1])
+},{"./surfaces/GL_MethodMaterialSurface":"awayjs-methodmaterials/lib/surfaces/GL_MethodMaterialSurface","./surfaces/passes/MethodPass":"awayjs-methodmaterials/lib/surfaces/passes/MethodPass","./surfaces/passes/MethodPassMode":"awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode","./surfaces/passes/SingleObjectDepthPass":"awayjs-methodmaterials/lib/surfaces/passes/SingleObjectDepthPass"}]},{},[1])
 //# sourceMappingURL=awayjs-methodmaterials.js.map
