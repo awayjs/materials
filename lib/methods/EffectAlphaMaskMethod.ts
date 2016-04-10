@@ -10,8 +10,8 @@ import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegister
 import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
 import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
-import EffectMethodBase					from "awayjs-methodmaterials/lib/methods/EffectMethodBase";
+import MethodVO							from "../data/MethodVO";
+import EffectMethodBase					from "../methods/EffectMethodBase";
 
 /**
  * EffectAlphaMaskMethod allows the use of an additional texture to specify the alpha value of the material. When used

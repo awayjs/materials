@@ -6,13 +6,13 @@ import TextureBase					from "awayjs-display/lib/textures/TextureBase";
 
 import ContextGLCompareMode			from "awayjs-stagegl/lib/base/ContextGLCompareMode";
 
-import MethodMaterialMode			from "awayjs-methodmaterials/lib/MethodMaterialMode";
-import AmbientBasicMethod			from "awayjs-methodmaterials/lib/methods/AmbientBasicMethod";
-import DiffuseBasicMethod			from "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod";
-import EffectMethodBase				from "awayjs-methodmaterials/lib/methods/EffectMethodBase";
-import NormalBasicMethod			from "awayjs-methodmaterials/lib/methods/NormalBasicMethod";
-import ShadowMapMethodBase			from "awayjs-methodmaterials/lib/methods/ShadowMapMethodBase";
-import SpecularBasicMethod			from "awayjs-methodmaterials/lib/methods/SpecularBasicMethod";
+import MethodMaterialMode			from "./MethodMaterialMode";
+import AmbientBasicMethod			from "./methods/AmbientBasicMethod";
+import DiffuseBasicMethod			from "./methods/DiffuseBasicMethod";
+import EffectMethodBase				from "./methods/EffectMethodBase";
+import NormalBasicMethod			from "./methods/NormalBasicMethod";
+import ShadowMapMethodBase			from "./methods/ShadowMapMethodBase";
+import SpecularBasicMethod			from "./methods/SpecularBasicMethod";
 
 /**
  * MethodMaterial forms an abstract base class for the default shaded materials provided by Stage,

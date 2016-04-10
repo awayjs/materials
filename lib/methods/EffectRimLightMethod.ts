@@ -5,8 +5,8 @@ import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegister
 import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
 import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
-import EffectMethodBase					from "awayjs-methodmaterials/lib/methods/EffectMethodBase";
+import MethodVO							from "../data/MethodVO";
+import EffectMethodBase					from "../methods/EffectMethodBase";
 
 /**
  * EffectRimLightMethod provides a method to add rim lighting to a material. This adds a glow-like effect to edges of objects.

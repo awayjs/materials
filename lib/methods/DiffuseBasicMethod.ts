@@ -11,9 +11,9 @@ import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegister
 import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
 import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
-import ShadingMethodBase				from "awayjs-methodmaterials/lib/methods/ShadingMethodBase";
-import LightingMethodBase				from "awayjs-methodmaterials/lib/methods/LightingMethodBase";
+import MethodVO							from "../data/MethodVO";
+import ShadingMethodBase				from "../methods/ShadingMethodBase";
+import LightingMethodBase				from "../methods/LightingMethodBase";
 
 /**
  * DiffuseBasicMethod provides the default shading method for Lambert (dot3) diffuse lighting.

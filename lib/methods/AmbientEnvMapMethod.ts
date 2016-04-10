@@ -4,8 +4,8 @@ import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegister
 import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
 import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
-import AmbientBasicMethod				from "awayjs-methodmaterials/lib/methods/AmbientBasicMethod";
+import MethodVO							from "../data/MethodVO";
+import AmbientBasicMethod				from "../methods/AmbientBasicMethod";
 
 /**
  * AmbientEnvMapMethod provides a diffuse shading method that uses a diffuse irradiance environment map to

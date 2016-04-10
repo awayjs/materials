@@ -6,9 +6,9 @@ import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegister
 import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
 import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
-import DiffuseBasicMethod				from "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod";
-import DiffuseCompositeMethod			from "awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod";
+import MethodVO							from "../data/MethodVO";
+import DiffuseBasicMethod				from "../methods/DiffuseBasicMethod";
+import DiffuseCompositeMethod			from "../methods/DiffuseCompositeMethod";
 
 /**
  * DiffuseCelMethod provides a shading method to add diffuse cel (cartoon) shading.

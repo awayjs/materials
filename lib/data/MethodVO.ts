@@ -1,7 +1,7 @@
 import GL_TextureBase				from "awayjs-renderergl/lib/textures/GL_TextureBase";
 
-import MethodPass					from "awayjs-methodmaterials/lib/surfaces/passes/MethodPass";
-import ShadingMethodBase			from "awayjs-methodmaterials/lib/methods/ShadingMethodBase";
+import MethodPass					from "../surfaces/passes/MethodPass";
+import ShadingMethodBase			from "../methods/ShadingMethodBase";
 
 /**
  * MethodVO contains data for a given shader object for the use within a single material.

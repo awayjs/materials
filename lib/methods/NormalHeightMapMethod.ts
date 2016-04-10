@@ -6,9 +6,9 @@ import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegister
 import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
 import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
-import NormalBasicMethod				from "awayjs-methodmaterials/lib/methods/NormalBasicMethod";
-import ShadingMethodBase				from "awayjs-methodmaterials/lib/methods/ShadingMethodBase";
+import MethodVO							from "../data/MethodVO";
+import NormalBasicMethod				from "../methods/NormalBasicMethod";
+import ShadingMethodBase				from "../methods/ShadingMethodBase";
 
 /**
  * NormalHeightMapMethod provides a normal map method that uses a height map to calculate the normals.

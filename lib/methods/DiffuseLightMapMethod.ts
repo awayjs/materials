@@ -9,9 +9,9 @@ import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegister
 import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
 import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
-import DiffuseBasicMethod				from "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod";
-import DiffuseCompositeMethod			from "awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod";
+import MethodVO							from "../data/MethodVO";
+import DiffuseBasicMethod				from "../methods/DiffuseBasicMethod";
+import DiffuseCompositeMethod			from "../methods/DiffuseCompositeMethod";
 
 /**
  * DiffuseLightMapMethod provides a diffuse shading method that uses a light map to modulate the calculated diffuse

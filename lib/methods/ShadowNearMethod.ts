@@ -11,8 +11,8 @@ import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegister
 import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
 import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
-import ShadowMethodBase					from "awayjs-methodmaterials/lib/methods/ShadowMethodBase";
+import MethodVO							from "../data/MethodVO";
+import ShadowMethodBase					from "../methods/ShadowMethodBase";
 
 // TODO: shadow mappers references in materials should be an interface so that this class should NOT extend ShadowMapMethodBase just for some delegation work
 /**

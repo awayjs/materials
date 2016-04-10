@@ -1,1 +1,1 @@
-export {default as MethodVO}						from "awayjs-methodmaterials/lib/data/MethodVO";
+export {default as MethodVO}						from "./data/MethodVO";

@@ -9,10 +9,10 @@ import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegister
 import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
 import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
-import DiffuseBasicMethod				from "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod";
-import DiffuseCompositeMethod			from "awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod";
-import SingleObjectDepthPass			from "awayjs-methodmaterials/lib/surfaces/passes/SingleObjectDepthPass";
+import MethodVO							from "../data/MethodVO";
+import DiffuseBasicMethod				from "../methods/DiffuseBasicMethod";
+import DiffuseCompositeMethod			from "../methods/DiffuseCompositeMethod";
+import SingleObjectDepthPass			from "../surfaces/passes/SingleObjectDepthPass";
 
 /**
  * DiffuseSubSurfaceMethod provides a depth map-based diffuse shading method that mimics the scattering of

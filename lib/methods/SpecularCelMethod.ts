@@ -6,9 +6,9 @@ import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegister
 import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
 import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
-import SpecularBasicMethod				from "awayjs-methodmaterials/lib/methods/SpecularBasicMethod";
-import SpecularCompositeMethod			from "awayjs-methodmaterials/lib/methods/SpecularCompositeMethod";
+import MethodVO							from "../data/MethodVO";
+import SpecularBasicMethod				from "../methods/SpecularBasicMethod";
+import SpecularCompositeMethod			from "../methods/SpecularCompositeMethod";
 
 /**
  * SpecularCelMethod provides a shading method to add specular cel (cartoon) shading.

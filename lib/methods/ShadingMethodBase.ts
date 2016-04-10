@@ -13,7 +13,7 @@ import ShaderRegisterCache			from "awayjs-renderergl/lib/shaders/ShaderRegisterC
 import ShaderRegisterData			from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
 import ShaderRegisterElement		from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO						from "awayjs-methodmaterials/lib/data/MethodVO";
+import MethodVO						from "../data/MethodVO";
 
 
 /**

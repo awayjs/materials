@@ -6,8 +6,8 @@ import ShaderRegisterCache			from "awayjs-renderergl/lib/shaders/ShaderRegisterC
 import ShaderRegisterData			from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
 import ShaderRegisterElement		from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO						from "awayjs-methodmaterials/lib/data/MethodVO";
-import ShadingMethodBase			from "awayjs-methodmaterials/lib/methods/ShadingMethodBase";
+import MethodVO						from "../data/MethodVO";
+import ShadingMethodBase			from "../methods/ShadingMethodBase";
 
 /**
  * EffectMethodBase forms an abstract base class for shader methods that are not dependent on light sources,

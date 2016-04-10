@@ -12,8 +12,8 @@ import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegiste
 import ShadingMethodEvent				from "awayjs-renderergl/lib/events/ShadingMethodEvent";
 import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
 
-import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
-import DiffuseBasicMethod				from "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod";
+import MethodVO							from "../data/MethodVO";
+import DiffuseBasicMethod				from "../methods/DiffuseBasicMethod";
 
 /**
  * DiffuseCompositeMethod provides a base class for diffuse methods that wrap a diffuse method to alter the

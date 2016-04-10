@@ -15,9 +15,9 @@ import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegister
 import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
 import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
-import ShadowMapMethodBase				from "awayjs-methodmaterials/lib/methods/ShadowMapMethodBase";
-import ShadowMethodBase					from "awayjs-methodmaterials/lib/methods/ShadowMethodBase";
+import MethodVO							from "../data/MethodVO";
+import ShadowMapMethodBase				from "../methods/ShadowMapMethodBase";
+import ShadowMethodBase					from "../methods/ShadowMethodBase";
 
 /**
  * ShadowCascadeMethod is a shadow map method to apply cascade shadow mapping on materials.

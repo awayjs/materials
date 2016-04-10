@@ -7,8 +7,8 @@ import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegister
 import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
 import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
-import ShadowMethodBase					from "awayjs-methodmaterials/lib/methods/ShadowMethodBase";
+import MethodVO							from "../data/MethodVO";
+import ShadowMethodBase					from "../methods/ShadowMethodBase";
 
 /**
  * ShadowHardMethod provides the cheapest shadow map method by using a single tap without any filtering.

@@ -9,11 +9,11 @@ import IElementsClassGL					from "awayjs-renderergl/lib/elements/IElementsClassG
 import GL_SurfaceBase					from "awayjs-renderergl/lib/surfaces/GL_SurfaceBase";
 import SurfacePool						from "awayjs-renderergl/lib/surfaces/SurfacePool";
 
-import MethodMaterial					from "awayjs-methodmaterials/lib/MethodMaterial";
-import MethodMaterialMode				from "awayjs-methodmaterials/lib/MethodMaterialMode";
-import MethodPassMode					from "awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode";
-import MethodPass						from "awayjs-methodmaterials/lib/surfaces/passes/MethodPass";
-import EffectMethodBase					from "awayjs-methodmaterials/lib/methods/EffectMethodBase";
+import MethodMaterial					from "../MethodMaterial";
+import MethodMaterialMode				from "../MethodMaterialMode";
+import MethodPassMode					from "../surfaces/passes/MethodPassMode";
+import MethodPass						from "../surfaces/passes/MethodPass";
+import EffectMethodBase					from "../methods/EffectMethodBase";
 
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,

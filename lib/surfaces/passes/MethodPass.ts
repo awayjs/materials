@@ -26,17 +26,17 @@ import PassBase							from "awayjs-renderergl/lib/surfaces/passes/PassBase";
 import ILightingPass					from "awayjs-renderergl/lib/surfaces/passes/ILightingPass";
 import IElementsClassGL					from "awayjs-renderergl/lib/elements/IElementsClassGL";
 
-import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
-import AmbientBasicMethod				from "awayjs-methodmaterials/lib/methods/AmbientBasicMethod";
-import DiffuseBasicMethod				from "awayjs-methodmaterials/lib/methods/DiffuseBasicMethod";
-import EffectColorTransformMethod		from "awayjs-methodmaterials/lib/methods/EffectColorTransformMethod";
-import EffectMethodBase					from "awayjs-methodmaterials/lib/methods/EffectMethodBase";
-import LightingMethodBase				from "awayjs-methodmaterials/lib/methods/LightingMethodBase";
-import NormalBasicMethod				from "awayjs-methodmaterials/lib/methods/NormalBasicMethod";
-import ShadowMapMethodBase				from "awayjs-methodmaterials/lib/methods/ShadowMapMethodBase";
-import SpecularBasicMethod				from "awayjs-methodmaterials/lib/methods/SpecularBasicMethod";
-import MethodPassMode					from "awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode";
-import GL_MethodMaterialSurface				from "awayjs-methodmaterials/lib/surfaces/GL_MethodMaterialSurface";
+import MethodVO							from "../../data/MethodVO";
+import AmbientBasicMethod				from "../../methods/AmbientBasicMethod";
+import DiffuseBasicMethod				from "../../methods/DiffuseBasicMethod";
+import EffectColorTransformMethod		from "../../methods/EffectColorTransformMethod";
+import EffectMethodBase					from "../../methods/EffectMethodBase";
+import LightingMethodBase				from "../../methods/LightingMethodBase";
+import NormalBasicMethod				from "../../methods/NormalBasicMethod";
+import ShadowMapMethodBase				from "../../methods/ShadowMapMethodBase";
+import SpecularBasicMethod				from "../../methods/SpecularBasicMethod";
+import MethodPassMode					from "../../surfaces/passes/MethodPassMode";
+import GL_MethodMaterialSurface			from "../../surfaces/GL_MethodMaterialSurface";
 
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,

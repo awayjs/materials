@@ -17,8 +17,8 @@ import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegister
 import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
 import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
-import ShadowMapMethodBase				from "awayjs-methodmaterials/lib/methods/ShadowMapMethodBase";
+import MethodVO							from "../data/MethodVO";
+import ShadowMapMethodBase				from "../methods/ShadowMapMethodBase";
 
 /**
  * ShadowMethodBase provides an abstract method for simple (non-wrapping) shadow map methods.

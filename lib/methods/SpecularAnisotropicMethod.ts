@@ -3,8 +3,8 @@ import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegister
 import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
 import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
-import SpecularBasicMethod				from "awayjs-methodmaterials/lib/methods/SpecularBasicMethod";
+import MethodVO							from "../data/MethodVO";
+import SpecularBasicMethod				from "../methods/SpecularBasicMethod";
 
 /**
  * SpecularAnisotropicMethod provides a specular method resulting in anisotropic highlights. These are typical for

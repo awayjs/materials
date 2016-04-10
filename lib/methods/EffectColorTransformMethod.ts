@@ -7,8 +7,8 @@ import ShaderRegisterCache			from "awayjs-renderergl/lib/shaders/ShaderRegisterC
 import ShaderRegisterData			from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
 import ShaderRegisterElement		from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO						from "awayjs-methodmaterials/lib/data/MethodVO";
-import EffectMethodBase				from "awayjs-methodmaterials/lib/methods/EffectMethodBase";
+import MethodVO						from "../data/MethodVO";
+import EffectMethodBase				from "../methods/EffectMethodBase";
 
 /**
  * EffectColorTransformMethod provides a shading method that changes the colour of a material analogous to a

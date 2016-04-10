@@ -9,8 +9,8 @@ import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegister
 import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
 import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "awayjs-methodmaterials/lib/data/MethodVO";
-import NormalBasicMethod				from "awayjs-methodmaterials/lib/methods/NormalBasicMethod";
+import MethodVO							from "../data/MethodVO";
+import NormalBasicMethod				from "../methods/NormalBasicMethod";
 
 /**
  * NormalSimpleWaterMethod provides a basic normal map method to create water ripples by translating two wave normal maps.
