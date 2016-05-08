@@ -7240,7 +7240,6 @@ var Image2D_1 = require("awayjs-core/lib/image/Image2D");
 var Matrix3D_1 = require("awayjs-core/lib/geom/Matrix3D");
 var Single2DTexture_1 = require("awayjs-display/lib/textures/Single2DTexture");
 var ContextGLDrawMode_1 = require("awayjs-stagegl/lib/base/ContextGLDrawMode");
-var ContextGLProgramType_1 = require("awayjs-stagegl/lib/base/ContextGLProgramType");
 var PassBase_1 = require("awayjs-renderergl/lib/surfaces/passes/PassBase");
 /**
  * The SingleObjectDepthPass provides a material pass that renders a single object to a depth map from the point
@@ -7381,8 +7380,8 @@ var SingleObjectDepthPass = (function (_super) {
         matrix = light.iGetObjectProjectionMatrix(renderableGL.sourceEntity, camera.sceneTransform, this._projections[rId]);
         this._stage.setRenderTarget(this._textures[rId], true);
         context.clear(1.0, 1.0, 1.0);
-        context.setProgramConstantsFromMatrix(ContextGLProgramType_1.default.VERTEX, 0, matrix, true);
-        context.setProgramConstantsFromArray(ContextGLProgramType_1.default.FRAGMENT, 0, this._enc, 2);
+        //context.setProgramConstantsFromMatrix(ContextGLProgramType.VERTEX, 0, matrix, true);
+        //context.setProgramConstantsFromArray(ContextGLProgramType.FRAGMENT, 0, this._enc, 2);
         var elements = renderableGL.elements;
         var elementsGL = this._shader._elementsPool.getAbstraction(elements);
         elementsGL.activateVertexBufferVO(0, elements.positions);
@@ -7397,14 +7396,14 @@ var SingleObjectDepthPass = (function (_super) {
             this.updateProjectionTextures();
         // never scale
         _super.prototype._iActivate.call(this, camera);
-        this._stage.context.setProgramConstantsFromArray(ContextGLProgramType_1.default.VERTEX, 4, this._polyOffset, 1);
+        //this._stage.context.setProgramConstantsFromArray(ContextGLProgramType.VERTEX, 4, this._polyOffset, 1);
     };
     return SingleObjectDepthPass;
 }(PassBase_1.default));
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = SingleObjectDepthPass;
 
-},{"awayjs-core/lib/geom/Matrix3D":undefined,"awayjs-core/lib/image/Image2D":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-renderergl/lib/surfaces/passes/PassBase":undefined,"awayjs-stagegl/lib/base/ContextGLDrawMode":undefined,"awayjs-stagegl/lib/base/ContextGLProgramType":undefined}],"awayjs-methodmaterials/lib/surfaces":[function(require,module,exports){
+},{"awayjs-core/lib/geom/Matrix3D":undefined,"awayjs-core/lib/image/Image2D":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-renderergl/lib/surfaces/passes/PassBase":undefined,"awayjs-stagegl/lib/base/ContextGLDrawMode":undefined}],"awayjs-methodmaterials/lib/surfaces":[function(require,module,exports){
 "use strict";
 var MethodPass_1 = require("./surfaces/passes/MethodPass");
 exports.MethodPass = MethodPass_1.default;
