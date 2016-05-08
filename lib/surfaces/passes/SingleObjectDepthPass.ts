@@ -194,8 +194,8 @@ class SingleObjectDepthPass extends PassBase
 
 		this._stage.setRenderTarget(this._textures[rId], true);
 		context.clear(1.0, 1.0, 1.0);
-		context.setProgramConstantsFromMatrix(ContextGLProgramType.VERTEX, 0, matrix, true);
-		context.setProgramConstantsFromArray(ContextGLProgramType.FRAGMENT, 0, this._enc, 2);
+		//context.setProgramConstantsFromMatrix(ContextGLProgramType.VERTEX, 0, matrix, true);
+		//context.setProgramConstantsFromArray(ContextGLProgramType.FRAGMENT, 0, this._enc, 2);
 
 		var elements:TriangleElements = <TriangleElements> renderableGL.elements;
 		var elementsGL:GL_ElementsBase = this._shader._elementsPool.getAbstraction(elements);
@@ -216,7 +216,7 @@ class SingleObjectDepthPass extends PassBase
 		// never scale
 		super._iActivate(camera);
 
-		this._stage.context.setProgramConstantsFromArray(ContextGLProgramType.VERTEX, 4, this._polyOffset, 1);
+		//this._stage.context.setProgramConstantsFromArray(ContextGLProgramType.VERTEX, 4, this._polyOffset, 1);
 	}
 }
 
