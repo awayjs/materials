@@ -196,13 +196,12 @@ class SingleObjectDepthPass extends PassBase
 		context.clear(1.0, 1.0, 1.0);
 		//context.setProgramConstantsFromMatrix(ContextGLProgramType.VERTEX, 0, matrix, true);
 		//context.setProgramConstantsFromArray(ContextGLProgramType.FRAGMENT, 0, this._enc, 2);
+		
+		var elementsGL:GL_ElementsBase = renderableGL.elementsGL;
 
-		var elements:TriangleElements = <TriangleElements> renderableGL.elements;
-		var elementsGL:GL_ElementsBase = this._shader._elementsPool.getAbstraction(elements);
-
-		elementsGL.activateVertexBufferVO(0, elements.positions);
-		elementsGL.activateVertexBufferVO(1, elements.normals);
-		elementsGL.getIndexBufferGL().draw(ContextGLDrawMode.TRIANGLES, 0, elements.numElements);
+		// elementsGL.activateVertexBufferVO(0, elements.positions);
+		// elementsGL.activateVertexBufferVO(1, elements.normals);
+		// elementsGL.getIndexBufferGL().draw(ContextGLDrawMode.TRIANGLES, 0, elements.numElements);
 	}
 
 	/**
