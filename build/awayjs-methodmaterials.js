@@ -7,11 +7,11 @@ exports.methods = methods;
 var surfaces = require("./lib/surfaces");
 exports.surfaces = surfaces;
 var MethodMaterial_1 = require("./lib/MethodMaterial");
-exports.MethodMaterial = MethodMaterial_1.default;
+exports.MethodMaterial = MethodMaterial_1.MethodMaterial;
 var MethodMaterialMode_1 = require("./lib/MethodMaterialMode");
-exports.MethodMaterialMode = MethodMaterialMode_1.default;
+exports.MethodMaterialMode = MethodMaterialMode_1.MethodMaterialMode;
 var SurfacePool_1 = require("awayjs-renderergl/lib/surfaces/SurfacePool");
-SurfacePool_1.default.registerAbstraction(surfaces.GL_MethodMaterialSurface, MethodMaterial_1.default);
+SurfacePool_1.SurfacePool.registerAbstraction(surfaces.GL_MethodMaterialSurface, MethodMaterial_1.MethodMaterial);
 
 },{"./lib/MethodMaterial":"awayjs-methodmaterials/lib/MethodMaterial","./lib/MethodMaterialMode":"awayjs-methodmaterials/lib/MethodMaterialMode","./lib/data":"awayjs-methodmaterials/lib/data","./lib/methods":"awayjs-methodmaterials/lib/methods","./lib/surfaces":"awayjs-methodmaterials/lib/surfaces","awayjs-renderergl/lib/surfaces/SurfacePool":undefined}],"awayjs-methodmaterials/lib/MethodMaterialMode":[function(require,module,exports){
 "use strict";
@@ -28,8 +28,7 @@ var MethodMaterialMode = (function () {
     MethodMaterialMode.MULTI_PASS = "multiPass";
     return MethodMaterialMode;
 }());
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = MethodMaterialMode;
+exports.MethodMaterialMode = MethodMaterialMode;
 
 },{}],"awayjs-methodmaterials/lib/MethodMaterial":[function(require,module,exports){
 "use strict";
@@ -58,20 +57,20 @@ var MethodMaterial = (function (_super) {
         if (alpha === void 0) { alpha = 1; }
         _super.call(this, imageColor, alpha);
         this._effectMethods = new Array();
-        this._ambientMethod = new AmbientBasicMethod_1.default();
-        this._diffuseMethod = new DiffuseBasicMethod_1.default();
-        this._normalMethod = new NormalBasicMethod_1.default();
-        this._specularMethod = new SpecularBasicMethod_1.default();
-        this._depthCompareMode = ContextGLCompareMode_1.default.LESS_EQUAL;
-        this._mode = MethodMaterialMode_1.default.SINGLE_PASS;
+        this._ambientMethod = new AmbientBasicMethod_1.AmbientBasicMethod();
+        this._diffuseMethod = new DiffuseBasicMethod_1.DiffuseBasicMethod();
+        this._normalMethod = new NormalBasicMethod_1.NormalBasicMethod();
+        this._specularMethod = new SpecularBasicMethod_1.SpecularBasicMethod();
+        this._depthCompareMode = ContextGLCompareMode_1.ContextGLCompareMode.LESS_EQUAL;
+        this._mode = MethodMaterialMode_1.MethodMaterialMode.SINGLE_PASS;
         //add default methods owners
         this._ambientMethod.iAddOwner(this);
         this._diffuseMethod.iAddOwner(this);
         this._normalMethod.iAddOwner(this);
         this._specularMethod.iAddOwner(this);
         //set a texture if an image is present
-        if (imageColor instanceof Image2D_1.default)
-            this._ambientMethod.texture = new Single2DTexture_1.default();
+        if (imageColor instanceof Image2D_1.Image2D)
+            this._ambientMethod.texture = new Single2DTexture_1.Single2DTexture();
     }
     Object.defineProperty(MethodMaterial.prototype, "assetType", {
         /**
@@ -273,9 +272,8 @@ var MethodMaterial = (function (_super) {
     };
     MethodMaterial.assetType = "[materials MethodMaterial]";
     return MethodMaterial;
-}(MaterialBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = MethodMaterial;
+}(MaterialBase_1.MaterialBase));
+exports.MethodMaterial = MethodMaterial;
 
 },{"./MethodMaterialMode":"awayjs-methodmaterials/lib/MethodMaterialMode","./methods/AmbientBasicMethod":"awayjs-methodmaterials/lib/methods/AmbientBasicMethod","./methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod","./methods/NormalBasicMethod":"awayjs-methodmaterials/lib/methods/NormalBasicMethod","./methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod","awayjs-core/lib/image/Image2D":undefined,"awayjs-display/lib/materials/MaterialBase":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-stagegl/lib/base/ContextGLCompareMode":undefined}],"awayjs-methodmaterials/lib/data/MethodVO":[function(require,module,exports){
 "use strict";
@@ -310,13 +308,12 @@ var MethodVO = (function () {
     };
     return MethodVO;
 }());
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = MethodVO;
+exports.MethodVO = MethodVO;
 
 },{}],"awayjs-methodmaterials/lib/data":[function(require,module,exports){
 "use strict";
 var MethodVO_1 = require("./data/MethodVO");
-exports.MethodVO = MethodVO_1.default;
+exports.MethodVO = MethodVO_1.MethodVO;
 
 },{"./data/MethodVO":"awayjs-methodmaterials/lib/data/MethodVO"}],"awayjs-methodmaterials/lib/methods/AmbientBasicMethod":[function(require,module,exports){
 "use strict";
@@ -352,7 +349,7 @@ var AmbientBasicMethod = (function (_super) {
             shader.uvDependencies++;
         }
         else if (methodVO.textureGL) {
-            methodVO.textureGL.onClear(new AssetEvent_1.default(AssetEvent_1.default.CLEAR, this._texture));
+            methodVO.textureGL.onClear(new AssetEvent_1.AssetEvent(AssetEvent_1.AssetEvent.CLEAR, this._texture));
             methodVO.textureGL = null;
         }
     };
@@ -477,9 +474,8 @@ var AmbientBasicMethod = (function (_super) {
         this._colorB = (this._color & 0xff) / 0xff * this._strength;
     };
     return AmbientBasicMethod;
-}(ShadingMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = AmbientBasicMethod;
+}(ShadingMethodBase_1.ShadingMethodBase));
+exports.AmbientBasicMethod = AmbientBasicMethod;
 
 },{"../methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase","awayjs-core/lib/events/AssetEvent":undefined}],"awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod":[function(require,module,exports){
 "use strict";
@@ -514,7 +510,7 @@ var AmbientEnvMapMethod = (function (_super) {
             shader.uvDependencies++;
         }
         else if (methodVO.textureGL) {
-            methodVO.textureGL.onClear(new AssetEvent_1.default(AssetEvent_1.default.CLEAR, this._texture));
+            methodVO.textureGL.onClear(new AssetEvent_1.AssetEvent(AssetEvent_1.AssetEvent.CLEAR, this._texture));
             methodVO.textureGL = null;
         }
     };
@@ -525,9 +521,8 @@ var AmbientEnvMapMethod = (function (_super) {
         return (this._texture) ? methodVO.textureGL._iGetFragmentCode(targetReg, regCache, sharedRegisters, sharedRegisters.normalFragment) : "";
     };
     return AmbientEnvMapMethod;
-}(AmbientBasicMethod_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = AmbientEnvMapMethod;
+}(AmbientBasicMethod_1.AmbientBasicMethod));
+exports.AmbientEnvMapMethod = AmbientEnvMapMethod;
 
 },{"../methods/AmbientBasicMethod":"awayjs-methodmaterials/lib/methods/AmbientBasicMethod","awayjs-core/lib/events/AssetEvent":undefined}],"awayjs-methodmaterials/lib/methods/CurveBasicMethod":[function(require,module,exports){
 "use strict";
@@ -564,7 +559,7 @@ var CurveBasicMethod = (function (_super) {
             shader.uvDependencies++;
         }
         else if (methodVO.textureGL) {
-            methodVO.textureGL.onClear(new AssetEvent_1.default(AssetEvent_1.default.CLEAR, this._texture));
+            methodVO.textureGL.onClear(new AssetEvent_1.AssetEvent(AssetEvent_1.AssetEvent.CLEAR, this._texture));
             methodVO.textureGL = null;
         }
     };
@@ -696,7 +691,8 @@ var CurveBasicMethod = (function (_super) {
         this._colorB = (this._color & 0xff) / 0xff * this._ambient;
     };
     return CurveBasicMethod;
-}(ShadingMethodBase_1.default));
+}(ShadingMethodBase_1.ShadingMethodBase));
+exports.CurveBasicMethod = CurveBasicMethod;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = CurveBasicMethod;
 
@@ -755,7 +751,7 @@ var DiffuseBasicMethod = (function (_super) {
             shader.uvDependencies++;
         }
         else if (methodVO.textureGL) {
-            methodVO.textureGL.onClear(new AssetEvent_1.default(AssetEvent_1.default.CLEAR, null));
+            methodVO.textureGL.onClear(new AssetEvent_1.AssetEvent(AssetEvent_1.AssetEvent.CLEAR, null));
             methodVO.textureGL = null;
         }
         if (shader.numLights > 0) {
@@ -999,9 +995,8 @@ var DiffuseBasicMethod = (function (_super) {
         data[index + 3] = 1;
     };
     return DiffuseBasicMethod;
-}(LightingMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = DiffuseBasicMethod;
+}(LightingMethodBase_1.LightingMethodBase));
+exports.DiffuseBasicMethod = DiffuseBasicMethod;
 
 },{"../methods/LightingMethodBase":"awayjs-methodmaterials/lib/methods/LightingMethodBase","awayjs-core/lib/events/AssetEvent":undefined}],"awayjs-methodmaterials/lib/methods/DiffuseCelMethod":[function(require,module,exports){
 "use strict";
@@ -1120,9 +1115,8 @@ var DiffuseCelMethod = (function (_super) {
             "sat " + targetReg + ".w, " + targetReg + ".w\n";
     };
     return DiffuseCelMethod;
-}(DiffuseCompositeMethod_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = DiffuseCelMethod;
+}(DiffuseCompositeMethod_1.DiffuseCompositeMethod));
+exports.DiffuseCelMethod = DiffuseCelMethod;
 
 },{"../methods/DiffuseCompositeMethod":"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod"}],"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod":[function(require,module,exports){
 "use strict";
@@ -1150,9 +1144,9 @@ var DiffuseCompositeMethod = (function (_super) {
         if (baseMethod === void 0) { baseMethod = null; }
         _super.call(this);
         this._onShaderInvalidatedDelegate = function (event) { return _this.onShaderInvalidated(event); };
-        this.pBaseMethod = baseMethod || new DiffuseBasicMethod_1.default();
+        this.pBaseMethod = baseMethod || new DiffuseBasicMethod_1.DiffuseBasicMethod();
         this.pBaseMethod._iModulateMethod = modulateMethod;
-        this.pBaseMethod.addEventListener(ShadingMethodEvent_1.default.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
+        this.pBaseMethod.addEventListener(ShadingMethodEvent_1.ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
     }
     Object.defineProperty(DiffuseCompositeMethod.prototype, "baseMethod", {
         /**
@@ -1164,9 +1158,9 @@ var DiffuseCompositeMethod = (function (_super) {
         set: function (value) {
             if (this.pBaseMethod == value)
                 return;
-            this.pBaseMethod.removeEventListener(ShadingMethodEvent_1.default.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
+            this.pBaseMethod.removeEventListener(ShadingMethodEvent_1.ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
             this.pBaseMethod = value;
-            this.pBaseMethod.addEventListener(ShadingMethodEvent_1.default.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
+            this.pBaseMethod.addEventListener(ShadingMethodEvent_1.ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
             this.iInvalidateShaderProgram();
         },
         enumerable: true,
@@ -1196,7 +1190,7 @@ var DiffuseCompositeMethod = (function (_super) {
      * @inheritDoc
      */
     DiffuseCompositeMethod.prototype.dispose = function () {
-        this.pBaseMethod.removeEventListener(ShadingMethodEvent_1.default.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
+        this.pBaseMethod.removeEventListener(ShadingMethodEvent_1.ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
         this.pBaseMethod.dispose();
     };
     Object.defineProperty(DiffuseCompositeMethod.prototype, "texture", {
@@ -1319,9 +1313,8 @@ var DiffuseCompositeMethod = (function (_super) {
         this.iInvalidateShaderProgram();
     };
     return DiffuseCompositeMethod;
-}(DiffuseBasicMethod_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = DiffuseCompositeMethod;
+}(DiffuseBasicMethod_1.DiffuseBasicMethod));
+exports.DiffuseCompositeMethod = DiffuseCompositeMethod;
 
 },{"../methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod","awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/DiffuseDepthMethod":[function(require,module,exports){
 "use strict";
@@ -1390,9 +1383,8 @@ var DiffuseDepthMethod = (function (_super) {
         return code;
     };
     return DiffuseDepthMethod;
-}(DiffuseBasicMethod_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = DiffuseDepthMethod;
+}(DiffuseBasicMethod_1.DiffuseBasicMethod));
+exports.DiffuseDepthMethod = DiffuseDepthMethod;
 
 },{"../methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod"}],"awayjs-methodmaterials/lib/methods/DiffuseGradientMethod":[function(require,module,exports){
 "use strict";
@@ -1514,9 +1506,8 @@ var DiffuseGradientMethod = (function (_super) {
             methodVO.secondaryTextureGL._setRenderState(renderable);
     };
     return DiffuseGradientMethod;
-}(DiffuseBasicMethod_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = DiffuseGradientMethod;
+}(DiffuseBasicMethod_1.DiffuseBasicMethod));
+exports.DiffuseGradientMethod = DiffuseGradientMethod;
 
 },{"../methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod"}],"awayjs-methodmaterials/lib/methods/DiffuseLightMapMethod":[function(require,module,exports){
 "use strict";
@@ -1662,9 +1653,8 @@ var DiffuseLightMapMethod = (function (_super) {
      */
     DiffuseLightMapMethod.ADD = "add";
     return DiffuseLightMapMethod;
-}(DiffuseCompositeMethod_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = DiffuseLightMapMethod;
+}(DiffuseCompositeMethod_1.DiffuseCompositeMethod));
+exports.DiffuseLightMapMethod = DiffuseLightMapMethod;
 
 },{"../methods/DiffuseCompositeMethod":"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod"}],"awayjs-methodmaterials/lib/methods/DiffuseSubSurfaceMethod":[function(require,module,exports){
 "use strict";
@@ -1890,9 +1880,8 @@ var DiffuseSubSurfaceMethod = (function (_super) {
         return code;
     };
     return DiffuseSubSurfaceMethod;
-}(DiffuseCompositeMethod_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = DiffuseSubSurfaceMethod;
+}(DiffuseCompositeMethod_1.DiffuseCompositeMethod));
+exports.DiffuseSubSurfaceMethod = DiffuseSubSurfaceMethod;
 
 },{"../methods/DiffuseCompositeMethod":"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod"}],"awayjs-methodmaterials/lib/methods/DiffuseWrapMethod":[function(require,module,exports){
 "use strict";
@@ -1988,9 +1977,8 @@ var DiffuseWrapMethod = (function (_super) {
         data[index + 1] = 1 / (this._wrapFactor + 1);
     };
     return DiffuseWrapMethod;
-}(DiffuseBasicMethod_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = DiffuseWrapMethod;
+}(DiffuseBasicMethod_1.DiffuseBasicMethod));
+exports.DiffuseWrapMethod = DiffuseWrapMethod;
 
 },{"../methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod"}],"awayjs-methodmaterials/lib/methods/EffectAlphaMaskMethod":[function(require,module,exports){
 "use strict";
@@ -2088,9 +2076,8 @@ var EffectAlphaMaskMethod = (function (_super) {
         methodVO.textureGL._setRenderState(renderable);
     };
     return EffectAlphaMaskMethod;
-}(EffectMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = EffectAlphaMaskMethod;
+}(EffectMethodBase_1.EffectMethodBase));
+exports.EffectAlphaMaskMethod = EffectAlphaMaskMethod;
 
 },{"../methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectColorMatrixMethod":[function(require,module,exports){
 "use strict";
@@ -2179,9 +2166,8 @@ var EffectColorMatrixMethod = (function (_super) {
         data[index + 19] = matrix[19];
     };
     return EffectColorMatrixMethod;
-}(EffectMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = EffectColorMatrixMethod;
+}(EffectMethodBase_1.EffectMethodBase));
+exports.EffectColorMatrixMethod = EffectColorMatrixMethod;
 
 },{"../methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectColorTransformMethod":[function(require,module,exports){
 "use strict";
@@ -2245,9 +2231,8 @@ var EffectColorTransformMethod = (function (_super) {
         data[index + 7] = this._colorTransform.alphaOffset * inv;
     };
     return EffectColorTransformMethod;
-}(EffectMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = EffectColorTransformMethod;
+}(EffectMethodBase_1.EffectMethodBase));
+exports.EffectColorTransformMethod = EffectColorTransformMethod;
 
 },{"../methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectEnvMapMethod":[function(require,module,exports){
 "use strict";
@@ -2391,9 +2376,8 @@ var EffectEnvMapMethod = (function (_super) {
         return code;
     };
     return EffectEnvMapMethod;
-}(EffectMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = EffectEnvMapMethod;
+}(EffectMethodBase_1.EffectMethodBase));
+exports.EffectEnvMapMethod = EffectEnvMapMethod;
 
 },{"../methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectFogMethod":[function(require,module,exports){
 "use strict";
@@ -2514,9 +2498,8 @@ var EffectFogMethod = (function (_super) {
         return code;
     };
     return EffectFogMethod;
-}(EffectMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = EffectFogMethod;
+}(EffectMethodBase_1.EffectMethodBase));
+exports.EffectFogMethod = EffectFogMethod;
 
 },{"../methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectFresnelEnvMapMethod":[function(require,module,exports){
 "use strict";
@@ -2705,9 +2688,8 @@ var EffectFresnelEnvMapMethod = (function (_super) {
         return code;
     };
     return EffectFresnelEnvMapMethod;
-}(EffectMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = EffectFresnelEnvMapMethod;
+}(EffectMethodBase_1.EffectMethodBase));
+exports.EffectFresnelEnvMapMethod = EffectFresnelEnvMapMethod;
 
 },{"../methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectLightMapMethod":[function(require,module,exports){
 "use strict";
@@ -2845,9 +2827,8 @@ var EffectLightMapMethod = (function (_super) {
      */
     EffectLightMapMethod.ADD = "add";
     return EffectLightMapMethod;
-}(EffectMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = EffectLightMapMethod;
+}(EffectMethodBase_1.EffectMethodBase));
+exports.EffectLightMapMethod = EffectLightMapMethod;
 
 },{"../methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectMethodBase":[function(require,module,exports){
 "use strict";
@@ -2885,13 +2866,12 @@ var EffectMethodBase = (function (_super) {
      * @private
      */
     EffectMethodBase.prototype.iGetFragmentCode = function (shader, methodVO, targetReg, registerCache, sharedRegisters) {
-        throw new AbstractMethodError_1.default();
+        throw new AbstractMethodError_1.AbstractMethodError();
     };
     EffectMethodBase.assetType = "[asset EffectMethod]";
     return EffectMethodBase;
-}(ShadingMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = EffectMethodBase;
+}(ShadingMethodBase_1.ShadingMethodBase));
+exports.EffectMethodBase = EffectMethodBase;
 
 },{"../methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase","awayjs-core/lib/errors/AbstractMethodError":undefined}],"awayjs-methodmaterials/lib/methods/EffectRefractionEnvMapMethod":[function(require,module,exports){
 "use strict";
@@ -3151,9 +3131,8 @@ var EffectRefractionEnvMapMethod = (function (_super) {
         return code;
     };
     return EffectRefractionEnvMapMethod;
-}(EffectMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = EffectRefractionEnvMapMethod;
+}(EffectMethodBase_1.EffectMethodBase));
+exports.EffectRefractionEnvMapMethod = EffectRefractionEnvMapMethod;
 
 },{"../methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/EffectRimLightMethod":[function(require,module,exports){
 "use strict";
@@ -3310,9 +3289,8 @@ var EffectRimLightMethod = (function (_super) {
     EffectRimLightMethod.MULTIPLY = "multiply";
     EffectRimLightMethod.MIX = "mix";
     return EffectRimLightMethod;
-}(EffectMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = EffectRimLightMethod;
+}(EffectMethodBase_1.EffectMethodBase));
+exports.EffectRimLightMethod = EffectRimLightMethod;
 
 },{"../methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase"}],"awayjs-methodmaterials/lib/methods/LightingMethodBase":[function(require,module,exports){
 "use strict";
@@ -3377,9 +3355,8 @@ var LightingMethodBase = (function (_super) {
         return "";
     };
     return LightingMethodBase;
-}(ShadingMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = LightingMethodBase;
+}(ShadingMethodBase_1.ShadingMethodBase));
+exports.LightingMethodBase = LightingMethodBase;
 
 },{"../methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/NormalBasicMethod":[function(require,module,exports){
 "use strict";
@@ -3484,9 +3461,8 @@ var NormalBasicMethod = (function (_super) {
         return code;
     };
     return NormalBasicMethod;
-}(ShadingMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = NormalBasicMethod;
+}(ShadingMethodBase_1.ShadingMethodBase));
+exports.NormalBasicMethod = NormalBasicMethod;
 
 },{"../methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/NormalHeightMapMethod":[function(require,module,exports){
 "use strict";
@@ -3570,9 +3546,8 @@ var NormalHeightMapMethod = (function (_super) {
         return code;
     };
     return NormalHeightMapMethod;
-}(NormalBasicMethod_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = NormalHeightMapMethod;
+}(NormalBasicMethod_1.NormalBasicMethod));
+exports.NormalHeightMapMethod = NormalHeightMapMethod;
 
 },{"../methods/NormalBasicMethod":"awayjs-methodmaterials/lib/methods/NormalBasicMethod"}],"awayjs-methodmaterials/lib/methods/NormalSimpleWaterMethod":[function(require,module,exports){
 "use strict";
@@ -3749,9 +3724,8 @@ var NormalSimpleWaterMethod = (function (_super) {
         return code;
     };
     return NormalSimpleWaterMethod;
-}(NormalBasicMethod_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = NormalSimpleWaterMethod;
+}(NormalBasicMethod_1.NormalBasicMethod));
+exports.NormalSimpleWaterMethod = NormalSimpleWaterMethod;
 
 },{"../methods/NormalBasicMethod":"awayjs-methodmaterials/lib/methods/NormalBasicMethod"}],"awayjs-methodmaterials/lib/methods/ShadingMethodBase":[function(require,module,exports){
 "use strict";
@@ -3934,7 +3908,7 @@ var ShadingMethodBase = (function (_super) {
      * @internal
      */
     ShadingMethodBase.prototype.iInvalidateShaderProgram = function () {
-        this.dispatchEvent(new ShadingMethodEvent_1.default(ShadingMethodEvent_1.default.SHADER_INVALIDATED));
+        this.dispatchEvent(new ShadingMethodEvent_1.ShadingMethodEvent(ShadingMethodEvent_1.ShadingMethodEvent.SHADER_INVALIDATED));
     };
     /**
      * Copies the state from a ShadingMethodBase object into the current object.
@@ -3943,9 +3917,8 @@ var ShadingMethodBase = (function (_super) {
     };
     ShadingMethodBase.assetType = "[asset ShadingMethod]";
     return ShadingMethodBase;
-}(AssetBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = ShadingMethodBase;
+}(AssetBase_1.AssetBase));
+exports.ShadingMethodBase = ShadingMethodBase;
 
 },{"awayjs-core/lib/library/AssetBase":undefined,"awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/ShadowCascadeMethod":[function(require,module,exports){
 "use strict";
@@ -3976,13 +3949,13 @@ var ShadowCascadeMethod = (function (_super) {
         var _this = this;
         _super.call(this, shadowMethodBase.castingLight);
         this._baseMethod = shadowMethodBase;
-        if (!(this._pCastingLight instanceof DirectionalLight_1.default))
+        if (!(this._pCastingLight instanceof DirectionalLight_1.DirectionalLight))
             throw new Error("ShadowCascadeMethod is only compatible with DirectionalLight");
         this._cascadeShadowMapper = this._pCastingLight.shadowMapper;
         if (!this._cascadeShadowMapper)
             throw new Error("ShadowCascadeMethod requires a light that has a CascadeShadowMapper instance assigned to shadowMapper.");
-        this._cascadeShadowMapper.addEventListener(AssetEvent_1.default.INVALIDATE, function (event) { return _this.onCascadeChange(event); });
-        this._baseMethod.addEventListener(ShadingMethodEvent_1.default.SHADER_INVALIDATED, function (event) { return _this.onShaderInvalidated(event); });
+        this._cascadeShadowMapper.addEventListener(AssetEvent_1.AssetEvent.INVALIDATE, function (event) { return _this.onCascadeChange(event); });
+        this._baseMethod.addEventListener(ShadingMethodEvent_1.ShadingMethodEvent.SHADER_INVALIDATED, function (event) { return _this.onShaderInvalidated(event); });
     }
     Object.defineProperty(ShadowCascadeMethod.prototype, "baseMethod", {
         /**
@@ -3999,9 +3972,9 @@ var ShadowCascadeMethod = (function (_super) {
             var _this = this;
             if (this._baseMethod == value)
                 return;
-            this._baseMethod.removeEventListener(ShadingMethodEvent_1.default.SHADER_INVALIDATED, function (event) { return _this.onShaderInvalidated(event); });
+            this._baseMethod.removeEventListener(ShadingMethodEvent_1.ShadingMethodEvent.SHADER_INVALIDATED, function (event) { return _this.onShaderInvalidated(event); });
             this._baseMethod = value;
-            this._baseMethod.addEventListener(ShadingMethodEvent_1.default.SHADER_INVALIDATED, function (event) { return _this.onShaderInvalidated(event); });
+            this._baseMethod.addEventListener(ShadingMethodEvent_1.ShadingMethodEvent.SHADER_INVALIDATED, function (event) { return _this.onShaderInvalidated(event); });
             this.iInvalidateShaderProgram();
         },
         enumerable: true,
@@ -4011,7 +3984,7 @@ var ShadowCascadeMethod = (function (_super) {
      * @inheritDoc
      */
     ShadowCascadeMethod.prototype.iInitVO = function (shader, methodVO) {
-        var tempVO = new MethodVO_1.default(this._baseMethod, methodVO.pass);
+        var tempVO = new MethodVO_1.MethodVO(this._baseMethod, methodVO.pass);
         this._baseMethod.iInitVO(shader, tempVO);
         methodVO.needsGlobalVertexPos = true;
         methodVO.needsProjection = true;
@@ -4149,9 +4122,8 @@ var ShadowCascadeMethod = (function (_super) {
         this.iInvalidateShaderProgram();
     };
     return ShadowCascadeMethod;
-}(ShadowMapMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = ShadowCascadeMethod;
+}(ShadowMapMethodBase_1.ShadowMapMethodBase));
+exports.ShadowCascadeMethod = ShadowCascadeMethod;
 
 },{"../data/MethodVO":"awayjs-methodmaterials/lib/data/MethodVO","../methods/ShadowMapMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase","awayjs-core/lib/events/AssetEvent":undefined,"awayjs-display/lib/display/DirectionalLight":undefined,"awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/ShadowDitheredMethod":[function(require,module,exports){
 "use strict";
@@ -4239,7 +4211,7 @@ var ShadowDitheredMethod = (function (_super) {
      * Creates a texture containing the dithering noise texture.
      */
     ShadowDitheredMethod.prototype.initGrainTexture = function () {
-        ShadowDitheredMethod._grainBitmapImage2D = new BitmapImage2D_1.default(64, 64, false);
+        ShadowDitheredMethod._grainBitmapImage2D = new BitmapImage2D_1.BitmapImage2D(64, 64, false);
         var vec = new Array();
         var len = 4096;
         var step = 1 / (this._depthMapSize * this._range);
@@ -4266,7 +4238,7 @@ var ShadowDitheredMethod = (function (_super) {
             vec[i] = (Math.floor((r * .5 + .5) * 0xff) << 16) | (Math.floor((g * .5 + .5) * 0xff) << 8);
         }
         ShadowDitheredMethod._grainBitmapImage2D.setArray(ShadowDitheredMethod._grainBitmapImage2D.rect, vec);
-        ShadowDitheredMethod._grainTexture = new Single2DTexture_1.default(ShadowDitheredMethod._grainBitmapImage2D);
+        ShadowDitheredMethod._grainTexture = new Single2DTexture_1.Single2DTexture(ShadowDitheredMethod._grainBitmapImage2D);
     };
     /**
      * @inheritDoc
@@ -4406,9 +4378,8 @@ var ShadowDitheredMethod = (function (_super) {
         return this.getSampleCode(shader, methodVO, dataReg, decodeRegister, targetRegister, registerCache, sharedRegisters);
     };
     return ShadowDitheredMethod;
-}(ShadowMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = ShadowDitheredMethod;
+}(ShadowMethodBase_1.ShadowMethodBase));
+exports.ShadowDitheredMethod = ShadowDitheredMethod;
 
 },{"../methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase","awayjs-core/lib/image/BitmapImage2D":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined}],"awayjs-methodmaterials/lib/methods/ShadowFilteredMethod":[function(require,module,exports){
 "use strict";
@@ -4543,9 +4514,8 @@ var ShadowFilteredMethod = (function (_super) {
         return code;
     };
     return ShadowFilteredMethod;
-}(ShadowMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = ShadowFilteredMethod;
+}(ShadowMethodBase_1.ShadowMethodBase));
+exports.ShadowFilteredMethod = ShadowFilteredMethod;
 
 },{"../methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowHardMethod":[function(require,module,exports){
 "use strict";
@@ -4620,9 +4590,8 @@ var ShadowHardMethod = (function (_super) {
     ShadowHardMethod.prototype.iActivateForCascade = function (shader, methodVO, stage) {
     };
     return ShadowHardMethod;
-}(ShadowMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = ShadowHardMethod;
+}(ShadowMethodBase_1.ShadowMethodBase));
+exports.ShadowHardMethod = ShadowHardMethod;
 
 },{"../methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase":[function(require,module,exports){
 "use strict";
@@ -4699,9 +4668,8 @@ var ShadowMapMethodBase = (function (_super) {
     });
     ShadowMapMethodBase.assetType = "[asset ShadowMapMethod]";
     return ShadowMapMethodBase;
-}(ShadingMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = ShadowMapMethodBase;
+}(ShadingMethodBase_1.ShadingMethodBase));
+exports.ShadowMapMethodBase = ShadowMapMethodBase;
 
 },{"../methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase"}],"awayjs-methodmaterials/lib/methods/ShadowMethodBase":[function(require,module,exports){
 "use strict";
@@ -4724,7 +4692,7 @@ var ShadowMethodBase = (function (_super) {
      */
     function ShadowMethodBase(castingLight) {
         _super.call(this, castingLight);
-        this._pUsePoint = (castingLight instanceof PointLight_1.default);
+        this._pUsePoint = (castingLight instanceof PointLight_1.PointLight);
     }
     /**
      * @inheritDoc
@@ -4840,7 +4808,7 @@ var ShadowMethodBase = (function (_super) {
      * @return
      */
     ShadowMethodBase.prototype._pGetPlanarFragmentCode = function (shader, methodVO, targetReg, regCache, sharedRegisters) {
-        throw new AbstractMethodError_1.default();
+        throw new AbstractMethodError_1.AbstractMethodError();
     };
     /**
      * Gets the fragment code for shadow mapping with a point light.
@@ -4850,7 +4818,7 @@ var ShadowMethodBase = (function (_super) {
      * @return
      */
     ShadowMethodBase.prototype._pGetPointFragmentCode = function (shader, methodVO, targetReg, regCache, sharedRegisters) {
-        throw new AbstractMethodError_1.default();
+        throw new AbstractMethodError_1.AbstractMethodError();
     };
     /**
      * @inheritDoc
@@ -4902,9 +4870,8 @@ var ShadowMethodBase = (function (_super) {
         throw new Error("This shadow method is incompatible with cascade shadows");
     };
     return ShadowMethodBase;
-}(ShadowMapMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = ShadowMethodBase;
+}(ShadowMapMethodBase_1.ShadowMapMethodBase));
+exports.ShadowMethodBase = ShadowMethodBase;
 
 },{"../methods/ShadowMapMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase","awayjs-core/lib/errors/AbstractMethodError":undefined,"awayjs-display/lib/display/PointLight":undefined}],"awayjs-methodmaterials/lib/methods/ShadowNearMethod":[function(require,module,exports){
 "use strict";
@@ -4939,7 +4906,7 @@ var ShadowNearMethod = (function (_super) {
         this._nearShadowMapper = this._pCastingLight.shadowMapper;
         if (!this._nearShadowMapper)
             throw new Error("ShadowNearMethod requires a light that has a NearDirectionalShadowMapper instance assigned to shadowMapper.");
-        this._baseMethod.addEventListener(ShadingMethodEvent_1.default.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
+        this._baseMethod.addEventListener(ShadingMethodEvent_1.ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
     }
     Object.defineProperty(ShadowNearMethod.prototype, "baseMethod", {
         /**
@@ -4951,9 +4918,9 @@ var ShadowNearMethod = (function (_super) {
         set: function (value) {
             if (this._baseMethod == value)
                 return;
-            this._baseMethod.removeEventListener(ShadingMethodEvent_1.default.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
+            this._baseMethod.removeEventListener(ShadingMethodEvent_1.ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
             this._baseMethod = value;
-            this._baseMethod.addEventListener(ShadingMethodEvent_1.default.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
+            this._baseMethod.addEventListener(ShadingMethodEvent_1.ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
             this.iInvalidateShaderProgram();
         },
         enumerable: true,
@@ -4981,7 +4948,7 @@ var ShadowNearMethod = (function (_super) {
      * @inheritDoc
      */
     ShadowNearMethod.prototype.dispose = function () {
-        this._baseMethod.removeEventListener(ShadingMethodEvent_1.default.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
+        this._baseMethod.removeEventListener(ShadingMethodEvent_1.ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
     };
     Object.defineProperty(ShadowNearMethod.prototype, "alpha", {
         /**
@@ -5095,9 +5062,8 @@ var ShadowNearMethod = (function (_super) {
         this.iInvalidateShaderProgram();
     };
     return ShadowNearMethod;
-}(ShadowMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = ShadowNearMethod;
+}(ShadowMethodBase_1.ShadowMethodBase));
+exports.ShadowNearMethod = ShadowNearMethod;
 
 },{"../methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase","awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/ShadowSoftMethod":[function(require,module,exports){
 "use strict";
@@ -5141,7 +5107,7 @@ var ShadowSoftMethod = (function (_super) {
                 this._numSamples = 1;
             else if (this._numSamples > 32)
                 this._numSamples = 32;
-            this._offsets = PoissonLookup_1.default.getDistribution(this._numSamples);
+            this._offsets = PoissonLookup_1.PoissonLookup.getDistribution(this._numSamples);
             this.iInvalidateShaderProgram();
         },
         enumerable: true,
@@ -5272,9 +5238,8 @@ var ShadowSoftMethod = (function (_super) {
         return code;
     };
     return ShadowSoftMethod;
-}(ShadowMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = ShadowSoftMethod;
+}(ShadowMethodBase_1.ShadowMethodBase));
+exports.ShadowSoftMethod = ShadowSoftMethod;
 
 },{"../methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase","awayjs-core/lib/geom/PoissonLookup":undefined}],"awayjs-methodmaterials/lib/methods/SpecularAnisotropicMethod":[function(require,module,exports){
 "use strict";
@@ -5352,9 +5317,8 @@ var SpecularAnisotropicMethod = (function (_super) {
         return code;
     };
     return SpecularAnisotropicMethod;
-}(SpecularBasicMethod_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = SpecularAnisotropicMethod;
+}(SpecularBasicMethod_1.SpecularBasicMethod));
+exports.SpecularAnisotropicMethod = SpecularAnisotropicMethod;
 
 },{"../methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod"}],"awayjs-methodmaterials/lib/methods/SpecularBasicMethod":[function(require,module,exports){
 "use strict";
@@ -5399,7 +5363,7 @@ var SpecularBasicMethod = (function (_super) {
             shader.uvDependencies++;
         }
         else if (methodVO.textureGL) {
-            methodVO.textureGL.onClear(new AssetEvent_1.default(AssetEvent_1.default.CLEAR, null));
+            methodVO.textureGL.onClear(new AssetEvent_1.AssetEvent(AssetEvent_1.AssetEvent.CLEAR, null));
             methodVO.textureGL = null;
         }
     };
@@ -5627,9 +5591,8 @@ var SpecularBasicMethod = (function (_super) {
         this._iSpecularB = (this._color & 0xff) / 0xff * this._strength;
     };
     return SpecularBasicMethod;
-}(LightingMethodBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = SpecularBasicMethod;
+}(LightingMethodBase_1.LightingMethodBase));
+exports.SpecularBasicMethod = SpecularBasicMethod;
 
 },{"../methods/LightingMethodBase":"awayjs-methodmaterials/lib/methods/LightingMethodBase","awayjs-core/lib/events/AssetEvent":undefined}],"awayjs-methodmaterials/lib/methods/SpecularCelMethod":[function(require,module,exports){
 "use strict";
@@ -5726,9 +5689,8 @@ var SpecularCelMethod = (function (_super) {
         return _super.prototype.iGetFragmentPreLightingCode.call(this, shader, methodVO, registerCache, sharedRegisters);
     };
     return SpecularCelMethod;
-}(SpecularCompositeMethod_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = SpecularCelMethod;
+}(SpecularCompositeMethod_1.SpecularCompositeMethod));
+exports.SpecularCelMethod = SpecularCelMethod;
 
 },{"../methods/SpecularCompositeMethod":"awayjs-methodmaterials/lib/methods/SpecularCompositeMethod"}],"awayjs-methodmaterials/lib/methods/SpecularCompositeMethod":[function(require,module,exports){
 "use strict";
@@ -5756,9 +5718,9 @@ var SpecularCompositeMethod = (function (_super) {
         if (baseMethod === void 0) { baseMethod = null; }
         _super.call(this);
         this._onShaderInvalidatedDelegate = function (event) { return _this.onShaderInvalidated(event); };
-        this._baseMethod = baseMethod || new SpecularBasicMethod_1.default();
+        this._baseMethod = baseMethod || new SpecularBasicMethod_1.SpecularBasicMethod();
         this._baseMethod._iModulateMethod = modulateMethod;
-        this._baseMethod.addEventListener(ShadingMethodEvent_1.default.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
+        this._baseMethod.addEventListener(ShadingMethodEvent_1.ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
     }
     /**
      * @inheritDoc
@@ -5790,9 +5752,9 @@ var SpecularCompositeMethod = (function (_super) {
         set: function (value) {
             if (this._baseMethod == value)
                 return;
-            this._baseMethod.removeEventListener(ShadingMethodEvent_1.default.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
+            this._baseMethod.removeEventListener(ShadingMethodEvent_1.ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
             this._baseMethod = value;
-            this._baseMethod.addEventListener(ShadingMethodEvent_1.default.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
+            this._baseMethod.addEventListener(ShadingMethodEvent_1.ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
             this.iInvalidateShaderProgram();
         },
         enumerable: true,
@@ -5844,7 +5806,7 @@ var SpecularCompositeMethod = (function (_super) {
      * @inheritDoc
      */
     SpecularCompositeMethod.prototype.dispose = function () {
-        this._baseMethod.removeEventListener(ShadingMethodEvent_1.default.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
+        this._baseMethod.removeEventListener(ShadingMethodEvent_1.ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
         this._baseMethod.dispose();
     };
     Object.defineProperty(SpecularCompositeMethod.prototype, "texture", {
@@ -5929,9 +5891,8 @@ var SpecularCompositeMethod = (function (_super) {
         this.iInvalidateShaderProgram();
     };
     return SpecularCompositeMethod;
-}(SpecularBasicMethod_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = SpecularCompositeMethod;
+}(SpecularBasicMethod_1.SpecularBasicMethod));
+exports.SpecularCompositeMethod = SpecularCompositeMethod;
 
 },{"../methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod","awayjs-renderergl/lib/events/ShadingMethodEvent":undefined}],"awayjs-methodmaterials/lib/methods/SpecularFresnelMethod":[function(require,module,exports){
 "use strict";
@@ -6058,9 +6019,8 @@ var SpecularFresnelMethod = (function (_super) {
         return code;
     };
     return SpecularFresnelMethod;
-}(SpecularCompositeMethod_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = SpecularFresnelMethod;
+}(SpecularCompositeMethod_1.SpecularCompositeMethod));
+exports.SpecularFresnelMethod = SpecularFresnelMethod;
 
 },{"../methods/SpecularCompositeMethod":"awayjs-methodmaterials/lib/methods/SpecularCompositeMethod"}],"awayjs-methodmaterials/lib/methods/SpecularPhongMethod":[function(require,module,exports){
 "use strict";
@@ -6130,92 +6090,91 @@ var SpecularPhongMethod = (function (_super) {
         return code;
     };
     return SpecularPhongMethod;
-}(SpecularBasicMethod_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = SpecularPhongMethod;
+}(SpecularBasicMethod_1.SpecularBasicMethod));
+exports.SpecularPhongMethod = SpecularPhongMethod;
 
 },{"../methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod"}],"awayjs-methodmaterials/lib/methods":[function(require,module,exports){
 "use strict";
 var AmbientBasicMethod_1 = require("./methods/AmbientBasicMethod");
-exports.AmbientBasicMethod = AmbientBasicMethod_1.default;
+exports.AmbientBasicMethod = AmbientBasicMethod_1.AmbientBasicMethod;
 var AmbientEnvMapMethod_1 = require("./methods/AmbientEnvMapMethod");
-exports.AmbientEnvMapMethod = AmbientEnvMapMethod_1.default;
+exports.AmbientEnvMapMethod = AmbientEnvMapMethod_1.AmbientEnvMapMethod;
 var CurveBasicMethod_1 = require("./methods/CurveBasicMethod");
-exports.CurveBasicMethod = CurveBasicMethod_1.default;
+exports.CurveBasicMethod = CurveBasicMethod_1.CurveBasicMethod;
 var DiffuseBasicMethod_1 = require("./methods/DiffuseBasicMethod");
-exports.DiffuseBasicMethod = DiffuseBasicMethod_1.default;
+exports.DiffuseBasicMethod = DiffuseBasicMethod_1.DiffuseBasicMethod;
 var DiffuseCelMethod_1 = require("./methods/DiffuseCelMethod");
-exports.DiffuseCelMethod = DiffuseCelMethod_1.default;
+exports.DiffuseCelMethod = DiffuseCelMethod_1.DiffuseCelMethod;
 var DiffuseCompositeMethod_1 = require("./methods/DiffuseCompositeMethod");
-exports.DiffuseCompositeMethod = DiffuseCompositeMethod_1.default;
+exports.DiffuseCompositeMethod = DiffuseCompositeMethod_1.DiffuseCompositeMethod;
 var DiffuseDepthMethod_1 = require("./methods/DiffuseDepthMethod");
-exports.DiffuseDepthMethod = DiffuseDepthMethod_1.default;
+exports.DiffuseDepthMethod = DiffuseDepthMethod_1.DiffuseDepthMethod;
 var DiffuseGradientMethod_1 = require("./methods/DiffuseGradientMethod");
-exports.DiffuseGradientMethod = DiffuseGradientMethod_1.default;
+exports.DiffuseGradientMethod = DiffuseGradientMethod_1.DiffuseGradientMethod;
 var DiffuseLightMapMethod_1 = require("./methods/DiffuseLightMapMethod");
-exports.DiffuseLightMapMethod = DiffuseLightMapMethod_1.default;
+exports.DiffuseLightMapMethod = DiffuseLightMapMethod_1.DiffuseLightMapMethod;
 var DiffuseSubSurfaceMethod_1 = require("./methods/DiffuseSubSurfaceMethod");
-exports.DiffuseSubSurfaceMethod = DiffuseSubSurfaceMethod_1.default;
+exports.DiffuseSubSurfaceMethod = DiffuseSubSurfaceMethod_1.DiffuseSubSurfaceMethod;
 var DiffuseWrapMethod_1 = require("./methods/DiffuseWrapMethod");
-exports.DiffuseWrapMethod = DiffuseWrapMethod_1.default;
+exports.DiffuseWrapMethod = DiffuseWrapMethod_1.DiffuseWrapMethod;
 var EffectAlphaMaskMethod_1 = require("./methods/EffectAlphaMaskMethod");
-exports.EffectAlphaMaskMethod = EffectAlphaMaskMethod_1.default;
+exports.EffectAlphaMaskMethod = EffectAlphaMaskMethod_1.EffectAlphaMaskMethod;
 var EffectColorMatrixMethod_1 = require("./methods/EffectColorMatrixMethod");
-exports.EffectColorMatrixMethod = EffectColorMatrixMethod_1.default;
+exports.EffectColorMatrixMethod = EffectColorMatrixMethod_1.EffectColorMatrixMethod;
 var EffectColorTransformMethod_1 = require("./methods/EffectColorTransformMethod");
-exports.EffectColorTransformMethod = EffectColorTransformMethod_1.default;
+exports.EffectColorTransformMethod = EffectColorTransformMethod_1.EffectColorTransformMethod;
 var EffectEnvMapMethod_1 = require("./methods/EffectEnvMapMethod");
-exports.EffectEnvMapMethod = EffectEnvMapMethod_1.default;
+exports.EffectEnvMapMethod = EffectEnvMapMethod_1.EffectEnvMapMethod;
 var EffectFogMethod_1 = require("./methods/EffectFogMethod");
-exports.EffectFogMethod = EffectFogMethod_1.default;
+exports.EffectFogMethod = EffectFogMethod_1.EffectFogMethod;
 var EffectFresnelEnvMapMethod_1 = require("./methods/EffectFresnelEnvMapMethod");
-exports.EffectFresnelEnvMapMethod = EffectFresnelEnvMapMethod_1.default;
+exports.EffectFresnelEnvMapMethod = EffectFresnelEnvMapMethod_1.EffectFresnelEnvMapMethod;
 var EffectLightMapMethod_1 = require("./methods/EffectLightMapMethod");
-exports.EffectLightMapMethod = EffectLightMapMethod_1.default;
+exports.EffectLightMapMethod = EffectLightMapMethod_1.EffectLightMapMethod;
 var EffectMethodBase_1 = require("./methods/EffectMethodBase");
-exports.EffectMethodBase = EffectMethodBase_1.default;
+exports.EffectMethodBase = EffectMethodBase_1.EffectMethodBase;
 var EffectRefractionEnvMapMethod_1 = require("./methods/EffectRefractionEnvMapMethod");
-exports.EffectRefractionEnvMapMethod = EffectRefractionEnvMapMethod_1.default;
+exports.EffectRefractionEnvMapMethod = EffectRefractionEnvMapMethod_1.EffectRefractionEnvMapMethod;
 var EffectRimLightMethod_1 = require("./methods/EffectRimLightMethod");
-exports.EffectRimLightMethod = EffectRimLightMethod_1.default;
+exports.EffectRimLightMethod = EffectRimLightMethod_1.EffectRimLightMethod;
 var LightingMethodBase_1 = require("./methods/LightingMethodBase");
-exports.LightingMethodBase = LightingMethodBase_1.default;
+exports.LightingMethodBase = LightingMethodBase_1.LightingMethodBase;
 var NormalBasicMethod_1 = require("./methods/NormalBasicMethod");
-exports.NormalBasicMethod = NormalBasicMethod_1.default;
+exports.NormalBasicMethod = NormalBasicMethod_1.NormalBasicMethod;
 var NormalHeightMapMethod_1 = require("./methods/NormalHeightMapMethod");
-exports.NormalHeightMapMethod = NormalHeightMapMethod_1.default;
+exports.NormalHeightMapMethod = NormalHeightMapMethod_1.NormalHeightMapMethod;
 var NormalSimpleWaterMethod_1 = require("./methods/NormalSimpleWaterMethod");
-exports.NormalSimpleWaterMethod = NormalSimpleWaterMethod_1.default;
+exports.NormalSimpleWaterMethod = NormalSimpleWaterMethod_1.NormalSimpleWaterMethod;
 var ShadingMethodBase_1 = require("./methods/ShadingMethodBase");
-exports.ShadingMethodBase = ShadingMethodBase_1.default;
+exports.ShadingMethodBase = ShadingMethodBase_1.ShadingMethodBase;
 var ShadowCascadeMethod_1 = require("./methods/ShadowCascadeMethod");
-exports.ShadowCascadeMethod = ShadowCascadeMethod_1.default;
+exports.ShadowCascadeMethod = ShadowCascadeMethod_1.ShadowCascadeMethod;
 var ShadowDitheredMethod_1 = require("./methods/ShadowDitheredMethod");
-exports.ShadowDitheredMethod = ShadowDitheredMethod_1.default;
+exports.ShadowDitheredMethod = ShadowDitheredMethod_1.ShadowDitheredMethod;
 var ShadowFilteredMethod_1 = require("./methods/ShadowFilteredMethod");
-exports.ShadowFilteredMethod = ShadowFilteredMethod_1.default;
+exports.ShadowFilteredMethod = ShadowFilteredMethod_1.ShadowFilteredMethod;
 var ShadowHardMethod_1 = require("./methods/ShadowHardMethod");
-exports.ShadowHardMethod = ShadowHardMethod_1.default;
+exports.ShadowHardMethod = ShadowHardMethod_1.ShadowHardMethod;
 var ShadowMapMethodBase_1 = require("./methods/ShadowMapMethodBase");
-exports.ShadowMapMethodBase = ShadowMapMethodBase_1.default;
+exports.ShadowMapMethodBase = ShadowMapMethodBase_1.ShadowMapMethodBase;
 var ShadowMethodBase_1 = require("./methods/ShadowMethodBase");
-exports.ShadowMethodBase = ShadowMethodBase_1.default;
+exports.ShadowMethodBase = ShadowMethodBase_1.ShadowMethodBase;
 var ShadowNearMethod_1 = require("./methods/ShadowNearMethod");
-exports.ShadowNearMethod = ShadowNearMethod_1.default;
+exports.ShadowNearMethod = ShadowNearMethod_1.ShadowNearMethod;
 var ShadowSoftMethod_1 = require("./methods/ShadowSoftMethod");
-exports.ShadowSoftMethod = ShadowSoftMethod_1.default;
+exports.ShadowSoftMethod = ShadowSoftMethod_1.ShadowSoftMethod;
 var SpecularAnisotropicMethod_1 = require("./methods/SpecularAnisotropicMethod");
-exports.SpecularAnisotropicMethod = SpecularAnisotropicMethod_1.default;
+exports.SpecularAnisotropicMethod = SpecularAnisotropicMethod_1.SpecularAnisotropicMethod;
 var SpecularBasicMethod_1 = require("./methods/SpecularBasicMethod");
-exports.SpecularBasicMethod = SpecularBasicMethod_1.default;
+exports.SpecularBasicMethod = SpecularBasicMethod_1.SpecularBasicMethod;
 var SpecularCelMethod_1 = require("./methods/SpecularCelMethod");
-exports.SpecularCelMethod = SpecularCelMethod_1.default;
+exports.SpecularCelMethod = SpecularCelMethod_1.SpecularCelMethod;
 var SpecularCompositeMethod_1 = require("./methods/SpecularCompositeMethod");
-exports.SpecularCompositeMethod = SpecularCompositeMethod_1.default;
+exports.SpecularCompositeMethod = SpecularCompositeMethod_1.SpecularCompositeMethod;
 var SpecularFresnelMethod_1 = require("./methods/SpecularFresnelMethod");
-exports.SpecularFresnelMethod = SpecularFresnelMethod_1.default;
+exports.SpecularFresnelMethod = SpecularFresnelMethod_1.SpecularFresnelMethod;
 var SpecularPhongMethod_1 = require("./methods/SpecularPhongMethod");
-exports.SpecularPhongMethod = SpecularPhongMethod_1.default;
+exports.SpecularPhongMethod = SpecularPhongMethod_1.SpecularPhongMethod;
 
 },{"./methods/AmbientBasicMethod":"awayjs-methodmaterials/lib/methods/AmbientBasicMethod","./methods/AmbientEnvMapMethod":"awayjs-methodmaterials/lib/methods/AmbientEnvMapMethod","./methods/CurveBasicMethod":"awayjs-methodmaterials/lib/methods/CurveBasicMethod","./methods/DiffuseBasicMethod":"awayjs-methodmaterials/lib/methods/DiffuseBasicMethod","./methods/DiffuseCelMethod":"awayjs-methodmaterials/lib/methods/DiffuseCelMethod","./methods/DiffuseCompositeMethod":"awayjs-methodmaterials/lib/methods/DiffuseCompositeMethod","./methods/DiffuseDepthMethod":"awayjs-methodmaterials/lib/methods/DiffuseDepthMethod","./methods/DiffuseGradientMethod":"awayjs-methodmaterials/lib/methods/DiffuseGradientMethod","./methods/DiffuseLightMapMethod":"awayjs-methodmaterials/lib/methods/DiffuseLightMapMethod","./methods/DiffuseSubSurfaceMethod":"awayjs-methodmaterials/lib/methods/DiffuseSubSurfaceMethod","./methods/DiffuseWrapMethod":"awayjs-methodmaterials/lib/methods/DiffuseWrapMethod","./methods/EffectAlphaMaskMethod":"awayjs-methodmaterials/lib/methods/EffectAlphaMaskMethod","./methods/EffectColorMatrixMethod":"awayjs-methodmaterials/lib/methods/EffectColorMatrixMethod","./methods/EffectColorTransformMethod":"awayjs-methodmaterials/lib/methods/EffectColorTransformMethod","./methods/EffectEnvMapMethod":"awayjs-methodmaterials/lib/methods/EffectEnvMapMethod","./methods/EffectFogMethod":"awayjs-methodmaterials/lib/methods/EffectFogMethod","./methods/EffectFresnelEnvMapMethod":"awayjs-methodmaterials/lib/methods/EffectFresnelEnvMapMethod","./methods/EffectLightMapMethod":"awayjs-methodmaterials/lib/methods/EffectLightMapMethod","./methods/EffectMethodBase":"awayjs-methodmaterials/lib/methods/EffectMethodBase","./methods/EffectRefractionEnvMapMethod":"awayjs-methodmaterials/lib/methods/EffectRefractionEnvMapMethod","./methods/EffectRimLightMethod":"awayjs-methodmaterials/lib/methods/EffectRimLightMethod","./methods/LightingMethodBase":"awayjs-methodmaterials/lib/methods/LightingMethodBase","./methods/NormalBasicMethod":"awayjs-methodmaterials/lib/methods/NormalBasicMethod","./methods/NormalHeightMapMethod":"awayjs-methodmaterials/lib/methods/NormalHeightMapMethod","./methods/NormalSimpleWaterMethod":"awayjs-methodmaterials/lib/methods/NormalSimpleWaterMethod","./methods/ShadingMethodBase":"awayjs-methodmaterials/lib/methods/ShadingMethodBase","./methods/ShadowCascadeMethod":"awayjs-methodmaterials/lib/methods/ShadowCascadeMethod","./methods/ShadowDitheredMethod":"awayjs-methodmaterials/lib/methods/ShadowDitheredMethod","./methods/ShadowFilteredMethod":"awayjs-methodmaterials/lib/methods/ShadowFilteredMethod","./methods/ShadowHardMethod":"awayjs-methodmaterials/lib/methods/ShadowHardMethod","./methods/ShadowMapMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMapMethodBase","./methods/ShadowMethodBase":"awayjs-methodmaterials/lib/methods/ShadowMethodBase","./methods/ShadowNearMethod":"awayjs-methodmaterials/lib/methods/ShadowNearMethod","./methods/ShadowSoftMethod":"awayjs-methodmaterials/lib/methods/ShadowSoftMethod","./methods/SpecularAnisotropicMethod":"awayjs-methodmaterials/lib/methods/SpecularAnisotropicMethod","./methods/SpecularBasicMethod":"awayjs-methodmaterials/lib/methods/SpecularBasicMethod","./methods/SpecularCelMethod":"awayjs-methodmaterials/lib/methods/SpecularCelMethod","./methods/SpecularCompositeMethod":"awayjs-methodmaterials/lib/methods/SpecularCompositeMethod","./methods/SpecularFresnelMethod":"awayjs-methodmaterials/lib/methods/SpecularFresnelMethod","./methods/SpecularPhongMethod":"awayjs-methodmaterials/lib/methods/SpecularPhongMethod"}],"awayjs-methodmaterials/lib/surfaces/GL_MethodMaterialSurface":[function(require,module,exports){
 "use strict";
@@ -6274,7 +6233,7 @@ var GL_MethodMaterialSurface = (function (_super) {
         this.initPasses();
         this.setBlendAndCompareModes();
         this._pClearPasses();
-        if (this._material.mode == MethodMaterialMode_1.default.MULTI_PASS) {
+        if (this._material.mode == MethodMaterialMode_1.MethodMaterialMode.MULTI_PASS) {
             if (this._casterLightPass)
                 this._pAddPass(this._casterLightPass);
             if (this._nonCasterLightPasses)
@@ -6290,17 +6249,17 @@ var GL_MethodMaterialSurface = (function (_super) {
     GL_MethodMaterialSurface.prototype.initPasses = function () {
         // let the effects pass handle everything if there are no lights, when there are effect methods applied
         // after shading, or when the material mode is single pass.
-        if (this.numLights == 0 || this._material.numEffectMethods > 0 || this._material.mode == MethodMaterialMode_1.default.SINGLE_PASS)
+        if (this.numLights == 0 || this._material.numEffectMethods > 0 || this._material.mode == MethodMaterialMode_1.MethodMaterialMode.SINGLE_PASS)
             this.initEffectPass();
         else if (this._pass)
             this.removeEffectPass();
         // only use a caster light pass if shadows need to be rendered
-        if (this._material.shadowMethod && this._material.mode == MethodMaterialMode_1.default.MULTI_PASS)
+        if (this._material.shadowMethod && this._material.mode == MethodMaterialMode_1.MethodMaterialMode.MULTI_PASS)
             this.initCasterLightPass();
         else if (this._casterLightPass)
             this.removeCasterLightPass();
         // only use non caster light passes if there are lights that don't cast
-        if (this.numNonCasters > 0 && this._material.mode == MethodMaterialMode_1.default.MULTI_PASS)
+        if (this.numNonCasters > 0 && this._material.mode == MethodMaterialMode_1.MethodMaterialMode.MULTI_PASS)
             this.initNonCasterLightPasses();
         else if (this._nonCasterLightPasses)
             this.removeNonCasterLightPasses();
@@ -6313,7 +6272,7 @@ var GL_MethodMaterialSurface = (function (_super) {
         // caster light pass is always first if it exists, hence it uses normal blending
         if (this._casterLightPass) {
             this._casterLightPass.forceSeparateMVP = forceSeparateMVP;
-            this._casterLightPass.shader.setBlendMode(BlendMode_1.default.NORMAL);
+            this._casterLightPass.shader.setBlendMode(BlendMode_1.BlendMode.NORMAL);
             this._casterLightPass.shader.depthCompareMode = this._material.depthCompareMode;
         }
         if (this._nonCasterLightPasses) {
@@ -6322,15 +6281,15 @@ var GL_MethodMaterialSurface = (function (_super) {
             // and should use normal blending
             if (!this._casterLightPass) {
                 this._nonCasterLightPasses[0].forceSeparateMVP = forceSeparateMVP;
-                this._nonCasterLightPasses[0].shader.setBlendMode(BlendMode_1.default.NORMAL);
+                this._nonCasterLightPasses[0].shader.setBlendMode(BlendMode_1.BlendMode.NORMAL);
                 this._nonCasterLightPasses[0].shader.depthCompareMode = this._material.depthCompareMode;
                 firstAdditiveIndex = 1;
             }
             // all lighting passes following the first light pass should use additive blending
             for (var i = firstAdditiveIndex; i < this._nonCasterLightPasses.length; ++i) {
                 this._nonCasterLightPasses[i].forceSeparateMVP = forceSeparateMVP;
-                this._nonCasterLightPasses[i].shader.setBlendMode(BlendMode_1.default.ADD);
-                this._nonCasterLightPasses[i].shader.depthCompareMode = ContextGLCompareMode_1.default.LESS_EQUAL;
+                this._nonCasterLightPasses[i].shader.setBlendMode(BlendMode_1.BlendMode.ADD);
+                this._nonCasterLightPasses[i].shader.depthCompareMode = ContextGLCompareMode_1.ContextGLCompareMode.LESS_EQUAL;
             }
         }
         if (this._casterLightPass || this._nonCasterLightPasses) {
@@ -6338,27 +6297,27 @@ var GL_MethodMaterialSurface = (function (_super) {
             this._pRequiresBlending = false;
             // there are light passes, so this should be blended in
             if (this._pass) {
-                this._pass.mode = MethodPassMode_1.default.EFFECTS;
+                this._pass.mode = MethodPassMode_1.MethodPassMode.EFFECTS;
                 this._pass.forceSeparateMVP = forceSeparateMVP;
-                this._pass.shader.depthCompareMode = ContextGLCompareMode_1.default.LESS_EQUAL;
-                this._pass.shader.setBlendMode(BlendMode_1.default.LAYER);
+                this._pass.shader.depthCompareMode = ContextGLCompareMode_1.ContextGLCompareMode.LESS_EQUAL;
+                this._pass.shader.setBlendMode(BlendMode_1.BlendMode.LAYER);
             }
         }
         else if (this._pass) {
-            this._pRequiresBlending = (this._material.blendMode != BlendMode_1.default.NORMAL || this._material.alphaBlending || (this._material.colorTransform && this._material.colorTransform.alphaMultiplier < 1));
+            this._pRequiresBlending = (this._material.blendMode != BlendMode_1.BlendMode.NORMAL || this._material.alphaBlending || (this._material.colorTransform && this._material.colorTransform.alphaMultiplier < 1));
             // effects pass is the only pass, so it should just blend normally
-            this._pass.mode = MethodPassMode_1.default.SUPER_SHADER;
+            this._pass.mode = MethodPassMode_1.MethodPassMode.SUPER_SHADER;
             this._pass.preserveAlpha = this._pRequiresBlending;
             this._pass.forceSeparateMVP = false;
             this._pass.colorTransform = this._material.colorTransform;
-            this._pass.shader.setBlendMode((this._material.blendMode == BlendMode_1.default.NORMAL && this._pRequiresBlending) ? BlendMode_1.default.LAYER : this._material.blendMode);
+            this._pass.shader.setBlendMode((this._material.blendMode == BlendMode_1.BlendMode.NORMAL && this._pRequiresBlending) ? BlendMode_1.BlendMode.LAYER : this._material.blendMode);
             this._pass.shader.depthCompareMode = this._material.depthCompareMode;
         }
     };
     GL_MethodMaterialSurface.prototype.initCasterLightPass = function () {
         if (this._casterLightPass == null)
-            this._casterLightPass = new MethodPass_1.default(MethodPassMode_1.default.LIGHTING, this, this._material, this._elementsClass, this._stage);
-        this._casterLightPass.lightPicker = new StaticLightPicker_1.default([this._material.shadowMethod.castingLight]);
+            this._casterLightPass = new MethodPass_1.MethodPass(MethodPassMode_1.MethodPassMode.LIGHTING, this, this._material, this._elementsClass, this._stage);
+        this._casterLightPass.lightPicker = new StaticLightPicker_1.StaticLightPicker([this._material.shadowMethod.castingLight]);
         this._casterLightPass.shadowMethod = this._material.shadowMethod;
         this._casterLightPass.diffuseMethod = this._material.diffuseMethod;
         this._casterLightPass.ambientMethod = this._material.ambientMethod;
@@ -6385,7 +6344,7 @@ var GL_MethodMaterialSurface = (function (_super) {
         }
         this._nonCasterLightPasses = new Array();
         while (dirLightOffset < numDirLights || pointLightOffset < numPointLights || probeOffset < numLightProbes) {
-            pass = new MethodPass_1.default(MethodPassMode_1.default.LIGHTING, this, this._material, this._elementsClass, this._stage);
+            pass = new MethodPass_1.MethodPass(MethodPassMode_1.MethodPassMode.LIGHTING, this, this._material, this._elementsClass, this._stage);
             pass.includeCasters = this._material.shadowMethod == null;
             pass.directionalLightsOffset = dirLightOffset;
             pass.pointLightsOffset = pointLightOffset;
@@ -6422,15 +6381,15 @@ var GL_MethodMaterialSurface = (function (_super) {
     };
     GL_MethodMaterialSurface.prototype.initEffectPass = function () {
         if (this._pass == null)
-            this._pass = new MethodPass_1.default(MethodPassMode_1.default.SUPER_SHADER, this, this._material, this._elementsClass, this._stage);
-        if (this._material.mode == MethodMaterialMode_1.default.SINGLE_PASS) {
+            this._pass = new MethodPass_1.MethodPass(MethodPassMode_1.MethodPassMode.SUPER_SHADER, this, this._material, this._elementsClass, this._stage);
+        if (this._material.mode == MethodMaterialMode_1.MethodMaterialMode.SINGLE_PASS) {
             this._pass.ambientMethod = this._material.ambientMethod;
             this._pass.diffuseMethod = this._material.diffuseMethod;
             this._pass.specularMethod = this._material.specularMethod;
             this._pass.normalMethod = this._material.normalMethod;
             this._pass.shadowMethod = this._material.shadowMethod;
         }
-        else if (this._material.mode == MethodMaterialMode_1.default.MULTI_PASS) {
+        else if (this._material.mode == MethodMaterialMode_1.MethodMaterialMode.MULTI_PASS) {
             if (this.numLights == 0) {
                 this._pass.ambientMethod = this._material.ambientMethod;
             }
@@ -6466,31 +6425,29 @@ var GL_MethodMaterialSurface = (function (_super) {
         //TODO
     };
     return GL_MethodMaterialSurface;
-}(GL_SurfaceBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = GL_MethodMaterialSurface;
+}(GL_SurfaceBase_1.GL_SurfaceBase));
+exports.GL_MethodMaterialSurface = GL_MethodMaterialSurface;
 
 },{"../MethodMaterialMode":"awayjs-methodmaterials/lib/MethodMaterialMode","../surfaces/passes/MethodPass":"awayjs-methodmaterials/lib/surfaces/passes/MethodPass","../surfaces/passes/MethodPassMode":"awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode","awayjs-core/lib/image/BlendMode":undefined,"awayjs-display/lib/materials/lightpickers/StaticLightPicker":undefined,"awayjs-renderergl/lib/surfaces/GL_SurfaceBase":undefined,"awayjs-stagegl/lib/base/ContextGLCompareMode":undefined}],"awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode":[function(require,module,exports){
 "use strict";
-var PassMode = (function () {
-    function PassMode() {
+var MethodPassMode = (function () {
+    function MethodPassMode() {
     }
     /**
      *
      */
-    PassMode.EFFECTS = 0x01;
+    MethodPassMode.EFFECTS = 0x01;
     /**
      *
      */
-    PassMode.LIGHTING = 0x02;
+    MethodPassMode.LIGHTING = 0x02;
     /**
      *
      */
-    PassMode.SUPER_SHADER = 0x03;
-    return PassMode;
+    MethodPassMode.SUPER_SHADER = 0x03;
+    return MethodPassMode;
 }());
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = PassMode;
+exports.MethodPassMode = MethodPassMode;
 
 },{}],"awayjs-methodmaterials/lib/surfaces/passes/MethodPass":[function(require,module,exports){
 "use strict";
@@ -6585,10 +6542,10 @@ var MethodPass = (function (_super) {
             //if (this._lightPicker == value)
             //	return;
             if (this._lightPicker)
-                this._lightPicker.removeEventListener(AssetEvent_1.default.INVALIDATE, this._onLightsChangeDelegate);
+                this._lightPicker.removeEventListener(AssetEvent_1.AssetEvent.INVALIDATE, this._onLightsChangeDelegate);
             this._lightPicker = value;
             if (this._lightPicker)
-                this._lightPicker.addEventListener(AssetEvent_1.default.INVALIDATE, this._onLightsChangeDelegate);
+                this._lightPicker.addEventListener(AssetEvent_1.AssetEvent.INVALIDATE, this._onLightsChangeDelegate);
             this._updateLights();
         },
         enumerable: true,
@@ -6632,15 +6589,15 @@ var MethodPass = (function (_super) {
         configurable: true
     });
     MethodPass.prototype._updateShader = function () {
-        if ((this.numDirectionalLights || this.numPointLights || this.numLightProbes) && !(this._shader instanceof LightingShader_1.default)) {
+        if ((this.numDirectionalLights || this.numPointLights || this.numLightProbes) && !(this._shader instanceof LightingShader_1.LightingShader)) {
             if (this._shader != null)
                 this._shader.dispose();
-            this._shader = new LightingShader_1.default(this._elementsClass, this, this._stage);
+            this._shader = new LightingShader_1.LightingShader(this._elementsClass, this, this._stage);
         }
-        else if (!(this._shader instanceof ShaderBase_1.default)) {
+        else if (!(this._shader instanceof ShaderBase_1.ShaderBase)) {
             if (this._shader != null)
                 this._shader.dispose();
-            this._shader = new ShaderBase_1.default(this._elementsClass, this, this._stage);
+            this._shader = new ShaderBase_1.ShaderBase(this._elementsClass, this, this._stage);
         }
     };
     /**
@@ -6663,7 +6620,7 @@ var MethodPass = (function (_super) {
         set: function (value) {
             if (value) {
                 if (this.colorTransformMethod == null)
-                    this.colorTransformMethod = new EffectColorTransformMethod_1.default();
+                    this.colorTransformMethod = new EffectColorTransformMethod_1.EffectColorTransformMethod();
                 this.colorTransformMethod.colorTransform = value;
             }
             else if (!value) {
@@ -6689,7 +6646,7 @@ var MethodPass = (function (_super) {
                 this._iColorTransformMethodVO = null;
             }
             if (value) {
-                this._iColorTransformMethodVO = new MethodVO_1.default(value, this);
+                this._iColorTransformMethodVO = new MethodVO_1.MethodVO(value, this);
                 this._addDependency(this._iColorTransformMethodVO);
             }
         },
@@ -6701,14 +6658,14 @@ var MethodPass = (function (_super) {
         var index = this._iMethodVOs.indexOf(methodVO);
         if (!effectsDependency)
             this._numEffectDependencies--;
-        methodVO.method.removeEventListener(ShadingMethodEvent_1.default.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
+        methodVO.method.removeEventListener(ShadingMethodEvent_1.ShadingMethodEvent.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
         this._iMethodVOs.splice(index, 1);
         this.invalidate();
     };
     MethodPass.prototype._addDependency = function (methodVO, effectsDependency, index) {
         if (effectsDependency === void 0) { effectsDependency = false; }
         if (index === void 0) { index = -1; }
-        methodVO.method.addEventListener(ShadingMethodEvent_1.default.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
+        methodVO.method.addEventListener(ShadingMethodEvent_1.ShadingMethodEvent.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
         if (effectsDependency) {
             if (index != -1)
                 this._iMethodVOs.splice(index + this._iMethodVOs.length - this._numEffectDependencies, 0, methodVO);
@@ -6727,7 +6684,7 @@ var MethodPass = (function (_super) {
      * methods added prior.
      */
     MethodPass.prototype.addEffectMethod = function (method) {
-        this._addDependency(new MethodVO_1.default(method, this), true);
+        this._addDependency(new MethodVO_1.MethodVO(method, this), true);
     };
     Object.defineProperty(MethodPass.prototype, "numEffectMethods", {
         /**
@@ -6764,7 +6721,7 @@ var MethodPass = (function (_super) {
      * etc. The method will be applied to the result of the methods with a lower index.
      */
     MethodPass.prototype.addEffectMethodAt = function (method, index) {
-        this._addDependency(new MethodVO_1.default(method, this), true, index);
+        this._addDependency(new MethodVO_1.MethodVO(method, this), true, index);
     };
     /**
      * Removes an effect method from the material.
@@ -6807,7 +6764,7 @@ var MethodPass = (function (_super) {
                 this._iNormalMethodVO = null;
             }
             if (value) {
-                this._iNormalMethodVO = new MethodVO_1.default(value, this);
+                this._iNormalMethodVO = new MethodVO_1.MethodVO(value, this);
                 this._addDependency(this._iNormalMethodVO);
             }
         },
@@ -6829,7 +6786,7 @@ var MethodPass = (function (_super) {
                 this._iAmbientMethodVO = null;
             }
             if (value) {
-                this._iAmbientMethodVO = new MethodVO_1.default(value, this);
+                this._iAmbientMethodVO = new MethodVO_1.MethodVO(value, this);
                 this._addDependency(this._iAmbientMethodVO);
             }
         },
@@ -6851,7 +6808,7 @@ var MethodPass = (function (_super) {
                 this._iShadowMethodVO = null;
             }
             if (value) {
-                this._iShadowMethodVO = new MethodVO_1.default(value, this);
+                this._iShadowMethodVO = new MethodVO_1.MethodVO(value, this);
                 this._addDependency(this._iShadowMethodVO);
             }
         },
@@ -6873,7 +6830,7 @@ var MethodPass = (function (_super) {
                 this._iDiffuseMethodVO = null;
             }
             if (value) {
-                this._iDiffuseMethodVO = new MethodVO_1.default(value, this);
+                this._iDiffuseMethodVO = new MethodVO_1.MethodVO(value, this);
                 this._addDependency(this._iDiffuseMethodVO);
             }
         },
@@ -6895,7 +6852,7 @@ var MethodPass = (function (_super) {
                 this._iSpecularMethodVO = null;
             }
             if (value) {
-                this._iSpecularMethodVO = new MethodVO_1.default(value, this);
+                this._iSpecularMethodVO = new MethodVO_1.MethodVO(value, this);
                 this._addDependency(this._iSpecularMethodVO);
             }
         },
@@ -6907,7 +6864,7 @@ var MethodPass = (function (_super) {
      */
     MethodPass.prototype.dispose = function () {
         if (this._lightPicker)
-            this._lightPicker.removeEventListener(AssetEvent_1.default.INVALIDATE, this._onLightsChangeDelegate);
+            this._lightPicker.removeEventListener(AssetEvent_1.AssetEvent.INVALIDATE, this._onLightsChangeDelegate);
         while (this._iMethodVOs.length)
             this._removeDependency(this._iMethodVOs[0]);
         _super.prototype.dispose.call(this);
@@ -6966,7 +6923,7 @@ var MethodPass = (function (_super) {
     MethodPass.prototype._iIncludeDependencies = function (shader) {
         _super.prototype._iIncludeDependencies.call(this, shader);
         //TODO: fragment animtion should be compatible with lighting pass
-        shader.usesFragmentAnimation = Boolean(this._mode == MethodPassMode_1.default.SUPER_SHADER);
+        shader.usesFragmentAnimation = Boolean(this._mode == MethodPassMode_1.MethodPassMode.SUPER_SHADER);
         if (shader.useAlphaPremultiplied && shader.usesBlending)
             shader.usesCommonData = true;
         var i;
@@ -6989,7 +6946,7 @@ var MethodPass = (function (_super) {
             }
             else if (this.numPointLights > 0 && shader.usesLights) {
                 shader.globalPosDependencies++;
-                if (Boolean(this._mode & MethodPassMode_1.default.EFFECTS))
+                if (Boolean(this._mode & MethodPassMode_1.MethodPassMode.EFFECTS))
                     shader.usesGlobalPosFragment = true;
             }
         }
@@ -7174,7 +7131,7 @@ var MethodPass = (function (_super) {
         var numDirectionalLightsOld = this.numDirectionalLights;
         var numPointLightsOld = this.numPointLights;
         var numLightProbesOld = this.numLightProbes;
-        if (this._lightPicker && (this._mode & MethodPassMode_1.default.LIGHTING)) {
+        if (this._lightPicker && (this._mode & MethodPassMode_1.MethodPassMode.LIGHTING)) {
             this.numDirectionalLights = this.calculateNumDirectionalLights(this._lightPicker.numDirectionalLights);
             this.numPointLights = this.calculateNumPointLights(this._lightPicker.numPointLights);
             this.numLightProbes = this.calculateNumProbes(this._lightPicker.numLightProbes);
@@ -7217,17 +7174,16 @@ var MethodPass = (function (_super) {
      */
     MethodPass.prototype.calculateNumProbes = function (numLightProbes) {
         var numChannels = 0;
-        if ((this.specularLightSources & LightSources_1.default.PROBES) != 0)
+        if ((this.specularLightSources & LightSources_1.LightSources.PROBES) != 0)
             ++numChannels;
-        if ((this.diffuseLightSources & LightSources_1.default.PROBES) != 0)
+        if ((this.diffuseLightSources & LightSources_1.LightSources.PROBES) != 0)
             ++numChannels;
         // 4 channels available
         return Math.min(numLightProbes - this.lightProbesOffset, (4 / numChannels) | 0);
     };
     return MethodPass;
-}(PassBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = MethodPass;
+}(PassBase_1.PassBase));
+exports.MethodPass = MethodPass;
 
 },{"../../data/MethodVO":"awayjs-methodmaterials/lib/data/MethodVO","../../methods/EffectColorTransformMethod":"awayjs-methodmaterials/lib/methods/EffectColorTransformMethod","../../surfaces/passes/MethodPassMode":"awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode","awayjs-core/lib/events/AssetEvent":undefined,"awayjs-display/lib/materials/LightSources":undefined,"awayjs-renderergl/lib/events/ShadingMethodEvent":undefined,"awayjs-renderergl/lib/shaders/LightingShader":undefined,"awayjs-renderergl/lib/shaders/ShaderBase":undefined,"awayjs-renderergl/lib/surfaces/passes/PassBase":undefined}],"awayjs-methodmaterials/lib/surfaces/passes/SingleObjectDepthPass":[function(require,module,exports){
 "use strict";
@@ -7370,9 +7326,9 @@ var SingleObjectDepthPass = (function (_super) {
         var lights = this._surface.lightPicker.allPickedLights;
         var rId = renderableGL.renderable.id;
         if (!this._textures[rId])
-            this._textures[rId] = new Single2DTexture_1.default(new Image2D_1.default(this._textureSize, this._textureSize));
+            this._textures[rId] = new Single2DTexture_1.Single2DTexture(new Image2D_1.Image2D(this._textureSize, this._textureSize));
         if (!this._projections[rId])
-            this._projections[rId] = new Matrix3D_1.default();
+            this._projections[rId] = new Matrix3D_1.Matrix3D();
         len = lights.length;
         // local position = enough
         light = lights[0];
@@ -7397,20 +7353,19 @@ var SingleObjectDepthPass = (function (_super) {
         //this._stage.context.setProgramConstantsFromArray(ContextGLProgramType.VERTEX, 4, this._polyOffset, 1);
     };
     return SingleObjectDepthPass;
-}(PassBase_1.default));
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = SingleObjectDepthPass;
+}(PassBase_1.PassBase));
+exports.SingleObjectDepthPass = SingleObjectDepthPass;
 
 },{"awayjs-core/lib/geom/Matrix3D":undefined,"awayjs-core/lib/image/Image2D":undefined,"awayjs-display/lib/textures/Single2DTexture":undefined,"awayjs-renderergl/lib/surfaces/passes/PassBase":undefined}],"awayjs-methodmaterials/lib/surfaces":[function(require,module,exports){
 "use strict";
 var MethodPass_1 = require("./surfaces/passes/MethodPass");
-exports.MethodPass = MethodPass_1.default;
+exports.MethodPass = MethodPass_1.MethodPass;
 var MethodPassMode_1 = require("./surfaces/passes/MethodPassMode");
-exports.MethodPassMode = MethodPassMode_1.default;
+exports.MethodPassMode = MethodPassMode_1.MethodPassMode;
 var SingleObjectDepthPass_1 = require("./surfaces/passes/SingleObjectDepthPass");
-exports.SingleObjectDepthPass = SingleObjectDepthPass_1.default;
+exports.SingleObjectDepthPass = SingleObjectDepthPass_1.SingleObjectDepthPass;
 var GL_MethodMaterialSurface_1 = require("./surfaces/GL_MethodMaterialSurface");
-exports.GL_MethodMaterialSurface = GL_MethodMaterialSurface_1.default;
+exports.GL_MethodMaterialSurface = GL_MethodMaterialSurface_1.GL_MethodMaterialSurface;
 
 },{"./surfaces/GL_MethodMaterialSurface":"awayjs-methodmaterials/lib/surfaces/GL_MethodMaterialSurface","./surfaces/passes/MethodPass":"awayjs-methodmaterials/lib/surfaces/passes/MethodPass","./surfaces/passes/MethodPassMode":"awayjs-methodmaterials/lib/surfaces/passes/MethodPassMode","./surfaces/passes/SingleObjectDepthPass":"awayjs-methodmaterials/lib/surfaces/passes/SingleObjectDepthPass"}]},{},[1])
 //# sourceMappingURL=awayjs-methodmaterials.js.map
