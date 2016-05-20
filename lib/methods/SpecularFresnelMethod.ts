@@ -1,21 +1,21 @@
-import Camera							from "awayjs-display/lib/display/Camera";
+import {Camera}							from "awayjs-display/lib/display/Camera";
 
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import SpecularBasicMethod				from "../methods/SpecularBasicMethod";
-import SpecularCompositeMethod			from "../methods/SpecularCompositeMethod";
+import {MethodVO}							from "../data/MethodVO";
+import {SpecularBasicMethod}				from "../methods/SpecularBasicMethod";
+import {SpecularCompositeMethod}			from "../methods/SpecularCompositeMethod";
 
 /**
  * SpecularFresnelMethod provides a specular shading method that causes stronger highlights on grazing view angles.
  */
-class SpecularFresnelMethod extends SpecularCompositeMethod
+export class SpecularFresnelMethod extends SpecularCompositeMethod
 {
 	private _dataReg:ShaderRegisterElement;
 	private _incidentLight:boolean;
@@ -40,7 +40,7 @@ class SpecularFresnelMethod extends SpecularCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
 	{
 
 		var index:number = methodVO.secondaryFragmentConstantsIndex;
@@ -82,7 +82,7 @@ class SpecularFresnelMethod extends SpecularCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iCleanCompilationData()
+	public iCleanCompilationData():void
 	{
 		super.iCleanCompilationData();
 		this._dataReg = null;
@@ -104,7 +104,7 @@ class SpecularFresnelMethod extends SpecularCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage):void
 	{
 		super.iActivate(shader, methodVO, stage);
 
@@ -152,5 +152,3 @@ class SpecularFresnelMethod extends SpecularCompositeMethod
 	}
 
 }
-
-export default SpecularFresnelMethod;

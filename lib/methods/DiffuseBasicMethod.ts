@@ -1,24 +1,24 @@
-import AssetEvent						from "awayjs-core/lib/events/AssetEvent";
+import {AssetEvent}						from "awayjs-core/lib/events/AssetEvent";
 
-import Camera							from "awayjs-display/lib/display/Camera";
-import TextureBase						from "awayjs-display/lib/textures/TextureBase";
+import {Camera}							from "awayjs-display/lib/display/Camera";
+import {TextureBase}						from "awayjs-display/lib/textures/TextureBase";
 
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase}				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import ShadingMethodBase				from "../methods/ShadingMethodBase";
-import LightingMethodBase				from "../methods/LightingMethodBase";
+import {MethodVO}							from "../data/MethodVO";
+import {ShadingMethodBase}				from "../methods/ShadingMethodBase";
+import {LightingMethodBase}				from "../methods/LightingMethodBase";
 
 /**
  * DiffuseBasicMethod provides the default shading method for Lambert (dot3) diffuse lighting.
  */
-class DiffuseBasicMethod extends LightingMethodBase
+export class DiffuseBasicMethod extends LightingMethodBase
 {
 	private _multiply:boolean = true;
 
@@ -70,7 +70,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 		this.iInvalidateShaderProgram();
 	}
 
-	public iInitVO(shader:LightingShader, methodVO:MethodVO)
+	public iInitVO(shader:LightingShader, methodVO:MethodVO):void
 	{
 		if (this._texture) {
 			methodVO.textureGL = shader.getAbstraction(this._texture);
@@ -89,7 +89,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:LightingShader, methodVO:MethodVO)
+	public iInitConstants(shader:LightingShader, methodVO:MethodVO):void
 	{
 		if (shader.numLights > 0) {
 			this._ambientColor = methodVO.pass._surface.style.color;
@@ -144,7 +144,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public dispose()
+	public dispose():void
 	{
 		this._texture = null;
 	}
@@ -152,7 +152,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public copyFrom(method:ShadingMethodBase)
+	public copyFrom(method:ShadingMethodBase):void
 	{
 		var diff:DiffuseBasicMethod = <DiffuseBasicMethod> method;
 
@@ -164,7 +164,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iCleanCompilationData()
+	public iCleanCompilationData():void
 	{
 		super.iCleanCompilationData();
 
@@ -318,7 +318,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage):void
 	{
 		if (this._texture) {
 			methodVO.textureGL.activate(methodVO.pass._render);
@@ -341,7 +341,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 	/**
 	 * Updates the diffuse color data used by the render state.
 	 */
-	private updateColor()
+	private updateColor():void
 	{
 		this._colorR = ((this._color >> 16) & 0xff)/0xff;
 		this._colorG = ((this._color >> 8) & 0xff)/0xff;
@@ -352,7 +352,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 	/**
 	 * Updates the ambient color data used by the render state.
 	 */
-	private updateAmbientColor()
+	private updateAmbientColor():void
 	{
 		this._ambientColorR = ((this._ambientColor >> 16) & 0xff)/0xff;
 		this._ambientColorG = ((this._ambientColor >> 8) & 0xff)/0xff;
@@ -362,7 +362,7 @@ class DiffuseBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
 	{
 		if (this._texture)
 			methodVO.textureGL._setRenderState(renderable);
@@ -376,5 +376,3 @@ class DiffuseBasicMethod extends LightingMethodBase
 		data[index + 3] = 1;
 	}
 }
-
-export default DiffuseBasicMethod;

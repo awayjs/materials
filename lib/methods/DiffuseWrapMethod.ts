@@ -1,18 +1,18 @@
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import DiffuseBasicMethod				from "../methods/DiffuseBasicMethod";
+import {MethodVO}							from "../data/MethodVO";
+import {DiffuseBasicMethod}				from "../methods/DiffuseBasicMethod";
 
 /**
  * DiffuseWrapMethod is an alternative to DiffuseBasicMethod in which the light is allowed to be "wrapped around" the normally dark area, to some extent.
  * It can be used as a crude approximation to Oren-Nayar or simple subsurface scattering.
  */
-class DiffuseWrapMethod extends DiffuseBasicMethod
+export class DiffuseWrapMethod extends DiffuseBasicMethod
 {
 	private _wrapDataRegister:ShaderRegisterElement;
 	private _wrapFactor:number;
@@ -31,7 +31,7 @@ class DiffuseWrapMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iCleanCompilationData()
+	public iCleanCompilationData():void
 	{
 		super.iCleanCompilationData();
 
@@ -105,7 +105,7 @@ class DiffuseWrapMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage):void
 	{
 		super.iActivate(shader, methodVO, stage);
 
@@ -115,5 +115,3 @@ class DiffuseWrapMethod extends DiffuseBasicMethod
 		data[index + 1] = 1/(this._wrapFactor + 1);
 	}
 }
-
-export default DiffuseWrapMethod;

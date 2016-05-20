@@ -1,23 +1,23 @@
-import Camera							from "awayjs-display/lib/display/Camera";
-import TextureBase						from "awayjs-display/lib/textures/TextureBase";
+import {Camera}							from "awayjs-display/lib/display/Camera";
+import {TextureBase}						from "awayjs-display/lib/textures/TextureBase";
 
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase}				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import EffectMethodBase					from "../methods/EffectMethodBase";
+import {MethodVO}							from "../data/MethodVO";
+import {EffectMethodBase}					from "../methods/EffectMethodBase";
 
 /**
  * EffectLightMapMethod provides a method that allows applying a light map texture to the calculated pixel colour.
  * It is different from DiffuseLightMapMethod in that the latter only modulates the diffuse shading value rather
  * than the whole pixel colour.
  */
-class EffectLightMapMethod extends EffectMethodBase
+export class EffectLightMapMethod extends EffectMethodBase
 {
 	/**
 	 * Indicates the light map should be multiplied with the calculated shading result.
@@ -59,7 +59,7 @@ class EffectLightMapMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
+	public iInitVO(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		methodVO.textureGL = shader.getAbstraction(this._lightMap);
 
@@ -160,16 +160,14 @@ class EffectLightMapMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		methodVO.textureGL.activate(methodVO.pass._render);
 	}
 
 
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
 	{
 		methodVO.textureGL._setRenderState(renderable);
 	}
 }
-
-export default EffectLightMapMethod;

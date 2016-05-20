@@ -1,24 +1,24 @@
-import Camera							from "awayjs-display/lib/display/Camera";
-import TextureBase						from "awayjs-display/lib/textures/TextureBase";
+import {Camera}							from "awayjs-display/lib/display/Camera";
+import {TextureBase}						from "awayjs-display/lib/textures/TextureBase";
 
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase}				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import EffectMethodBase					from "../methods/EffectMethodBase";
+import {MethodVO}							from "../data/MethodVO";
+import {EffectMethodBase}					from "../methods/EffectMethodBase";
 
 /**
  * EffectAlphaMaskMethod allows the use of an additional texture to specify the alpha value of the material. When used
  * with the secondary uv set, it allows for a tiled main texture with independently varying alpha (useful for water
  * etc).
  */
-class EffectAlphaMaskMethod extends EffectMethodBase
+export class EffectAlphaMaskMethod extends EffectMethodBase
 {
 	private _texture:TextureBase;
 	private _useSecondaryUV:boolean;
@@ -43,7 +43,7 @@ class EffectAlphaMaskMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
+	public iInitVO(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		methodVO.textureGL = shader.getAbstraction(this._texture);
 
@@ -112,7 +112,7 @@ class EffectAlphaMaskMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage):void
 	{
 		super.iActivate(shader, methodVO, stage);
 
@@ -120,10 +120,8 @@ class EffectAlphaMaskMethod extends EffectMethodBase
 	}
 
 
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
 	{
 		methodVO.textureGL._setRenderState(renderable);
 	}
 }
-
-export default EffectAlphaMaskMethod;

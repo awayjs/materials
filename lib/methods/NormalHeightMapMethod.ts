@@ -1,19 +1,19 @@
-import Single2DTexture					from "awayjs-display/lib/textures/Single2DTexture";
-import TextureBase						from "awayjs-display/lib/textures/TextureBase";
+import {Single2DTexture}					from "awayjs-display/lib/textures/Single2DTexture";
+import {TextureBase}						from "awayjs-display/lib/textures/TextureBase";
 
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import NormalBasicMethod				from "../methods/NormalBasicMethod";
-import ShadingMethodBase				from "../methods/ShadingMethodBase";
+import {MethodVO}							from "../data/MethodVO";
+import {NormalBasicMethod}				from "../methods/NormalBasicMethod";
+import {ShadingMethodBase}				from "../methods/ShadingMethodBase";
 
 /**
  * NormalHeightMapMethod provides a normal map method that uses a height map to calculate the normals.
  */
-class NormalHeightMapMethod extends NormalBasicMethod
+export class NormalHeightMapMethod extends NormalBasicMethod
 {
 	private _worldXYRatio:number;
 	private _worldXZRatio:number;
@@ -38,7 +38,7 @@ class NormalHeightMapMethod extends NormalBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
 		var data:Float32Array = shader.fragmentConstantData;
@@ -61,7 +61,7 @@ class NormalHeightMapMethod extends NormalBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public copyFrom(method:ShadingMethodBase)
+	public copyFrom(method:ShadingMethodBase):void
 	{
 		super.copyFrom(method);
 
@@ -104,5 +104,3 @@ class NormalHeightMapMethod extends NormalBasicMethod
 		return code;
 	}
 }
-
-export default NormalHeightMapMethod;

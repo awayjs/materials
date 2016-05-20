@@ -1,13 +1,13 @@
-import GL_TextureBase				from "awayjs-renderergl/lib/textures/GL_TextureBase";
+import {GL_TextureBase}				from "awayjs-renderergl/lib/textures/GL_TextureBase";
 
-import MethodPass					from "../surfaces/passes/MethodPass";
-import ShadingMethodBase			from "../methods/ShadingMethodBase";
+import {MethodPass}					from "../surfaces/passes/MethodPass";
+import {ShadingMethodBase}			from "../methods/ShadingMethodBase";
 
 /**
  * MethodVO contains data for a given shader object for the use within a single material.
  * This allows shader methods to be shared across materials while their non-public state differs.
  */
-class MethodVO
+export class MethodVO
 {
 	public useMethod:boolean = true;
 
@@ -41,7 +41,7 @@ class MethodVO
 	/**
 	 * Resets the values of the value object to their "unused" state.
 	 */
-	public reset()
+	public reset():void
 	{
 		this.method.iReset();
 
@@ -58,5 +58,3 @@ class MethodVO
 		this.needsGlobalFragmentPos = false;
 	}
 }
-
-export default MethodVO;

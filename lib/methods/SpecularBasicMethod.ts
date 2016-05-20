@@ -1,25 +1,25 @@
-import AssetEvent						from "awayjs-core/lib/events/AssetEvent";
+import {AssetEvent}						from "awayjs-core/lib/events/AssetEvent";
 
-import Camera							from "awayjs-display/lib/display/Camera";
-import TextureBase						from "awayjs-display/lib/textures/TextureBase";
+import {Camera}							from "awayjs-display/lib/display/Camera";
+import {TextureBase}						from "awayjs-display/lib/textures/TextureBase";
 
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase}				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import LightingMethodBase				from "../methods/LightingMethodBase";
-import ShadingMethodBase				from "../methods/ShadingMethodBase";
+import {MethodVO}							from "../data/MethodVO";
+import {LightingMethodBase}				from "../methods/LightingMethodBase";
+import {ShadingMethodBase}				from "../methods/ShadingMethodBase";
 
 /**
  * SpecularBasicMethod provides the default shading method for Blinn-Phong specular highlights (an optimized but approximated
  * version of Phong specularity).
  */
-class SpecularBasicMethod extends LightingMethodBase
+export class SpecularBasicMethod extends LightingMethodBase
 {
 	public _pTotalLightColorReg:ShaderRegisterElement;
 	public _pSpecularTexData:ShaderRegisterElement;
@@ -54,7 +54,7 @@ class SpecularBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shader:LightingShader, methodVO:MethodVO)
+	public iInitVO(shader:LightingShader, methodVO:MethodVO):void
 	{
 		methodVO.needsNormals = shader.numLights > 0;
 		methodVO.needsView = shader.numLights > 0;
@@ -148,7 +148,7 @@ class SpecularBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public copyFrom(method:ShadingMethodBase)
+	public copyFrom(method:ShadingMethodBase):void
 	{
 
 		var m:any = method;
@@ -164,7 +164,7 @@ class SpecularBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iCleanCompilationData()
+	public iCleanCompilationData():void
 	{
 		super.iCleanCompilationData();
 		this._pTotalLightColorReg = null;
@@ -315,7 +315,7 @@ class SpecularBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage):void
 	{
 		if (this._texture)
 			methodVO.textureGL.activate(methodVO.pass._render);
@@ -328,7 +328,7 @@ class SpecularBasicMethod extends LightingMethodBase
 		data[index + 3] = this._gloss;
 	}
 
-	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
 	{
 		if (this._texture)
 			methodVO.textureGL._setRenderState(renderable);
@@ -337,12 +337,10 @@ class SpecularBasicMethod extends LightingMethodBase
 	/**
 	 * Updates the specular color data used by the render state.
 	 */
-	private updateSpecular()
+	private updateSpecular():void
 	{
 		this._iSpecularR = (( this._color >> 16) & 0xff)/0xff*this._strength;
 		this._iSpecularG = (( this._color >> 8) & 0xff)/0xff*this._strength;
 		this._iSpecularB = ( this._color & 0xff)/0xff*this._strength;
 	}
 }
-
-export default SpecularBasicMethod;

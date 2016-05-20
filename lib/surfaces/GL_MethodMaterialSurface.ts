@@ -1,25 +1,25 @@
-import BlendMode						from "awayjs-core/lib/image/BlendMode";
-import AssetEvent						from "awayjs-core/lib/events/AssetEvent";
+import {BlendMode}						from "awayjs-core/lib/image/BlendMode";
+import {AssetEvent}						from "awayjs-core/lib/events/AssetEvent";
 
-import StaticLightPicker				from "awayjs-display/lib/materials/lightpickers/StaticLightPicker";
+import {StaticLightPicker}				from "awayjs-display/lib/materials/lightpickers/StaticLightPicker";
 
-import ContextGLCompareMode				from "awayjs-stagegl/lib/base/ContextGLCompareMode";
+import {ContextGLCompareMode}				from "awayjs-stagegl/lib/base/ContextGLCompareMode";
 
-import IElementsClassGL					from "awayjs-renderergl/lib/elements/IElementsClassGL";
-import GL_SurfaceBase					from "awayjs-renderergl/lib/surfaces/GL_SurfaceBase";
-import SurfacePool						from "awayjs-renderergl/lib/surfaces/SurfacePool";
+import {IElementsClassGL}					from "awayjs-renderergl/lib/elements/IElementsClassGL";
+import {GL_SurfaceBase}					from "awayjs-renderergl/lib/surfaces/GL_SurfaceBase";
+import {SurfacePool}						from "awayjs-renderergl/lib/surfaces/SurfacePool";
 
-import MethodMaterial					from "../MethodMaterial";
-import MethodMaterialMode				from "../MethodMaterialMode";
-import MethodPassMode					from "../surfaces/passes/MethodPassMode";
-import MethodPass						from "../surfaces/passes/MethodPass";
-import EffectMethodBase					from "../methods/EffectMethodBase";
+import {MethodMaterial}					from "../MethodMaterial";
+import {MethodMaterialMode}				from "../MethodMaterialMode";
+import {MethodPassMode}					from "../surfaces/passes/MethodPassMode";
+import {MethodPass}						from "../surfaces/passes/MethodPass";
+import {EffectMethodBase}					from "../methods/EffectMethodBase";
 
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
  * using material methods to define their appearance.
  */
-class GL_MethodMaterialSurface extends GL_SurfaceBase
+export class GL_MethodMaterialSurface extends GL_SurfaceBase
 {
 	private _material:MethodMaterial;
 	private _pass:MethodPass;
@@ -57,7 +57,7 @@ class GL_MethodMaterialSurface extends GL_SurfaceBase
 	/**
 	 * @inheritDoc
 	 */
-	public _pUpdateRender()
+	public _pUpdateRender():void
 	{
 		super._pUpdateRender();
 
@@ -83,7 +83,7 @@ class GL_MethodMaterialSurface extends GL_SurfaceBase
 	/**
 	 * Initializes all the passes and their dependent passes.
 	 */
-	private initPasses()
+	private initPasses():void
 	{
 		// let the effects pass handle everything if there are no lights, when there are effect methods applied
 		// after shading, or when the material mode is single pass.
@@ -108,7 +108,7 @@ class GL_MethodMaterialSurface extends GL_SurfaceBase
 	/**
 	 * Sets up the various blending modes for all screen passes, based on whether or not there are previous passes.
 	 */
-	private setBlendAndCompareModes()
+	private setBlendAndCompareModes():void
 	{
 		var forceSeparateMVP:boolean = Boolean(this._casterLightPass || this._pass);
 
@@ -163,7 +163,7 @@ class GL_MethodMaterialSurface extends GL_SurfaceBase
 		}
 	}
 
-	private initCasterLightPass()
+	private initCasterLightPass():void
 	{
 
 		if (this._casterLightPass == null)
@@ -177,14 +177,14 @@ class GL_MethodMaterialSurface extends GL_SurfaceBase
 		this._casterLightPass.specularMethod = this._material.specularMethod;
 	}
 
-	private removeCasterLightPass()
+	private removeCasterLightPass():void
 	{
 		this._casterLightPass.dispose();
 		this._pRemovePass(this._casterLightPass);
 		this._casterLightPass = null;
 	}
 
-	private initNonCasterLightPasses()
+	private initNonCasterLightPasses():void
 	{
 		this.removeNonCasterLightPasses();
 		var pass:MethodPass;
@@ -221,7 +221,7 @@ class GL_MethodMaterialSurface extends GL_SurfaceBase
 		}
 	}
 
-	private removeNonCasterLightPasses()
+	private removeNonCasterLightPasses():void
 	{
 		if (!this._nonCasterLightPasses)
 			return;
@@ -232,7 +232,7 @@ class GL_MethodMaterialSurface extends GL_SurfaceBase
 		this._nonCasterLightPasses = null;
 	}
 
-	private removeEffectPass()
+	private removeEffectPass():void
 	{
 		if (this._pass.ambientMethod != this._material.ambientMethod)
 			this._pass.ambientMethod.dispose();
@@ -250,7 +250,7 @@ class GL_MethodMaterialSurface extends GL_SurfaceBase
 		this._pass = null;
 	}
 
-	private initEffectPass()
+	private initEffectPass():void
 	{
 		if (this._pass == null)
 			this._pass = new MethodPass(MethodPassMode.SUPER_SHADER, this, this._material, this._elementsClass, this._stage);
@@ -297,12 +297,10 @@ class GL_MethodMaterialSurface extends GL_SurfaceBase
 	/**
 	 * @inheritDoc
 	 */
-	public onClear(event:AssetEvent)
+	public onClear(event:AssetEvent):void
 	{
 		super.onClear(event);
 
 		//TODO
 	}
 }
-
-export default GL_MethodMaterialSurface;

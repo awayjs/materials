@@ -1,10 +1,10 @@
 import * as data					from "./lib/data";
 import * as methods					from "./lib/methods";
 import * as surfaces				from "./lib/surfaces";
-import MethodMaterial				from "./lib/MethodMaterial";
-import MethodMaterialMode			from "./lib/MethodMaterialMode";
+import {MethodMaterial}				from "./lib/MethodMaterial";
+import {MethodMaterialMode}			from "./lib/MethodMaterialMode";
 
-import SurfacePool					from "awayjs-renderergl/lib/surfaces/SurfacePool";
+import {SurfacePool}				from "awayjs-renderergl/lib/surfaces/SurfacePool";
 
 SurfacePool.registerAbstraction(surfaces.GL_MethodMaterialSurface, MethodMaterial);
 

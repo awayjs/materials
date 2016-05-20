@@ -1,21 +1,21 @@
-import DirectionalLight					from "awayjs-display/lib/display/DirectionalLight";
+import {DirectionalLight}					from "awayjs-display/lib/display/DirectionalLight";
 
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import ShadowMethodBase					from "../methods/ShadowMethodBase";
+import {MethodVO}							from "../data/MethodVO";
+import {ShadowMethodBase}					from "../methods/ShadowMethodBase";
 
 /**
  * ShadowFilteredMethod provides a softened shadowing technique by bilinearly interpolating shadow comparison
  * results of neighbouring pixels.
  */
-class ShadowFilteredMethod extends ShadowMethodBase
+export class ShadowFilteredMethod extends ShadowMethodBase
 {
 	/**
 	 * Creates a new DiffuseBasicMethod object.
@@ -30,7 +30,7 @@ class ShadowFilteredMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:LightingShader, methodVO:MethodVO)
+	public iInitConstants(shader:LightingShader, methodVO:MethodVO):void
 	{
 		super.iInitConstants(shader, methodVO);
 
@@ -108,7 +108,7 @@ class ShadowFilteredMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivateForCascade(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
+	public iActivateForCascade(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		var size:number /*int*/ = this.castingLight.shadowMapper.depthMapSize;
 		var index:number /*int*/ = methodVO.secondaryFragmentConstantsIndex;
@@ -168,5 +168,3 @@ class ShadowFilteredMethod extends ShadowMethodBase
 		return code;
 	}
 }
-
-export default ShadowFilteredMethod;

@@ -1,24 +1,24 @@
-import Camera							from "awayjs-display/lib/display/Camera";
-import TextureBase						from "awayjs-display/lib/textures/TextureBase";
+import {Camera}							from "awayjs-display/lib/display/Camera";
+import {TextureBase}						from "awayjs-display/lib/textures/TextureBase";
 
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase}				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import DiffuseBasicMethod				from "../methods/DiffuseBasicMethod";
-import DiffuseCompositeMethod			from "../methods/DiffuseCompositeMethod";
+import {MethodVO}							from "../data/MethodVO";
+import {DiffuseBasicMethod}				from "../methods/DiffuseBasicMethod";
+import {DiffuseCompositeMethod}			from "../methods/DiffuseCompositeMethod";
 
 /**
  * DiffuseLightMapMethod provides a diffuse shading method that uses a light map to modulate the calculated diffuse
  * lighting. It is different from EffectLightMapMethod in that the latter modulates the entire calculated pixel color, rather
  * than only the diffuse lighting value.
  */
-class DiffuseLightMapMethod extends DiffuseCompositeMethod
+export class DiffuseLightMapMethod extends DiffuseCompositeMethod
 {
 	/**
 	 * Indicates the light map should be multiplied with the calculated shading result.
@@ -59,7 +59,7 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shader:LightingShader, methodVO:MethodVO)
+	public iInitVO(shader:LightingShader, methodVO:MethodVO):void
 	{
 		methodVO.secondaryTextureGL = shader.getAbstraction(this._lightMap);
 
@@ -162,7 +162,7 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage):void
 	{
 		super.iActivate(shader, methodVO, stage);
 
@@ -172,12 +172,10 @@ class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
 	{
 		super.iSetRenderState(shader, methodVO, renderable, stage, camera);
 
 		methodVO.secondaryTextureGL._setRenderState(renderable);
 	}
 }
-
-export default DiffuseLightMapMethod;

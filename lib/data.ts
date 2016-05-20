@@ -1,1 +1,1 @@
-export {default as MethodVO}						from "./data/MethodVO";
+export {MethodVO}						from "./data/MethodVO";

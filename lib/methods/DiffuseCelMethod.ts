@@ -1,19 +1,19 @@
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import DiffuseBasicMethod				from "../methods/DiffuseBasicMethod";
-import DiffuseCompositeMethod			from "../methods/DiffuseCompositeMethod";
+import {MethodVO}							from "../data/MethodVO";
+import {DiffuseBasicMethod}				from "../methods/DiffuseBasicMethod";
+import {DiffuseCompositeMethod}			from "../methods/DiffuseCompositeMethod";
 
 /**
  * DiffuseCelMethod provides a shading method to add diffuse cel (cartoon) shading.
  */
-class DiffuseCelMethod extends DiffuseCompositeMethod
+export class DiffuseCelMethod extends DiffuseCompositeMethod
 {
 	private _levels:number /*uint*/;
 	private _dataReg:ShaderRegisterElement;
@@ -36,7 +36,7 @@ class DiffuseCelMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:LightingShader, methodVO:MethodVO)
+	public iInitConstants(shader:LightingShader, methodVO:MethodVO):void
 	{
 		var data:Float32Array = shader.fragmentConstantData;
 		var index:number /*int*/ = methodVO.secondaryFragmentConstantsIndex;
@@ -74,7 +74,7 @@ class DiffuseCelMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iCleanCompilationData()
+	public iCleanCompilationData():void
 	{
 		super.iCleanCompilationData();
 		this._dataReg = null;
@@ -94,7 +94,7 @@ class DiffuseCelMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage):void
 	{
 		super.iActivate(shader, methodVO, stage);
 		var data:Float32Array = shader.fragmentConstantData;
@@ -136,5 +136,3 @@ class DiffuseCelMethod extends DiffuseCompositeMethod
 			"sat " + targetReg + ".w, " + targetReg + ".w\n";
 	}
 }
-
-export default DiffuseCelMethod;

@@ -1,19 +1,19 @@
-import LightBase						from "awayjs-display/lib/display/LightBase";
+import {LightBase}						from "awayjs-display/lib/display/LightBase";
 
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import ShadowMethodBase					from "../methods/ShadowMethodBase";
+import {MethodVO}							from "../data/MethodVO";
+import {ShadowMethodBase}					from "../methods/ShadowMethodBase";
 
 /**
  * ShadowHardMethod provides the cheapest shadow map method by using a single tap without any filtering.
  */
-class ShadowHardMethod extends ShadowMethodBase
+export class ShadowHardMethod extends ShadowMethodBase
 {
 	/**
 	 * Creates a new ShadowHardMethod object.
@@ -91,9 +91,7 @@ class ShadowHardMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivateForCascade(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
+	public iActivateForCascade(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 	}
 }
-
-export default ShadowHardMethod;

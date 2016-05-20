@@ -1,17 +1,17 @@
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import EffectMethodBase					from "../methods/EffectMethodBase";
+import {MethodVO}							from "../data/MethodVO";
+import {EffectMethodBase}					from "../methods/EffectMethodBase";
 
 /**
  * EffectRimLightMethod provides a method to add rim lighting to a material. This adds a glow-like effect to edges of objects.
  */
-class EffectRimLightMethod extends EffectMethodBase
+export class EffectRimLightMethod extends EffectMethodBase
 {
 	public static ADD:string = "add";
 	public static MULTIPLY:string = "multiply";
@@ -47,7 +47,7 @@ class EffectRimLightMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		shader.fragmentConstantData[methodVO.fragmentConstantsIndex + 3] = 1;
 	}
@@ -55,7 +55,7 @@ class EffectRimLightMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
+	public iInitVO(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		methodVO.needsNormals = true;
 		methodVO.needsView = true;
@@ -129,7 +129,7 @@ class EffectRimLightMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
 		var data:Float32Array = shader.fragmentConstantData;
@@ -176,5 +176,3 @@ class EffectRimLightMethod extends EffectMethodBase
 		return code;
 	}
 }
-
-export default EffectRimLightMethod;

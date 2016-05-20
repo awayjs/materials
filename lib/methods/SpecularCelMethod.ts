@@ -1,19 +1,19 @@
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import SpecularBasicMethod				from "../methods/SpecularBasicMethod";
-import SpecularCompositeMethod			from "../methods/SpecularCompositeMethod";
+import {MethodVO}							from "../data/MethodVO";
+import {SpecularBasicMethod}				from "../methods/SpecularBasicMethod";
+import {SpecularCompositeMethod}			from "../methods/SpecularCompositeMethod";
 
 /**
  * SpecularCelMethod provides a shading method to add specular cel (cartoon) shading.
  */
-class SpecularCelMethod extends SpecularCompositeMethod
+export class SpecularCelMethod extends SpecularCompositeMethod
 {
 	private _dataReg:ShaderRegisterElement;
 	private _smoothness:number = .1;
@@ -62,7 +62,7 @@ class SpecularCelMethod extends SpecularCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage):void
 	{
 		super.iActivate(shader, methodVO, stage);
 
@@ -75,7 +75,7 @@ class SpecularCelMethod extends SpecularCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iCleanCompilationData()
+	public iCleanCompilationData():void
 	{
 		super.iCleanCompilationData();
 		this._dataReg = null;
@@ -109,5 +109,3 @@ class SpecularCelMethod extends SpecularCompositeMethod
 		return super.iGetFragmentPreLightingCode(shader, methodVO, registerCache, sharedRegisters);
 	}
 }
-
-export default SpecularCelMethod;

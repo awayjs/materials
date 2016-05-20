@@ -1,4 +1,4 @@
-class PassMode
+export class MethodPassMode
 {
 	/**
 	 *
@@ -15,5 +15,3 @@ class PassMode
 	 */
 	public static SUPER_SHADER:number = 0x03;
 }
-
-export default PassMode;

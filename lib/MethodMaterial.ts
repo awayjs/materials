@@ -1,24 +1,24 @@
-﻿import Image2D						from "awayjs-core/lib/image/Image2D";
+﻿import {Image2D}						from "awayjs-core/lib/image/Image2D";
 
-import MaterialBase					from "awayjs-display/lib/materials/MaterialBase";
-import Single2DTexture				from "awayjs-display/lib/textures/Single2DTexture";
-import TextureBase					from "awayjs-display/lib/textures/TextureBase";
+import {MaterialBase}					from "awayjs-display/lib/materials/MaterialBase";
+import {Single2DTexture}				from "awayjs-display/lib/textures/Single2DTexture";
+import {TextureBase}					from "awayjs-display/lib/textures/TextureBase";
 
-import ContextGLCompareMode			from "awayjs-stagegl/lib/base/ContextGLCompareMode";
+import {ContextGLCompareMode}			from "awayjs-stagegl/lib/base/ContextGLCompareMode";
 
-import MethodMaterialMode			from "./MethodMaterialMode";
-import AmbientBasicMethod			from "./methods/AmbientBasicMethod";
-import DiffuseBasicMethod			from "./methods/DiffuseBasicMethod";
-import EffectMethodBase				from "./methods/EffectMethodBase";
-import NormalBasicMethod			from "./methods/NormalBasicMethod";
-import ShadowMapMethodBase			from "./methods/ShadowMapMethodBase";
-import SpecularBasicMethod			from "./methods/SpecularBasicMethod";
+import {MethodMaterialMode}			from "./MethodMaterialMode";
+import {AmbientBasicMethod}			from "./methods/AmbientBasicMethod";
+import {DiffuseBasicMethod}			from "./methods/DiffuseBasicMethod";
+import {EffectMethodBase}				from "./methods/EffectMethodBase";
+import {NormalBasicMethod}			from "./methods/NormalBasicMethod";
+import {ShadowMapMethodBase}			from "./methods/ShadowMapMethodBase";
+import {SpecularBasicMethod}			from "./methods/SpecularBasicMethod";
 
 /**
  * MethodMaterial forms an abstract base class for the default shaded materials provided by Stage,
  * using material methods to define their appearance.
  */
-class MethodMaterial extends MaterialBase
+export class MethodMaterial extends MaterialBase
 {
 	public static assetType:string = "[materials MethodMaterial]";
 
@@ -249,7 +249,7 @@ class MethodMaterial extends MaterialBase
 	 * but modulate the shaded colour, used for fog, outlines, etc. The method will be applied to the result of the
 	 * methods added prior.
 	 */
-	public addEffectMethod(method:EffectMethodBase)
+	public addEffectMethod(method:EffectMethodBase):void
 	{
 		method.iAddOwner(this);
 
@@ -273,7 +273,7 @@ class MethodMaterial extends MaterialBase
 	 * methods are those that do not influence the lighting but modulate the shaded colour, used for fog, outlines,
 	 * etc. The method will be applied to the result of the methods with a lower index.
 	 */
-	public addEffectMethodAt(method:EffectMethodBase, index:number)
+	public addEffectMethodAt(method:EffectMethodBase, index:number):void
 	{
 		method.iAddOwner(this);
 
@@ -286,7 +286,7 @@ class MethodMaterial extends MaterialBase
 	 * Removes an effect method from the material.
 	 * @param method The method to be removed.
 	 */
-	public removeEffectMethod(method:EffectMethodBase)
+	public removeEffectMethod(method:EffectMethodBase):void
 	{
 		method.iRemoveOwner(this);
 
@@ -295,5 +295,3 @@ class MethodMaterial extends MaterialBase
 		this.invalidate();
 	}
 }
-
-export default MethodMaterial;

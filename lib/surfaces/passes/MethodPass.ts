@@ -1,48 +1,48 @@
-import ColorTransform					from "awayjs-core/lib/geom/ColorTransform";
-import Matrix							from "awayjs-core/lib/geom/Matrix";
-import Matrix3D							from "awayjs-core/lib/geom/Matrix3D";
-import Matrix3DUtils					from "awayjs-core/lib/geom/Matrix3DUtils";
-import Vector3D							from "awayjs-core/lib/geom/Vector3D";
-import AbstractMethodError				from "awayjs-core/lib/errors/AbstractMethodError";
-import AssetEvent						from "awayjs-core/lib/events/AssetEvent";
-import MaterialBase						from "awayjs-display/lib/materials/MaterialBase";
+import {ColorTransform}					from "awayjs-core/lib/geom/ColorTransform";
+import {Matrix}							from "awayjs-core/lib/geom/Matrix";
+import {Matrix3D}							from "awayjs-core/lib/geom/Matrix3D";
+import {Matrix3DUtils}					from "awayjs-core/lib/geom/Matrix3DUtils";
+import {Vector3D}							from "awayjs-core/lib/geom/Vector3D";
+import {AbstractMethodError}				from "awayjs-core/lib/errors/AbstractMethodError";
+import {AssetEvent}						from "awayjs-core/lib/events/AssetEvent";
+import {MaterialBase}						from "awayjs-display/lib/materials/MaterialBase";
 
-import Camera							from "awayjs-display/lib/display/Camera";
-import ISurface							from "awayjs-display/lib/base/ISurface";
-import LightPickerBase					from "awayjs-display/lib/materials/lightpickers/LightPickerBase";
-import LightSources						from "awayjs-display/lib/materials/LightSources";
+import {Camera}							from "awayjs-display/lib/display/Camera";
+import {ISurface}							from "awayjs-display/lib/base/ISurface";
+import {LightPickerBase}					from "awayjs-display/lib/materials/lightpickers/LightPickerBase";
+import {LightSources}						from "awayjs-display/lib/materials/LightSources";
 
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import RendererBase						from "awayjs-renderergl/lib/RendererBase";
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShadingMethodEvent				from "awayjs-renderergl/lib/events/ShadingMethodEvent";
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
-import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
-import PassBase							from "awayjs-renderergl/lib/surfaces/passes/PassBase";
-import ILightingPass					from "awayjs-renderergl/lib/surfaces/passes/ILightingPass";
-import IElementsClassGL					from "awayjs-renderergl/lib/elements/IElementsClassGL";
+import {RendererBase}						from "awayjs-renderergl/lib/RendererBase";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShadingMethodEvent}				from "awayjs-renderergl/lib/events/ShadingMethodEvent";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase}				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import {PassBase}							from "awayjs-renderergl/lib/surfaces/passes/PassBase";
+import {ILightingPass}					from "awayjs-renderergl/lib/surfaces/passes/ILightingPass";
+import {IElementsClassGL}					from "awayjs-renderergl/lib/elements/IElementsClassGL";
 
-import MethodVO							from "../../data/MethodVO";
-import AmbientBasicMethod				from "../../methods/AmbientBasicMethod";
-import DiffuseBasicMethod				from "../../methods/DiffuseBasicMethod";
-import EffectColorTransformMethod		from "../../methods/EffectColorTransformMethod";
-import EffectMethodBase					from "../../methods/EffectMethodBase";
-import LightingMethodBase				from "../../methods/LightingMethodBase";
-import NormalBasicMethod				from "../../methods/NormalBasicMethod";
-import ShadowMapMethodBase				from "../../methods/ShadowMapMethodBase";
-import SpecularBasicMethod				from "../../methods/SpecularBasicMethod";
-import MethodPassMode					from "../../surfaces/passes/MethodPassMode";
-import GL_MethodMaterialSurface			from "../../surfaces/GL_MethodMaterialSurface";
+import {MethodVO}							from "../../data/MethodVO";
+import {AmbientBasicMethod}				from "../../methods/AmbientBasicMethod";
+import {DiffuseBasicMethod}				from "../../methods/DiffuseBasicMethod";
+import {EffectColorTransformMethod}		from "../../methods/EffectColorTransformMethod";
+import {EffectMethodBase}					from "../../methods/EffectMethodBase";
+import {LightingMethodBase}				from "../../methods/LightingMethodBase";
+import {NormalBasicMethod}				from "../../methods/NormalBasicMethod";
+import {ShadowMapMethodBase}				from "../../methods/ShadowMapMethodBase";
+import {SpecularBasicMethod}				from "../../methods/SpecularBasicMethod";
+import {MethodPassMode}					from "../../surfaces/passes/MethodPassMode";
+import {GL_MethodMaterialSurface}			from "../../surfaces/GL_MethodMaterialSurface";
 
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
  * using material methods to define their appearance.
  */
-class MethodPass extends PassBase implements ILightingPass
+export class MethodPass extends PassBase implements ILightingPass
 {
 	private _maxLights:number = 3;
 
@@ -192,7 +192,7 @@ class MethodPass extends PassBase implements ILightingPass
 			this._updateShader();
 	}
 
-	private _updateShader()
+	private _updateShader():void
 	{
 		if ((this.numDirectionalLights || this.numPointLights || this.numLightProbes) && !(this._shader instanceof LightingShader)) {
 			if (this._shader != null)
@@ -210,7 +210,7 @@ class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * Initializes the unchanging constant data for this material.
 	 */
-	public _iInitConstantData(shader:ShaderBase)
+	public _iInitConstantData(shader:ShaderBase):void
 	{
 		super._iInitConstantData(shader);
 
@@ -266,7 +266,7 @@ class MethodPass extends PassBase implements ILightingPass
 		}
 	}
 
-	private _removeDependency(methodVO:MethodVO, effectsDependency:boolean = false)
+	private _removeDependency(methodVO:MethodVO, effectsDependency:boolean = false):void
 	{
 		var index:number = this._iMethodVOs.indexOf(methodVO);
 
@@ -279,7 +279,7 @@ class MethodPass extends PassBase implements ILightingPass
 		this.invalidate();
 	}
 
-	private _addDependency(methodVO:MethodVO, effectsDependency:boolean = false, index:number = -1)
+	private _addDependency(methodVO:MethodVO, effectsDependency:boolean = false, index:number = -1):void
 	{
 		methodVO.method.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
 
@@ -301,7 +301,7 @@ class MethodPass extends PassBase implements ILightingPass
 	 * but modulate the shaded colour, used for fog, outlines, etc. The method will be applied to the result of the
 	 * methods added prior.
 	 */
-	public addEffectMethod(method:EffectMethodBase)
+	public addEffectMethod(method:EffectMethodBase):void
 	{
 		this._addDependency(new MethodVO(method, this), true);
 	}
@@ -343,7 +343,7 @@ class MethodPass extends PassBase implements ILightingPass
 	 * methods are those that do not influence the lighting but modulate the shaded colour, used for fog, outlines,
 	 * etc. The method will be applied to the result of the methods with a lower index.
 	 */
-	public addEffectMethodAt(method:EffectMethodBase, index:number)
+	public addEffectMethodAt(method:EffectMethodBase, index:number):void
 	{
 		this._addDependency(new MethodVO(method, this), true, index);
 	}
@@ -352,7 +352,7 @@ class MethodPass extends PassBase implements ILightingPass
 	 * Removes an effect method from the material.
 	 * @param method The method to be removed.
 	 */
-	public removeEffectMethod(method:EffectMethodBase)
+	public removeEffectMethod(method:EffectMethodBase):void
 	{
 		var methodVO:MethodVO = this.getDependencyForMethod(method);
 
@@ -364,7 +364,7 @@ class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * remove an effect method at the specified index from the material.
 	 */
-	public removeEffectMethodAt(index:number)
+	public removeEffectMethodAt(index:number):void
 	{
 		if (index < 0 || index > this._numEffectDependencies - 1)
 			return;
@@ -509,7 +509,7 @@ class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * @inheritDoc
 	 */
-	public dispose()
+	public dispose():void
 	{
 		if (this._lightPicker)
 			this._lightPicker.removeEventListener(AssetEvent.INVALIDATE, this._onLightsChangeDelegate);
@@ -525,7 +525,7 @@ class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * Called when any method's shader code is invalidated.
 	 */
-	private onMethodInvalidated(event:ShadingMethodEvent)
+	private onMethodInvalidated(event:ShadingMethodEvent):void
 	{
 		this.invalidate();
 	}
@@ -535,7 +535,7 @@ class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * @inheritDoc
 	 */
-	public _iActivate(camera:Camera)
+	public _iActivate(camera:Camera):void
 	{
 		super._iActivate(camera);
 
@@ -555,7 +555,7 @@ class MethodPass extends PassBase implements ILightingPass
 	 * @param stage
 	 * @param camera
 	 */
-	public _setRenderState(renderable:GL_RenderableBase, camera:Camera, viewProjection:Matrix3D)
+	public _setRenderState(renderable:GL_RenderableBase, camera:Camera, viewProjection:Matrix3D):void
 	{
 		super._setRenderState(renderable, camera, viewProjection);
 
@@ -571,7 +571,7 @@ class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * @inheritDoc
 	 */
-	public _iDeactivate()
+	public _iDeactivate():void
 	{
 		super._iDeactivate();
 
@@ -584,7 +584,7 @@ class MethodPass extends PassBase implements ILightingPass
 		}
 	}
 
-	public _iIncludeDependencies(shader:LightingShader)
+	public _iIncludeDependencies(shader:LightingShader):void
 	{
 		super._iIncludeDependencies(shader);
 
@@ -629,7 +629,7 @@ class MethodPass extends PassBase implements ILightingPass
 	 * @param method The method to count the dependencies for.
 	 * @param methodVO The method's data for this material.
 	 */
-	private setupAndCountDependencies(shader:ShaderBase, methodVO:MethodVO)
+	private setupAndCountDependencies(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		methodVO.reset();
 
@@ -873,12 +873,12 @@ class MethodPass extends PassBase implements ILightingPass
 	}
 
 
-	private onLightsChange(event:AssetEvent)
+	private onLightsChange(event:AssetEvent):void
 	{
 		this._updateLights();
 	}
 
-	private _updateLights()
+	private _updateLights():void
 	{
 		var numDirectionalLightsOld:number = this.numDirectionalLights;
 		var numPointLightsOld:number = this.numPointLights;
@@ -947,5 +947,3 @@ class MethodPass extends PassBase implements ILightingPass
 		return Math.min(numLightProbes - this.lightProbesOffset, (4/numChannels) | 0);
 	}
 }
-
-export default MethodPass;

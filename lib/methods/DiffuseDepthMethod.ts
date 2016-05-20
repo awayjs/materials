@@ -1,17 +1,17 @@
-import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase}				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import DiffuseBasicMethod				from "../methods/DiffuseBasicMethod";
+import {MethodVO}							from "../data/MethodVO";
+import {DiffuseBasicMethod}				from "../methods/DiffuseBasicMethod";
 
 /**
  * DiffuseDepthMethod provides a debug method to visualise depth maps
  */
-class DiffuseDepthMethod extends DiffuseBasicMethod
+export class DiffuseDepthMethod extends DiffuseBasicMethod
 {
 	/**
 	 * Creates a new DiffuseBasicMethod object.
@@ -24,7 +24,7 @@ class DiffuseDepthMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		var data:Float32Array = shader.fragmentConstantData;
 		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
@@ -79,5 +79,3 @@ class DiffuseDepthMethod extends DiffuseBasicMethod
 		return code;
 	}
 }
-
-export default DiffuseDepthMethod;

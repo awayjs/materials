@@ -1,22 +1,22 @@
-import AssetEvent						from "awayjs-core/lib/events/AssetEvent";
-import Camera							from "awayjs-display/lib/display/Camera";
-import TextureBase						from "awayjs-display/lib/textures/TextureBase";
+import {AssetEvent}						from "awayjs-core/lib/events/AssetEvent";
+import {Camera}							from "awayjs-display/lib/display/Camera";
+import {TextureBase}						from "awayjs-display/lib/textures/TextureBase";
 
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase}				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import ShadingMethodBase				from "../methods/ShadingMethodBase";
+import {MethodVO}							from "../data/MethodVO";
+import {ShadingMethodBase}				from "../methods/ShadingMethodBase";
 
 /**
  * AmbientBasicMethod provides the default shading method for uniform ambient lighting.
  */
-class AmbientBasicMethod extends ShadingMethodBase
+export class AmbientBasicMethod extends ShadingMethodBase
 {
 	private _color:number;
 	private _alpha:number = 1;
@@ -39,7 +39,7 @@ class AmbientBasicMethod extends ShadingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
+	public iInitVO(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		if (this._texture) {
 			methodVO.textureGL = shader.getAbstraction(this._texture);
@@ -53,7 +53,7 @@ class AmbientBasicMethod extends ShadingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		if (!methodVO.textureGL) {
 			this._color = shader.numLights? 0xFFFFFF : methodVO.pass._surface.style.color;
@@ -124,7 +124,7 @@ class AmbientBasicMethod extends ShadingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public copyFrom(method:ShadingMethodBase)
+	public copyFrom(method:ShadingMethodBase):void
 	{
 		var m:any = method;
 		var b:AmbientBasicMethod = <AmbientBasicMethod> m;
@@ -162,7 +162,7 @@ class AmbientBasicMethod extends ShadingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		if (methodVO.textureGL) {
 			methodVO.textureGL.activate(methodVO.pass._render);
@@ -179,7 +179,7 @@ class AmbientBasicMethod extends ShadingMethodBase
 		}
 	}
 
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
 	{
 		if (methodVO.textureGL)
 			methodVO.textureGL._setRenderState(renderable);
@@ -188,12 +188,10 @@ class AmbientBasicMethod extends ShadingMethodBase
 	/**
 	 * Updates the ambient color data used by the render state.
 	 */
-	private updateColor()
+	private updateColor():void
 	{
 		this._colorR = ((this._color >> 16) & 0xff)/0xff*this._strength;
 		this._colorG = ((this._color >> 8) & 0xff)/0xff*this._strength;
 		this._colorB = (this._color & 0xff)/0xff*this._strength;
 	}
 }
-
-export default AmbientBasicMethod;

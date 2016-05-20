@@ -1,19 +1,19 @@
-import IAsset						from "awayjs-core/lib/library/IAsset";
-import AbstractMethodError			from "awayjs-core/lib/errors/AbstractMethodError";
+import {IAsset}						from "awayjs-core/lib/library/IAsset";
+import {AbstractMethodError}			from "awayjs-core/lib/errors/AbstractMethodError";
 
-import ShaderBase					from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache			from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData			from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement		from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {ShaderBase}					from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}			from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}			from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}		from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO						from "../data/MethodVO";
-import ShadingMethodBase			from "../methods/ShadingMethodBase";
+import {MethodVO}						from "../data/MethodVO";
+import {ShadingMethodBase}			from "../methods/ShadingMethodBase";
 
 /**
  * EffectMethodBase forms an abstract base class for shader methods that are not dependent on light sources,
  * and are in essence post-process effects on the materials.
  */
-class EffectMethodBase extends ShadingMethodBase implements IAsset
+export class EffectMethodBase extends ShadingMethodBase implements IAsset
 {
 	public static assetType:string = "[asset EffectMethod]";
 
@@ -42,5 +42,3 @@ class EffectMethodBase extends ShadingMethodBase implements IAsset
 		throw new AbstractMethodError();
 	}
 }
-
-export default EffectMethodBase;

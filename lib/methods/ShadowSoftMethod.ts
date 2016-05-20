@@ -1,21 +1,21 @@
-import PoissonLookup					from "awayjs-core/lib/geom/PoissonLookup";
+import {PoissonLookup}					from "awayjs-core/lib/geom/PoissonLookup";
 
-import DirectionalLight					from "awayjs-display/lib/display/DirectionalLight";
+import {DirectionalLight}					from "awayjs-display/lib/display/DirectionalLight";
 
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import ShadowMethodBase					from "../methods/ShadowMethodBase";
+import {MethodVO}							from "../data/MethodVO";
+import {ShadowMethodBase}					from "../methods/ShadowMethodBase";
 
 /**
  * ShadowSoftMethod provides a soft shadowing technique by randomly distributing sample points.
  */
-class ShadowSoftMethod extends ShadowMethodBase
+export class ShadowSoftMethod extends ShadowMethodBase
 {
 	private _range:number = 1;
 	private _numSamples:number /*int*/;
@@ -74,7 +74,7 @@ class ShadowSoftMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		super.iInitConstants(shader, methodVO);
 
@@ -85,7 +85,7 @@ class ShadowSoftMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		super.iActivate(shader, methodVO, stage);
 
@@ -134,7 +134,7 @@ class ShadowSoftMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivateForCascade(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
+	public iActivateForCascade(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		super.iActivate(shader, methodVO, stage);
 
@@ -212,5 +212,3 @@ class ShadowSoftMethod extends ShadowMethodBase
 		return code;
 	}
 }
-
-export default ShadowSoftMethod;

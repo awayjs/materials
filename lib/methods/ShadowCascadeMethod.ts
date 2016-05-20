@@ -1,23 +1,23 @@
-import AssetEvent						from "awayjs-core/lib/events/AssetEvent";
+import {AssetEvent}						from "awayjs-core/lib/events/AssetEvent";
 
-import Camera							from "awayjs-display/lib/display/Camera";
-import DirectionalLight					from "awayjs-display/lib/display/DirectionalLight";
-import CascadeShadowMapper				from "awayjs-display/lib/materials/shadowmappers/CascadeShadowMapper";
-import TextureBase						from "awayjs-display/lib/textures/TextureBase";
+import {Camera}							from "awayjs-display/lib/display/Camera";
+import {DirectionalLight}					from "awayjs-display/lib/display/DirectionalLight";
+import {CascadeShadowMapper}				from "awayjs-display/lib/materials/shadowmappers/CascadeShadowMapper";
+import {TextureBase}						from "awayjs-display/lib/textures/TextureBase";
 
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
-import ShadingMethodEvent				from "awayjs-renderergl/lib/events/ShadingMethodEvent";
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase}				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import {ShadingMethodEvent}				from "awayjs-renderergl/lib/events/ShadingMethodEvent";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import ShadowMapMethodBase				from "../methods/ShadowMapMethodBase";
-import ShadowMethodBase					from "../methods/ShadowMethodBase";
+import {MethodVO}							from "../data/MethodVO";
+import {ShadowMapMethodBase}				from "../methods/ShadowMapMethodBase";
+import {ShadowMethodBase}					from "../methods/ShadowMethodBase";
 
 /**
  * ShadowCascadeMethod is a shadow map method to apply cascade shadow mapping on materials.
@@ -25,7 +25,7 @@ import ShadowMethodBase					from "../methods/ShadowMethodBase";
  *
  * @see away.lights.CascadeShadowMapper
  */
-class ShadowCascadeMethod extends ShadowMapMethodBase
+export class ShadowCascadeMethod extends ShadowMapMethodBase
 {
 	private _baseMethod:ShadowMethodBase;
 	private _cascadeShadowMapper:CascadeShadowMapper;
@@ -83,7 +83,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shader:LightingShader, methodVO:MethodVO)
+	public iInitVO(shader:LightingShader, methodVO:MethodVO):void
 	{
 		var tempVO:MethodVO = new MethodVO(this._baseMethod, methodVO.pass);
 		this._baseMethod.iInitVO(shader, tempVO);
@@ -97,7 +97,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		var fragmentData:Float32Array = shader.fragmentConstantData;
 		var vertexData:Float32Array = shader.vertexConstantData;
@@ -119,7 +119,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iCleanCompilationData()
+	public iCleanCompilationData():void
 	{
 		super.iCleanCompilationData();
 		this._cascadeProjections = null;
@@ -150,7 +150,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	/**
 	 * Creates the registers for the cascades' projection coordinates.
 	 */
-	private initProjectionsRegs(registerCache:ShaderRegisterCache)
+	private initProjectionsRegs(registerCache:ShaderRegisterCache):void
 	{
 		this._cascadeProjections = new Array<ShaderRegisterElement>(this._cascadeShadowMapper.numCascades);
 		this._depthMapCoordVaryings = new Array<ShaderRegisterElement>(this._cascadeShadowMapper.numCascades);
@@ -217,7 +217,7 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		methodVO.textureGL.activate(methodVO.pass._render);
 
@@ -249,14 +249,14 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
 	{
 	}
 
 	/**
 	 * Called when the shadow mappers cascade configuration changes.
 	 */
-	private onCascadeChange(event:AssetEvent)
+	private onCascadeChange(event:AssetEvent):void
 	{
 		this.iInvalidateShaderProgram();
 	}
@@ -264,10 +264,8 @@ class ShadowCascadeMethod extends ShadowMapMethodBase
 	/**
 	 * Called when the base method's shader code is invalidated.
 	 */
-	private onShaderInvalidated(event:ShadingMethodEvent)
+	private onShaderInvalidated(event:ShadingMethodEvent):void
 	{
 		this.iInvalidateShaderProgram();
 	}
 }
-
-export default ShadowCascadeMethod;

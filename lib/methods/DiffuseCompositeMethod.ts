@@ -1,25 +1,25 @@
-import Camera							from "awayjs-display/lib/display/Camera";
-import TextureBase						from "awayjs-display/lib/textures/TextureBase";
-import ISurface							from "awayjs-display/lib/base/ISurface";
+import {Camera}							from "awayjs-display/lib/display/Camera";
+import {TextureBase}						from "awayjs-display/lib/textures/TextureBase";
+import {ISurface}							from "awayjs-display/lib/base/ISurface";
 
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
-import ShadingMethodEvent				from "awayjs-renderergl/lib/events/ShadingMethodEvent";
-import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {ShadingMethodEvent}				from "awayjs-renderergl/lib/events/ShadingMethodEvent";
+import {GL_RenderableBase}				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
 
-import MethodVO							from "../data/MethodVO";
-import DiffuseBasicMethod				from "../methods/DiffuseBasicMethod";
+import {MethodVO}							from "../data/MethodVO";
+import {DiffuseBasicMethod}				from "../methods/DiffuseBasicMethod";
 
 /**
  * DiffuseCompositeMethod provides a base class for diffuse methods that wrap a diffuse method to alter the
  * calculated diffuse reflection strength.
  */
-class DiffuseCompositeMethod extends DiffuseBasicMethod
+export class DiffuseCompositeMethod extends DiffuseBasicMethod
 {
 	public pBaseMethod:DiffuseBasicMethod;
 
@@ -64,7 +64,7 @@ class DiffuseCompositeMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shader:LightingShader, methodVO:MethodVO)
+	public iInitVO(shader:LightingShader, methodVO:MethodVO):void
 	{
 		this.pBaseMethod.iInitVO(shader, methodVO);
 	}
@@ -72,19 +72,19 @@ class DiffuseCompositeMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:LightingShader, methodVO:MethodVO)
+	public iInitConstants(shader:LightingShader, methodVO:MethodVO):void
 	{
 		this.pBaseMethod.iInitConstants(shader, methodVO);
 	}
 
-	public iAddOwner(owner:ISurface)
+	public iAddOwner(owner:ISurface):void
 	{
 		super.iAddOwner(owner);
 
 		this.pBaseMethod.iAddOwner(owner);
 	}
 
-	public iRemoveOwner(owner:ISurface)
+	public iRemoveOwner(owner:ISurface):void
 	{
 		super.iRemoveOwner(owner);
 
@@ -94,7 +94,7 @@ class DiffuseCompositeMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public dispose()
+	public dispose():void
 	{
 		this.pBaseMethod.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
 		this.pBaseMethod.dispose();
@@ -179,7 +179,7 @@ class DiffuseCompositeMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage):void
 	{
 		this.pBaseMethod.iActivate(shader, methodVO, stage);
 	}
@@ -187,7 +187,7 @@ class DiffuseCompositeMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
 	{
 		this.pBaseMethod.iSetRenderState(shader, methodVO, renderable, stage, camera);
 	}
@@ -195,7 +195,7 @@ class DiffuseCompositeMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iDeactivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
+	public iDeactivate(shader:LightingShader, methodVO:MethodVO, stage:Stage):void
 	{
 		this.pBaseMethod.iDeactivate(shader, methodVO, stage);
 	}
@@ -219,7 +219,7 @@ class DiffuseCompositeMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iReset()
+	public iReset():void
 	{
 		this.pBaseMethod.iReset();
 	}
@@ -227,7 +227,7 @@ class DiffuseCompositeMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iCleanCompilationData()
+	public iCleanCompilationData():void
 	{
 		super.iCleanCompilationData();
 		this.pBaseMethod.iCleanCompilationData();
@@ -236,10 +236,8 @@ class DiffuseCompositeMethod extends DiffuseBasicMethod
 	/**
 	 * Called when the base method's shader code is invalidated.
 	 */
-	private onShaderInvalidated(event:ShadingMethodEvent)
+	private onShaderInvalidated(event:ShadingMethodEvent):void
 	{
 		this.iInvalidateShaderProgram();
 	}
 }
-
-export default DiffuseCompositeMethod;

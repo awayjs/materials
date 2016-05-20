@@ -1,16 +1,16 @@
-import Camera							from "awayjs-display/lib/display/Camera";
-import TextureBase						from "awayjs-display/lib/textures/TextureBase";
+import {Camera}							from "awayjs-display/lib/display/Camera";
+import {TextureBase}						from "awayjs-display/lib/textures/TextureBase";
 
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase}				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import DiffuseBasicMethod				from "../methods/DiffuseBasicMethod";
+import {MethodVO}							from "../data/MethodVO";
+import {DiffuseBasicMethod}				from "../methods/DiffuseBasicMethod";
 
 /**
  * DiffuseGradientMethod is an alternative to DiffuseBasicMethod in which the shading can be modulated with a gradient
@@ -18,7 +18,7 @@ import DiffuseBasicMethod				from "../methods/DiffuseBasicMethod";
  * approximation to subsurface scattering (for instance, the mid-range shading for skin can be tinted red to similate
  * scattered light within the skin attributing to the final colour)
  */
-class DiffuseGradientMethod extends DiffuseBasicMethod
+export class DiffuseGradientMethod extends DiffuseBasicMethod
 {
 	private _gradient:TextureBase;
 
@@ -37,7 +37,7 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 			this.iAddTexture(this._gradient);
 	}
 
-	public iInitVO(shader:LightingShader, methodVO:MethodVO)
+	public iInitVO(shader:LightingShader, methodVO:MethodVO):void
 	{
 		super.iInitVO(shader, methodVO);
 
@@ -72,7 +72,7 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iCleanCompilationData()
+	public iCleanCompilationData():void
 	{
 		super.iCleanCompilationData();
 	}
@@ -141,7 +141,7 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage):void
 	{
 		super.iActivate(shader, methodVO, stage);
 
@@ -152,7 +152,7 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
 	{
 		super.iSetRenderState(shader, methodVO, renderable, stage, camera);
 
@@ -160,5 +160,3 @@ class DiffuseGradientMethod extends DiffuseBasicMethod
 			methodVO.secondaryTextureGL._setRenderState(renderable);
 	}
 }
-
-export default DiffuseGradientMethod;

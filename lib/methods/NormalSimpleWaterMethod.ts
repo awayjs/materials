@@ -1,21 +1,21 @@
-import Camera							from "awayjs-display/lib/display/Camera";
-import TextureBase						from "awayjs-display/lib/textures/TextureBase";
+import {Camera}							from "awayjs-display/lib/display/Camera";
+import {TextureBase}						from "awayjs-display/lib/textures/TextureBase";
 
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase}				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import NormalBasicMethod				from "../methods/NormalBasicMethod";
+import {MethodVO}							from "../data/MethodVO";
+import {NormalBasicMethod}				from "../methods/NormalBasicMethod";
 
 /**
  * NormalSimpleWaterMethod provides a basic normal map method to create water ripples by translating two wave normal maps.
  */
-class NormalSimpleWaterMethod extends NormalBasicMethod
+export class NormalSimpleWaterMethod extends NormalBasicMethod
 {
 	private _secondaryNormalMap:TextureBase;
 	private _water1OffsetX:number = 0;
@@ -41,7 +41,7 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		var index:number = methodVO.fragmentConstantsIndex;
 		var data:Float32Array = shader.fragmentConstantData;
@@ -54,7 +54,7 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
+	public iInitVO(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		super.iInitVO(shader, methodVO);
 		
@@ -143,7 +143,7 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public dispose()
+	public dispose():void
 	{
 		super.dispose();
 
@@ -153,7 +153,7 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		super.iActivate(shader, methodVO, stage);
 
@@ -172,7 +172,7 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
 	{
 		super.iSetRenderState(shader, methodVO, renderable, stage, camera);
 
@@ -211,5 +211,3 @@ class NormalSimpleWaterMethod extends NormalBasicMethod
 		return code;
 	}
 }
-
-export default NormalSimpleWaterMethod;

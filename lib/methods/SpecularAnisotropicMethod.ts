@@ -1,17 +1,17 @@
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import SpecularBasicMethod				from "../methods/SpecularBasicMethod";
+import {MethodVO}							from "../data/MethodVO";
+import {SpecularBasicMethod}				from "../methods/SpecularBasicMethod";
 
 /**
  * SpecularAnisotropicMethod provides a specular method resulting in anisotropic highlights. These are typical for
  * surfaces with microfacet details such as tiny grooves. In particular, this uses the Heidrich-Seidel distrubution.
  * The tangent vectors are used as the surface groove directions.
  */
-class SpecularAnisotropicMethod extends SpecularBasicMethod
+export class SpecularAnisotropicMethod extends SpecularBasicMethod
 {
 	/**
 	 * Creates a new SpecularAnisotropicMethod object.
@@ -24,7 +24,7 @@ class SpecularAnisotropicMethod extends SpecularBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shader:LightingShader, methodVO:MethodVO)
+	public iInitVO(shader:LightingShader, methodVO:MethodVO):void
 	{
 		methodVO.needsTangents = true;
 		methodVO.needsView = true;
@@ -89,5 +89,3 @@ class SpecularAnisotropicMethod extends SpecularBasicMethod
 		return code;
 	}
 }
-
-export default SpecularAnisotropicMethod;

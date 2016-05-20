@@ -1,17 +1,17 @@
-import AssetEvent						from "awayjs-core/lib/events/AssetEvent";
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {AssetEvent}						from "awayjs-core/lib/events/AssetEvent";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import AmbientBasicMethod				from "../methods/AmbientBasicMethod";
+import {MethodVO}							from "../data/MethodVO";
+import {AmbientBasicMethod}				from "../methods/AmbientBasicMethod";
 
 /**
  * AmbientEnvMapMethod provides a diffuse shading method that uses a diffuse irradiance environment map to
  * approximate global lighting rather than lights.
  */
-class AmbientEnvMapMethod extends AmbientBasicMethod
+export class AmbientEnvMapMethod extends AmbientBasicMethod
 {
 	/**
 	 * Creates a new <code>AmbientEnvMapMethod</code> object.
@@ -26,7 +26,7 @@ class AmbientEnvMapMethod extends AmbientBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
+	public iInitVO(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		methodVO.needsNormals = true;
 
@@ -47,5 +47,3 @@ class AmbientEnvMapMethod extends AmbientBasicMethod
 		return (this._texture)? methodVO.textureGL._iGetFragmentCode(targetReg, regCache, sharedRegisters, sharedRegisters.normalFragment) : "";
 	}
 }
-
-export default AmbientEnvMapMethod;

@@ -1,18 +1,18 @@
-import NearDirectionalShadowMapper		from "awayjs-display/lib/materials/shadowmappers/NearDirectionalShadowMapper";
-import Camera							from "awayjs-display/lib/display/Camera";
+import {NearDirectionalShadowMapper}		from "awayjs-display/lib/materials/shadowmappers/NearDirectionalShadowMapper";
+import {Camera}							from "awayjs-display/lib/display/Camera";
 
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
-import ShadingMethodEvent				from "awayjs-renderergl/lib/events/ShadingMethodEvent";
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase}				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import {ShadingMethodEvent}				from "awayjs-renderergl/lib/events/ShadingMethodEvent";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import ShadowMethodBase					from "../methods/ShadowMethodBase";
+import {MethodVO}							from "../data/MethodVO";
+import {ShadowMethodBase}					from "../methods/ShadowMethodBase";
 
 // TODO: shadow mappers references in materials should be an interface so that this class should NOT extend ShadowMapMethodBase just for some delegation work
 /**
@@ -21,7 +21,7 @@ import ShadowMethodBase					from "../methods/ShadowMethodBase";
  *
  * @see away.lights.NearDirectionalShadowMapper
  */
-class ShadowNearMethod extends ShadowMethodBase
+export class ShadowNearMethod extends ShadowMethodBase
 {
 	private _baseMethod:ShadowMethodBase;
 
@@ -74,7 +74,7 @@ class ShadowNearMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		super.iInitConstants(shader, methodVO);
 		this._baseMethod.iInitConstants(shader, methodVO);
@@ -88,7 +88,7 @@ class ShadowNearMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shader:LightingShader, methodVO:MethodVO)
+	public iInitVO(shader:LightingShader, methodVO:MethodVO):void
 	{
 		this._baseMethod.iInitVO(shader, methodVO);
 
@@ -98,7 +98,7 @@ class ShadowNearMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public dispose()
+	public dispose():void
 	{
 		this._baseMethod.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
 	}
@@ -168,7 +168,7 @@ class ShadowNearMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		this._baseMethod.iActivate(shader, methodVO, stage);
 	}
@@ -176,7 +176,7 @@ class ShadowNearMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iDeactivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
+	public iDeactivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		this._baseMethod.iDeactivate(shader, methodVO, stage);
 	}
@@ -184,7 +184,7 @@ class ShadowNearMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
 	{
 		// todo: move this to activate (needs camera)
 		var near:number = camera.projection.near;
@@ -214,7 +214,7 @@ class ShadowNearMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iReset()
+	public iReset():void
 	{
 		this._baseMethod.iReset();
 	}
@@ -222,7 +222,7 @@ class ShadowNearMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iCleanCompilationData()
+	public iCleanCompilationData():void
 	{
 		super.iCleanCompilationData();
 		this._baseMethod.iCleanCompilationData();
@@ -231,10 +231,8 @@ class ShadowNearMethod extends ShadowMethodBase
 	/**
 	 * Called when the base method's shader code is invalidated.
 	 */
-	private onShaderInvalidated(event:ShadingMethodEvent)
+	private onShaderInvalidated(event:ShadingMethodEvent):void
 	{
 		this.iInvalidateShaderProgram();
 	}
 }
-
-export default ShadowNearMethod;

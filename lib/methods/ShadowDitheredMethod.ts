@@ -1,25 +1,25 @@
-import BitmapImage2D					from "awayjs-core/lib/image/BitmapImage2D";
+import {BitmapImage2D}					from "awayjs-core/lib/image/BitmapImage2D";
 
-import Camera							from "awayjs-display/lib/display/Camera";
-import DirectionalLight					from "awayjs-display/lib/display/DirectionalLight";
-import Single2DTexture					from "awayjs-display/lib/textures/Single2DTexture";
+import {Camera}							from "awayjs-display/lib/display/Camera";
+import {DirectionalLight}					from "awayjs-display/lib/display/DirectionalLight";
+import {Single2DTexture}					from "awayjs-display/lib/textures/Single2DTexture";
 
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase}				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import ShadowMethodBase					from "../methods/ShadowMethodBase";
+import {MethodVO}							from "../data/MethodVO";
+import {ShadowMethodBase}					from "../methods/ShadowMethodBase";
 
 /**
  * ShadowDitheredMethod provides a soft shadowing technique by randomly distributing sample points differently for each fragment.
  */
-class ShadowDitheredMethod extends ShadowMethodBase
+export class ShadowDitheredMethod extends ShadowMethodBase
 {
 	private static _grainTexture:Single2DTexture;
 	private static _grainUsages:number /*int*/;
@@ -75,7 +75,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shader:LightingShader, methodVO:MethodVO)
+	public iInitVO(shader:LightingShader, methodVO:MethodVO):void
 	{
 		super.iInitVO(shader, methodVO);
 
@@ -87,7 +87,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		super.iInitConstants(shader, methodVO);
 
@@ -112,7 +112,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 	/**
 	 * Creates a texture containing the dithering noise texture.
 	 */
-	private initGrainTexture()
+	private initGrainTexture():void
 	{
 		ShadowDitheredMethod._grainBitmapImage2D = new BitmapImage2D(64, 64, false);
 		var vec:Array<number> /*uint*/ = new Array<number>();
@@ -145,7 +145,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public dispose()
+	public dispose():void
 	{
 		if (--ShadowDitheredMethod._grainUsages == 0) {
 			ShadowDitheredMethod._grainTexture.dispose();
@@ -157,7 +157,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		super.iActivate(shader, methodVO, stage);
 
@@ -174,7 +174,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
 	{
 		super.iSetRenderState(shader, methodVO, renderable, stage, camera);
 
@@ -292,7 +292,7 @@ class ShadowDitheredMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivateForCascade(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
+	public iActivateForCascade(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		var data:Float32Array = shader.fragmentConstantData;
 		var index:number /*uint*/ = methodVO.secondaryFragmentConstantsIndex;
@@ -317,5 +317,3 @@ class ShadowDitheredMethod extends ShadowMethodBase
 		return this.getSampleCode(shader, methodVO, dataReg, decodeRegister, targetRegister, registerCache, sharedRegisters);
 	}
 }
-
-export default ShadowDitheredMethod;

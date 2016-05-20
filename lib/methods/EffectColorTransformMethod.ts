@@ -1,20 +1,20 @@
-import ColorTransform				from "awayjs-core/lib/geom/ColorTransform";
+import {ColorTransform}				from "awayjs-core/lib/geom/ColorTransform";
 
-import Stage						from "awayjs-stagegl/lib/base/Stage";
+import {Stage}						from "awayjs-stagegl/lib/base/Stage";
 
-import ShaderBase					from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache			from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData			from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement		from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {ShaderBase}					from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}			from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}			from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}		from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO						from "../data/MethodVO";
-import EffectMethodBase				from "../methods/EffectMethodBase";
+import {MethodVO}						from "../data/MethodVO";
+import {EffectMethodBase}				from "../methods/EffectMethodBase";
 
 /**
  * EffectColorTransformMethod provides a shading method that changes the colour of a material analogous to a
  * ColorTransform object.
  */
-class EffectColorTransformMethod extends EffectMethodBase
+export class EffectColorTransformMethod extends EffectMethodBase
 {
 	private _colorTransform:ColorTransform;
 
@@ -60,7 +60,7 @@ class EffectColorTransformMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		var inv:number = 1/0xff;
 		var index:number = methodVO.fragmentConstantsIndex;
@@ -77,5 +77,3 @@ class EffectColorTransformMethod extends EffectMethodBase
 
 	}
 }
-
-export default EffectColorTransformMethod;

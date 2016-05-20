@@ -1,26 +1,26 @@
-import AssetBase					from "awayjs-core/lib/library/AssetBase";
+import {AssetBase}					from "awayjs-core/lib/library/AssetBase";
 
-import Camera						from "awayjs-display/lib/display/Camera";
-import ISurface						from "awayjs-display/lib/base/ISurface";
-import TextureBase					from "awayjs-display/lib/textures/TextureBase";
+import {Camera}						from "awayjs-display/lib/display/Camera";
+import {ISurface}						from "awayjs-display/lib/base/ISurface";
+import {TextureBase}					from "awayjs-display/lib/textures/TextureBase";
 
-import Stage						from "awayjs-stagegl/lib/base/Stage";
+import {Stage}						from "awayjs-stagegl/lib/base/Stage";
 
-import GL_RenderableBase			from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
-import ShadingMethodEvent			from "awayjs-renderergl/lib/events/ShadingMethodEvent";
-import ShaderBase					from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache			from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData			from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement		from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase}			from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import {ShadingMethodEvent}			from "awayjs-renderergl/lib/events/ShadingMethodEvent";
+import {ShaderBase}					from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}			from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}			from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}		from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO						from "../data/MethodVO";
+import {MethodVO}						from "../data/MethodVO";
 
 
 /**
  * ShadingMethodBase provides an abstract base method for shading methods, used by compiled passes to compile
  * the final shading program.
  */
-class ShadingMethodBase extends AssetBase
+export class ShadingMethodBase extends AssetBase
 {
 	public _textures:Array<TextureBase> = new Array<TextureBase>();
 
@@ -57,7 +57,7 @@ class ShadingMethodBase extends AssetBase
 	 *
 	 * @internal
 	 */
-	public iInitVO(shader:ShaderBase, methodVO:MethodVO)
+	public iInitVO(shader:ShaderBase, methodVO:MethodVO):void
 	{
 
 	}
@@ -69,7 +69,7 @@ class ShadingMethodBase extends AssetBase
 	 *
 	 * @internal
 	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
 	{
 
 
@@ -86,13 +86,13 @@ class ShadingMethodBase extends AssetBase
 	/**
 	 * Cleans up any resources used by the current object.
 	 */
-	public dispose()
+	public dispose():void
 	{
 
 	}
 
 
-	public iAddOwner(owner:ISurface)
+	public iAddOwner(owner:ISurface):void
 	{
 		//a method can be used more than once in the same material, so we check for this
 		var index:number = this._owners.indexOf(owner);
@@ -110,7 +110,7 @@ class ShadingMethodBase extends AssetBase
 		}
 	}
 
-	public iRemoveOwner(owner:ISurface)
+	public iRemoveOwner(owner:ISurface):void
 	{
 		var index:number = this._owners.indexOf(owner);
 
@@ -131,7 +131,7 @@ class ShadingMethodBase extends AssetBase
 	/**
 	 *
 	 */
-	public iAddTexture(texture:TextureBase)
+	public iAddTexture(texture:TextureBase):void
 	{
 		this._textures.push(texture);
 
@@ -143,7 +143,7 @@ class ShadingMethodBase extends AssetBase
 	/**
 	 *
 	 */
-	public iRemoveTexture(texture:TextureBase)
+	public iRemoveTexture(texture:TextureBase):void
 	{
 		this._textures.splice(this._textures.indexOf(texture), 1);
 
@@ -157,7 +157,7 @@ class ShadingMethodBase extends AssetBase
 	 *
 	 * @internal
 	 */
-	public iReset()
+	public iReset():void
 	{
 		this.iCleanCompilationData();
 	}
@@ -167,7 +167,7 @@ class ShadingMethodBase extends AssetBase
 	 *
 	 * @internal
 	 */
-	public iCleanCompilationData()
+	public iCleanCompilationData():void
 	{
 	}
 
@@ -199,7 +199,7 @@ class ShadingMethodBase extends AssetBase
 	 *
 	 * @internal
 	 */
-	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 
 	}
@@ -214,7 +214,7 @@ class ShadingMethodBase extends AssetBase
 	 *
 	 * @internal
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
 	{
 
 	}
@@ -226,7 +226,7 @@ class ShadingMethodBase extends AssetBase
 	 *
 	 * @internal
 	 */
-	public iDeactivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
+	public iDeactivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 
 	}
@@ -236,7 +236,7 @@ class ShadingMethodBase extends AssetBase
 	 *
 	 * @internal
 	 */
-	public iInvalidateShaderProgram()
+	public iInvalidateShaderProgram():void
 	{
 		this.dispatchEvent(new ShadingMethodEvent(ShadingMethodEvent.SHADER_INVALIDATED));
 	}
@@ -244,9 +244,7 @@ class ShadingMethodBase extends AssetBase
 	/**
 	 * Copies the state from a ShadingMethodBase object into the current object.
 	 */
-	public copyFrom(method:ShadingMethodBase)
+	public copyFrom(method:ShadingMethodBase):void
 	{
 	}
 }
-
-export default ShadingMethodBase;

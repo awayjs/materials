@@ -1,25 +1,25 @@
-import Camera							from "awayjs-display/lib/display/Camera";
+import {Camera}							from "awayjs-display/lib/display/Camera";
 
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase}				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import DiffuseBasicMethod				from "../methods/DiffuseBasicMethod";
-import DiffuseCompositeMethod			from "../methods/DiffuseCompositeMethod";
-import SingleObjectDepthPass			from "../surfaces/passes/SingleObjectDepthPass";
+import {MethodVO}							from "../data/MethodVO";
+import {DiffuseBasicMethod}				from "../methods/DiffuseBasicMethod";
+import {DiffuseCompositeMethod}			from "../methods/DiffuseCompositeMethod";
+import {SingleObjectDepthPass}			from "../surfaces/passes/SingleObjectDepthPass";
 
 /**
  * DiffuseSubSurfaceMethod provides a depth map-based diffuse shading method that mimics the scattering of
  * light inside translucent surfaces. It allows light to shine through an object and to soften the diffuse shading.
  * It can be used for candle wax, ice, skin, ...
  */
-class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
+export class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 {
 	private _depthPass:SingleObjectDepthPass;
 	private _lightProjVarying:ShaderRegisterElement;
@@ -60,7 +60,7 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:LightingShader, methodVO:MethodVO)
+	public iInitConstants(shader:LightingShader, methodVO:MethodVO):void
 	{
 		super.iInitConstants(shader, methodVO);
 
@@ -82,7 +82,7 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 		data[index + 11] = -.1;
 	}
 	
-	public iCleanCompilationData()
+	public iCleanCompilationData():void
 	{
 		super.iCleanCompilationData();
 
@@ -210,7 +210,7 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage):void
 	{
 		super.iActivate(shader, methodVO, stage);
 
@@ -226,7 +226,7 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
 	{
 		methodVO.secondaryTextureGL = shader.getAbstraction(this._depthPass._iGetDepthMap(renderable));
 		methodVO.secondaryTextureGL._setRenderState(renderable);
@@ -278,5 +278,3 @@ class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 		return code;
 	}
 }
-
-export default DiffuseSubSurfaceMethod;

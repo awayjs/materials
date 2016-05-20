@@ -1,18 +1,18 @@
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import EffectMethodBase					from "../methods/EffectMethodBase";
+import {MethodVO}							from "../data/MethodVO";
+import {EffectMethodBase}					from "../methods/EffectMethodBase";
 
 /**
  * EffectFogMethod provides a method to add distance-based fog to a material.
  */
-class EffectFogMethod extends EffectMethodBase
+export class EffectFogMethod extends EffectMethodBase
 {
 	private _minDistance:number = 0;
 	private _maxDistance:number = 1000;
@@ -38,7 +38,7 @@ class EffectFogMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shader:LightingShader, methodVO:MethodVO)
+	public iInitVO(shader:LightingShader, methodVO:MethodVO):void
 	{
 		methodVO.needsProjection = true;
 	}
@@ -46,7 +46,7 @@ class EffectFogMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		var data:Float32Array = shader.fragmentConstantData;
 		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
@@ -100,7 +100,7 @@ class EffectFogMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		var data:Float32Array = shader.fragmentConstantData;
 		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
@@ -136,5 +136,3 @@ class EffectFogMethod extends EffectMethodBase
 		return code;
 	}
 }
-
-export default EffectFogMethod;

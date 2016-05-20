@@ -1,14 +1,14 @@
-import IAsset							from "awayjs-core/lib/library/IAsset";
+import {IAsset}							from "awayjs-core/lib/library/IAsset";
 
-import LightBase						from "awayjs-display/lib/display/LightBase";
-import ShadowMapperBase					from "awayjs-display/lib/materials/shadowmappers/ShadowMapperBase";
+import {LightBase}						from "awayjs-display/lib/display/LightBase";
+import {ShadowMapperBase}					from "awayjs-display/lib/materials/shadowmappers/ShadowMapperBase";
 
-import ShadingMethodBase				from "../methods/ShadingMethodBase";
+import {ShadingMethodBase}				from "../methods/ShadingMethodBase";
 
 /**
  * ShadowMapMethodBase provides an abstract base method for shadow map methods.
  */
-class ShadowMapMethodBase extends ShadingMethodBase implements IAsset
+export class ShadowMapMethodBase extends ShadingMethodBase implements IAsset
 {
 	public static assetType:string = "[asset ShadowMapMethod]";
 
@@ -75,5 +75,3 @@ class ShadowMapMethodBase extends ShadingMethodBase implements IAsset
 		this._pEpsilon = value;
 	}
 }
-
-export default ShadowMapMethodBase;

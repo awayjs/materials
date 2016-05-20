@@ -1,25 +1,25 @@
-import Camera							from "awayjs-display/lib/display/Camera";
-import TextureBase						from "awayjs-display/lib/textures/TextureBase";
-import ISurface							from "awayjs-display/lib/base/ISurface";
+import {Camera}							from "awayjs-display/lib/display/Camera";
+import {TextureBase}						from "awayjs-display/lib/textures/TextureBase";
+import {ISurface}							from "awayjs-display/lib/base/ISurface";
 
-import Stage							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "awayjs-stagegl/lib/base/Stage";
 
-import GL_RenderableBase				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
-import ShadingMethodEvent				from "awayjs-renderergl/lib/events/ShadingMethodEvent";
-import LightingShader					from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderBase						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import ShaderRegisterCache				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase}				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
+import {ShadingMethodEvent}				from "awayjs-renderergl/lib/events/ShadingMethodEvent";
+import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO							from "../data/MethodVO";
-import SpecularBasicMethod				from "../methods/SpecularBasicMethod";
+import {MethodVO}							from "../data/MethodVO";
+import {SpecularBasicMethod}				from "../methods/SpecularBasicMethod";
 
 /**
  * SpecularCompositeMethod provides a base class for specular methods that wrap a specular method to alter the
  * calculated specular reflection strength.
  */
-class SpecularCompositeMethod extends SpecularBasicMethod
+export class SpecularCompositeMethod extends SpecularBasicMethod
 {
 	private _baseMethod:SpecularBasicMethod;
 
@@ -45,7 +45,7 @@ class SpecularCompositeMethod extends SpecularBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shader:LightingShader, methodVO:MethodVO)
+	public iInitVO(shader:LightingShader, methodVO:MethodVO):void
 	{
 		this._baseMethod.iInitVO(shader, methodVO);
 	}
@@ -53,20 +53,20 @@ class SpecularCompositeMethod extends SpecularBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO)
+	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		this._baseMethod.iInitConstants(shader, methodVO);
 	}
 
 
-	public iAddOwner(owner:ISurface)
+	public iAddOwner(owner:ISurface):void
 	{
 		super.iAddOwner(owner);
 
 		this._baseMethod.iAddOwner(owner);
 	}
 
-	public iRemoveOwner(owner:ISurface)
+	public iRemoveOwner(owner:ISurface):void
 	{
 		super.iRemoveOwner(owner);
 
@@ -140,7 +140,7 @@ class SpecularCompositeMethod extends SpecularBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public dispose()
+	public dispose():void
 	{
 		this._baseMethod.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
 		this._baseMethod.dispose();
@@ -162,7 +162,7 @@ class SpecularCompositeMethod extends SpecularBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage)
+	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage):void
 	{
 		this._baseMethod.iActivate(shader, methodVO, stage);
 	}
@@ -170,7 +170,7 @@ class SpecularCompositeMethod extends SpecularBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera)
+	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
 	{
 		this._baseMethod.iSetRenderState(shader, methodVO, renderable, stage, camera);
 	}
@@ -178,7 +178,7 @@ class SpecularCompositeMethod extends SpecularBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iDeactivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage)
+	public iDeactivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		this._baseMethod.iDeactivate(shader, methodVO, stage);
 	}
@@ -227,7 +227,7 @@ class SpecularCompositeMethod extends SpecularBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iReset()
+	public iReset():void
 	{
 		this._baseMethod.iReset();
 	}
@@ -235,7 +235,7 @@ class SpecularCompositeMethod extends SpecularBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iCleanCompilationData()
+	public iCleanCompilationData():void
 	{
 		super.iCleanCompilationData();
 		this._baseMethod.iCleanCompilationData();
@@ -244,10 +244,8 @@ class SpecularCompositeMethod extends SpecularBasicMethod
 	/**
 	 * Called when the base method's shader code is invalidated.
 	 */
-	private onShaderInvalidated(event:ShadingMethodEvent)
+	private onShaderInvalidated(event:ShadingMethodEvent):void
 	{
 		this.iInvalidateShaderProgram();
 	}
 }
-
-export default SpecularCompositeMethod;

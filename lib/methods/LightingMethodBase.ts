@@ -1,17 +1,17 @@
-import ShaderBase					from "awayjs-renderergl/lib/shaders/ShaderBase";
-import LightingShader				from "awayjs-renderergl/lib/shaders/LightingShader";
-import ShaderRegisterCache			from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import ShaderRegisterData			from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import ShaderRegisterElement		from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {ShaderBase}					from "awayjs-renderergl/lib/shaders/ShaderBase";
+import {LightingShader}				from "awayjs-renderergl/lib/shaders/LightingShader";
+import {ShaderRegisterCache}			from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}			from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}		from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
 
-import MethodVO						from "../data/MethodVO";
-import ShadingMethodBase			from "../methods/ShadingMethodBase";
+import {MethodVO}						from "../data/MethodVO";
+import {ShadingMethodBase}			from "../methods/ShadingMethodBase";
 
 /**
  * LightingMethodBase provides an abstract base method for shading methods that uses lights.
  * Used for diffuse and specular shaders only.
  */
-class LightingMethodBase extends ShadingMethodBase
+export class LightingMethodBase extends ShadingMethodBase
 {
 	/**
 	 * A method that is exposed to wrappers in case the strength needs to be controlled
@@ -76,5 +76,3 @@ class LightingMethodBase extends ShadingMethodBase
 		return "";
 	}
 }
-
-export default LightingMethodBase;
