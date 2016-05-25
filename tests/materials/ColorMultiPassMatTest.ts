@@ -1,17 +1,17 @@
-import Vector3D						from "awayjs-core/lib/geom/Vector3D";
-import RequestAnimationFrame		from "awayjs-core/lib/utils/RequestAnimationFrame";
-import Debug						from "awayjs-core/lib/utils/Debug";
+import {Vector3D}						from "awayjs-core/lib/geom/Vector3D";
+import {RequestAnimationFrame}		from "awayjs-core/lib/utils/RequestAnimationFrame";
+import {Debug}						from "awayjs-core/lib/utils/Debug";
 
-import View							from "awayjs-display/lib/View";
-import Sprite						from "awayjs-display/lib/display/Sprite";
-import PointLight					from "awayjs-display/lib/display/PointLight";
-import StaticLightPicker			from "awayjs-display/lib/materials/lightpickers/StaticLightPicker";
-import PrimitiveTorusPrefab			from "awayjs-display/lib/prefabs/PrimitiveTorusPrefab";
-import ElementsType					from "awayjs-display/lib/graphics/ElementsType";
+import {View}							from "awayjs-display/lib/View";
+import {Sprite}						from "awayjs-display/lib/display/Sprite";
+import {PointLight}					from "awayjs-display/lib/display/PointLight";
+import {StaticLightPicker}			from "awayjs-display/lib/materials/lightpickers/StaticLightPicker";
+import {PrimitiveTorusPrefab}			from "awayjs-display/lib/prefabs/PrimitiveTorusPrefab";
+import {ElementsType}					from "awayjs-display/lib/graphics/ElementsType";
 
-import DefaultRenderer				from "awayjs-renderergl/lib/DefaultRenderer";
+import {DefaultRenderer}				from "awayjs-renderergl/lib/DefaultRenderer";
 
-import MethodMaterial				from "awayjs-methodmaterials/lib/MethodMaterial";
+import {MethodMaterial}				from "awayjs-methodmaterials/lib/MethodMaterial";
 
 class ColorMultiPassMatTest
 {

@@ -1,25 +1,25 @@
-import Vector3D						from "awayjs-core/lib/geom/Vector3D";
-import Sampler2D					from "awayjs-core/lib/image/Sampler2D";
-import RequestAnimationFrame		from "awayjs-core/lib/utils/RequestAnimationFrame";
-import Debug						from "awayjs-core/lib/utils/Debug";
+import {Vector3D}						from "awayjs-core/lib/geom/Vector3D";
+import {Sampler2D}					from "awayjs-core/lib/image/Sampler2D";
+import {RequestAnimationFrame}		from "awayjs-core/lib/utils/RequestAnimationFrame";
+import {Debug}						from "awayjs-core/lib/utils/Debug";
 
-import View							from "awayjs-display/lib/View";
-import Sprite						from "awayjs-display/lib/display/Sprite";
-import DirectionalLight				from "awayjs-display/lib/display/DirectionalLight";
-import DefaultMaterialManager		from "awayjs-display/lib/managers/DefaultMaterialManager";
-import StaticLightPicker			from "awayjs-display/lib/materials/lightpickers/StaticLightPicker";
-import PrimitivePrefabBase			from "awayjs-display/lib/prefabs/PrimitivePrefabBase";
-import PrimitiveCapsulePrefab		from "awayjs-display/lib/prefabs/PrimitiveCapsulePrefab";
-import PrimitiveConePrefab			from "awayjs-display/lib/prefabs/PrimitiveConePrefab";
-import PrimitiveCubePrefab			from "awayjs-display/lib/prefabs/PrimitiveCubePrefab";
-import PrimitiveCylinderPrefab		from "awayjs-display/lib/prefabs/PrimitiveCylinderPrefab";
-import PrimitivePlanePrefab			from "awayjs-display/lib/prefabs/PrimitivePlanePrefab";
-import PrimitiveSpherePrefab		from "awayjs-display/lib/prefabs/PrimitiveSpherePrefab";
-import PrimitiveTorusPrefab			from "awayjs-display/lib/prefabs/PrimitiveTorusPrefab";
+import {View}							from "awayjs-display/lib/View";
+import {Sprite}						from "awayjs-display/lib/display/Sprite";
+import {DirectionalLight}				from "awayjs-display/lib/display/DirectionalLight";
+import {DefaultMaterialManager}		from "awayjs-display/lib/managers/DefaultMaterialManager";
+import {StaticLightPicker}			from "awayjs-display/lib/materials/lightpickers/StaticLightPicker";
+import {PrimitivePrefabBase}			from "awayjs-display/lib/prefabs/PrimitivePrefabBase";
+import {PrimitiveCapsulePrefab}		from "awayjs-display/lib/prefabs/PrimitiveCapsulePrefab";
+import {PrimitiveConePrefab}			from "awayjs-display/lib/prefabs/PrimitiveConePrefab";
+import {PrimitiveCubePrefab}			from "awayjs-display/lib/prefabs/PrimitiveCubePrefab";
+import {PrimitiveCylinderPrefab}		from "awayjs-display/lib/prefabs/PrimitiveCylinderPrefab";
+import {PrimitivePlanePrefab}			from "awayjs-display/lib/prefabs/PrimitivePlanePrefab";
+import {PrimitiveSpherePrefab}		from "awayjs-display/lib/prefabs/PrimitiveSpherePrefab";
+import {PrimitiveTorusPrefab}			from "awayjs-display/lib/prefabs/PrimitiveTorusPrefab";
 
-import DefaultRenderer				from "awayjs-renderergl/lib/DefaultRenderer";
+import {DefaultRenderer}				from "awayjs-renderergl/lib/DefaultRenderer";
 
-import MethodMaterial				from "awayjs-methodmaterials/lib/MethodMaterial";
+import {MethodMaterial}				from "awayjs-methodmaterials/lib/MethodMaterial";
 
 class PrimitivesTest
 {
