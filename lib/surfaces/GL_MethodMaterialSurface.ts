@@ -1,13 +1,13 @@
-import {BlendMode}						from "awayjs-core/lib/image/BlendMode";
-import {AssetEvent}						from "awayjs-core/lib/events/AssetEvent";
+import {BlendMode}						from "@awayjs/core/lib/image/BlendMode";
+import {AssetEvent}						from "@awayjs/core/lib/events/AssetEvent";
 
-import {StaticLightPicker}				from "awayjs-display/lib/materials/lightpickers/StaticLightPicker";
+import {StaticLightPicker}				from "@awayjs/display/lib/materials/lightpickers/StaticLightPicker";
 
-import {ContextGLCompareMode}				from "awayjs-stagegl/lib/base/ContextGLCompareMode";
+import {ContextGLCompareMode}				from "@awayjs/stage/lib/base/ContextGLCompareMode";
 
-import {IElementsClassGL}					from "awayjs-renderergl/lib/elements/IElementsClassGL";
-import {GL_SurfaceBase}					from "awayjs-renderergl/lib/surfaces/GL_SurfaceBase";
-import {SurfacePool}						from "awayjs-renderergl/lib/surfaces/SurfacePool";
+import {IElementsClassGL}					from "@awayjs/renderer/lib/elements/IElementsClassGL";
+import {GL_SurfaceBase}					from "@awayjs/renderer/lib/surfaces/GL_SurfaceBase";
+import {SurfacePool}						from "@awayjs/renderer/lib/surfaces/SurfacePool";
 
 import {MethodMaterial}					from "../MethodMaterial";
 import {MethodMaterialMode}				from "../MethodMaterialMode";

@@ -1,4 +1,4 @@
-import {GL_TextureBase}				from "awayjs-renderergl/lib/textures/GL_TextureBase";
+import {GL_TextureBase}				from "@awayjs/renderer/lib/textures/GL_TextureBase";
 
 import {MethodPass}					from "../surfaces/passes/MethodPass";
 import {ShadingMethodBase}			from "../methods/ShadingMethodBase";

@@ -1,8 +1,8 @@
-import {AssetEvent}						from "awayjs-core/lib/events/AssetEvent";
-import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {AssetEvent}						from "@awayjs/core/lib/events/AssetEvent";
+import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
 
 import {MethodVO}							from "../data/MethodVO";
 import {AmbientBasicMethod}				from "../methods/AmbientBasicMethod";

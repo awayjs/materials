@@ -1,10 +1,10 @@
-import {Single2DTexture}					from "awayjs-display/lib/textures/Single2DTexture";
-import {TextureBase}						from "awayjs-display/lib/textures/TextureBase";
+import {Single2DTexture}					from "@awayjs/display/lib/textures/Single2DTexture";
+import {TextureBase}						from "@awayjs/display/lib/textures/TextureBase";
 
-import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
 
 import {MethodVO}							from "../data/MethodVO";
 import {NormalBasicMethod}				from "../methods/NormalBasicMethod";

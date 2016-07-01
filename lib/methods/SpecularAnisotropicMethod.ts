@@ -1,7 +1,7 @@
-import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
-import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {LightingShader}					from "@awayjs/renderer/lib/shaders/LightingShader";
+import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
 
 import {MethodVO}							from "../data/MethodVO";
 import {SpecularBasicMethod}				from "../methods/SpecularBasicMethod";

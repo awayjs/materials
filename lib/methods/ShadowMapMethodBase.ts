@@ -1,7 +1,7 @@
-import {IAsset}							from "awayjs-core/lib/library/IAsset";
+import {IAsset}							from "@awayjs/core/lib/library/IAsset";
 
-import {LightBase}						from "awayjs-display/lib/display/LightBase";
-import {ShadowMapperBase}					from "awayjs-display/lib/materials/shadowmappers/ShadowMapperBase";
+import {LightBase}						from "@awayjs/display/lib/display/LightBase";
+import {ShadowMapperBase}					from "@awayjs/display/lib/materials/shadowmappers/ShadowMapperBase";
 
 import {ShadingMethodBase}				from "../methods/ShadingMethodBase";
 

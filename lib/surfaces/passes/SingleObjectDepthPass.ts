@@ -1,28 +1,28 @@
-import {Image2D}							from "awayjs-core/lib/image/Image2D";
-import {Matrix3D}							from "awayjs-core/lib/geom/Matrix3D";
+import {Image2D}							from "@awayjs/core/lib/image/Image2D";
+import {Matrix3D}							from "@awayjs/core/lib/geom/Matrix3D";
 
-import {LightBase}						from "awayjs-display/lib/display/LightBase";
-import {Camera}							from "awayjs-display/lib/display/Camera";
-import {MaterialBase}						from "awayjs-display/lib/materials/MaterialBase";
-import {ISurface}							from "awayjs-display/lib/base/ISurface";
-import {Single2DTexture}					from "awayjs-display/lib/textures/Single2DTexture";
-import {TextureBase}						from "awayjs-display/lib/textures/TextureBase";
-import {TriangleElements}					from "awayjs-display/lib/graphics/TriangleElements";
+import {LightBase}						from "@awayjs/display/lib/display/LightBase";
+import {Camera}							from "@awayjs/display/lib/display/Camera";
+import {MaterialBase}						from "@awayjs/display/lib/materials/MaterialBase";
+import {ISurface}							from "@awayjs/display/lib/base/ISurface";
+import {Single2DTexture}					from "@awayjs/display/lib/textures/Single2DTexture";
+import {TextureBase}						from "@awayjs/display/lib/textures/TextureBase";
+import {TriangleElements}					from "@awayjs/display/lib/graphics/TriangleElements";
 
-import {ContextGLDrawMode}				from "awayjs-stagegl/lib/base/ContextGLDrawMode";
-import {ContextGLProgramType}				from "awayjs-stagegl/lib/base/ContextGLProgramType";
-import {IContextGL}						from "awayjs-stagegl/lib/base/IContextGL";
-import {Stage}							from "awayjs-stagegl/lib/base/Stage";
+import {ContextGLDrawMode}				from "@awayjs/stage/lib/base/ContextGLDrawMode";
+import {ContextGLProgramType}				from "@awayjs/stage/lib/base/ContextGLProgramType";
+import {IContextGL}						from "@awayjs/stage/lib/base/IContextGL";
+import {Stage}							from "@awayjs/stage/lib/base/Stage";
 
-import {RendererBase}						from "awayjs-renderergl/lib/RendererBase";
-import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import {PassBase}							from "awayjs-renderergl/lib/surfaces/passes/PassBase";
-import {IElementsClassGL}					from "awayjs-renderergl/lib/elements/IElementsClassGL";
-import {GL_RenderableBase}				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
-import {GL_SurfaceBase}					from "awayjs-renderergl/lib/surfaces/GL_SurfaceBase";
-import {GL_ElementsBase}					from "awayjs-renderergl/lib/elements/GL_ElementsBase";
+import {RendererBase}						from "@awayjs/renderer/lib/RendererBase";
+import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
+import {PassBase}							from "@awayjs/renderer/lib/surfaces/passes/PassBase";
+import {IElementsClassGL}					from "@awayjs/renderer/lib/elements/IElementsClassGL";
+import {GL_RenderableBase}				from "@awayjs/renderer/lib/renderables/GL_RenderableBase";
+import {GL_SurfaceBase}					from "@awayjs/renderer/lib/surfaces/GL_SurfaceBase";
+import {GL_ElementsBase}					from "@awayjs/renderer/lib/elements/GL_ElementsBase";
 
 /**
  * The SingleObjectDepthPass provides a material pass that renders a single object to a depth map from the point

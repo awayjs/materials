@@ -1,10 +1,10 @@
-﻿import {Image2D}						from "awayjs-core/lib/image/Image2D";
+﻿import {Image2D}						from "@awayjs/core/lib/image/Image2D";
 
-import {MaterialBase}					from "awayjs-display/lib/materials/MaterialBase";
-import {Single2DTexture}				from "awayjs-display/lib/textures/Single2DTexture";
-import {TextureBase}					from "awayjs-display/lib/textures/TextureBase";
+import {MaterialBase}					from "@awayjs/display/lib/materials/MaterialBase";
+import {Single2DTexture}				from "@awayjs/display/lib/textures/Single2DTexture";
+import {TextureBase}					from "@awayjs/display/lib/textures/TextureBase";
 
-import {ContextGLCompareMode}			from "awayjs-stagegl/lib/base/ContextGLCompareMode";
+import {ContextGLCompareMode}			from "@awayjs/stage/lib/base/ContextGLCompareMode";
 
 import {MethodMaterialMode}			from "./MethodMaterialMode";
 import {AmbientBasicMethod}			from "./methods/AmbientBasicMethod";

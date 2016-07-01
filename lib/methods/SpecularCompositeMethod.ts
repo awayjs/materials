@@ -1,16 +1,16 @@
-import {Camera}							from "awayjs-display/lib/display/Camera";
-import {TextureBase}						from "awayjs-display/lib/textures/TextureBase";
-import {ISurface}							from "awayjs-display/lib/base/ISurface";
+import {Camera}							from "@awayjs/display/lib/display/Camera";
+import {TextureBase}						from "@awayjs/display/lib/textures/TextureBase";
+import {ISurface}							from "@awayjs/display/lib/base/ISurface";
 
-import {Stage}							from "awayjs-stagegl/lib/base/Stage";
+import {Stage}							from "@awayjs/stage/lib/base/Stage";
 
-import {GL_RenderableBase}				from "awayjs-renderergl/lib/renderables/GL_RenderableBase";
-import {ShadingMethodEvent}				from "awayjs-renderergl/lib/events/ShadingMethodEvent";
-import {LightingShader}					from "awayjs-renderergl/lib/shaders/LightingShader";
-import {ShaderBase}						from "awayjs-renderergl/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "awayjs-renderergl/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "awayjs-renderergl/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "awayjs-renderergl/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase}				from "@awayjs/renderer/lib/renderables/GL_RenderableBase";
+import {ShadingMethodEvent}				from "@awayjs/renderer/lib/events/ShadingMethodEvent";
+import {LightingShader}					from "@awayjs/renderer/lib/shaders/LightingShader";
+import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
+import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
+import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
+import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
 
 import {MethodVO}							from "../data/MethodVO";
 import {SpecularBasicMethod}				from "../methods/SpecularBasicMethod";
