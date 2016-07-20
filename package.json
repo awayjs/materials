@@ -1,6 +1,6 @@
 {
   "name": "@awayjs/materials",
-  "version": "0.3.20",
+  "version": "0.3.22",
   "description": "Materials for AwayJS",
   "url": "http://www.away3d.com",
   "author": "Rob Bateman",
@@ -32,12 +32,10 @@
   },
   "homepage": "https://github.com/awayjs/materials#readme",
   "dependencies": {
-    "dependencies": {
-      "@awayjs/core": "^0.6.0",
-      "@awayjs/display": "^0.8.0",
-      "@awayjs/stage": "^0.8.0",
-      "@awayjs/renderer": "^0.8.0"
-    }
+    "@awayjs/core": "^0.6.0",
+    "@awayjs/display": "^0.8.0",
+    "@awayjs/stage": "^0.8.0",
+    "@awayjs/renderer": "^0.8.0"
   },
   "devDependencies": {
     "rimraf": "^2.5.2",
