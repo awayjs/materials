@@ -156,7 +156,7 @@ export class EffectFresnelEnvMapMethod extends EffectMethodBase
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		var data:Float32Array = shader.fragmentConstantData;
-		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
+		var index:number = methodVO.fragmentConstantsIndex;
 		data[index] = this._alpha;
 		data[index + 1] = this._normalReflectance;
 		data[index + 2] = this._fresnelPower;

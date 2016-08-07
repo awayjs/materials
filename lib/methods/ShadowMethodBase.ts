@@ -59,7 +59,7 @@ export class ShadowMethodBase extends ShadowMapMethodBase
 	{
 		var fragmentData:Float32Array = shader.fragmentConstantData;
 		var vertexData:Float32Array = shader.vertexConstantData;
-		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
+		var index:number = methodVO.fragmentConstantsIndex;
 		fragmentData[index] = 1.0;
 		fragmentData[index + 1] = 1/255.0;
 		fragmentData[index + 2] = 1/65025.0;
@@ -223,7 +223,7 @@ export class ShadowMethodBase extends ShadowMapMethodBase
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		var fragmentData:Float32Array = shader.fragmentConstantData;
-		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
+		var index:number = methodVO.fragmentConstantsIndex;
 
 		if (this._pUsePoint)
 			fragmentData[index + 4] = -Math.pow(1/((<PointLight> this._pCastingLight).fallOff*this._pEpsilon), 2);

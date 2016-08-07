@@ -17,6 +17,7 @@ export {EffectFogMethod}					from "./methods/EffectFogMethod";
 export {EffectFresnelEnvMapMethod}		from "./methods/EffectFresnelEnvMapMethod";
 export {EffectLightMapMethod}			from "./methods/EffectLightMapMethod";
 export {EffectMethodBase}				from "./methods/EffectMethodBase";
+export {EffectProjectiveTextureMethod}				from "./methods/EffectProjectiveTextureMethod";
 export {EffectRefractionEnvMapMethod}	from "./methods/EffectRefractionEnvMapMethod";
 export {EffectRimLightMethod}			from "./methods/EffectRimLightMethod";
 export {LightingMethodBase}				from "./methods/LightingMethodBase";

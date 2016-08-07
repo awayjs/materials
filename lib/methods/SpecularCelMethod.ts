@@ -66,7 +66,7 @@ export class SpecularCelMethod extends SpecularCompositeMethod
 	{
 		super.iActivate(shader, methodVO, stage);
 
-		var index:number /*int*/ = methodVO.secondaryFragmentConstantsIndex;
+		var index:number = methodVO.secondaryFragmentConstantsIndex;
 		var data:Float32Array = shader.fragmentConstantData;
 		data[index] = this._smoothness;
 		data[index + 1] = this._specularCutOff;

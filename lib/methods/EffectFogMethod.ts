@@ -49,7 +49,7 @@ export class EffectFogMethod extends EffectMethodBase
 	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		var data:Float32Array = shader.fragmentConstantData;
-		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
+		var index:number = methodVO.fragmentConstantsIndex;
 		data[index + 3] = 1;
 		data[index + 6] = 0;
 		data[index + 7] = 0;
@@ -103,7 +103,7 @@ export class EffectFogMethod extends EffectMethodBase
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		var data:Float32Array = shader.fragmentConstantData;
-		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
+		var index:number = methodVO.fragmentConstantsIndex;
 		data[index] = this._fogR;
 		data[index + 1] = this._fogG;
 		data[index + 2] = this._fogB;

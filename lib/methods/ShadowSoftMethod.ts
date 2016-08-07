@@ -18,7 +18,7 @@ import {ShadowMethodBase}					from "../methods/ShadowMethodBase";
 export class ShadowSoftMethod extends ShadowMethodBase
 {
 	private _range:number = 1;
-	private _numSamples:number /*int*/;
+	private _numSamples:number;
 	private _offsets:Array<number>;
 
 	/**
@@ -27,7 +27,7 @@ export class ShadowSoftMethod extends ShadowMethodBase
 	 * @param castingLight The light casting the shadows
 	 * @param numSamples The amount of samples to take for dithering. Minimum 1, maximum 32.
 	 */
-	constructor(castingLight:DirectionalLight, numSamples:number /*int*/ = 5, range:number = 1)
+	constructor(castingLight:DirectionalLight, numSamples:number = 5, range:number = 1)
 	{
 		super(castingLight);
 
@@ -39,12 +39,12 @@ export class ShadowSoftMethod extends ShadowMethodBase
 	 * The amount of samples to take for dithering. Minimum 1, maximum 32. The actual maximum may depend on the
 	 * complexity of the shader.
 	 */
-	public get numSamples():number /*int*/
+	public get numSamples():number
 	{
 		return this._numSamples;
 	}
 
-	public set numSamples(value:number /*int*/)
+	public set numSamples(value:number)
 	{
 		this._numSamples = value;
 		
@@ -94,7 +94,7 @@ export class ShadowSoftMethod extends ShadowMethodBase
 		var index:number /*uint*/ = methodVO.fragmentConstantsIndex + 10;
 		var len:number /*uint*/ = this._numSamples << 1;
 
-		for (var i:number /*int*/ = 0; i < len; ++i)
+		for (var i:number = 0; i < len; ++i)
 			data[index + i] = this._offsets[i]*texRange;
 	}
 
@@ -146,7 +146,7 @@ export class ShadowSoftMethod extends ShadowMethodBase
 		data[index + 1] = 0;
 		index += 2;
 
-		for (var i:number /*int*/ = 0; i < len; ++i)
+		for (var i:number = 0; i < len; ++i)
 			data[index + i] = this._offsets[i]*texRange;
 
 		if (len%4 == 0) {
@@ -183,9 +183,9 @@ export class ShadowSoftMethod extends ShadowMethodBase
 		registerCache.addFragmentTempUsages(uvReg, 1);
 
 		var offsets:Array<string> = new Array<string>(dataReg + ".zw");
-		var numRegs:number /*int*/ = this._numSamples >> 1;
+		var numRegs:number = this._numSamples >> 1;
 
-		for (var i:number /*int*/ = 0; i < numRegs; ++i) {
+		for (var i:number = 0; i < numRegs; ++i) {
 			var reg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 			offsets.push(reg + ".xy");
 			offsets.push(reg + ".zw");

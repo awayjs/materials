@@ -42,7 +42,7 @@ export class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	 * @param depthMapOffset The amount by which the rendered object will be inflated, to prevent depth map rounding errors.
 	 * @param baseMethod The diffuse method used to calculate the regular diffuse-based lighting.
 	 */
-	constructor(depthMapSize:number /*int*/ = 512, depthMapOffset:number = 15, baseMethod:DiffuseBasicMethod = null)
+	constructor(depthMapSize:number = 512, depthMapOffset:number = 15, baseMethod:DiffuseBasicMethod = null)
 	{
 		super(null, baseMethod);
 
@@ -65,7 +65,7 @@ export class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 		super.iInitConstants(shader, methodVO);
 
 		var data:Float32Array = shader.vertexConstantData;
-		var index:number /*int*/ = methodVO.secondaryVertexConstantsIndex;
+		var index:number = methodVO.secondaryVertexConstantsIndex;
 		data[index] = .5;
 		data[index + 1] = -.5;
 		data[index + 2] = 0;
@@ -214,7 +214,7 @@ export class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	{
 		super.iActivate(shader, methodVO, stage);
 
-		var index:number /*int*/ = methodVO.secondaryFragmentConstantsIndex;
+		var index:number = methodVO.secondaryFragmentConstantsIndex;
 		var data:Float32Array = shader.fragmentConstantData;
 		data[index] = this._scatterR;
 		data[index + 1] = this._scatterG;

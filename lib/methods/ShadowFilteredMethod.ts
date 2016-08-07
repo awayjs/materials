@@ -35,9 +35,9 @@ export class ShadowFilteredMethod extends ShadowMethodBase
 		super.iInitConstants(shader, methodVO);
 
 		var fragmentData:Float32Array = shader.fragmentConstantData;
-		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
+		var index:number = methodVO.fragmentConstantsIndex;
 		fragmentData[index + 8] = .5;
-		var size:number /*int*/ = this.castingLight.shadowMapper.depthMapSize;
+		var size:number = this.castingLight.shadowMapper.depthMapSize;
 		fragmentData[index + 9] = size;
 		fragmentData[index + 10] = 1/size;
 	}
@@ -110,8 +110,8 @@ export class ShadowFilteredMethod extends ShadowMethodBase
 	 */
 	public iActivateForCascade(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
-		var size:number /*int*/ = this.castingLight.shadowMapper.depthMapSize;
-		var index:number /*int*/ = methodVO.secondaryFragmentConstantsIndex;
+		var size:number = this.castingLight.shadowMapper.depthMapSize;
+		var index:number = methodVO.secondaryFragmentConstantsIndex;
 		var data:Float32Array = shader.fragmentConstantData;
 		data[index] = size;
 		data[index + 1] = 1/size;

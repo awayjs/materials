@@ -54,7 +54,7 @@ export class EffectRefractionEnvMapMethod extends EffectMethodBase
 	 */
 	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
 	{
-		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
+		var index:number = methodVO.fragmentConstantsIndex;
 		var data:Float32Array = shader.fragmentConstantData;
 		data[index + 4] = 1;
 		data[index + 5] = 0;
@@ -183,7 +183,7 @@ export class EffectRefractionEnvMapMethod extends EffectMethodBase
 	 */
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
-		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
+		var index:number = methodVO.fragmentConstantsIndex;
 		var data:Float32Array = shader.fragmentConstantData;
 
 		data[index] = this._dispersionR + this._refractionIndex;

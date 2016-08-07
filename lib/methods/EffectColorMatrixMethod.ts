@@ -72,7 +72,7 @@ export class EffectColorMatrixMethod extends EffectMethodBase
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		var matrix:Array<number> = this._matrix;
-		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
+		var index:number = methodVO.fragmentConstantsIndex;
 		var data:Float32Array = shader.fragmentConstantData;
 
 		// r

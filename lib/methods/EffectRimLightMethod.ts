@@ -131,7 +131,7 @@ export class EffectRimLightMethod extends EffectMethodBase
 	 */
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
-		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
+		var index:number = methodVO.fragmentConstantsIndex;
 		var data:Float32Array = shader.fragmentConstantData;
 		data[index] = this._colorR;
 		data[index + 1] = this._colorG;

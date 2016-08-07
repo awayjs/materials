@@ -80,7 +80,7 @@ export class ShadowNearMethod extends ShadowMethodBase
 		this._baseMethod.iInitConstants(shader, methodVO);
 
 		var fragmentData:Float32Array = shader.fragmentConstantData;
-		var index:number /*int*/ = methodVO.secondaryFragmentConstantsIndex;
+		var index:number = methodVO.secondaryFragmentConstantsIndex;
 		fragmentData[index + 2] = 0;
 		fragmentData[index + 3] = 1;
 	}
@@ -196,7 +196,7 @@ export class ShadowNearMethod extends ShadowMethodBase
 		minDistance = near + minDistance*d;
 
 		var fragmentData:Float32Array = shader.fragmentConstantData;
-		var index:number /*int*/ = methodVO.secondaryFragmentConstantsIndex;
+		var index:number = methodVO.secondaryFragmentConstantsIndex;
 		fragmentData[index] = minDistance;
 		fragmentData[index + 1] = 1/(maxDistance - minDistance);
 

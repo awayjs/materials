@@ -22,18 +22,18 @@ import {ShadowMethodBase}					from "../methods/ShadowMethodBase";
 export class ShadowDitheredMethod extends ShadowMethodBase
 {
 	private static _grainTexture:Single2DTexture;
-	private static _grainUsages:number /*int*/;
+	private static _grainUsages:number;
 	private static _grainBitmapImage2D:BitmapImage2D;
-	private _depthMapSize:number /*int*/;
+	private _depthMapSize:number;
 	private _range:number;
-	private _numSamples:number /*int*/;
+	private _numSamples:number;
 
 	/**
 	 * Creates a new ShadowDitheredMethod object.
 	 * @param castingLight The light casting the shadows
 	 * @param numSamples The amount of samples to take for dithering. Minimum 1, maximum 24.
 	 */
-	constructor(castingLight:DirectionalLight, numSamples:number /*int*/ = 4, range:number = 1)
+	constructor(castingLight:DirectionalLight, numSamples:number = 4, range:number = 1)
 	{
 		super(castingLight);
 
@@ -52,12 +52,12 @@ export class ShadowDitheredMethod extends ShadowMethodBase
 	 * The amount of samples to take for dithering. Minimum 1, maximum 24. The actual maximum may depend on the
 	 * complexity of the shader.
 	 */
-	public get numSamples():number /*int*/
+	public get numSamples():number
 	{
 		return this._numSamples;
 	}
 
-	public set numSamples(value:number /*int*/)
+	public set numSamples(value:number)
 	{
 		if (value < 1)
 			value = 1;
@@ -92,7 +92,7 @@ export class ShadowDitheredMethod extends ShadowMethodBase
 		super.iInitConstants(shader, methodVO);
 
 		var fragmentData:Float32Array = shader.fragmentConstantData;
-		var index:number /*int*/ = methodVO.fragmentConstantsIndex;
+		var index:number = methodVO.fragmentConstantsIndex;
 		fragmentData[index + 8] = 1/this._numSamples;
 	}
 
@@ -205,7 +205,7 @@ export class ShadowDitheredMethod extends ShadowMethodBase
 	private getSampleCode(shader:ShaderBase, methodVO:MethodVO, customDataReg:ShaderRegisterElement, decReg:ShaderRegisterElement, targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
-		var numSamples:number /*int*/ = this._numSamples;
+		var numSamples:number = this._numSamples;
 		var uvReg:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
 		regCache.addFragmentTempUsages(uvReg, 1);
 		var temp:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
