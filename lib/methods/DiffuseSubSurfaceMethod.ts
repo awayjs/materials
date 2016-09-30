@@ -1,3 +1,5 @@
+import {Matrix3D}							from "@awayjs/core/lib/geom/Matrix3D";
+
 import {Camera}							from "@awayjs/display/lib/display/Camera";
 
 import {Stage}							from "@awayjs/stage/lib/base/Stage";
@@ -80,6 +82,8 @@ export class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 		data[index + 7] = 1/16581375;
 		data[index + 10] = .5;
 		data[index + 11] = -.1;
+
+		methodVO.vertexMatrices[0] = new Matrix3D(new Float32Array(shader.vertexConstantData.buffer, (methodVO.secondaryVertexConstantsIndex + 4)*4, 16));
 	}
 	
 	public iCleanCompilationData():void
@@ -231,7 +235,7 @@ export class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 		methodVO.secondaryTextureGL = shader.getAbstraction(this._depthPass._iGetDepthMap(renderable));
 		methodVO.secondaryTextureGL._setRenderState(renderable);
 
-		this._depthPass._iGetProjection(renderable).copyRawDataTo(shader.vertexConstantData, methodVO.secondaryVertexConstantsIndex + 4, true);
+		methodVO.vertexMatrices[0].copyFrom(this._depthPass._iGetProjection(renderable), true);
 	}
 	
 	/**

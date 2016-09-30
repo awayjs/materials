@@ -1,4 +1,5 @@
 import {AssetEvent}						from "@awayjs/core/lib/events/AssetEvent";
+import {Matrix3D}							from "@awayjs/core/lib/geom/Matrix3D";
 
 import {Camera}							from "@awayjs/display/lib/display/Camera";
 import {DirectionalLight}					from "@awayjs/display/lib/display/DirectionalLight";
@@ -114,6 +115,10 @@ export class ShadowCascadeMethod extends ShadowMapMethodBase
 		vertexData[index] = .5;
 		vertexData[index + 1] = -.5;
 		vertexData[index + 2] = 0;
+
+		var numCascades:number = this._cascadeShadowMapper.numCascades;
+		for (var k:number = 0; k < numCascades; ++k)
+			methodVO.vertexMatrices[k] = new Matrix3D(new Float32Array(shader.vertexConstantData.buffer, (methodVO.vertexConstantsIndex + 4 + k*16)*4, 16));
 	}
 
 	/**
@@ -134,8 +139,9 @@ export class ShadowCascadeMethod extends ShadowMapMethodBase
 		var code:string = "";
 		var dataReg:ShaderRegisterElement = registerCache.getFreeVertexConstant();
 
-		this.initProjectionsRegs(registerCache);
 		methodVO.vertexConstantsIndex = dataReg.index*4;
+
+		this.initProjectionsRegs(registerCache);
 
 		var temp:ShaderRegisterElement = registerCache.getFreeVertexVectorTemp();
 
@@ -221,17 +227,11 @@ export class ShadowCascadeMethod extends ShadowMapMethodBase
 	{
 		methodVO.textureGL.activate(methodVO.pass._render);
 
-		var vertexData:Float32Array = shader.vertexConstantData;
-		var vertexIndex:number = methodVO.vertexConstantsIndex;
-
 		shader.vertexConstantData[methodVO.vertexConstantsIndex + 3] = -1/(this._cascadeShadowMapper.depth*this._pEpsilon);
 
 		var numCascades:number = this._cascadeShadowMapper.numCascades;
-		vertexIndex += 4;
-		for (var k:number = 0; k < numCascades; ++k) {
-			this._cascadeShadowMapper.getDepthProjections(k).copyRawDataTo(vertexData, vertexIndex, true);
-			vertexIndex += 16;
-		}
+		for (var k:number = 0; k < numCascades; ++k)
+			methodVO.vertexMatrices[k].copyFrom(this._cascadeShadowMapper.getDepthProjections(k), true);
 
 		var fragmentData:Float32Array = shader.fragmentConstantData;
 		var fragmentIndex:number = methodVO.fragmentConstantsIndex;

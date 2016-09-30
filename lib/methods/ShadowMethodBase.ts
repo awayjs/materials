@@ -1,4 +1,5 @@
 import {Vector3D}							from "@awayjs/core/lib/geom/Vector3D";
+import {Matrix3D}							from "@awayjs/core/lib/geom/Matrix3D";
 import {AbstractMethodError}				from "@awayjs/core/lib/errors/AbstractMethodError";
 
 import {LightBase}						from "@awayjs/display/lib/display/LightBase";
@@ -82,6 +83,8 @@ export class ShadowMethodBase extends ShadowMapMethodBase
 			vertexData[index + 2] = 0.0;
 			vertexData[index + 3] = 1.0;
 		}
+
+		methodVO.vertexMatrices[0] = new Matrix3D(new Float32Array(shader.vertexConstantData.buffer, (methodVO.vertexConstantsIndex + 4)*4, 16));
 	}
 
 	/**
@@ -138,12 +141,13 @@ export class ShadowMethodBase extends ShadowMapMethodBase
 		var code:string = "";
 		var temp:ShaderRegisterElement = regCache.getFreeVertexVectorTemp();
 		var dataReg:ShaderRegisterElement = regCache.getFreeVertexConstant();
+		methodVO.vertexConstantsIndex = dataReg.index*4;
+
 		var depthMapProj:ShaderRegisterElement = regCache.getFreeVertexConstant();
 		regCache.getFreeVertexConstant();
 		regCache.getFreeVertexConstant();
 		regCache.getFreeVertexConstant();
 		this._pDepthMapCoordReg = regCache.getFreeVarying();
-		methodVO.vertexConstantsIndex = dataReg.index*4;
 
 		// todo: can epsilon be applied here instead of fragment shader?
 
@@ -197,7 +201,7 @@ export class ShadowMethodBase extends ShadowMapMethodBase
 	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
 	{
 		if (!this._pUsePoint)
-			(<DirectionalShadowMapper> this._pShadowMapper).iDepthProjection.copyRawDataTo(shader.vertexConstantData, methodVO.vertexConstantsIndex + 4, true);
+			methodVO.vertexMatrices[0].copyFrom((<DirectionalShadowMapper> this._pShadowMapper).iDepthProjection, true);
 
 		methodVO.textureGL._setRenderState(renderable);
 	}

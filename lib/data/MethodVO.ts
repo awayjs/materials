@@ -1,3 +1,4 @@
+import {Matrix3D}				from "@awayjs/core/lib/geom/Matrix3D";
 import {GL_TextureBase}				from "@awayjs/renderer/lib/textures/GL_TextureBase";
 
 import {MethodPass}					from "../surfaces/passes/MethodPass";
@@ -29,6 +30,10 @@ export class MethodVO
 	public needsTangents:boolean;
 	public needsGlobalVertexPos:boolean;
 	public needsGlobalFragmentPos:boolean;
+	
+	//Arraybuffer view for matrices
+	public vertexMatrices:Array<Matrix3D>;
+	
 	/**
 	 * Creates a new MethodVO object.
 	 */
@@ -56,5 +61,6 @@ export class MethodVO
 		this.needsTangents = false;
 		this.needsGlobalVertexPos = false;
 		this.needsGlobalFragmentPos = false;
+		this.vertexMatrices = new Array<Matrix3D>();
 	}
 }

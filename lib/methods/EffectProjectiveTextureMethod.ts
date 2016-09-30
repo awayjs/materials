@@ -1,5 +1,6 @@
 import {ErrorBase}					from "@awayjs/core/lib/errors/ErrorBase";
 import {Matrix3D}					from "@awayjs/core/lib/geom/Matrix3D";
+import {Matrix3DUtils}				from "@awayjs/core/lib/geom/Matrix3DUtils";
 
 import {Camera}							from "@awayjs/display/lib/display/Camera";
 import {TextureProjector}				from "@awayjs/display/lib/display/TextureProjector";
@@ -30,7 +31,6 @@ export class EffectProjectiveTextureMethod extends EffectMethodBase
 	
 	private _projector:TextureProjector;
 	private _uvVarying:ShaderRegisterElement;
-	private _projMatrix:Matrix3D = new Matrix3D();
 	private _mode:string;
 	private _exposure:number;
 	
@@ -67,6 +67,8 @@ export class EffectProjectiveTextureMethod extends EffectMethodBase
 		data[index + 1] = 0.5;
 		data[index + 2] = 4;
 		data[index + 3] = -1;
+
+		methodVO.vertexMatrices[0] = new Matrix3D(new Float32Array(shader.vertexConstantData.buffer, methodVO.vertexConstantsIndex*4, 16));
 	}
 
 	/**
@@ -193,10 +195,10 @@ export class EffectProjectiveTextureMethod extends EffectMethodBase
 	 */
 	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
 	{
-		this._projMatrix.copyFrom(this._projector.viewProjection);
-		//this._projMatrix.prependScale(this._projector.texture.width, .001, 1);
-		this._projMatrix.prepend(renderable.renderSceneTransform);
-		this._projMatrix.copyRawDataTo(shader.vertexConstantData, methodVO.vertexConstantsIndex, true);
+		var matrix3D:Matrix3D = Matrix3DUtils.CALCULATION_MATRIX;
+		matrix3D.copyFrom(this._projector.viewProjection);
+		matrix3D.prepend(renderable.renderSceneTransform);
+		methodVO.vertexMatrices[0].copyFrom(matrix3D, true);
 
 		methodVO.textureGL._setRenderState(renderable);
 	}
