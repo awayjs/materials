@@ -1,20 +1,14 @@
 import {ColorTransform}					from "@awayjs/core/lib/geom/ColorTransform";
-import {Matrix}							from "@awayjs/core/lib/geom/Matrix";
 import {Matrix3D}							from "@awayjs/core/lib/geom/Matrix3D";
-import {Matrix3DUtils}					from "@awayjs/core/lib/geom/Matrix3DUtils";
-import {Vector3D}							from "@awayjs/core/lib/geom/Vector3D";
-import {AbstractMethodError}				from "@awayjs/core/lib/errors/AbstractMethodError";
 import {AssetEvent}						from "@awayjs/core/lib/events/AssetEvent";
 import {MaterialBase}						from "@awayjs/display/lib/materials/MaterialBase";
 
 import {Camera}							from "@awayjs/display/lib/display/Camera";
-import {ISurface}							from "@awayjs/display/lib/base/ISurface";
 import {LightPickerBase}					from "@awayjs/display/lib/materials/lightpickers/LightPickerBase";
 import {LightSources}						from "@awayjs/display/lib/materials/LightSources";
 
 import {Stage}							from "@awayjs/stage/lib/base/Stage";
 
-import {RendererBase}						from "@awayjs/renderer/lib/RendererBase";
 import {LightingShader}					from "@awayjs/renderer/lib/shaders/LightingShader";
 import {ShadingMethodEvent}				from "@awayjs/renderer/lib/events/ShadingMethodEvent";
 import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";

@@ -1,6 +1,5 @@
 import {ErrorBase}					from "@awayjs/core/lib/errors/ErrorBase";
 import {Matrix3D}					from "@awayjs/core/lib/geom/Matrix3D";
-import {Matrix3DUtils}				from "@awayjs/core/lib/geom/Matrix3DUtils";
 
 import {Camera}							from "@awayjs/display/lib/display/Camera";
 import {TextureProjector}				from "@awayjs/display/lib/display/TextureProjector";
@@ -195,7 +194,7 @@ export class EffectProjectiveTextureMethod extends EffectMethodBase
 	 */
 	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
 	{
-		var matrix3D:Matrix3D = Matrix3DUtils.CALCULATION_MATRIX;
+		var matrix3D:Matrix3D = Matrix3D.CALCULATION_MATRIX;
 		matrix3D.copyFrom(this._projector.viewProjection);
 		matrix3D.prepend(renderable.renderSceneTransform);
 		methodVO.vertexMatrices[0].copyFrom(matrix3D, true);
