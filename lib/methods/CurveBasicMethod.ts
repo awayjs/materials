@@ -1,6 +1,6 @@
 import {AssetEvent}						from "@awayjs/core/lib/events/AssetEvent";
 import {Camera}							from "@awayjs/display/lib/display/Camera";
-import {TextureBase}						from "@awayjs/display/lib/textures/TextureBase";
+import {TextureBase}						from "@awayjs/graphics/lib/textures/TextureBase";
 
 import {Stage}							from "@awayjs/stage/lib/base/Stage";
 
@@ -56,7 +56,7 @@ export class CurveBasicMethod extends ShadingMethodBase
 	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		if (!methodVO.textureGL) {
-			this._color = methodVO.pass._surface.style.color;
+			this._color = methodVO.pass._material.style.color;
 			this.updateColor();
 		}
 	}

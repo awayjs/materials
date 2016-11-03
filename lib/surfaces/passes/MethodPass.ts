@@ -1,11 +1,11 @@
 import {ColorTransform}					from "@awayjs/core/lib/geom/ColorTransform";
 import {Matrix3D}							from "@awayjs/core/lib/geom/Matrix3D";
 import {AssetEvent}						from "@awayjs/core/lib/events/AssetEvent";
-import {MaterialBase}						from "@awayjs/display/lib/materials/MaterialBase";
+
 
 import {Camera}							from "@awayjs/display/lib/display/Camera";
-import {LightPickerBase}					from "@awayjs/display/lib/materials/lightpickers/LightPickerBase";
-import {LightSources}						from "@awayjs/display/lib/materials/LightSources";
+import {LightPickerBase}					from "@awayjs/display/lib/lightpickers/LightPickerBase";
+import {LightSources}						from "@awayjs/display/lib/lightpickers/LightSources";
 
 import {Stage}							from "@awayjs/stage/lib/base/Stage";
 
@@ -16,10 +16,11 @@ import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegiste
 import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
 import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
 import {GL_RenderableBase}				from "@awayjs/renderer/lib/renderables/GL_RenderableBase";
-import {PassBase}							from "@awayjs/renderer/lib/surfaces/passes/PassBase";
-import {ILightingPass}					from "@awayjs/renderer/lib/surfaces/passes/ILightingPass";
+import {PassBase}							from "@awayjs/renderer/lib/materials/passes/PassBase";
+import {ILightingPass}					from "@awayjs/renderer/lib/materials/passes/ILightingPass";
 import {IElementsClassGL}					from "@awayjs/renderer/lib/elements/IElementsClassGL";
 
+import {MethodMaterial}						from "../../MethodMaterial";
 import {MethodVO}							from "../../data/MethodVO";
 import {AmbientBasicMethod}				from "../../methods/AmbientBasicMethod";
 import {DiffuseBasicMethod}				from "../../methods/DiffuseBasicMethod";
@@ -30,7 +31,7 @@ import {NormalBasicMethod}				from "../../methods/NormalBasicMethod";
 import {ShadowMapMethodBase}				from "../../methods/ShadowMapMethodBase";
 import {SpecularBasicMethod}				from "../../methods/SpecularBasicMethod";
 import {MethodPassMode}					from "../../surfaces/passes/MethodPassMode";
-import {GL_MethodMaterialSurface}			from "../../surfaces/GL_MethodMaterialSurface";
+import {GL_MethodMaterial}			from "../../surfaces/GL_MethodMaterial";
 
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
@@ -41,7 +42,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	private _maxLights:number = 3;
 
 	private _mode:number = 0x03;
-	private _material:MaterialBase;
+	private _methodMaterial:MethodMaterial;
 	private _lightPicker:LightPickerBase;
 
 	private _includeCasters:boolean = true;
@@ -138,7 +139,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 */
 	public get enableLightFallOff():boolean
 	{
-		return this._material.enableLightFallOff;
+		return this._methodMaterial.enableLightFallOff;
 	}
 
 	/**
@@ -149,7 +150,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 */
 	public get diffuseLightSources():number
 	{
-		return this._material.diffuseLightSources;
+		return this._methodMaterial.diffuseLightSources;
 	}
 
 	/**
@@ -160,7 +161,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 */
 	public get specularLightSources():number
 	{
-		return this._material.specularLightSources;
+		return this._methodMaterial.specularLightSources;
 	}
 
 	/**
@@ -168,13 +169,13 @@ export class MethodPass extends PassBase implements ILightingPass
 	 *
 	 * @param material The material to which this pass belongs.
 	 */
-	constructor(mode:number, render:GL_MethodMaterialSurface, renderOwner:MaterialBase, elementsClass:IElementsClassGL, stage:Stage)
+	constructor(mode:number, render:GL_MethodMaterial, renderOwner:MethodMaterial, elementsClass:IElementsClassGL, stage:Stage)
 	{
 		super(render, renderOwner, elementsClass, stage);
 
 		this._mode = mode;
 
-		this._material = renderOwner;
+		this._methodMaterial = renderOwner;
 
 		this._onLightsChangeDelegate = (event:AssetEvent) => this.onLightsChange(event);
 		

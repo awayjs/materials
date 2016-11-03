@@ -1,6 +1,8 @@
 import {AssetEvent}						from "@awayjs/core/lib/events/AssetEvent";
+
+import {TextureBase}						from "@awayjs/graphics/lib/textures/TextureBase";
+
 import {Camera}							from "@awayjs/display/lib/display/Camera";
-import {TextureBase}						from "@awayjs/display/lib/textures/TextureBase";
 
 import {Stage}							from "@awayjs/stage/lib/base/Stage";
 
@@ -56,7 +58,7 @@ export class AmbientBasicMethod extends ShadingMethodBase
 	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
 	{
 		if (!methodVO.textureGL) {
-			this._color = shader.numLights? 0xFFFFFF : methodVO.pass._surface.style.color;
+			this._color = shader.numLights? 0xFFFFFF : methodVO.pass._material.style.color;
 			this.updateColor();
 		}
 	}

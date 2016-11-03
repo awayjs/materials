@@ -1,7 +1,8 @@
 import {AssetEvent}						from "@awayjs/core/lib/events/AssetEvent";
 
+import {TextureBase}						from "@awayjs/graphics/lib/textures/TextureBase";
+
 import {Camera}							from "@awayjs/display/lib/display/Camera";
-import {TextureBase}						from "@awayjs/display/lib/textures/TextureBase";
 
 import {Stage}							from "@awayjs/stage/lib/base/Stage";
 
@@ -92,7 +93,7 @@ export class DiffuseBasicMethod extends LightingMethodBase
 	public iInitConstants(shader:LightingShader, methodVO:MethodVO):void
 	{
 		if (shader.numLights > 0) {
-			this._ambientColor = methodVO.pass._surface.style.color;
+			this._ambientColor = methodVO.pass._material.style.color;
 			this.updateAmbientColor();
 		} else {
 			this._ambientColor = null;

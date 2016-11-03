@@ -1,5 +1,5 @@
-import {Single2DTexture}					from "@awayjs/display/lib/textures/Single2DTexture";
-import {TextureBase}						from "@awayjs/display/lib/textures/TextureBase";
+import {Single2DTexture}					from "@awayjs/graphics/lib/textures/Single2DTexture";
+import {TextureBase}						from "@awayjs/graphics/lib/textures/TextureBase";
 
 import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
 import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";

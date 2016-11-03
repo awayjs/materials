@@ -1,13 +1,12 @@
-import {Image2D}							from "@awayjs/core/lib/image/Image2D";
 import {Matrix3D}							from "@awayjs/core/lib/geom/Matrix3D";
+
+import {IMaterial}							from "@awayjs/graphics/lib/base/IMaterial";
+import {Image2D}							from "@awayjs/graphics/lib/image/Image2D";
+import {Single2DTexture}					from "@awayjs/graphics/lib/textures/Single2DTexture";
+import {TextureBase}						from "@awayjs/graphics/lib/textures/TextureBase";
 
 import {LightBase}						from "@awayjs/display/lib/display/LightBase";
 import {Camera}							from "@awayjs/display/lib/display/Camera";
-import {MaterialBase}						from "@awayjs/display/lib/materials/MaterialBase";
-import {ISurface}							from "@awayjs/display/lib/base/ISurface";
-import {Single2DTexture}					from "@awayjs/display/lib/textures/Single2DTexture";
-import {TextureBase}						from "@awayjs/display/lib/textures/TextureBase";
-import {TriangleElements}					from "@awayjs/display/lib/graphics/TriangleElements";
 
 import {ContextGLDrawMode}				from "@awayjs/stage/lib/base/ContextGLDrawMode";
 import {ContextGLProgramType}				from "@awayjs/stage/lib/base/ContextGLProgramType";
@@ -18,11 +17,13 @@ import {RendererBase}						from "@awayjs/renderer/lib/RendererBase";
 import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
 import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
 import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {PassBase}							from "@awayjs/renderer/lib/surfaces/passes/PassBase";
+import {PassBase}							from "@awayjs/renderer/lib/materials/passes/PassBase";
 import {IElementsClassGL}					from "@awayjs/renderer/lib/elements/IElementsClassGL";
 import {GL_RenderableBase}				from "@awayjs/renderer/lib/renderables/GL_RenderableBase";
-import {GL_SurfaceBase}					from "@awayjs/renderer/lib/surfaces/GL_SurfaceBase";
+import {GL_MaterialBase}					from "@awayjs/renderer/lib/materials/GL_MaterialBase";
 import {GL_ElementsBase}					from "@awayjs/renderer/lib/elements/GL_ElementsBase";
+
+import {MethodMaterial}						from "../../MethodMaterial";
 
 /**
  * The SingleObjectDepthPass provides a material pass that renders a single object to a depth map from the point
@@ -30,6 +31,7 @@ import {GL_ElementsBase}					from "@awayjs/renderer/lib/elements/GL_ElementsBase
  */
 export class SingleObjectDepthPass extends PassBase
 {
+	private _methodMaterial:MethodMaterial;
 	private _textures:Object;
 	private _projections:Object;
 	private _textureSize:number /*uint*/ = 512;
@@ -66,9 +68,11 @@ export class SingleObjectDepthPass extends PassBase
 	/**
 	 * Creates a new SingleObjectDepthPass object.
 	 */
-	constructor(render:GL_SurfaceBase, renderOwner:ISurface, elementsClass:IElementsClassGL, stage:Stage)
+	constructor(render:GL_MaterialBase, renderOwner:MethodMaterial, elementsClass:IElementsClassGL, stage:Stage)
 	{
 		super(render, renderOwner, elementsClass, stage);
+
+		this._methodMaterial = renderOwner;
 
 		//this._pNumUsedStreams = 2;
 		//this._pNumUsedVertexConstants = 7;
@@ -176,7 +180,7 @@ export class SingleObjectDepthPass extends PassBase
 		var context:IContextGL = this._stage.context;
 		var len:number /*uint*/;
 		var light:LightBase;
-		var lights:Array<LightBase> = this._surface.lightPicker.allPickedLights;
+		var lights:Array<LightBase> = this._methodMaterial.lightPicker.allPickedLights;
 		var rId:number = renderableGL.renderable.id;
 
 		if (!this._textures[rId])

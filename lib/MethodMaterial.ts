@@ -1,8 +1,11 @@
-﻿import {Image2D}						from "@awayjs/core/lib/image/Image2D";
+﻿import {Image2D}						from "@awayjs/graphics/lib/image/Image2D";
+import {AssetEvent}					from "@awayjs/core/lib/events/AssetEvent";
 
-import {MaterialBase}					from "@awayjs/display/lib/materials/MaterialBase";
-import {Single2DTexture}				from "@awayjs/display/lib/textures/Single2DTexture";
-import {TextureBase}					from "@awayjs/display/lib/textures/TextureBase";
+import {MaterialBase}					from "@awayjs/graphics/lib/materials/MaterialBase";
+import {Single2DTexture}				from "@awayjs/graphics/lib/textures/Single2DTexture";
+import {TextureBase}					from "@awayjs/graphics/lib/textures/TextureBase";
+
+import {LightPickerBase}				from "@awayjs/display/lib/lightpickers/LightPickerBase";
 
 import {ContextGLCompareMode}			from "@awayjs/stage/lib/base/ContextGLCompareMode";
 
@@ -25,15 +28,21 @@ export class MethodMaterial extends MaterialBase
 	private _effectMethods:Array<EffectMethodBase> = new Array<EffectMethodBase>();
 	private _mode:string;
 
+	private _enableLightFallOff:boolean = true;
+	private _specularLightSources:number = 0x01;
+	private _diffuseLightSources:number = 0x03;
+	
 	private _ambientMethod:AmbientBasicMethod = new AmbientBasicMethod();
 	private _shadowMethod:ShadowMapMethodBase;
 	private _diffuseMethod:DiffuseBasicMethod = new DiffuseBasicMethod();
 	private _normalMethod:NormalBasicMethod = new NormalBasicMethod();
 	private _specularMethod:SpecularBasicMethod = new SpecularBasicMethod();
-
+	public _pLightPicker:LightPickerBase;
 
 	private _depthCompareMode:string = ContextGLCompareMode.LESS_EQUAL;
 
+	private _onLightChangeDelegate:(event:AssetEvent) => void;
+	
 	/**
 	 *
 	 */
@@ -64,12 +73,103 @@ export class MethodMaterial extends MaterialBase
 		this._normalMethod.iAddOwner(this);
 		this._specularMethod.iAddOwner(this);
 
+		this._onLightChangeDelegate = (event:AssetEvent) => this.onLightsChange(event);
+		
 		//set a texture if an image is present
 		if (imageColor instanceof Image2D)
 			this._ambientMethod.texture = new Single2DTexture();
 	}
 
 
+	/**
+	 * The light picker used by the material to provide lights to the material if it supports lighting.
+	 *
+	 * @see LightPickerBase
+	 * @see StaticLightPicker
+	 */
+	public get lightPicker():LightPickerBase
+	{
+		return this._pLightPicker;
+	}
+
+	public set lightPicker(value:LightPickerBase)
+	{
+		if (this._pLightPicker == value)
+			return;
+
+		if (this._pLightPicker)
+			this._pLightPicker.removeEventListener(AssetEvent.INVALIDATE, this._onLightChangeDelegate);
+
+		this._pLightPicker = value;
+
+		if (this._pLightPicker)
+			this._pLightPicker.addEventListener(AssetEvent.INVALIDATE, this._onLightChangeDelegate);
+
+		this.invalidate();
+	}
+
+
+	/**
+	 * Whether or not to use fallOff and radius properties for lights. This can be used to improve performance and
+	 * compatibility for constrained mode.
+	 */
+	public get enableLightFallOff():boolean
+	{
+		return this._enableLightFallOff;
+	}
+
+	public set enableLightFallOff(value:boolean)
+	{
+		if (this._enableLightFallOff == value)
+			return;
+
+		this._enableLightFallOff = value;
+
+		this.invalidatePasses();
+	}
+
+	/**
+	 * Define which light source types to use for diffuse reflections. This allows choosing between regular lights
+	 * and/or light probes for diffuse reflections.
+	 *
+	 * @see away3d.materials.LightSources
+	 */
+	public get diffuseLightSources():number
+	{
+		return this._diffuseLightSources;
+	}
+
+	public set diffuseLightSources(value:number)
+	{
+		if (this._diffuseLightSources == value)
+			return;
+
+		this._diffuseLightSources = value;
+
+		this.invalidatePasses();
+	}
+
+	/**
+	 * Define which light source types to use for specular reflections. This allows choosing between regular lights
+	 * and/or light probes for specular reflections.
+	 *
+	 * @see away3d.materials.LightSources
+	 */
+	public get specularLightSources():number
+	{
+		return this._specularLightSources;
+	}
+
+	public set specularLightSources(value:number)
+	{
+		if (this._specularLightSources == value)
+			return;
+
+		this._specularLightSources = value;
+
+		this.invalidatePasses();
+	}
+	
 	public get mode():string
 	{
 		return this._mode;
@@ -292,6 +392,14 @@ export class MethodMaterial extends MaterialBase
 
 		this._effectMethods.splice(this._effectMethods.indexOf(method), 1);
 
+		this.invalidate();
+	}
+
+	/**
+	 * Called when the light picker's configuration changed.
+	 */
+	private onLightsChange(event:AssetEvent):void
+	{
 		this.invalidate();
 	}
 }

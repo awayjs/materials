@@ -1,6 +1,6 @@
 import {Camera}							from "@awayjs/display/lib/display/Camera";
-import {TextureBase}						from "@awayjs/display/lib/textures/TextureBase";
-import {ISurface}							from "@awayjs/display/lib/base/ISurface";
+import {TextureBase}						from "@awayjs/graphics/lib/textures/TextureBase";
+import {IMaterial}							from "@awayjs/graphics/lib/base/IMaterial";
 
 import {Stage}							from "@awayjs/stage/lib/base/Stage";
 
@@ -77,14 +77,14 @@ export class DiffuseCompositeMethod extends DiffuseBasicMethod
 		this.pBaseMethod.iInitConstants(shader, methodVO);
 	}
 
-	public iAddOwner(owner:ISurface):void
+	public iAddOwner(owner:IMaterial):void
 	{
 		super.iAddOwner(owner);
 
 		this.pBaseMethod.iAddOwner(owner);
 	}
 
-	public iRemoveOwner(owner:ISurface):void
+	public iRemoveOwner(owner:IMaterial):void
 	{
 		super.iRemoveOwner(owner);
 

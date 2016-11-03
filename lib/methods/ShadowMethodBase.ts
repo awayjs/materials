@@ -4,10 +4,8 @@ import {AbstractMethodError}				from "@awayjs/core/lib/errors/AbstractMethodErro
 
 import {LightBase}						from "@awayjs/display/lib/display/LightBase";
 import {Camera}							from "@awayjs/display/lib/display/Camera";
-import {DirectionalLight}					from "@awayjs/display/lib/display/DirectionalLight";
 import {PointLight}						from "@awayjs/display/lib/display/PointLight";
-import {DirectionalShadowMapper}			from "@awayjs/display/lib/materials/shadowmappers/DirectionalShadowMapper";
-import {TextureBase}						from "@awayjs/display/lib/textures/TextureBase";
+import {DirectionalShadowMapper}			from "@awayjs/display/lib/shadowmappers/DirectionalShadowMapper";
 
 import {Stage}							from "@awayjs/stage/lib/base/Stage";
 

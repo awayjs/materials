@@ -1,13 +1,14 @@
-import {BlendMode}						from "@awayjs/core/lib/image/BlendMode";
 import {AssetEvent}						from "@awayjs/core/lib/events/AssetEvent";
 
-import {StaticLightPicker}				from "@awayjs/display/lib/materials/lightpickers/StaticLightPicker";
+import {BlendMode}						from "@awayjs/graphics/lib/image/BlendMode";
+
+import {StaticLightPicker}				from "@awayjs/display/lib/lightpickers/StaticLightPicker";
 
 import {ContextGLCompareMode}				from "@awayjs/stage/lib/base/ContextGLCompareMode";
 
 import {IElementsClassGL}					from "@awayjs/renderer/lib/elements/IElementsClassGL";
-import {GL_SurfaceBase}					from "@awayjs/renderer/lib/surfaces/GL_SurfaceBase";
-import {SurfacePool}						from "@awayjs/renderer/lib/surfaces/SurfacePool";
+import {GL_MaterialBase}					from "@awayjs/renderer/lib/materials/GL_MaterialBase";
+import {MaterialPool}						from "@awayjs/renderer/lib/materials/MaterialPool";
 
 import {MethodMaterial}					from "../MethodMaterial";
 import {MethodMaterialMode}				from "../MethodMaterialMode";
@@ -19,9 +20,9 @@ import {EffectMethodBase}					from "../methods/EffectMethodBase";
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
  * using material methods to define their appearance.
  */
-export class GL_MethodMaterialSurface extends GL_SurfaceBase
+export class GL_MethodMaterial extends GL_MaterialBase
 {
-	private _material:MethodMaterial;
+	private _methodMaterial:MethodMaterial;
 	private _pass:MethodPass;
 	private _casterLightPass:MethodPass;
 	private _nonCasterLightPasses:Array<MethodPass>;
@@ -31,7 +32,7 @@ export class GL_MethodMaterialSurface extends GL_SurfaceBase
 	 */
 	private get numLights():number
 	{
-		return this._material.lightPicker? this._material.lightPicker.numLightProbes + this._material.lightPicker.numDirectionalLights + this._material.lightPicker.numPointLights + this._material.lightPicker.numCastingDirectionalLights + this._material.lightPicker.numCastingPointLights : 0;
+		return this._methodMaterial.lightPicker? this._methodMaterial.lightPicker.numLightProbes + this._methodMaterial.lightPicker.numDirectionalLights + this._methodMaterial.lightPicker.numPointLights + this._methodMaterial.lightPicker.numCastingDirectionalLights + this._methodMaterial.lightPicker.numCastingPointLights : 0;
 	}
 
 	/**
@@ -39,7 +40,7 @@ export class GL_MethodMaterialSurface extends GL_SurfaceBase
 	 */
 	private get numNonCasters():number
 	{
-		return this._material.lightPicker? this._material.lightPicker.numLightProbes + this._material.lightPicker.numDirectionalLights + this._material.lightPicker.numPointLights : 0;
+		return this._methodMaterial.lightPicker? this._methodMaterial.lightPicker.numLightProbes + this._methodMaterial.lightPicker.numDirectionalLights + this._methodMaterial.lightPicker.numPointLights : 0;
 	}
 
 	/**
@@ -47,11 +48,11 @@ export class GL_MethodMaterialSurface extends GL_SurfaceBase
 	 *
 	 * @param material The material to which this pass belongs.
 	 */
-	constructor(material:MethodMaterial, elementsClass:IElementsClassGL, pool:SurfacePool)
+	constructor(material:MethodMaterial, elementsClass:IElementsClassGL, pool:MaterialPool)
 	{
 		super(material, elementsClass, pool);
 
-		this._material = material;
+		this._methodMaterial = material;
 	}
 
 	/**
@@ -67,7 +68,7 @@ export class GL_MethodMaterialSurface extends GL_SurfaceBase
 
 		this._pClearPasses();
 
-		if (this._material.mode == MethodMaterialMode.MULTI_PASS) {
+		if (this._methodMaterial.mode == MethodMaterialMode.MULTI_PASS) {
 			if (this._casterLightPass)
 				this._pAddPass(this._casterLightPass);
 
@@ -87,19 +88,19 @@ export class GL_MethodMaterialSurface extends GL_SurfaceBase
 	{
 		// let the effects pass handle everything if there are no lights, when there are effect methods applied
 		// after shading, or when the material mode is single pass.
-		if (this.numLights == 0 || this._material.numEffectMethods > 0 || this._material.mode == MethodMaterialMode.SINGLE_PASS)
+		if (this.numLights == 0 || this._methodMaterial.numEffectMethods > 0 || this._methodMaterial.mode == MethodMaterialMode.SINGLE_PASS)
 			this.initEffectPass();
 		else if (this._pass)
 			this.removeEffectPass();
 
 		// only use a caster light pass if shadows need to be rendered
-		if (this._material.shadowMethod && this._material.mode == MethodMaterialMode.MULTI_PASS)
+		if (this._methodMaterial.shadowMethod && this._methodMaterial.mode == MethodMaterialMode.MULTI_PASS)
 			this.initCasterLightPass();
 		else if (this._casterLightPass)
 			this.removeCasterLightPass();
 
 		// only use non caster light passes if there are lights that don't cast
-		if (this.numNonCasters > 0 && this._material.mode == MethodMaterialMode.MULTI_PASS)
+		if (this.numNonCasters > 0 && this._methodMaterial.mode == MethodMaterialMode.MULTI_PASS)
 			this.initNonCasterLightPasses();
 		else if (this._nonCasterLightPasses)
 			this.removeNonCasterLightPasses();
@@ -116,7 +117,7 @@ export class GL_MethodMaterialSurface extends GL_SurfaceBase
 		if (this._casterLightPass) {
 			this._casterLightPass.forceSeparateMVP = forceSeparateMVP;
 			this._casterLightPass.shader.setBlendMode(BlendMode.NORMAL);
-			this._casterLightPass.shader.depthCompareMode = this._material.depthCompareMode;
+			this._casterLightPass.shader.depthCompareMode = this._methodMaterial.depthCompareMode;
 		}
 
 		if (this._nonCasterLightPasses) {
@@ -127,7 +128,7 @@ export class GL_MethodMaterialSurface extends GL_SurfaceBase
 			if (!this._casterLightPass) {
 				this._nonCasterLightPasses[0].forceSeparateMVP = forceSeparateMVP;
 				this._nonCasterLightPasses[0].shader.setBlendMode(BlendMode.NORMAL);
-				this._nonCasterLightPasses[0].shader.depthCompareMode = this._material.depthCompareMode;
+				this._nonCasterLightPasses[0].shader.depthCompareMode = this._methodMaterial.depthCompareMode;
 				firstAdditiveIndex = 1;
 			}
 
@@ -152,14 +153,14 @@ export class GL_MethodMaterialSurface extends GL_SurfaceBase
 			}
 
 		} else if (this._pass) {
-			this._pRequiresBlending = (this._material.blendMode != BlendMode.NORMAL || this._material.alphaBlending || (this._material.colorTransform && this._material.colorTransform.alphaMultiplier < 1));
+			this._pRequiresBlending = (this._methodMaterial.blendMode != BlendMode.NORMAL || this._methodMaterial.alphaBlending || (this._methodMaterial.colorTransform && this._methodMaterial.colorTransform.alphaMultiplier < 1));
 			// effects pass is the only pass, so it should just blend normally
 			this._pass.mode = MethodPassMode.SUPER_SHADER;
 			this._pass.preserveAlpha = this._pRequiresBlending;
 			this._pass.forceSeparateMVP = false;
-			this._pass.colorTransform = this._material.colorTransform;
-			this._pass.shader.setBlendMode((this._material.blendMode == BlendMode.NORMAL && this._pRequiresBlending)? BlendMode.LAYER : this._material.blendMode);
-			this._pass.shader.depthCompareMode = this._material.depthCompareMode;
+			this._pass.colorTransform = this._methodMaterial.colorTransform;
+			this._pass.shader.setBlendMode((this._methodMaterial.blendMode == BlendMode.NORMAL && this._pRequiresBlending)? BlendMode.LAYER : this._methodMaterial.blendMode);
+			this._pass.shader.depthCompareMode = this._methodMaterial.depthCompareMode;
 		}
 	}
 
@@ -167,14 +168,14 @@ export class GL_MethodMaterialSurface extends GL_SurfaceBase
 	{
 
 		if (this._casterLightPass == null)
-			this._casterLightPass = new MethodPass(MethodPassMode.LIGHTING, this, this._material, this._elementsClass, this._stage);
+			this._casterLightPass = new MethodPass(MethodPassMode.LIGHTING, this, this._methodMaterial, this._elementsClass, this._stage);
 
-		this._casterLightPass.lightPicker = new StaticLightPicker([this._material.shadowMethod.castingLight]);
-		this._casterLightPass.shadowMethod = this._material.shadowMethod;
-		this._casterLightPass.diffuseMethod = this._material.diffuseMethod;
-		this._casterLightPass.ambientMethod = this._material.ambientMethod;
-		this._casterLightPass.normalMethod = this._material.normalMethod;
-		this._casterLightPass.specularMethod = this._material.specularMethod;
+		this._casterLightPass.lightPicker = new StaticLightPicker([this._methodMaterial.shadowMethod.castingLight]);
+		this._casterLightPass.shadowMethod = this._methodMaterial.shadowMethod;
+		this._casterLightPass.diffuseMethod = this._methodMaterial.diffuseMethod;
+		this._casterLightPass.ambientMethod = this._methodMaterial.ambientMethod;
+		this._casterLightPass.normalMethod = this._methodMaterial.normalMethod;
+		this._casterLightPass.specularMethod = this._methodMaterial.specularMethod;
 	}
 
 	private removeCasterLightPass():void
@@ -188,31 +189,31 @@ export class GL_MethodMaterialSurface extends GL_SurfaceBase
 	{
 		this.removeNonCasterLightPasses();
 		var pass:MethodPass;
-		var numDirLights:number = this._material.lightPicker.numDirectionalLights;
-		var numPointLights:number = this._material.lightPicker.numPointLights;
-		var numLightProbes:number = this._material.lightPicker.numLightProbes;
+		var numDirLights:number = this._methodMaterial.lightPicker.numDirectionalLights;
+		var numPointLights:number = this._methodMaterial.lightPicker.numPointLights;
+		var numLightProbes:number = this._methodMaterial.lightPicker.numLightProbes;
 		var dirLightOffset:number = 0;
 		var pointLightOffset:number = 0;
 		var probeOffset:number = 0;
 
 		if (!this._casterLightPass) {
-			numDirLights += this._material.lightPicker.numCastingDirectionalLights;
-			numPointLights += this._material.lightPicker.numCastingPointLights;
+			numDirLights += this._methodMaterial.lightPicker.numCastingDirectionalLights;
+			numPointLights += this._methodMaterial.lightPicker.numCastingPointLights;
 		}
 
 		this._nonCasterLightPasses = new Array<MethodPass>();
 
 		while (dirLightOffset < numDirLights || pointLightOffset < numPointLights || probeOffset < numLightProbes) {
-			pass = new MethodPass(MethodPassMode.LIGHTING, this, this._material, this._elementsClass, this._stage);
-			pass.includeCasters = this._material.shadowMethod == null;
+			pass = new MethodPass(MethodPassMode.LIGHTING, this, this._methodMaterial, this._elementsClass, this._stage);
+			pass.includeCasters = this._methodMaterial.shadowMethod == null;
 			pass.directionalLightsOffset = dirLightOffset;
 			pass.pointLightsOffset = pointLightOffset;
 			pass.lightProbesOffset = probeOffset;
-			pass.lightPicker = this._material.lightPicker;
-			pass.diffuseMethod = this._material.diffuseMethod;
-			pass.ambientMethod = this._material.ambientMethod;
-			pass.normalMethod = this._material.normalMethod;
-			pass.specularMethod = this._material.specularMethod;
+			pass.lightPicker = this._methodMaterial.lightPicker;
+			pass.diffuseMethod = this._methodMaterial.diffuseMethod;
+			pass.ambientMethod = this._methodMaterial.ambientMethod;
+			pass.normalMethod = this._methodMaterial.normalMethod;
+			pass.specularMethod = this._methodMaterial.specularMethod;
 			this._nonCasterLightPasses.push(pass);
 
 			dirLightOffset += pass.numDirectionalLights;
@@ -234,16 +235,16 @@ export class GL_MethodMaterialSurface extends GL_SurfaceBase
 
 	private removeEffectPass():void
 	{
-		if (this._pass.ambientMethod != this._material.ambientMethod)
+		if (this._pass.ambientMethod != this._methodMaterial.ambientMethod)
 			this._pass.ambientMethod.dispose();
 
-		if (this._pass.diffuseMethod != this._material.diffuseMethod)
+		if (this._pass.diffuseMethod != this._methodMaterial.diffuseMethod)
 			this._pass.diffuseMethod.dispose();
 
-		if (this._pass.specularMethod != this._material.specularMethod)
+		if (this._pass.specularMethod != this._methodMaterial.specularMethod)
 			this._pass.specularMethod.dispose();
 
-		if (this._pass.normalMethod != this._material.normalMethod)
+		if (this._pass.normalMethod != this._methodMaterial.normalMethod)
 			this._pass.normalMethod.dispose();
 
 		this._pRemovePass(this._pass);
@@ -253,32 +254,32 @@ export class GL_MethodMaterialSurface extends GL_SurfaceBase
 	private initEffectPass():void
 	{
 		if (this._pass == null)
-			this._pass = new MethodPass(MethodPassMode.SUPER_SHADER, this, this._material, this._elementsClass, this._stage);
+			this._pass = new MethodPass(MethodPassMode.SUPER_SHADER, this, this._methodMaterial, this._elementsClass, this._stage);
 
-		if (this._material.mode == MethodMaterialMode.SINGLE_PASS) {
-			this._pass.ambientMethod = this._material.ambientMethod;
-			this._pass.diffuseMethod = this._material.diffuseMethod;
-			this._pass.specularMethod = this._material.specularMethod;
-			this._pass.normalMethod = this._material.normalMethod;
-			this._pass.shadowMethod = this._material.shadowMethod;
-		} else if (this._material.mode == MethodMaterialMode.MULTI_PASS) {
+		if (this._methodMaterial.mode == MethodMaterialMode.SINGLE_PASS) {
+			this._pass.ambientMethod = this._methodMaterial.ambientMethod;
+			this._pass.diffuseMethod = this._methodMaterial.diffuseMethod;
+			this._pass.specularMethod = this._methodMaterial.specularMethod;
+			this._pass.normalMethod = this._methodMaterial.normalMethod;
+			this._pass.shadowMethod = this._methodMaterial.shadowMethod;
+		} else if (this._methodMaterial.mode == MethodMaterialMode.MULTI_PASS) {
 			if (this.numLights == 0) {
-				this._pass.ambientMethod = this._material.ambientMethod;
+				this._pass.ambientMethod = this._methodMaterial.ambientMethod;
 			} else {
 				this._pass.ambientMethod = null;
 			}
 
 			this._pass.preserveAlpha = false;
-			this._pass.normalMethod = this._material.normalMethod;
+			this._pass.normalMethod = this._methodMaterial.normalMethod;
 		}
 
 		//update effect methods
 		var i:number = 0;
 		var effectMethod:EffectMethodBase;
-		var len:number = Math.max(this._material.numEffectMethods, this._pass.numEffectMethods);
+		var len:number = Math.max(this._methodMaterial.numEffectMethods, this._pass.numEffectMethods);
 
 		while (i < len) {
-			effectMethod = this._material.getEffectMethodAt(i);
+			effectMethod = this._methodMaterial.getEffectMethodAt(i);
 			if (effectMethod != this._pass.getEffectMethodAt(i)) {
 				this._pass.removeEffectMethodAt(i);
 
