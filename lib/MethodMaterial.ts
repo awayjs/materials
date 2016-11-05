@@ -5,7 +5,7 @@ import {MaterialBase}					from "@awayjs/graphics/lib/materials/MaterialBase";
 import {Single2DTexture}				from "@awayjs/graphics/lib/textures/Single2DTexture";
 import {TextureBase}					from "@awayjs/graphics/lib/textures/TextureBase";
 
-import {LightPickerBase}				from "@awayjs/display/lib/lightpickers/LightPickerBase";
+import {LightPickerBase}				from "@awayjs/scene/lib/lightpickers/LightPickerBase";
 
 import {ContextGLCompareMode}			from "@awayjs/stage/lib/base/ContextGLCompareMode";
 

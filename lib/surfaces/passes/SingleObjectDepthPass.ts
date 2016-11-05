@@ -5,8 +5,8 @@ import {Image2D}							from "@awayjs/graphics/lib/image/Image2D";
 import {Single2DTexture}					from "@awayjs/graphics/lib/textures/Single2DTexture";
 import {TextureBase}						from "@awayjs/graphics/lib/textures/TextureBase";
 
-import {LightBase}						from "@awayjs/display/lib/display/LightBase";
-import {Camera}							from "@awayjs/display/lib/display/Camera";
+import {LightBase}						from "@awayjs/scene/lib/display/LightBase";
+import {Camera}							from "@awayjs/scene/lib/display/Camera";
 
 import {ContextGLDrawMode}				from "@awayjs/stage/lib/base/ContextGLDrawMode";
 import {ContextGLProgramType}				from "@awayjs/stage/lib/base/ContextGLProgramType";

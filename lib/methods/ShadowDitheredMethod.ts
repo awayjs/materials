@@ -1,8 +1,8 @@
 import {BitmapImage2D}					from "@awayjs/graphics/lib/image/BitmapImage2D";
 import {Single2DTexture}					from "@awayjs/graphics/lib/textures/Single2DTexture";
 
-import {Camera}							from "@awayjs/display/lib/display/Camera";
-import {DirectionalLight}					from "@awayjs/display/lib/display/DirectionalLight";
+import {Camera}							from "@awayjs/scene/lib/display/Camera";
+import {DirectionalLight}					from "@awayjs/scene/lib/display/DirectionalLight";
 
 import {Stage}							from "@awayjs/stage/lib/base/Stage";
 

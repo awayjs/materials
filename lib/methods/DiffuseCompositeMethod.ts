@@ -1,4 +1,4 @@
-import {Camera}							from "@awayjs/display/lib/display/Camera";
+import {Camera}							from "@awayjs/scene/lib/display/Camera";
 import {TextureBase}						from "@awayjs/graphics/lib/textures/TextureBase";
 import {IMaterial}							from "@awayjs/graphics/lib/base/IMaterial";
 

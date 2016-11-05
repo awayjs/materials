@@ -1,9 +1,9 @@
 import {AssetEvent}						from "@awayjs/core/lib/events/AssetEvent";
 import {Matrix3D}							from "@awayjs/core/lib/geom/Matrix3D";
 
-import {Camera}							from "@awayjs/display/lib/display/Camera";
-import {DirectionalLight}					from "@awayjs/display/lib/display/DirectionalLight";
-import {CascadeShadowMapper}				from "@awayjs/display/lib/shadowmappers/CascadeShadowMapper";
+import {Camera}							from "@awayjs/scene/lib/display/Camera";
+import {DirectionalLight}					from "@awayjs/scene/lib/display/DirectionalLight";
+import {CascadeShadowMapper}				from "@awayjs/scene/lib/shadowmappers/CascadeShadowMapper";
 
 import {Stage}							from "@awayjs/stage/lib/base/Stage";
 

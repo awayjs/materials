@@ -1,8 +1,8 @@
 import {ErrorBase}					from "@awayjs/core/lib/errors/ErrorBase";
 import {Matrix3D}					from "@awayjs/core/lib/geom/Matrix3D";
 
-import {Camera}							from "@awayjs/display/lib/display/Camera";
-import {TextureProjector}				from "@awayjs/display/lib/display/TextureProjector";
+import {Camera}							from "@awayjs/scene/lib/display/Camera";
+import {TextureProjector}				from "@awayjs/scene/lib/display/TextureProjector";
 
 import {GL_RenderableBase}				from "@awayjs/renderer/lib/renderables/GL_RenderableBase";
 import {ShaderBase}					from "@awayjs/renderer/lib/shaders/ShaderBase";

@@ -1,5 +1,5 @@
-import {NearDirectionalShadowMapper}		from "@awayjs/display/lib/shadowmappers/NearDirectionalShadowMapper";
-import {Camera}							from "@awayjs/display/lib/display/Camera";
+import {NearDirectionalShadowMapper}		from "@awayjs/scene/lib/shadowmappers/NearDirectionalShadowMapper";
+import {Camera}							from "@awayjs/scene/lib/display/Camera";
 
 import {Stage}							from "@awayjs/stage/lib/base/Stage";
 

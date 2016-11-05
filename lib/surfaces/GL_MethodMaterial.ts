@@ -2,7 +2,7 @@ import {AssetEvent}						from "@awayjs/core/lib/events/AssetEvent";
 
 import {BlendMode}						from "@awayjs/graphics/lib/image/BlendMode";
 
-import {StaticLightPicker}				from "@awayjs/display/lib/lightpickers/StaticLightPicker";
+import {StaticLightPicker}				from "@awayjs/scene/lib/lightpickers/StaticLightPicker";
 
 import {ContextGLCompareMode}				from "@awayjs/stage/lib/base/ContextGLCompareMode";
 

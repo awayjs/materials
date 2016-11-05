@@ -3,7 +3,7 @@ import {AssetBase}					from "@awayjs/core/lib/library/AssetBase";
 import {IMaterial}						from "@awayjs/graphics/lib/base/IMaterial";
 import {TextureBase}					from "@awayjs/graphics/lib/textures/TextureBase";
 
-import {Camera}						from "@awayjs/display/lib/display/Camera";
+import {Camera}						from "@awayjs/scene/lib/display/Camera";
 
 import {Stage}						from "@awayjs/stage/lib/base/Stage";
 

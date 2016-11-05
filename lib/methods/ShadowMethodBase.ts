@@ -2,10 +2,10 @@ import {Vector3D}							from "@awayjs/core/lib/geom/Vector3D";
 import {Matrix3D}							from "@awayjs/core/lib/geom/Matrix3D";
 import {AbstractMethodError}				from "@awayjs/core/lib/errors/AbstractMethodError";
 
-import {LightBase}						from "@awayjs/display/lib/display/LightBase";
-import {Camera}							from "@awayjs/display/lib/display/Camera";
-import {PointLight}						from "@awayjs/display/lib/display/PointLight";
-import {DirectionalShadowMapper}			from "@awayjs/display/lib/shadowmappers/DirectionalShadowMapper";
+import {LightBase}						from "@awayjs/scene/lib/display/LightBase";
+import {Camera}							from "@awayjs/scene/lib/display/Camera";
+import {PointLight}						from "@awayjs/scene/lib/display/PointLight";
+import {DirectionalShadowMapper}			from "@awayjs/scene/lib/shadowmappers/DirectionalShadowMapper";
 
 import {Stage}							from "@awayjs/stage/lib/base/Stage";
 

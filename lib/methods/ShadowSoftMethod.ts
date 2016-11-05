@@ -1,6 +1,6 @@
 import {PoissonLookup}					from "@awayjs/core/lib/geom/PoissonLookup";
 
-import {DirectionalLight}					from "@awayjs/display/lib/display/DirectionalLight";
+import {DirectionalLight}					from "@awayjs/scene/lib/display/DirectionalLight";
 
 import {Stage}							from "@awayjs/stage/lib/base/Stage";
 

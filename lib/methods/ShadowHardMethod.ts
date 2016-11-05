@@ -1,4 +1,4 @@
-import {LightBase}						from "@awayjs/display/lib/display/LightBase";
+import {LightBase}						from "@awayjs/scene/lib/display/LightBase";
 
 import {Stage}							from "@awayjs/stage/lib/base/Stage";
 
