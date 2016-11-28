@@ -1,19 +1,14 @@
-import {Camera}							from "@awayjs/scene/lib/display/Camera";
-import {TextureBase}						from "@awayjs/graphics/lib/textures/TextureBase";
-import {IMaterial}							from "@awayjs/graphics/lib/base/IMaterial";
+import {Camera} from "@awayjs/scene";
 
-import {Stage}							from "@awayjs/stage/lib/base/Stage";
+import {TextureBase, IMaterial} from "@awayjs/graphics";
 
-import {LightingShader}					from "@awayjs/renderer/lib/shaders/LightingShader";
-import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
-import {ShadingMethodEvent}				from "@awayjs/renderer/lib/events/ShadingMethodEvent";
-import {GL_RenderableBase}				from "@awayjs/renderer/lib/renderables/GL_RenderableBase";
+import {Stage} from "@awayjs/stage";
 
-import {MethodVO}							from "../data/MethodVO";
-import {DiffuseBasicMethod}				from "../methods/DiffuseBasicMethod";
+import {LightingShader, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, ShadingMethodEvent, GL_RenderableBase} from "@awayjs/renderer";
+
+import {MethodVO} from "../data/MethodVO";
+
+import {DiffuseBasicMethod} from "./DiffuseBasicMethod";
 
 /**
  * DiffuseCompositeMethod provides a base class for diffuse methods that wrap a diffuse method to alter the

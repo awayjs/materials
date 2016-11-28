@@ -1,14 +1,11 @@
-import {Stage}							from "@awayjs/stage/lib/base/Stage";
+import {Stage} from "@awayjs/stage";
 
-import {LightingShader}					from "@awayjs/renderer/lib/shaders/LightingShader";
-import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {LightingShader, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
-import {MethodVO}							from "../data/MethodVO";
-import {DiffuseBasicMethod}				from "../methods/DiffuseBasicMethod";
-import {DiffuseCompositeMethod}			from "../methods/DiffuseCompositeMethod";
+import {MethodVO} from "../data/MethodVO";
+
+import {DiffuseBasicMethod} from "./DiffuseBasicMethod";
+import {DiffuseCompositeMethod} from "./DiffuseCompositeMethod";
 
 /**
  * DiffuseCelMethod provides a shading method to add diffuse cel (cartoon) shading.

@@ -1,9 +1,8 @@
-import {IAsset}							from "@awayjs/core/lib/library/IAsset";
+import {IAsset} from "@awayjs/core";
 
-import {LightBase}						from "@awayjs/scene/lib/display/LightBase";
-import {ShadowMapperBase}					from "@awayjs/scene/lib/shadowmappers/ShadowMapperBase";
+import {LightBase, ShadowMapperBase} from "@awayjs/scene";
 
-import {ShadingMethodBase}				from "../methods/ShadingMethodBase";
+import {ShadingMethodBase} from "./ShadingMethodBase";
 
 /**
  * ShadowMapMethodBase provides an abstract base method for shadow map methods.

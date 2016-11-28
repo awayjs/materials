@@ -1,20 +1,14 @@
-import {TextureBase}						from "@awayjs/graphics/lib/textures/TextureBase";
-import {IMaterial}							from "@awayjs/graphics/lib/base/IMaterial";
+import {TextureBase, IMaterial} from "@awayjs/graphics";
 
-import {Camera}							from "@awayjs/scene/lib/display/Camera";
+import {Camera} from "@awayjs/scene";
 
-import {Stage}							from "@awayjs/stage/lib/base/Stage";
+import {Stage} from "@awayjs/stage";
 
-import {GL_RenderableBase}				from "@awayjs/renderer/lib/renderables/GL_RenderableBase";
-import {ShadingMethodEvent}				from "@awayjs/renderer/lib/events/ShadingMethodEvent";
-import {LightingShader}					from "@awayjs/renderer/lib/shaders/LightingShader";
-import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase, ShadingMethodEvent, LightingShader, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
-import {MethodVO}							from "../data/MethodVO";
-import {SpecularBasicMethod}				from "../methods/SpecularBasicMethod";
+import {MethodVO} from "../data/MethodVO";
+
+import {SpecularBasicMethod} from "./SpecularBasicMethod";
 
 /**
  * SpecularCompositeMethod provides a base class for specular methods that wrap a specular method to alter the

@@ -1,23 +1,15 @@
-import {AssetEvent}						from "@awayjs/core/lib/events/AssetEvent";
-import {Matrix3D}							from "@awayjs/core/lib/geom/Matrix3D";
+import {AssetEvent, Matrix3D} from "@awayjs/core";
 
-import {Camera}							from "@awayjs/scene/lib/display/Camera";
-import {DirectionalLight}					from "@awayjs/scene/lib/display/DirectionalLight";
-import {CascadeShadowMapper}				from "@awayjs/scene/lib/shadowmappers/CascadeShadowMapper";
+import {Camera, DirectionalLight, CascadeShadowMapper} from "@awayjs/scene";
 
-import {Stage}							from "@awayjs/stage/lib/base/Stage";
+import {Stage} from "@awayjs/stage";
 
-import {GL_RenderableBase}				from "@awayjs/renderer/lib/renderables/GL_RenderableBase";
-import {ShadingMethodEvent}				from "@awayjs/renderer/lib/events/ShadingMethodEvent";
-import {LightingShader}					from "@awayjs/renderer/lib/shaders/LightingShader";
-import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase, ShadingMethodEvent, LightingShader, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
-import {MethodVO}							from "../data/MethodVO";
-import {ShadowMapMethodBase}				from "../methods/ShadowMapMethodBase";
-import {ShadowMethodBase}					from "../methods/ShadowMethodBase";
+import {MethodVO} from "../data/MethodVO";
+
+import {ShadowMapMethodBase} from "./ShadowMapMethodBase";
+import {ShadowMethodBase} from "./ShadowMethodBase";
 
 /**
  * ShadowCascadeMethod is a shadow map method to apply cascade shadow mapping on materials.

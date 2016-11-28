@@ -1,13 +1,10 @@
-import {IAsset}						from "@awayjs/core/lib/library/IAsset";
-import {AbstractMethodError}			from "@awayjs/core/lib/errors/AbstractMethodError";
+import {IAsset, AbstractMethodError} from "@awayjs/core";
 
-import {ShaderBase}					from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}			from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}			from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}		from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
-import {MethodVO}						from "../data/MethodVO";
-import {ShadingMethodBase}			from "../methods/ShadingMethodBase";
+import {MethodVO} from "../data/MethodVO";
+
+import {ShadingMethodBase} from "./ShadingMethodBase";
 
 /**
  * EffectMethodBase forms an abstract base class for shader methods that are not dependent on light sources,

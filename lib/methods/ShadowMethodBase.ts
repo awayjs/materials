@@ -1,23 +1,14 @@
-import {Vector3D}							from "@awayjs/core/lib/geom/Vector3D";
-import {Matrix3D}							from "@awayjs/core/lib/geom/Matrix3D";
-import {AbstractMethodError}				from "@awayjs/core/lib/errors/AbstractMethodError";
+import {Vector3D, Matrix3D, AbstractMethodError} from "@awayjs/core";
 
-import {LightBase}						from "@awayjs/scene/lib/display/LightBase";
-import {Camera}							from "@awayjs/scene/lib/display/Camera";
-import {PointLight}						from "@awayjs/scene/lib/display/PointLight";
-import {DirectionalShadowMapper}			from "@awayjs/scene/lib/shadowmappers/DirectionalShadowMapper";
+import {LightBase, Camera, PointLight, DirectionalShadowMapper} from "@awayjs/scene";
 
-import {Stage}							from "@awayjs/stage/lib/base/Stage";
+import {Stage} from "@awayjs/stage";
 
-import {GL_RenderableBase}				from "@awayjs/renderer/lib/renderables/GL_RenderableBase";
-import {LightingShader}					from "@awayjs/renderer/lib/shaders/LightingShader";
-import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase, LightingShader, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
-import {MethodVO}							from "../data/MethodVO";
-import {ShadowMapMethodBase}				from "../methods/ShadowMapMethodBase";
+import {MethodVO} from "../data/MethodVO";
+
+import {ShadowMapMethodBase} from "./ShadowMapMethodBase";
 
 /**
  * ShadowMethodBase provides an abstract method for simple (non-wrapping) shadow map methods.

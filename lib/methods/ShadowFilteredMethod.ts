@@ -1,15 +1,12 @@
-import {DirectionalLight}					from "@awayjs/scene/lib/display/DirectionalLight";
+import {DirectionalLight} from "@awayjs/scene";
 
-import {Stage}							from "@awayjs/stage/lib/base/Stage";
+import {Stage} from "@awayjs/stage";
 
-import {LightingShader}					from "@awayjs/renderer/lib/shaders/LightingShader";
-import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {LightingShader, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
-import {MethodVO}							from "../data/MethodVO";
-import {ShadowMethodBase}					from "../methods/ShadowMethodBase";
+import {MethodVO} from "../data/MethodVO";
+
+import {ShadowMethodBase} from "./ShadowMethodBase";
 
 /**
  * ShadowFilteredMethod provides a softened shadowing technique by bilinearly interpolating shadow comparison

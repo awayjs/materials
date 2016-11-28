@@ -1,12 +1,8 @@
-import {GL_RenderableBase}				from "@awayjs/renderer/lib/renderables/GL_RenderableBase";
-import {LightingShader}					from "@awayjs/renderer/lib/shaders/LightingShader";
-import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {LightingShader, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
-import {MethodVO}							from "../data/MethodVO";
-import {DiffuseBasicMethod}				from "../methods/DiffuseBasicMethod";
+import {MethodVO} from "../data/MethodVO";
+
+import {DiffuseBasicMethod} from "./DiffuseBasicMethod";
 
 /**
  * DiffuseDepthMethod provides a debug method to visualise depth maps

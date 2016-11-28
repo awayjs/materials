@@ -1,16 +1,14 @@
-import {PoissonLookup}					from "@awayjs/core/lib/geom/PoissonLookup";
+import {PoissonLookup} from "@awayjs/core";
 
-import {DirectionalLight}					from "@awayjs/scene/lib/display/DirectionalLight";
+import {DirectionalLight} from "@awayjs/scene";
 
-import {Stage}							from "@awayjs/stage/lib/base/Stage";
+import {Stage} from "@awayjs/stage";
 
-import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
-import {MethodVO}							from "../data/MethodVO";
-import {ShadowMethodBase}					from "../methods/ShadowMethodBase";
+import {MethodVO} from "../data/MethodVO";
+
+import {ShadowMethodBase} from "./ShadowMethodBase";
 
 /**
  * ShadowSoftMethod provides a soft shadowing technique by randomly distributing sample points.

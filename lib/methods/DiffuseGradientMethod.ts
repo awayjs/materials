@@ -1,17 +1,14 @@
-import {TextureBase}						from "@awayjs/graphics/lib/textures/TextureBase";
+import {TextureBase} from "@awayjs/graphics";
 
-import {Camera}							from "@awayjs/scene/lib/display/Camera";
+import {Camera} from "@awayjs/scene";
 
-import {Stage}							from "@awayjs/stage/lib/base/Stage";
+import {Stage} from "@awayjs/stage";
 
-import {GL_RenderableBase}				from "@awayjs/renderer/lib/renderables/GL_RenderableBase";
-import {LightingShader}					from "@awayjs/renderer/lib/shaders/LightingShader";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase, LightingShader, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
-import {MethodVO}							from "../data/MethodVO";
-import {DiffuseBasicMethod}				from "../methods/DiffuseBasicMethod";
+import {MethodVO} from "../data/MethodVO";
+
+import {DiffuseBasicMethod} from "./DiffuseBasicMethod";
 
 /**
  * DiffuseGradientMethod is an alternative to DiffuseBasicMethod in which the shading can be modulated with a gradient

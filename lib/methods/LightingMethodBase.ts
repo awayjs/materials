@@ -1,11 +1,8 @@
-import {ShaderBase}					from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {LightingShader}				from "@awayjs/renderer/lib/shaders/LightingShader";
-import {ShaderRegisterCache}			from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}			from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}		from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {ShaderBase, LightingShader, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
-import {MethodVO}						from "../data/MethodVO";
-import {ShadingMethodBase}			from "../methods/ShadingMethodBase";
+import {MethodVO} from "../data/MethodVO";
+
+import {ShadingMethodBase} from "./ShadingMethodBase";
 
 /**
  * LightingMethodBase provides an abstract base method for shading methods that uses lights.

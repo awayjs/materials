@@ -1,20 +1,14 @@
-import {ErrorBase}					from "@awayjs/core/lib/errors/ErrorBase";
-import {Matrix3D}					from "@awayjs/core/lib/geom/Matrix3D";
+import {ErrorBase, Matrix3D} from "@awayjs/core";
 
-import {Camera}							from "@awayjs/scene/lib/display/Camera";
-import {TextureProjector}				from "@awayjs/scene/lib/display/TextureProjector";
+import {Camera, TextureProjector} from "@awayjs/scene";
 
-import {GL_RenderableBase}				from "@awayjs/renderer/lib/renderables/GL_RenderableBase";
-import {ShaderBase}					from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterElement}		from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
-import {ShaderRegisterCache}		from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}		from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
+import {Stage} from "@awayjs/stage";
 
-import {Stage}						from "@awayjs/stage/lib/base/Stage";
+import {GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
+import {MethodVO} from "../data/MethodVO";
 
-import {MethodVO}							from "../data/MethodVO";
-import {EffectMethodBase}					from "../methods/EffectMethodBase";
+import {EffectMethodBase} from "./EffectMethodBase";
 
 /**
  * ProjectiveTextureMethod is a material method used to project a texture unto the surface of an object.

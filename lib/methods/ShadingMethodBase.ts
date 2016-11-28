@@ -1,20 +1,14 @@
-import {AssetBase}					from "@awayjs/core/lib/library/AssetBase";
+import {AssetBase} from "@awayjs/core";
 
-import {IMaterial}						from "@awayjs/graphics/lib/base/IMaterial";
-import {TextureBase}					from "@awayjs/graphics/lib/textures/TextureBase";
+import {IMaterial, TextureBase} from "@awayjs/graphics";
 
-import {Camera}						from "@awayjs/scene/lib/display/Camera";
+import {Camera} from "@awayjs/scene";
 
-import {Stage}						from "@awayjs/stage/lib/base/Stage";
+import {Stage} from "@awayjs/stage";
 
-import {GL_RenderableBase}			from "@awayjs/renderer/lib/renderables/GL_RenderableBase";
-import {ShadingMethodEvent}			from "@awayjs/renderer/lib/events/ShadingMethodEvent";
-import {ShaderBase}					from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}			from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}			from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}		from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase, ShadingMethodEvent, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
-import {MethodVO}						from "../data/MethodVO";
+import {MethodVO} from "../data/MethodVO";
 
 
 /**

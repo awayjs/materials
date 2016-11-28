@@ -1,14 +1,12 @@
-import {ColorTransform}				from "@awayjs/core/lib/geom/ColorTransform";
+import {ColorTransform} from "@awayjs/core";
 
-import {Stage}						from "@awayjs/stage/lib/base/Stage";
+import {Stage} from "@awayjs/stage";
 
-import {ShaderBase}					from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}			from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}			from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}		from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
-import {MethodVO}						from "../data/MethodVO";
-import {EffectMethodBase}				from "../methods/EffectMethodBase";
+import {MethodVO} from "../data/MethodVO";
+
+import {EffectMethodBase} from "./EffectMethodBase";
 
 /**
  * EffectColorTransformMethod provides a shading method that changes the colour of a material analogous to a

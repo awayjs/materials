@@ -1,20 +1,19 @@
-import {AssetEvent}						from "@awayjs/core/lib/events/AssetEvent";
+import {AssetEvent} from "@awayjs/core";
 
-import {BlendMode}						from "@awayjs/graphics/lib/image/BlendMode";
+import {BlendMode} from "@awayjs/graphics";
 
-import {StaticLightPicker}				from "@awayjs/scene/lib/lightpickers/StaticLightPicker";
+import {StaticLightPicker} from "@awayjs/scene";
 
-import {ContextGLCompareMode}				from "@awayjs/stage/lib/base/ContextGLCompareMode";
+import {ContextGLCompareMode} from "@awayjs/stage";
 
-import {IElementsClassGL}					from "@awayjs/renderer/lib/elements/IElementsClassGL";
-import {GL_MaterialBase}					from "@awayjs/renderer/lib/materials/GL_MaterialBase";
-import {MaterialPool}						from "@awayjs/renderer/lib/materials/MaterialPool";
+import {IElementsClassGL, GL_MaterialBase, MaterialPool} from "@awayjs/renderer";
 
-import {MethodMaterial}					from "../MethodMaterial";
-import {MethodMaterialMode}				from "../MethodMaterialMode";
-import {MethodPassMode}					from "../surfaces/passes/MethodPassMode";
-import {MethodPass}						from "../surfaces/passes/MethodPass";
-import {EffectMethodBase}					from "../methods/EffectMethodBase";
+import {MethodPassMode} from "../surfaces/passes/MethodPassMode";
+import {MethodPass} from "../surfaces/passes/MethodPass";
+import {EffectMethodBase} from "../methods/EffectMethodBase";
+
+import {MethodMaterial} from "../MethodMaterial";
+import {MethodMaterialMode} from "../MethodMaterialMode";
 
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,

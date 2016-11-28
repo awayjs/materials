@@ -1,20 +1,16 @@
-import {Matrix3D}							from "@awayjs/core/lib/geom/Matrix3D";
+import {Matrix3D} from "@awayjs/core";
 
-import {Camera}							from "@awayjs/scene/lib/display/Camera";
+import {Camera} from "@awayjs/scene";
 
-import {Stage}							from "@awayjs/stage/lib/base/Stage";
+import {Stage} from "@awayjs/stage";
 
-import {GL_RenderableBase}				from "@awayjs/renderer/lib/renderables/GL_RenderableBase";
-import {LightingShader}					from "@awayjs/renderer/lib/shaders/LightingShader";
-import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase, LightingShader, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
-import {MethodVO}							from "../data/MethodVO";
-import {DiffuseBasicMethod}				from "../methods/DiffuseBasicMethod";
-import {DiffuseCompositeMethod}			from "../methods/DiffuseCompositeMethod";
-import {SingleObjectDepthPass}			from "../surfaces/passes/SingleObjectDepthPass";
+import {MethodVO} from "../data/MethodVO";
+import {SingleObjectDepthPass} from "../surfaces/passes/SingleObjectDepthPass";
+
+import {DiffuseBasicMethod} from "./DiffuseBasicMethod";
+import {DiffuseCompositeMethod} from "./DiffuseCompositeMethod";
 
 /**
  * DiffuseSubSurfaceMethod provides a depth map-based diffuse shading method that mimics the scattering of

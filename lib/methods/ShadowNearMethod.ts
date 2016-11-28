@@ -1,18 +1,12 @@
-import {NearDirectionalShadowMapper}		from "@awayjs/scene/lib/shadowmappers/NearDirectionalShadowMapper";
-import {Camera}							from "@awayjs/scene/lib/display/Camera";
+import {NearDirectionalShadowMapper, Camera} from "@awayjs/scene";
 
-import {Stage}							from "@awayjs/stage/lib/base/Stage";
+import {Stage} from "@awayjs/stage";
 
-import {GL_RenderableBase}				from "@awayjs/renderer/lib/renderables/GL_RenderableBase";
-import {ShadingMethodEvent}				from "@awayjs/renderer/lib/events/ShadingMethodEvent";
-import {LightingShader}					from "@awayjs/renderer/lib/shaders/LightingShader";
-import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase, ShadingMethodEvent, LightingShader, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
-import {MethodVO}							from "../data/MethodVO";
-import {ShadowMethodBase}					from "../methods/ShadowMethodBase";
+import {MethodVO} from "../data/MethodVO";
+
+import {ShadowMethodBase} from "./ShadowMethodBase";
 
 // TODO: shadow mappers references in materials should be an interface so that this class should NOT extend ShadowMapMethodBase just for some delegation work
 /**

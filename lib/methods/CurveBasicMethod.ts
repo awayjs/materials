@@ -1,17 +1,16 @@
-import {AssetEvent}						from "@awayjs/core/lib/events/AssetEvent";
-import {Camera}							from "@awayjs/scene/lib/display/Camera";
-import {TextureBase}						from "@awayjs/graphics/lib/textures/TextureBase";
+import {AssetEvent} from "@awayjs/core";
 
-import {Stage}							from "@awayjs/stage/lib/base/Stage";
+import {TextureBase} from "@awayjs/graphics";
 
-import {GL_RenderableBase}				from "@awayjs/renderer/lib/renderables/GL_RenderableBase";
-import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {Camera} from "@awayjs/scene";
 
-import {MethodVO}							from "../data/MethodVO";
-import {ShadingMethodBase}				from "../methods/ShadingMethodBase";
+import {Stage} from "@awayjs/stage";
+
+import {GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
+
+import {MethodVO} from "../data/MethodVO";
+
+import {ShadingMethodBase} from "./ShadingMethodBase";
 
 /**
  * AmbientBasicMethod provides the default shading method for uniform ambient lighting.

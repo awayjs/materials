@@ -1,16 +1,11 @@
-import {Camera}							from "@awayjs/scene/lib/display/Camera";
+import {Stage} from "@awayjs/stage";
 
-import {Stage}							from "@awayjs/stage/lib/base/Stage";
+import {LightingShader, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
-import {LightingShader}					from "@awayjs/renderer/lib/shaders/LightingShader";
-import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {MethodVO} from "../data/MethodVO";
 
-import {MethodVO}							from "../data/MethodVO";
-import {SpecularBasicMethod}				from "../methods/SpecularBasicMethod";
-import {SpecularCompositeMethod}			from "../methods/SpecularCompositeMethod";
+import {SpecularBasicMethod} from "./SpecularBasicMethod";
+import {SpecularCompositeMethod} from "./SpecularCompositeMethod";
 
 /**
  * SpecularFresnelMethod provides a specular shading method that causes stronger highlights on grazing view angles.

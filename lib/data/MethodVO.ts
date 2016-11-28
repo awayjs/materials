@@ -1,8 +1,9 @@
-import {Matrix3D}				from "@awayjs/core/lib/geom/Matrix3D";
-import {GL_TextureBase}				from "@awayjs/renderer/lib/textures/GL_TextureBase";
+import {Matrix3D} from "@awayjs/core";
 
-import {MethodPass}					from "../surfaces/passes/MethodPass";
-import {ShadingMethodBase}			from "../methods/ShadingMethodBase";
+import {GL_TextureBase} from "@awayjs/renderer";
+
+import {MethodPass} from "../surfaces/passes/MethodPass";
+import {ShadingMethodBase} from "../methods/ShadingMethodBase";
 
 /**
  * MethodVO contains data for a given shader object for the use within a single material.

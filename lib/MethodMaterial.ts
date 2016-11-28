@@ -1,21 +1,18 @@
-﻿import {Image2D}						from "@awayjs/graphics/lib/image/Image2D";
-import {AssetEvent}					from "@awayjs/core/lib/events/AssetEvent";
+﻿import {AssetEvent} from "@awayjs/core";
 
-import {MaterialBase}					from "@awayjs/graphics/lib/materials/MaterialBase";
-import {Single2DTexture}				from "@awayjs/graphics/lib/textures/Single2DTexture";
-import {TextureBase}					from "@awayjs/graphics/lib/textures/TextureBase";
+import {Image2D, MaterialBase, Single2DTexture, TextureBase} from "@awayjs/graphics";
 
-import {LightPickerBase}				from "@awayjs/scene/lib/lightpickers/LightPickerBase";
+import {LightPickerBase} from "@awayjs/scene";
 
-import {ContextGLCompareMode}			from "@awayjs/stage/lib/base/ContextGLCompareMode";
+import {ContextGLCompareMode} from "@awayjs/stage";
 
-import {MethodMaterialMode}			from "./MethodMaterialMode";
-import {AmbientBasicMethod}			from "./methods/AmbientBasicMethod";
-import {DiffuseBasicMethod}			from "./methods/DiffuseBasicMethod";
-import {EffectMethodBase}				from "./methods/EffectMethodBase";
-import {NormalBasicMethod}			from "./methods/NormalBasicMethod";
-import {ShadowMapMethodBase}			from "./methods/ShadowMapMethodBase";
-import {SpecularBasicMethod}			from "./methods/SpecularBasicMethod";
+import {AmbientBasicMethod} from "./methods/AmbientBasicMethod";
+import {DiffuseBasicMethod} from "./methods/DiffuseBasicMethod";
+import {EffectMethodBase} from "./methods/EffectMethodBase";
+import {NormalBasicMethod} from "./methods/NormalBasicMethod";
+import {ShadowMapMethodBase} from "./methods/ShadowMapMethodBase";
+import {SpecularBasicMethod} from "./methods/SpecularBasicMethod";
+import {MethodMaterialMode} from "./MethodMaterialMode";
 
 /**
  * MethodMaterial forms an abstract base class for the default shaded materials provided by Stage,

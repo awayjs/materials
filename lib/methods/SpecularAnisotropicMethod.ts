@@ -1,10 +1,8 @@
-import {LightingShader}					from "@awayjs/renderer/lib/shaders/LightingShader";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {LightingShader, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
-import {MethodVO}							from "../data/MethodVO";
-import {SpecularBasicMethod}				from "../methods/SpecularBasicMethod";
+import {MethodVO} from "../data/MethodVO";
+
+import {SpecularBasicMethod} from "./SpecularBasicMethod";
 
 /**
  * SpecularAnisotropicMethod provides a specular method resulting in anisotropic highlights. These are typical for

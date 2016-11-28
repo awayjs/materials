@@ -1,37 +1,26 @@
-import {ColorTransform}					from "@awayjs/core/lib/geom/ColorTransform";
-import {Matrix3D}							from "@awayjs/core/lib/geom/Matrix3D";
-import {AssetEvent}						from "@awayjs/core/lib/events/AssetEvent";
+import {ColorTransform, Matrix3D, AssetEvent} from "@awayjs/core";
 
 
-import {Camera}							from "@awayjs/scene/lib/display/Camera";
-import {LightPickerBase}					from "@awayjs/scene/lib/lightpickers/LightPickerBase";
-import {LightSources}						from "@awayjs/scene/lib/lightpickers/LightSources";
+import {Camera, LightPickerBase, LightSources} from "@awayjs/scene";
 
-import {Stage}							from "@awayjs/stage/lib/base/Stage";
+import {Stage} from "@awayjs/stage";
 
-import {LightingShader}					from "@awayjs/renderer/lib/shaders/LightingShader";
-import {ShadingMethodEvent}				from "@awayjs/renderer/lib/events/ShadingMethodEvent";
-import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
-import {GL_RenderableBase}				from "@awayjs/renderer/lib/renderables/GL_RenderableBase";
-import {PassBase}							from "@awayjs/renderer/lib/materials/passes/PassBase";
-import {ILightingPass}					from "@awayjs/renderer/lib/materials/passes/ILightingPass";
-import {IElementsClassGL}					from "@awayjs/renderer/lib/elements/IElementsClassGL";
+import {LightingShader, ShadingMethodEvent, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, GL_RenderableBase, PassBase, ILightingPass, IElementsClassGL} from "@awayjs/renderer";
 
-import {MethodMaterial}						from "../../MethodMaterial";
-import {MethodVO}							from "../../data/MethodVO";
-import {AmbientBasicMethod}				from "../../methods/AmbientBasicMethod";
-import {DiffuseBasicMethod}				from "../../methods/DiffuseBasicMethod";
-import {EffectColorTransformMethod}		from "../../methods/EffectColorTransformMethod";
-import {EffectMethodBase}					from "../../methods/EffectMethodBase";
-import {LightingMethodBase}				from "../../methods/LightingMethodBase";
-import {NormalBasicMethod}				from "../../methods/NormalBasicMethod";
-import {ShadowMapMethodBase}				from "../../methods/ShadowMapMethodBase";
-import {SpecularBasicMethod}				from "../../methods/SpecularBasicMethod";
-import {MethodPassMode}					from "../../surfaces/passes/MethodPassMode";
-import {GL_MethodMaterial}			from "../../surfaces/GL_MethodMaterial";
+import {MethodMaterial} from "../../MethodMaterial";
+import {MethodVO} from "../../data/MethodVO";
+import {AmbientBasicMethod} from "../../methods/AmbientBasicMethod";
+import {DiffuseBasicMethod} from "../../methods/DiffuseBasicMethod";
+import {EffectColorTransformMethod} from "../../methods/EffectColorTransformMethod";
+import {EffectMethodBase} from "../../methods/EffectMethodBase";
+import {LightingMethodBase} from "../../methods/LightingMethodBase";
+import {NormalBasicMethod} from "../../methods/NormalBasicMethod";
+import {ShadowMapMethodBase} from "../../methods/ShadowMapMethodBase";
+import {SpecularBasicMethod} from "../../methods/SpecularBasicMethod";
+
+import {GL_MethodMaterial} from "../GL_MethodMaterial";
+
+import {MethodPassMode} from "./MethodPassMode";
 
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
@@ -190,13 +179,17 @@ export class MethodPass extends PassBase implements ILightingPass
 	private _updateShader():void
 	{
 		if ((this.numDirectionalLights || this.numPointLights || this.numLightProbes) && !(this._shader instanceof LightingShader)) {
-			if (this._shader != null)
+			if (this._shader != null) {
 				this._shader.dispose();
+				this._shader = null;
+			}
 
 			this._shader = new LightingShader(this._elementsClass, this, this._stage);
-		} else if (!(this._shader instanceof ShaderBase)) {
-			if (this._shader != null)
+		} else if (this._shader == null) { // !(_shader instanceof ShaderBase) because there are only two shader types atm
+			if (this._shader != null) {
 				this._shader.dispose();
+				this._shader = null;
+			}
 
 			this._shader = new ShaderBase(this._elementsClass, this, this._stage);
 		}

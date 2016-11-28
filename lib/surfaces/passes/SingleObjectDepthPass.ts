@@ -1,29 +1,14 @@
-import {Matrix3D}							from "@awayjs/core/lib/geom/Matrix3D";
+import {Matrix3D} from "@awayjs/core";
 
-import {IMaterial}							from "@awayjs/graphics/lib/base/IMaterial";
-import {Image2D}							from "@awayjs/graphics/lib/image/Image2D";
-import {Single2DTexture}					from "@awayjs/graphics/lib/textures/Single2DTexture";
-import {TextureBase}						from "@awayjs/graphics/lib/textures/TextureBase";
+import {Image2D, Single2DTexture, TextureBase} from "@awayjs/graphics";
 
-import {LightBase}						from "@awayjs/scene/lib/display/LightBase";
-import {Camera}							from "@awayjs/scene/lib/display/Camera";
+import {LightBase, Camera} from "@awayjs/scene";
 
-import {ContextGLDrawMode}				from "@awayjs/stage/lib/base/ContextGLDrawMode";
-import {ContextGLProgramType}				from "@awayjs/stage/lib/base/ContextGLProgramType";
-import {IContextGL}						from "@awayjs/stage/lib/base/IContextGL";
-import {Stage}							from "@awayjs/stage/lib/base/Stage";
+import {IContextGL, Stage} from "@awayjs/stage";
 
-import {RendererBase}						from "@awayjs/renderer/lib/RendererBase";
-import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {PassBase}							from "@awayjs/renderer/lib/materials/passes/PassBase";
-import {IElementsClassGL}					from "@awayjs/renderer/lib/elements/IElementsClassGL";
-import {GL_RenderableBase}				from "@awayjs/renderer/lib/renderables/GL_RenderableBase";
-import {GL_MaterialBase}					from "@awayjs/renderer/lib/materials/GL_MaterialBase";
-import {GL_ElementsBase}					from "@awayjs/renderer/lib/elements/GL_ElementsBase";
+import {ShaderBase, ShaderRegisterCache, ShaderRegisterData, PassBase, IElementsClassGL, GL_RenderableBase, GL_MaterialBase, GL_ElementsBase} from "@awayjs/renderer";
 
-import {MethodMaterial}						from "../../MethodMaterial";
+import {MethodMaterial} from "../../MethodMaterial";
 
 /**
  * The SingleObjectDepthPass provides a material pass that renders a single object to a depth map from the point

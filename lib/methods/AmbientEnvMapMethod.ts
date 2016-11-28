@@ -1,11 +1,10 @@
-import {AssetEvent}						from "@awayjs/core/lib/events/AssetEvent";
-import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {AssetEvent} from "@awayjs/core";
 
-import {MethodVO}							from "../data/MethodVO";
-import {AmbientBasicMethod}				from "../methods/AmbientBasicMethod";
+import {ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
+
+import {MethodVO} from "../data/MethodVO";
+
+import {AmbientBasicMethod} from "./AmbientBasicMethod";
 
 /**
  * AmbientEnvMapMethod provides a diffuse shading method that uses a diffuse irradiance environment map to

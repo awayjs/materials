@@ -1,20 +1,17 @@
-import {AssetEvent}						from "@awayjs/core/lib/events/AssetEvent";
+import {AssetEvent} from "@awayjs/core";
 
-import {TextureBase}						from "@awayjs/graphics/lib/textures/TextureBase";
+import {TextureBase} from "@awayjs/graphics";
 
-import {Camera}							from "@awayjs/scene/lib/display/Camera";
+import {Camera} from "@awayjs/scene";
 
-import {Stage}							from "@awayjs/stage/lib/base/Stage";
+import {Stage} from "@awayjs/stage";
 
-import {GL_RenderableBase}				from "@awayjs/renderer/lib/renderables/GL_RenderableBase";
-import {LightingShader}					from "@awayjs/renderer/lib/shaders/LightingShader";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {GL_RenderableBase, LightingShader, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
-import {MethodVO}							from "../data/MethodVO";
-import {LightingMethodBase}				from "../methods/LightingMethodBase";
-import {ShadingMethodBase}				from "../methods/ShadingMethodBase";
+import {MethodVO} from "../data/MethodVO";
+
+import {LightingMethodBase} from "./LightingMethodBase";
+import {ShadingMethodBase} from "./ShadingMethodBase";
 
 /**
  * SpecularBasicMethod provides the default shading method for Blinn-Phong specular highlights (an optimized but approximated

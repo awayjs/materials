@@ -1,14 +1,11 @@
-import {Single2DTexture}					from "@awayjs/graphics/lib/textures/Single2DTexture";
-import {TextureBase}						from "@awayjs/graphics/lib/textures/TextureBase";
+import {Single2DTexture, TextureBase} from "@awayjs/graphics";
 
-import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
-import {MethodVO}							from "../data/MethodVO";
-import {NormalBasicMethod}				from "../methods/NormalBasicMethod";
-import {ShadingMethodBase}				from "../methods/ShadingMethodBase";
+import {MethodVO} from "../data/MethodVO";
+
+import {NormalBasicMethod} from "./NormalBasicMethod";
+import {ShadingMethodBase} from "./ShadingMethodBase";
 
 /**
  * NormalHeightMapMethod provides a normal map method that uses a height map to calculate the normals.

@@ -1,14 +1,12 @@
-import {LightBase}						from "@awayjs/scene/lib/display/LightBase";
+import {LightBase} from "@awayjs/scene";
 
-import {Stage}							from "@awayjs/stage/lib/base/Stage";
+import {Stage} from "@awayjs/stage";
 
-import {ShaderBase}						from "@awayjs/renderer/lib/shaders/ShaderBase";
-import {ShaderRegisterCache}				from "@awayjs/renderer/lib/shaders/ShaderRegisterCache";
-import {ShaderRegisterData}				from "@awayjs/renderer/lib/shaders/ShaderRegisterData";
-import {ShaderRegisterElement}			from "@awayjs/renderer/lib/shaders/ShaderRegisterElement";
+import {ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
 
-import {MethodVO}							from "../data/MethodVO";
-import {ShadowMethodBase}					from "../methods/ShadowMethodBase";
+import {MethodVO} from "../data/MethodVO";
+
+import {ShadowMethodBase} from "./ShadowMethodBase";
 
 /**
  * ShadowHardMethod provides the cheapest shadow map method by using a single tap without any filtering.
