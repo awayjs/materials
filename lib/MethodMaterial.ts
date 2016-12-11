@@ -36,7 +36,7 @@ export class MethodMaterial extends MaterialBase
 	private _specularMethod:SpecularBasicMethod = new SpecularBasicMethod();
 	public _pLightPicker:LightPickerBase;
 
-	private _depthCompareMode:string = ContextGLCompareMode.LESS_EQUAL;
+	private _depthCompareMode:ContextGLCompareMode = ContextGLCompareMode.LESS_EQUAL;
 
 	private _onLightChangeDelegate:(event:AssetEvent) => void;
 	
@@ -188,12 +188,12 @@ export class MethodMaterial extends MaterialBase
 	 * @see away.stagegl.ContextGLCompareMode
 	 */
 
-	public get depthCompareMode():string
+	public get depthCompareMode():ContextGLCompareMode
 	{
 		return this._depthCompareMode;
 	}
 
-	public set depthCompareMode(value:string)
+	public set depthCompareMode(value:ContextGLCompareMode)
 	{
 		if (this._depthCompareMode == value)
 			return;
