@@ -1,6 +1,8 @@
 import {ErrorBase, Matrix3D} from "@awayjs/core";
 
-import {Camera, TextureProjector} from "@awayjs/scene";
+import {TextureBase} from "@awayjs/graphics";
+
+import {Camera, TextureProjector, TextureProjectorEvent} from "@awayjs/scene";
 
 import {Stage} from "@awayjs/stage";
 
@@ -26,7 +28,9 @@ export class EffectProjectiveTextureMethod extends EffectMethodBase
 	private _uvVarying:ShaderRegisterElement;
 	private _mode:string;
 	private _exposure:number;
-	
+	private _texture:TextureBase;
+	private _onTextureChangedDelegate:(event:TextureProjectorEvent) => void;
+
 	/**
 	 * Creates a new ProjectiveTextureMethod object.
 	 *
@@ -38,6 +42,9 @@ export class EffectProjectiveTextureMethod extends EffectMethodBase
 	constructor(projector:TextureProjector, mode:string = "multiply", exposure:number = 1)
 	{
 		super();
+
+		this._onTextureChangedDelegate = (event:TextureProjectorEvent) => this._onTextureChanged(event);
+
 		this.projector = projector;
 		this._exposure = exposure;
 		this._mode = mode;
@@ -107,14 +114,18 @@ export class EffectProjectiveTextureMethod extends EffectMethodBase
 	
 	public set projector(value:TextureProjector)
 	{
+		if (this._projector == value)
+			return;
+
 		if (this._projector)
-			this.iRemoveTexture(this._projector.texture);
+			this._projector.removeEventListener(TextureProjectorEvent.TEXTURE_CHANGE, this._onTextureChangedDelegate);
 
 		this._projector = value;
 
 		if (this._projector)
-			this.iAddTexture(this._projector.texture);
+			this._projector.addEventListener(TextureProjectorEvent.TEXTURE_CHANGE, this._onTextureChangedDelegate);
 
+		this.updateTexture();
 		this.iInvalidateShaderProgram();
 	}
 	
@@ -202,5 +213,21 @@ export class EffectProjectiveTextureMethod extends EffectMethodBase
 	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
 	{
 		methodVO.textureGL.activate(methodVO.pass._render);
+	}
+
+	private _onTextureChanged(event:TextureProjectorEvent):void
+	{
+		this.updateTexture();
+	}
+
+	private updateTexture():void
+	{
+		if (this._texture)
+			this.iRemoveTexture(this._texture);
+
+		this._texture = (this._projector)? this._projector.texture : null;
+
+		if (this._texture)
+			this.iAddTexture(this._texture);
 	}
 }
