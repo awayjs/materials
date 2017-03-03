@@ -200,7 +200,7 @@ export class EffectProjectiveTextureMethod extends EffectMethodBase
 	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
 	{
 		var matrix3D:Matrix3D = Matrix3D.CALCULATION_MATRIX;
-		matrix3D.copyFrom(this._projector.viewProjection);
+		matrix3D.copyFrom(this._projector.projection.viewMatrix3D);
 		matrix3D.prepend(renderable.renderSceneTransform);
 		methodVO.vertexMatrices[0].copyFrom(matrix3D, true);
 

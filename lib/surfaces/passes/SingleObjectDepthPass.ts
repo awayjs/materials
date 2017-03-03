@@ -179,7 +179,7 @@ export class SingleObjectDepthPass extends PassBase
 		// local position = enough
 		light = lights[0];
 
-		matrix = light.iGetObjectProjectionMatrix(renderableGL.sourceEntity, camera.sceneTransform, this._projections[rId]);
+		matrix = light.iGetObjectProjectionMatrix(renderableGL.sourceEntity, camera.transform.concatenatedMatrix3D, this._projections[rId]);
 
 		this._stage.setRenderTarget(this._textures[rId], true);
 		context.clear(1.0, 1.0, 1.0);
