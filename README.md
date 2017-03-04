@@ -1,8 +1,8 @@
-# Awayjs Materials
+# AwayJS Materials
 
-Dependency for Awayjs applications requiring a configurable method for coloring / texturing / lighting the surfaces of objects: contains data structures for a collection of material types, as well as the rendering APIs (to be moved to renderer module).
+Dependency for AwayJS applications requiring a configurable method for coloring / texturing / lighting the surfaces of objects: contains data structures for a collection of material types, as well as the rendering APIs (to be moved to renderer module).
 
-## Awayjs Dependencies
+## AwayJS Dependencies
 
 * core
 * graphics
