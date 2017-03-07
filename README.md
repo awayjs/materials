@@ -1,4 +1,5 @@
 # AwayJS Materials
+[![Build Status](https://travis-ci.org/awayjs/materials.svg?branch=dev)](https://travis-ci.org/awayjs/materials)
 
 Dependency for AwayJS applications requiring a configurable method for coloring / texturing / lighting the surfaces of objects: contains data structures for a collection of material types, as well as the rendering APIs (to be moved to renderer module).
 
