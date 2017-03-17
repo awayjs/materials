@@ -1,8 +1,8 @@
-import {ErrorBase, Matrix3D} from "@awayjs/core";
+import {ErrorBase, Matrix3D, ProjectionBase} from "@awayjs/core";
 
 import {TextureBase} from "@awayjs/graphics";
 
-import {Camera, TextureProjector, TextureProjectorEvent} from "@awayjs/scene";
+import {TextureProjector, TextureProjectorEvent} from "@awayjs/scene";
 
 import {Stage} from "@awayjs/stage";
 
@@ -197,7 +197,7 @@ export class EffectProjectiveTextureMethod extends EffectMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
 	{
 		var matrix3D:Matrix3D = Matrix3D.CALCULATION_MATRIX;
 		matrix3D.copyFrom(this._projector.projection.viewMatrix3D);

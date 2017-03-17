@@ -1,6 +1,6 @@
-import {AssetEvent, Matrix3D} from "@awayjs/core";
+import {AssetEvent, Matrix3D, ProjectionBase} from "@awayjs/core";
 
-import {Camera, DirectionalLight, CascadeShadowMapper} from "@awayjs/scene";
+import {DirectionalLight, CascadeShadowMapper} from "@awayjs/scene";
 
 import {Stage} from "@awayjs/stage";
 
@@ -240,7 +240,7 @@ export class ShadowCascadeMethod extends ShadowMapMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
 	{
 	}
 

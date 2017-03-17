@@ -7,7 +7,6 @@ export {MethodMaterialMode}			from "./lib/MethodMaterialMode";
 
 export {AmbientBasicMethod}				from "./lib/methods/AmbientBasicMethod";
 export {AmbientEnvMapMethod}				from "./lib/methods/AmbientEnvMapMethod";
-export {CurveBasicMethod}				from "./lib/methods/CurveBasicMethod";
 export {DiffuseBasicMethod}				from "./lib/methods/DiffuseBasicMethod";
 export {DiffuseCelMethod}				from "./lib/methods/DiffuseCelMethod";
 export {DiffuseCompositeMethod}			from "./lib/methods/DiffuseCompositeMethod";

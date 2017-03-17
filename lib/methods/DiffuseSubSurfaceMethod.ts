@@ -1,6 +1,6 @@
 import {Matrix3D} from "@awayjs/core";
 
-import {Camera} from "@awayjs/scene";
+import {ProjectionBase} from "@awayjs/core";
 
 import {Stage} from "@awayjs/stage";
 
@@ -226,7 +226,7 @@ export class DiffuseSubSurfaceMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
 	{
 		methodVO.secondaryTextureGL = shader.getAbstraction(this._depthPass._iGetDepthMap(renderable));
 		methodVO.secondaryTextureGL._setRenderState(renderable);

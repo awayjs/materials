@@ -1,6 +1,8 @@
+import {ProjectionBase} from "@awayjs/core";
+
 import {BitmapImage2D, Single2DTexture} from "@awayjs/graphics";
 
-import {Camera, DirectionalLight} from "@awayjs/scene";
+import {DirectionalLight} from "@awayjs/scene";
 
 import {Stage} from "@awayjs/stage";
 
@@ -168,9 +170,9 @@ export class ShadowDitheredMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
 	{
-		super.iSetRenderState(shader, methodVO, renderable, stage, camera);
+		super.iSetRenderState(shader, methodVO, renderable, stage, projection);
 
 		methodVO.secondaryTextureGL._setRenderState(renderable);
 	}

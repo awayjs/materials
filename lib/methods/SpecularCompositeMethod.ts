@@ -1,6 +1,6 @@
 import {TextureBase, IMaterial} from "@awayjs/graphics";
 
-import {Camera} from "@awayjs/scene";
+import {ProjectionBase} from "@awayjs/core";
 
 import {Stage} from "@awayjs/stage";
 
@@ -165,9 +165,9 @@ export class SpecularCompositeMethod extends SpecularBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
+	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
 	{
-		this._baseMethod.iSetRenderState(shader, methodVO, renderable, stage, camera);
+		this._baseMethod.iSetRenderState(shader, methodVO, renderable, stage, projection);
 	}
 
 	/**

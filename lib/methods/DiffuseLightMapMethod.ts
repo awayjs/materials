@@ -1,6 +1,6 @@
-import {TextureBase} from "@awayjs/graphics";
+import {ProjectionBase} from "@awayjs/core";
 
-import {Camera} from "@awayjs/scene";
+import {TextureBase} from "@awayjs/graphics";
 
 import {Stage} from "@awayjs/stage";
 
@@ -170,9 +170,9 @@ export class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
+	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
 	{
-		super.iSetRenderState(shader, methodVO, renderable, stage, camera);
+		super.iSetRenderState(shader, methodVO, renderable, stage, projection);
 
 		methodVO.secondaryTextureGL._setRenderState(renderable);
 	}

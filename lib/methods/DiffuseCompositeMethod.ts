@@ -1,4 +1,4 @@
-import {Camera} from "@awayjs/scene";
+import {ProjectionBase} from "@awayjs/core";
 
 import {TextureBase, IMaterial} from "@awayjs/graphics";
 
@@ -182,9 +182,9 @@ export class DiffuseCompositeMethod extends DiffuseBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
+	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
 	{
-		this.pBaseMethod.iSetRenderState(shader, methodVO, renderable, stage, camera);
+		this.pBaseMethod.iSetRenderState(shader, methodVO, renderable, stage, projection);
 	}
 
 	/**

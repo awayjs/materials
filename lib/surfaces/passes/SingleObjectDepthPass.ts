@@ -1,8 +1,8 @@
-import {Matrix3D} from "@awayjs/core";
+import {Matrix3D, ProjectionBase} from "@awayjs/core";
 
 import {Image2D, Single2DTexture, TextureBase} from "@awayjs/graphics";
 
-import {LightBase, Camera} from "@awayjs/scene";
+import {LightBase} from "@awayjs/scene";
 
 import {IContextGL, Stage} from "@awayjs/stage";
 
@@ -159,7 +159,7 @@ export class SingleObjectDepthPass extends PassBase
 	/**
 	 * @inheritDoc
 	 */
-	public _iRender(renderableGL:GL_RenderableBase, camera:Camera, viewProjection:Matrix3D):void
+	public _iRender(renderableGL:GL_RenderableBase, projection:ProjectionBase):void
 	{
 		var matrix:Matrix3D;
 		var context:IContextGL = this._stage.context;
@@ -179,7 +179,7 @@ export class SingleObjectDepthPass extends PassBase
 		// local position = enough
 		light = lights[0];
 
-		matrix = light.iGetObjectProjectionMatrix(renderableGL.sourceEntity, camera.transform.concatenatedMatrix3D, this._projections[rId]);
+		matrix = light.iGetObjectProjectionMatrix(renderableGL.sourceEntity, projection.transform.concatenatedMatrix3D, this._projections[rId]);
 
 		this._stage.setRenderTarget(this._textures[rId], true);
 		context.clear(1.0, 1.0, 1.0);
@@ -196,13 +196,13 @@ export class SingleObjectDepthPass extends PassBase
 	/**
 	 * @inheritDoc
 	 */
-	public _iActivate(camera:Camera):void
+	public _iActivate(projection:ProjectionBase):void
 	{
 		if (this._projectionTexturesInvalid)
 			this.updateProjectionTextures();
 
 		// never scale
-		super._iActivate(camera);
+		super._iActivate(projection);
 
 		//this._stage.context.setProgramConstantsFromArray(ContextGLProgramType.VERTEX, 4, this._polyOffset, 1);
 	}

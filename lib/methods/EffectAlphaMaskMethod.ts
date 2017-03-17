@@ -1,6 +1,6 @@
 import {TextureBase} from "@awayjs/graphics";
 
-import {Camera} from "@awayjs/scene";
+import {ProjectionBase} from "@awayjs/core";
 
 import {Stage} from "@awayjs/stage";
 
@@ -117,7 +117,7 @@ export class EffectAlphaMaskMethod extends EffectMethodBase
 	}
 
 
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
 	{
 		methodVO.textureGL._setRenderState(renderable);
 	}

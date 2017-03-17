@@ -1,6 +1,6 @@
 import {TextureBase} from "@awayjs/graphics";
 
-import {Camera} from "@awayjs/scene";
+import {ProjectionBase} from "@awayjs/core";
 
 import {Stage} from "@awayjs/stage";
 
@@ -170,9 +170,9 @@ export class NormalSimpleWaterMethod extends NormalBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
 	{
-		super.iSetRenderState(shader, methodVO, renderable, stage, camera);
+		super.iSetRenderState(shader, methodVO, renderable, stage, projection);
 
 		if (this._secondaryNormalMap)
 			methodVO.secondaryTextureGL._setRenderState(renderable);

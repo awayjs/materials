@@ -2,7 +2,7 @@ import {AssetBase} from "@awayjs/core";
 
 import {IMaterial, TextureBase} from "@awayjs/graphics";
 
-import {Camera} from "@awayjs/scene";
+import {ProjectionBase} from "@awayjs/core";
 
 import {Stage} from "@awayjs/stage";
 
@@ -209,7 +209,7 @@ export class ShadingMethodBase extends AssetBase
 	 *
 	 * @internal
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
 	{
 
 	}

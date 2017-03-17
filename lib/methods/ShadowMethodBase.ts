@@ -1,6 +1,6 @@
-import {Vector3D, Matrix3D, AbstractMethodError} from "@awayjs/core";
+import {Vector3D, Matrix3D, AbstractMethodError, ProjectionBase} from "@awayjs/core";
 
-import {LightBase, Camera, PointLight, DirectionalShadowMapper} from "@awayjs/scene";
+import {LightBase, PointLight, DirectionalShadowMapper} from "@awayjs/scene";
 
 import {Stage} from "@awayjs/stage";
 
@@ -187,7 +187,7 @@ export class ShadowMethodBase extends ShadowMapMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
 	{
 		if (!this._pUsePoint)
 			methodVO.vertexMatrices[0].copyFrom((<DirectionalShadowMapper> this._pShadowMapper).iDepthProjection, true);

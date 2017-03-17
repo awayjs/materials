@@ -1,8 +1,6 @@
-import {AssetEvent} from "@awayjs/core";
+import {AssetEvent, ProjectionBase} from "@awayjs/core";
 
 import {TextureBase} from "@awayjs/graphics";
-
-import {Camera}	from "@awayjs/scene";
 
 import {Stage} from "@awayjs/stage";
 
@@ -360,7 +358,7 @@ export class DiffuseBasicMethod extends LightingMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
+	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
 	{
 		if (this._texture)
 			methodVO.textureGL._setRenderState(renderable);

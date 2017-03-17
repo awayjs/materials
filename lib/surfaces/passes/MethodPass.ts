@@ -1,7 +1,7 @@
-import {ColorTransform, Matrix3D, AssetEvent} from "@awayjs/core";
+import {ColorTransform, Matrix3D, AssetEvent, ProjectionBase} from "@awayjs/core";
 
 
-import {Camera, LightPickerBase, LightSources} from "@awayjs/scene";
+import {LightPickerBase, LightSources} from "@awayjs/scene";
 
 import {Stage} from "@awayjs/stage";
 
@@ -523,9 +523,9 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * @inheritDoc
 	 */
-	public _iActivate(camera:Camera):void
+	public _iActivate(projection:ProjectionBase):void
 	{
-		super._iActivate(camera);
+		super._iActivate(projection);
 
 		var methodVO:MethodVO;
 		var len:number = this._iMethodVOs.length;
@@ -543,16 +543,16 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * @param stage
 	 * @param camera
 	 */
-	public _setRenderState(renderable:GL_RenderableBase, camera:Camera, viewProjection:Matrix3D):void
+	public _setRenderState(renderable:GL_RenderableBase, projection:ProjectionBase):void
 	{
-		super._setRenderState(renderable, camera, viewProjection);
+		super._setRenderState(renderable, projection);
 
 		var methodVO:MethodVO;
 		var len:number = this._iMethodVOs.length;
 		for (var i:number = 0; i < len; ++i) {
 			methodVO = this._iMethodVOs[i];
 			if (methodVO.useMethod)
-				methodVO.method.iSetRenderState(this._shader, methodVO, renderable, this._stage, camera);
+				methodVO.method.iSetRenderState(this._shader, methodVO, renderable, this._stage, projection);
 		}
 	}
 

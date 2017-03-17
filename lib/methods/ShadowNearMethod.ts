@@ -1,4 +1,6 @@
-import {NearDirectionalShadowMapper, Camera} from "@awayjs/scene";
+import {ProjectionBase} from "@awayjs/core";
+
+import {NearDirectionalShadowMapper} from "@awayjs/scene";
 
 import {Stage} from "@awayjs/stage";
 
@@ -178,11 +180,11 @@ export class ShadowNearMethod extends ShadowMethodBase
 	/**
 	 * @inheritDoc
 	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, camera:Camera):void
+	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
 	{
 		// todo: move this to activate (needs camera)
-		var near:number = camera.projection.near;
-		var d:number = camera.projection.far - near;
+		var near:number = projection.near;
+		var d:number = projection.far - near;
 		var maxDistance:number = this._nearShadowMapper.coverageRatio;
 		var minDistance:number = maxDistance*(1 - this._fadeRatio);
 
@@ -194,7 +196,7 @@ export class ShadowNearMethod extends ShadowMethodBase
 		fragmentData[index] = minDistance;
 		fragmentData[index + 1] = 1/(maxDistance - minDistance);
 
-		this._baseMethod.iSetRenderState(shader, methodVO, renderable, stage, camera);
+		this._baseMethod.iSetRenderState(shader, methodVO, renderable, stage, projection);
 	}
 
 	/**
