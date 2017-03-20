@@ -4,9 +4,9 @@ import {IMaterial, TextureBase} from "@awayjs/graphics";
 
 import {ProjectionBase} from "@awayjs/core";
 
-import {Stage} from "@awayjs/stage";
+import {Stage, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {GL_RenderableBase, ShadingMethodEvent, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
+import {ShadingMethodEvent} from "@awayjs/renderer";
 
 import {MethodVO} from "../data/MethodVO";
 

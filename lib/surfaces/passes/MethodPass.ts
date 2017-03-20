@@ -3,9 +3,9 @@ import {ColorTransform, Matrix3D, AssetEvent, ProjectionBase} from "@awayjs/core
 
 import {LightPickerBase, LightSources} from "@awayjs/scene";
 
-import {Stage} from "@awayjs/stage";
+import {Stage, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, GL_RenderableBase, PassBase, IElementsClassGL, MaterialPool} from "@awayjs/stage";
 
-import {LightingShader, ShadingMethodEvent, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, GL_RenderableBase, PassBase, ILightingPass, IElementsClassGL} from "@awayjs/renderer";
+import {LightingShader, ShadingMethodEvent, ILightingPass} from "@awayjs/renderer";
 
 import {MethodMaterial} from "../../MethodMaterial";
 import {MethodVO} from "../../data/MethodVO";
@@ -158,19 +158,19 @@ export class MethodPass extends PassBase implements ILightingPass
 	 *
 	 * @param material The material to which this pass belongs.
 	 */
-	constructor(mode:number, render:GL_MethodMaterial, renderOwner:MethodMaterial, elementsClass:IElementsClassGL, stage:Stage)
+	constructor(mode:number, render:GL_MethodMaterial, material:MethodMaterial, materialPool:MaterialPool)
 	{
-		super(render, renderOwner, elementsClass, stage);
+		super(render, material, materialPool);
 
 		this._mode = mode;
 
-		this._methodMaterial = renderOwner;
+		this._methodMaterial = material;
 
 		this._onLightsChangeDelegate = (event:AssetEvent) => this.onLightsChange(event);
 		
 		this._onMethodInvalidatedDelegate = (event:ShadingMethodEvent) => this.onMethodInvalidated(event);
 
-		this.lightPicker = renderOwner.lightPicker;
+		this.lightPicker = material.lightPicker;
 
 		if (this._shader == null)
 			this._updateShader();

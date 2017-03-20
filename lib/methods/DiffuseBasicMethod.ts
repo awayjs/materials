@@ -2,9 +2,9 @@ import {AssetEvent, ProjectionBase} from "@awayjs/core";
 
 import {TextureBase} from "@awayjs/graphics";
 
-import {Stage} from "@awayjs/stage";
+import {Stage, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {GL_RenderableBase, LightingShader, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
+import {LightingShader} from "@awayjs/renderer";
 
 import {MethodVO} from "../data/MethodVO";
 

@@ -4,9 +4,9 @@ import {BitmapImage2D, Single2DTexture} from "@awayjs/graphics";
 
 import {DirectionalLight} from "@awayjs/scene";
 
-import {Stage} from "@awayjs/stage";
+import {Stage, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {GL_RenderableBase, LightingShader, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
+import {LightingShader} from "@awayjs/renderer";
 
 import {MethodVO} from "../data/MethodVO";
 

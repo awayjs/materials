@@ -1,6 +1,6 @@
 import {Matrix3D} from "@awayjs/core";
 
-import {GL_TextureBase} from "@awayjs/renderer";
+import {GL_TextureBase} from "@awayjs/stage";
 
 import {MethodPass} from "../surfaces/passes/MethodPass";
 import {ShadingMethodBase} from "../methods/ShadingMethodBase";

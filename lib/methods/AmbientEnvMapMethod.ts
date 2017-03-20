@@ -1,6 +1,6 @@
 import {AssetEvent} from "@awayjs/core";
 
-import {ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
+import {ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
 import {MethodVO} from "../data/MethodVO";
 

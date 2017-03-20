@@ -2,9 +2,9 @@ import {AssetEvent, Matrix3D, ProjectionBase} from "@awayjs/core";
 
 import {DirectionalLight, CascadeShadowMapper} from "@awayjs/scene";
 
-import {Stage} from "@awayjs/stage";
+import {Stage, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {GL_RenderableBase, ShadingMethodEvent, LightingShader, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
+import {ShadingMethodEvent, LightingShader} from "@awayjs/renderer";
 
 import {MethodVO} from "../data/MethodVO";
 

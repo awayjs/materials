@@ -1,4 +1,6 @@
-import {LightingShader, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
+import {ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+
+import {LightingShader} from "@awayjs/renderer";
 
 import {MethodVO} from "../data/MethodVO";
 

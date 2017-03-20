@@ -2,9 +2,9 @@ import {Vector3D, Matrix3D, AbstractMethodError, ProjectionBase} from "@awayjs/c
 
 import {LightBase, PointLight, DirectionalShadowMapper} from "@awayjs/scene";
 
-import {Stage} from "@awayjs/stage";
+import {Stage, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {GL_RenderableBase, LightingShader, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/renderer";
+import {LightingShader} from "@awayjs/renderer";
 
 import {MethodVO} from "../data/MethodVO";
 

@@ -4,9 +4,7 @@ import {Image2D, Single2DTexture, TextureBase} from "@awayjs/graphics";
 
 import {LightBase} from "@awayjs/scene";
 
-import {IContextGL, Stage} from "@awayjs/stage";
-
-import {ShaderBase, ShaderRegisterCache, ShaderRegisterData, PassBase, IElementsClassGL, GL_RenderableBase, GL_MaterialBase, GL_ElementsBase} from "@awayjs/renderer";
+import {IContextGL, Stage, ShaderBase, ShaderRegisterCache, ShaderRegisterData, PassBase, IElementsClassGL, GL_RenderableBase, GL_MaterialBase, GL_ElementsBase, MaterialPool} from "@awayjs/stage";
 
 import {MethodMaterial} from "../../MethodMaterial";
 
@@ -53,11 +51,11 @@ export class SingleObjectDepthPass extends PassBase
 	/**
 	 * Creates a new SingleObjectDepthPass object.
 	 */
-	constructor(render:GL_MaterialBase, renderOwner:MethodMaterial, elementsClass:IElementsClassGL, stage:Stage)
+	constructor(render:GL_MaterialBase, material:MethodMaterial, materialPool:MaterialPool)
 	{
-		super(render, renderOwner, elementsClass, stage);
+		super(render, material, materialPool);
 
-		this._methodMaterial = renderOwner;
+		this._methodMaterial = material;
 
 		//this._pNumUsedStreams = 2;
 		//this._pNumUsedVertexConstants = 7;
