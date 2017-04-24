@@ -79,7 +79,7 @@ export class ShadowSoftChunk extends ShadowChunkBase
 	private addSample(decodeRegister:ShaderRegisterElement, targetRegister:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData, uvReg:ShaderRegisterElement):string
 	{
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
-		return this._depthMap._iGetFragmentCode(temp, registerCache, sharedRegisters, uvReg) +
+		return this._depthMap._getFragmentCode(temp, registerCache, sharedRegisters, uvReg) +
 			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
 			"slt " + uvReg + ".w, " + this._depthMapCoordReg + ".z, " + temp + ".z\n" + // 0 if in shadow
 			"add " + targetRegister + ".w, " + targetRegister + ".w, " + uvReg + ".w\n";
@@ -150,7 +150,7 @@ export class ShadowSoftChunk extends ShadowChunkBase
 				var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 
 				code = "add " + uvReg + ", " + this._depthMapCoordReg + ", " + dataReg + ".zwyy\n" +
-					this._depthMap._iGetFragmentCode(temp, registerCache, sharedRegisters, uvReg) +
+					this._depthMap._getFragmentCode(temp, registerCache, sharedRegisters, uvReg) +
 					"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
 					"slt " + targetRegister + ".w, " + this._depthMapCoordReg + ".z, " + temp + ".z\n"; // 0 if in shadow;
 			} else {

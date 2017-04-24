@@ -314,9 +314,9 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * Initializes the unchanging constant data for this material.
 	 */
-	public _iInitConstantData(shader:ShaderBase):void
+	public _initConstantData(shader:ShaderBase):void
 	{
-		super._iInitConstantData(shader);
+		super._initConstantData(shader);
 
 		//Updates method constants if they have changed.
 		var len:number = this._chunks.length;
@@ -642,9 +642,9 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * @inheritDoc
 	 */
-	public _iActivate(projection:ProjectionBase):void
+	public _activate(projection:ProjectionBase):void
 	{
-		super._iActivate(projection);
+		super._activate(projection);
 
 		var chunk:IShaderChunk;
 		var len:number = this._chunks.length;
@@ -678,9 +678,9 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * @inheritDoc
 	 */
-	public _iDeactivate():void
+	public _deactivate():void
 	{
-		super._iDeactivate();
+		super._deactivate();
 
 		var chunk:IShaderChunk;
 		var len:number = this._chunks.length;
@@ -691,9 +691,9 @@ export class MethodPass extends PassBase implements ILightingPass
 		}
 	}
 
-	public _iIncludeDependencies(shader:LightingShader):void
+	public _includeDependencies(shader:LightingShader):void
 	{
-		super._iIncludeDependencies(shader);
+		super._includeDependencies(shader);
 
 		//TODO: fragment animtion should be compatible with lighting pass
 		shader.usesFragmentAnimation = Boolean(this._mode == MethodPassMode.SUPER_SHADER);
@@ -765,14 +765,14 @@ export class MethodPass extends PassBase implements ILightingPass
 			shader.viewDirDependencies++;
 	}
 
-	public _iGetPreLightingVertexCode(shader:ShaderBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _getPreLightingVertexCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 
 		return code;
 	}
 
-	public _iGetPreLightingFragmentCode(shader:ShaderBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _getPreLightingFragmentCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 
@@ -785,47 +785,33 @@ export class MethodPass extends PassBase implements ILightingPass
 		return code;
 	}
 
-	public _iGetPerLightDiffuseFragmentCode(shader:LightingShader, lightDirReg:ShaderRegisterElement, diffuseColorReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _getPerLightDiffuseFragmentCode(lightDirReg:ShaderRegisterElement, diffuseColorReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		return this._diffuseChunk._getFragmentCodePerLight(lightDirReg, diffuseColorReg, registerCache, sharedRegisters);
 	}
 
-	public _iGetPerLightSpecularFragmentCode(shader:LightingShader, lightDirReg:ShaderRegisterElement, specularColorReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _getPerLightSpecularFragmentCode(lightDirReg:ShaderRegisterElement, specularColorReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		return this._specularChunk._getFragmentCodePerLight(lightDirReg, specularColorReg, registerCache, sharedRegisters);
 	}
 
-	public _iGetPerProbeDiffuseFragmentCode(shader:LightingShader, texReg:ShaderRegisterElement, weightReg:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _getPerProbeDiffuseFragmentCode(texReg:ShaderRegisterElement, weightReg:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		return this._diffuseChunk._getFragmentCodePerProbe(texReg, weightReg, registerCache, sharedRegisters);
 	}
 
-	public _iGetPerProbeSpecularFragmentCode(shader:LightingShader, texReg:ShaderRegisterElement, weightReg:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _getPerProbeSpecularFragmentCode(texReg:ShaderRegisterElement, weightReg:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		return this._specularChunk._getFragmentCodePerProbe(texReg, weightReg, registerCache, sharedRegisters);
 	}
 
-	public _iGetPostLightingVertexCode(shader:LightingShader, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string = "";
 
-		return code;
-	}
-
-	public _iGetPostLightingFragmentCode(shader:LightingShader, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string = "";
-
-		return code;
-	}
-
-
-	public _iGetNormalVertexCode(shader:ShaderBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _getNormalVertexCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		return this._normalChunk._getVertexCode(registerCache, sharedRegisters);
 	}
 
-	public _iGetNormalFragmentCode(shader:ShaderBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _getNormalFragmentCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = this._normalChunk._getFragmentCode(sharedRegisters.normalFragment, registerCache, sharedRegisters);
 
@@ -841,7 +827,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * @inheritDoc
 	 */
-	public _iGetVertexCode(shader:ShaderBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _getVertexCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 
@@ -878,10 +864,9 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * @inheritDoc
 	 */
-	public _iGetFragmentCode(shader:ShaderBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public _getFragmentCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
-		var alphaReg:ShaderRegisterElement;
 
 		if (this._ambientChunk && this._ambientChunk.chunkVO.useChunk) {
 			code += this._ambientChunk._getFragmentCode(sharedRegisters.shadedTarget, registerCache, sharedRegisters);
@@ -893,13 +878,23 @@ export class MethodPass extends PassBase implements ILightingPass
 				registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
 		}
 
-		if (shader.useAlphaPremultiplied && shader.usesBlending) {
+		return code;
+	}
+
+
+	public _getPostAnimationFragmentCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	{
+		var code:string = "";
+
+		//if blending with premultiplied alpha, make sure ambient color is correctly multiplied
+		if (this._shader.useAlphaPremultiplied && this._shader.usesBlending) {
 			code += "add " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.commons + ".z\n" +
 				"div " + sharedRegisters.shadedTarget + ".xyz, " + sharedRegisters.shadedTarget + ", " + sharedRegisters.shadedTarget + ".w\n" +
 				"sub " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.commons + ".z\n" +
 				"sat " + sharedRegisters.shadedTarget + ".xyz, " + sharedRegisters.shadedTarget + "\n";
 		}
 
+		///////////////begin lighting shading
 		if (this._shadowChunk)
 			code += this._shadowChunk._getFragmentCode(sharedRegisters.shadowTarget, registerCache, sharedRegisters);
 
@@ -925,12 +920,18 @@ export class MethodPass extends PassBase implements ILightingPass
 		if (this._shadowChunk)
 			registerCache.removeFragmentTempUsage(sharedRegisters.shadowTarget);
 
+		///////////////end lighting shading
+
+		var alphaReg:ShaderRegisterElement;
+
+		//check if alpha is preserved while performing effects shading and store value
 		if (this.preserveAlpha && this._numEffectDependencies > 0) {
 			alphaReg = registerCache.getFreeFragmentSingleTemp();
 			registerCache.addFragmentTempUsages(alphaReg, 1);
 			code += "mov " + alphaReg + ", " + sharedRegisters.shadedTarget + ".w\n";
 		}
 
+		//perform effects shading
 		var chunk:IShaderChunk;
 		var len:number = this._chunks.length;
 		for (var i:number = len - this._numEffectDependencies; i < len; i++) {
@@ -947,16 +948,19 @@ export class MethodPass extends PassBase implements ILightingPass
 			}
 		}
 
+		//check if alpha is preserved while performing effects shading and restore value
 		if (this.preserveAlpha && this._numEffectDependencies > 0) {
 			code += "mov " + sharedRegisters.shadedTarget + ".w, " + alphaReg + "\n";
 			registerCache.removeFragmentTempUsage(alphaReg);
 		}
 
+		//peform final colortransform chunk if it exists
 		if (this._colorTransformChunk && this._colorTransformChunk.chunkVO.useChunk)
 			code += this._colorTransformChunk._getFragmentCode(sharedRegisters.shadedTarget, registerCache, sharedRegisters);
 
 		return code;
 	}
+
 	/**
 	 * Indicates whether the shader uses any shadows.
 	 */

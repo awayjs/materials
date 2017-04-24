@@ -99,13 +99,13 @@ export class EffectEnvMapChunk extends ShaderChunkBase
 			"add " + temp + ".w, " + temp + ".w, " + temp + ".w\n" +
 			"mul " + temp + ".xyz, " + sharedRegisters.normalFragment + ".xyz, " + temp + ".w\n" +
 			"sub " + temp + ".xyz, " + temp + ".xyz, " + sharedRegisters.viewDirFragment + ".xyz\n" +
-			this._envMap._iGetFragmentCode(temp, registerCache, sharedRegisters, temp) +
+			this._envMap._getFragmentCode(temp, registerCache, sharedRegisters, temp) +
 			"sub " + temp2 + ".w, " + temp + ".w, fc0.x\n" + // -.5
 			"kil " + temp2 + ".w\n" +	// used for real time reflection mapping - if alpha is not 1 (mock texture) kil output
 			"sub " + temp + ", " + temp + ", " + targetReg + "\n";
 
 		if (this._maskMap) {
-			code += this._maskMap._iGetFragmentCode(temp2, registerCache, sharedRegisters, sharedRegisters.uvVarying) +
+			code += this._maskMap._getFragmentCode(temp2, registerCache, sharedRegisters, sharedRegisters.uvVarying) +
 				"mul " + temp + ", " + temp2 + ", " + temp + "\n";
 		}
 

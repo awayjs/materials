@@ -34,7 +34,7 @@ export class ShadowHardChunk extends ShadowChunkBase
 
 		this._fragmentConstantsIndex = decReg.index*4;
 
-		code += this._depthMap._iGetFragmentCode(depthCol, regCache, sharedRegisters, this._depthMapCoordReg) +
+		code += this._depthMap._getFragmentCode(depthCol, regCache, sharedRegisters, this._depthMapCoordReg) +
 			"dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" +
 			"slt " + targetReg + ".w, " + this._depthMapCoordReg + ".z, " + depthCol + ".z\n"; // 0 if in shadow
 
@@ -62,7 +62,7 @@ export class ShadowHardChunk extends ShadowChunkBase
 			"mul " + lightDir + ".w, " + lightDir + ".w, " + posReg + ".w\n" +
 			"nrm " + lightDir + ".xyz, " + lightDir + ".xyz\n" +
 
-			this._depthMap._iGetFragmentCode(depthSampleCol, regCache, sharedRegisters, lightDir) +
+			this._depthMap._getFragmentCode(depthSampleCol, regCache, sharedRegisters, lightDir) +
 			"dp4 " + depthSampleCol + ".z, " + depthSampleCol + ", " + decReg + "\n" +
 			"add " + targetReg + ".w, " + lightDir + ".w, " + epsReg + ".x\n" +    // offset by epsilon
 
@@ -81,7 +81,7 @@ export class ShadowHardChunk extends ShadowChunkBase
 	{
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 
-		return this._depthMap._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
+		return this._depthMap._getFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
 			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
 			"slt " + targetRegister + ".w, " + depthProjection + ".z, " + temp + ".z\n"; // 0 if in shadow
 	}

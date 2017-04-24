@@ -207,7 +207,7 @@ export class DiffuseBasicChunk extends ShaderChunkBase implements ILightingChunk
 		this._ambientColorRegister = ambientColorRegister.index*4;
 
 		if (this._texture) {
-			code += this._texture._iGetFragmentCode(diffuseColor, registerCache, sharedRegisters, (this._method.texture.mappingMode == MappingMode.CUBE)? sharedRegisters.normalFragment : sharedRegisters.uvVarying);
+			code += this._texture._getFragmentCode(diffuseColor, registerCache, sharedRegisters, (this._method.texture.mappingMode == MappingMode.CUBE)? sharedRegisters.normalFragment : sharedRegisters.uvVarying);
 		} else {
 			var diffuseColorRegister:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 			this._diffuseColorRegister = diffuseColorRegister.index*4;

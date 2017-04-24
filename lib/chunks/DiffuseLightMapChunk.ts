@@ -56,7 +56,7 @@ export class DiffuseLightMapChunk extends LightingCompositeChunk
 		var code:string;
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 
-		code = this._lightMap._iGetFragmentCode(temp, registerCache, sharedRegisters, this._method.useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
+		code = this._lightMap._getFragmentCode(temp, registerCache, sharedRegisters, this._method.useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
 
 		switch (this._method.blendMode) {
 			case DiffuseLightMapMethod.MULTIPLY:

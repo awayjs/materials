@@ -76,7 +76,7 @@ export class AmbientBasicChunk extends ShaderChunkBase
 		var code:string = "";
 
 		if (this._texture) {
-			code += this._texture._iGetFragmentCode(targetReg, registerCache, sharedRegisters, (this._method.texture.mappingMode == MappingMode.CUBE)? sharedRegisters.normalFragment : sharedRegisters.uvVarying);
+			code += this._texture._getFragmentCode(targetReg, registerCache, sharedRegisters, (this._method.texture.mappingMode == MappingMode.CUBE)? sharedRegisters.normalFragment : sharedRegisters.uvVarying);
 
 			if (this._shader.alphaThreshold > 0) {
 				var cutOffReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();

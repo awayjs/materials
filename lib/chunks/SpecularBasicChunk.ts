@@ -99,7 +99,7 @@ export class SpecularBasicChunk extends ShaderChunkBase implements ILightingChun
 			this._specularTexData = registerCache.getFreeFragmentVectorTemp();
 			registerCache.addFragmentTempUsages(this._specularTexData, 1);
 
-			code += this._texture._iGetFragmentCode(this._specularTexData, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+			code += this._texture._getFragmentCode(this._specularTexData, registerCache, sharedRegisters, sharedRegisters.uvVarying);
 		}
 
 		this._totalLightColorReg = registerCache.getFreeFragmentVectorTemp();

@@ -43,7 +43,7 @@ export class AmbientDepthChunk extends AmbientBasicChunk
 		var decReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 		this._decRegIndex = decReg.index*4;
 
-		code += this._shadowTexture._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying) +
+		code += this._shadowTexture._getFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying) +
 			"dp4 " + targetReg + ".x, " + targetReg + ", " + decReg + "\n" +
 			"mov " + targetReg + ".yz, " + targetReg + ".xx			\n" +
 			"mov " + targetReg + ".w, " + decReg + ".x\n" +

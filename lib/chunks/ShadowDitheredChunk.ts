@@ -93,7 +93,7 @@ export class ShadowDitheredChunk extends ShadowChunkBase
 	{
 		var temp:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
 
-		return this._depthMap._iGetFragmentCode(temp, regCache, sharedRegisters, uvReg) +
+		return this._depthMap._getFragmentCode(temp, regCache, sharedRegisters, uvReg) +
 			"dp4 " + temp + ".z, " + temp + ", " + decReg + "\n" +
 			"slt " + temp + ".z, " + this._depthMapCoordReg + ".z, " + temp + ".z\n" + // 0 if in shadow
 			"add " + targetReg + ".w, " + targetReg + ".w, " + temp + ".z\n";
@@ -165,10 +165,10 @@ export class ShadowDitheredChunk extends ShadowChunkBase
 		var index:number = numSamples;
 		while (index > 0) {
 			if (index == numSamples) {
-				code += this._grainMap._iGetFragmentCode(uvReg, regCache, sharedRegisters, uvReg);
+				code += this._grainMap._getFragmentCode(uvReg, regCache, sharedRegisters, uvReg);
 			} else {
 				code += "mov " + temp + ", " + uvReg + ".zwxy \n" +
-					this._grainMap._iGetFragmentCode(uvReg, regCache, sharedRegisters, temp);
+					this._grainMap._getFragmentCode(uvReg, regCache, sharedRegisters, temp);
 			}
 
 			// keep grain in uvReg.zw
@@ -178,7 +178,7 @@ export class ShadowDitheredChunk extends ShadowChunkBase
 			if (index == numSamples) {
 				// first sample
 				code += "add " + uvReg + ".xy, " + uvReg + ".zw, " + this._depthMapCoordReg + ".xy\n" +
-					this._depthMap._iGetFragmentCode(temp, regCache, sharedRegisters, uvReg) +
+					this._depthMap._getFragmentCode(temp, regCache, sharedRegisters, uvReg) +
 					"dp4 " + temp + ".z, " + temp + ", " + decReg + "\n" +
 					"slt " + targetReg + ".w, " + this._depthMapCoordReg + ".z, " + temp + ".z\n"; // 0 if in shadow
 			} else {

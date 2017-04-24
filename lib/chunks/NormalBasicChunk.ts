@@ -78,7 +78,7 @@ export class NormalBasicChunk extends ShaderChunkBase
 		var code:string = "";
 
 		if (this._texture)
-			code += this._texture._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+			code += this._texture._getFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying);
 
 
 		code += "sub " + targetReg + ".xyz, " + targetReg + ".xyz, " + sharedRegisters.commons + ".xxx\n" +

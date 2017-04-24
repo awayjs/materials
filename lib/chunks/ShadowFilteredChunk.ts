@@ -56,12 +56,12 @@ export class ShadowFilteredChunk extends ShadowChunkBase
 
 		code += "mov " + uvReg + ", " + this._depthMapCoordReg + "\n" +
 
-			this._depthMap._iGetFragmentCode(depthCol, regCache, sharedRegisters, this._depthMapCoordReg) +
+			this._depthMap._getFragmentCode(depthCol, regCache, sharedRegisters, this._depthMapCoordReg) +
 			"dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" +
 			"slt " + uvReg + ".z, " + this._depthMapCoordReg + ".z, " + depthCol + ".z\n" +   // 0 if in shadow
 
 			"add " + uvReg + ".x, " + this._depthMapCoordReg + ".x, " + customDataReg + ".z\n" + 	// (1, 0)
-			this._depthMap._iGetFragmentCode(depthCol, regCache, sharedRegisters, uvReg) +
+			this._depthMap._getFragmentCode(depthCol, regCache, sharedRegisters, uvReg) +
 			"dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" +
 			"slt " + uvReg + ".w, " + this._depthMapCoordReg + ".z, " + depthCol + ".z\n" +   // 0 if in shadow
 
@@ -73,12 +73,12 @@ export class ShadowFilteredChunk extends ShadowChunkBase
 
 			"mov " + uvReg + ".x, " + this._depthMapCoordReg + ".x\n" +
 			"add " + uvReg + ".y, " + this._depthMapCoordReg + ".y, " + customDataReg + ".z\n" +	// (0, 1)
-			this._depthMap._iGetFragmentCode(depthCol, regCache, sharedRegisters, uvReg) +
+			this._depthMap._getFragmentCode(depthCol, regCache, sharedRegisters, uvReg) +
 			"dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" +
 			"slt " + uvReg + ".z, " + this._depthMapCoordReg + ".z, " + depthCol + ".z\n" +   // 0 if in shadow
 
 			"add " + uvReg + ".x, " + this._depthMapCoordReg + ".x, " + customDataReg + ".z\n" +	// (1, 1)
-			this._depthMap._iGetFragmentCode(depthCol, regCache, sharedRegisters, uvReg) +
+			this._depthMap._getFragmentCode(depthCol, regCache, sharedRegisters, uvReg) +
 			"dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" +
 			"slt " + uvReg + ".w, " + this._depthMapCoordReg + ".z, " + depthCol + ".z\n" +   // 0 if in shadow
 
@@ -126,22 +126,22 @@ export class ShadowFilteredChunk extends ShadowChunkBase
 		var predicate:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 		registerCache.addFragmentTempUsages(predicate, 1);
 
-		code = this._depthMap._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
+		code = this._depthMap._getFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
 			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
 			"slt " + predicate + ".x, " + depthProjection + ".z, " + temp + ".z\n" +
 
 			"add " + depthProjection + ".x, " + depthProjection + ".x, " + dataReg + ".y\n" +
-			this._depthMap._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
+			this._depthMap._getFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
 			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
 			"slt " + predicate + ".z, " + depthProjection + ".z, " + temp + ".z\n" +
 
 			"add " + depthProjection + ".y, " + depthProjection + ".y, " + dataReg + ".y\n" +
-			this._depthMap._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
+			this._depthMap._getFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
 			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
 			"slt " + predicate + ".w, " + depthProjection + ".z, " + temp + ".z\n" +
 
 			"sub " + depthProjection + ".x, " + depthProjection + ".x, " + dataReg + ".y\n" +
-			this._depthMap._iGetFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
+			this._depthMap._getFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
 			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
 			"slt " + predicate + ".y, " + depthProjection + ".z, " + temp + ".z\n" +
 

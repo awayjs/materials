@@ -58,16 +58,16 @@ export class NormalHeightMapChunk extends NormalBasicChunk
 
 		this._fragmentConstantsIndex = dataReg.index*4;
 
-		code+= this._texture._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying) +
+		code+= this._texture._getFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying) +
 
 			"add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg + ".xzzz\n" +
 
-		this._texture._iGetFragmentCode(temp, registerCache, sharedRegisters, temp) +
+		this._texture._getFragmentCode(temp, registerCache, sharedRegisters, temp) +
 
 			"sub " + targetReg + ".x, " + targetReg + ".x, " + temp + ".x\n" +
 			"add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg + ".zyzz\n" +
 
-		this._texture._iGetFragmentCode(temp, registerCache, sharedRegisters, temp) +
+		this._texture._getFragmentCode(temp, registerCache, sharedRegisters, temp) +
 
 			"sub " + targetReg + ".z, " + targetReg + ".z, " + temp + ".x\n" +
 			"mov " + targetReg + ".y, " + dataReg + ".w\n" +

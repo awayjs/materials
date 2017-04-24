@@ -104,7 +104,7 @@ export class EffectProjectiveTextureChunk extends ShaderChunkBase
 
 		// code += "mul " + col + ".xy, " + this._uvVarying + ".xy, " + toTexReg + ".xy	\n" +
 		// 	"add " + col + ".xy, " + col + ".xy, " + toTexReg + ".xx	\n";
-		code += this._texture._iGetFragmentCode(col, registerCache, sharedRegisters, this._uvVarying);
+		code += this._texture._getFragmentCode(col, registerCache, sharedRegisters, this._uvVarying);
 
 		code += "mul " + col + ", " + col + ", " + exposure + ".xxx\n" +
 			"add " + col + ", " + col + ", " + exposure + ".xxx\n";

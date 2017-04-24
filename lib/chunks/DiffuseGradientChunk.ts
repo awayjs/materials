@@ -75,7 +75,7 @@ export class DiffuseGradientChunk extends DiffuseBasicChunk
 		if (this._modulateFunction != null)
 			code += this._modulateFunction(t, registerCache, sharedRegisters);
 
-		code += this._gradient._iGetFragmentCode(t, registerCache, sharedRegisters, t) +
+		code += this._gradient._getFragmentCode(t, registerCache, sharedRegisters, t) +
 			//					"mul " + t + ".xyz, " + t + ".xyz, " + t + ".w\n" +
 			"mul " + t + ".xyz, " + t + ".xyz, " + lightColReg + ".xyz\n";
 

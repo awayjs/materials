@@ -107,12 +107,12 @@ export class NormalSimpleWaterChunk extends NormalBasicChunk
 		code += "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg2 + ".xyxy\n";
 
 		if (this._texture)
-			code += this._texture._iGetFragmentCode(targetReg, registerCache, sharedRegisters, temp);
+			code += this._texture._getFragmentCode(targetReg, registerCache, sharedRegisters, temp);
 
 		code += "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg2 + ".zwzw\n";
 
 		if (this._secondaryNormalMap)
-			code += this._secondaryNormalMap._iGetFragmentCode(temp, registerCache, sharedRegisters, temp);
+			code += this._secondaryNormalMap._getFragmentCode(temp, registerCache, sharedRegisters, temp);
 
 		code +=	"add " + targetReg + ", " + targetReg + ", " + temp + "		\n" +
 			"mul " + targetReg + ", " + targetReg + ", " + dataReg + ".x	\n" +

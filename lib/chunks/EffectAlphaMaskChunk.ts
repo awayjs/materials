@@ -55,7 +55,7 @@ export class EffectAlphaMaskChunk extends ShaderChunkBase
 	{
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 
-		return this._alphaMask._iGetFragmentCode(temp, registerCache, sharedRegisters, this._method.useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying) +
+		return this._alphaMask._getFragmentCode(temp, registerCache, sharedRegisters, this._method.useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying) +
 			"mul " + targetReg + ", " + targetReg + ", " + temp + ".x\n";
 	}
 

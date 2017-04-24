@@ -65,7 +65,7 @@ export class EffectRefractionEnvMapChunk extends EffectEnvMapChunk
 			"mul " + refractionDir + ", " + data + ".x, " + viewDirReg + "\n" +
 			"sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" +
 			"nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" +
-		this._envMap._iGetFragmentCode(refractionColor, registerCache, sharedRegisters, refractionDir) +
+		this._envMap._getFragmentCode(refractionColor, registerCache, sharedRegisters, refractionDir) +
 			"sub " + refractionColor + ".w, " + refractionColor + ".w, fc0.x	\n" +
 			"kil " + refractionColor + ".w\n";
 
@@ -86,7 +86,7 @@ export class EffectRefractionEnvMapChunk extends EffectEnvMapChunk
 				"mul " + refractionDir + ", " + data + ".y, " + viewDirReg + "\n" +
 				"sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" +
 				"nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" +
-			this._envMap._iGetFragmentCode(temp, registerCache, sharedRegisters, refractionDir) +
+			this._envMap._getFragmentCode(temp, registerCache, sharedRegisters, refractionDir) +
 				"mov " + refractionColor + ".y, " + temp + ".y\n";
 
 			// BLUE
@@ -105,7 +105,7 @@ export class EffectRefractionEnvMapChunk extends EffectEnvMapChunk
 				"mul " + refractionDir + ", " + data + ".z, " + viewDirReg + "\n" +
 				"sub " + refractionDir + ".xyz, " + refractionDir + ".xyz, " + temp + ".xyz\n" +
 				"nrm " + refractionDir + ".xyz, " + refractionDir + ".xyz\n" +
-			this._envMap._iGetFragmentCode(temp, registerCache, sharedRegisters, refractionDir) +
+			this._envMap._getFragmentCode(temp, registerCache, sharedRegisters, refractionDir) +
 				"mov " + refractionColor + ".z, " + temp + ".z\n";
 		}
 
