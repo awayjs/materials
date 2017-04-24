@@ -1,11 +1,5 @@
 import {TextureBase} from "@awayjs/graphics";
 
-import {ProjectionBase} from "@awayjs/core";
-
-import {Stage, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
-
-import {MethodVO} from "../data/MethodVO";
-
 import {NormalBasicMethod} from "./NormalBasicMethod";
 
 /**
@@ -19,45 +13,14 @@ export class NormalSimpleWaterMethod extends NormalBasicMethod
 	private _water2OffsetX:number = 0;
 	private _water2OffsetY:number = 0;
 
-	/**
-	 * Creates a new NormalSimpleWaterMethod object.
-	 * @param waveMap1 A normal map containing one layer of a wave structure.
-	 * @param waveMap2 A normal map containing a second layer of a wave structure.
-	 */
-	constructor(normalMap:TextureBase = null, secondaryNormalMap:TextureBase = null)
-	{
-		super(normalMap);
-
-		this._secondaryNormalMap = secondaryNormalMap;
-
-		if (this._secondaryNormalMap)
-			this.iAddTexture(this._secondaryNormalMap);
-	}
+	public static assetType:string = "[asset NormalSimpleWaterMethod]";
 
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
+	public get assetType():string
 	{
-		var index:number = methodVO.fragmentConstantsIndex;
-		var data:Float32Array = shader.fragmentConstantData;
-		data[index] = .5;
-		data[index + 1] = 0;
-		data[index + 2] = 0;
-		data[index + 3] = 1;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iInitVO(shader:ShaderBase, methodVO:MethodVO):void
-	{
-		super.iInitVO(shader, methodVO);
-		
-		if (this._secondaryNormalMap) {
-			methodVO.secondaryTextureGL = shader.getAbstraction(this._secondaryNormalMap);
-			shader.uvDependencies++;
-		}
+		return NormalSimpleWaterMethod.assetType;
 	}
 
 	/**
@@ -71,6 +34,8 @@ export class NormalSimpleWaterMethod extends NormalBasicMethod
 	public set water1OffsetX(value:number)
 	{
 		this._water1OffsetX = value;
+
+		this.invalidate();
 	}
 
 	/**
@@ -84,6 +49,8 @@ export class NormalSimpleWaterMethod extends NormalBasicMethod
 	public set water1OffsetY(value:number)
 	{
 		this._water1OffsetY = value;
+
+		this.invalidate();
 	}
 
 	/**
@@ -97,6 +64,8 @@ export class NormalSimpleWaterMethod extends NormalBasicMethod
 	public set water2OffsetX(value:number)
 	{
 		this._water2OffsetX = value;
+
+		this.invalidate();
 	}
 
 	/**
@@ -110,6 +79,8 @@ export class NormalSimpleWaterMethod extends NormalBasicMethod
 	public set water2OffsetY(value:number)
 	{
 		this._water2OffsetY = value;
+
+		this.invalidate();
 	}
 
 	/**
@@ -133,7 +104,22 @@ export class NormalSimpleWaterMethod extends NormalBasicMethod
 		if (this._secondaryNormalMap)
 			this.iAddTexture(this._secondaryNormalMap);
 
-		this.iInvalidateShaderProgram();
+		this.invalidateShaderProgram();
+	}
+
+	/**
+	 * Creates a new NormalSimpleWaterMethod object.
+	 * @param waveMap1 A normal map containing one layer of a wave structure.
+	 * @param waveMap2 A normal map containing a second layer of a wave structure.
+	 */
+	constructor(normalMap:TextureBase = null, secondaryNormalMap:TextureBase = null)
+	{
+		super(normalMap);
+
+		this._secondaryNormalMap = secondaryNormalMap;
+
+		if (this._secondaryNormalMap)
+			this.iAddTexture(this._secondaryNormalMap);
 	}
 
 	/**
@@ -144,66 +130,5 @@ export class NormalSimpleWaterMethod extends NormalBasicMethod
 		super.dispose();
 
 		this._secondaryNormalMap = null;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
-	{
-		super.iActivate(shader, methodVO, stage);
-
-		var data:Float32Array = shader.fragmentConstantData;
-		var index:number = methodVO.fragmentConstantsIndex;
-
-		data[index + 4] = this._water1OffsetX;
-		data[index + 5] = this._water1OffsetY;
-		data[index + 6] = this._water2OffsetX;
-		data[index + 7] = this._water2OffsetY;
-
-		if (this._secondaryNormalMap)
-			methodVO.secondaryTextureGL.activate(methodVO.pass._render);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
-	{
-		super.iSetRenderState(shader, methodVO, renderable, stage, projection);
-
-		if (this._secondaryNormalMap)
-			methodVO.secondaryTextureGL._setRenderState(renderable);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string = "";
-		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
-		registerCache.addFragmentTempUsages(temp, 1);
-
-		var dataReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
-		var dataReg2:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
-		methodVO.fragmentConstantsIndex = dataReg.index*4;
-
-		code += "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg2 + ".xyxy\n";
-
-		if (this.texture)
-			code += methodVO.textureGL._iGetFragmentCode(targetReg, registerCache, sharedRegisters, temp);
-
-		code += "add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg2 + ".zwzw\n";
-
-		if (this._secondaryNormalMap)
-			code += methodVO.secondaryTextureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, temp);
-
-		code +=	"add " + targetReg + ", " + targetReg + ", " + temp + "		\n" +
-			"mul " + targetReg + ", " + targetReg + ", " + dataReg + ".x	\n" +
-			"sub " + targetReg + ".xyz, " + targetReg + ".xyz, " + sharedRegisters.commons + ".xxx	\n" +
-			"nrm " + targetReg + ".xyz, " + targetReg + ".xyz							\n";
-
-		return code;
 	}
 }

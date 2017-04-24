@@ -1,98 +1,28 @@
-import {ProjectionBase} from "@awayjs/core";
-
-import {TextureBase, IMaterial} from "@awayjs/graphics";
-
-import {Stage, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
-
-import {LightingShader, ShadingMethodEvent} from "@awayjs/renderer";
-
-import {MethodVO} from "../data/MethodVO";
+import {TextureBase} from "@awayjs/graphics";
 
 import {DiffuseBasicMethod} from "./DiffuseBasicMethod";
+import {CompositeMethodBase} from "./CompositeMethodBase";
 
 /**
  * DiffuseCompositeMethod provides a base class for diffuse methods that wrap a diffuse method to alter the
  * calculated diffuse reflection strength.
  */
-export class DiffuseCompositeMethod extends DiffuseBasicMethod
+export class DiffuseCompositeMethod extends CompositeMethodBase
 {
-	public pBaseMethod:DiffuseBasicMethod;
-
-	private _onShaderInvalidatedDelegate:(event:ShadingMethodEvent) => void;
-
 	/**
 	 * Creates a new <code>DiffuseCompositeMethod</code> object.
 	 *
 	 * @param modulateMethod The method which will add the code to alter the base method's strength. It needs to have the signature clampDiffuse(t:ShaderRegisterElement, regCache:ShaderRegisterCache):string, in which t.w will contain the diffuse strength.
 	 * @param baseMethod The base diffuse method on which this method's shading is based.
 	 */
-	constructor(modulateMethod:(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData) => string, baseMethod:DiffuseBasicMethod = null)
+	constructor(baseMethod:DiffuseBasicMethod | DiffuseCompositeMethod = null)
 	{
-		super();
-
-		this._onShaderInvalidatedDelegate = (event:ShadingMethodEvent) => this.onShaderInvalidated(event);
-
-		this.pBaseMethod = baseMethod || new DiffuseBasicMethod();
-		this.pBaseMethod._iModulateMethod = modulateMethod;
-		this.pBaseMethod.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
+		super(baseMethod);
 	}
 
-	/**
-	 * The base diffuse method on which this method's shading is based.
-	 */
-	public get baseMethod():DiffuseBasicMethod
+	public createBaseMethod():DiffuseBasicMethod | DiffuseCompositeMethod
 	{
-		return this.pBaseMethod;
-	}
-
-	public set baseMethod(value:DiffuseBasicMethod)
-	{
-		if (this.pBaseMethod == value)
-			return;
-
-		this.pBaseMethod.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
-		this.pBaseMethod = value;
-		this.pBaseMethod.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
-		this.iInvalidateShaderProgram();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iInitVO(shader:LightingShader, methodVO:MethodVO):void
-	{
-		this.pBaseMethod.iInitVO(shader, methodVO);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iInitConstants(shader:LightingShader, methodVO:MethodVO):void
-	{
-		this.pBaseMethod.iInitConstants(shader, methodVO);
-	}
-
-	public iAddOwner(owner:IMaterial):void
-	{
-		super.iAddOwner(owner);
-
-		this.pBaseMethod.iAddOwner(owner);
-	}
-
-	public iRemoveOwner(owner:IMaterial):void
-	{
-		super.iRemoveOwner(owner);
-
-		this.pBaseMethod.iRemoveOwner(owner);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public dispose():void
-	{
-		this.pBaseMethod.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
-		this.pBaseMethod.dispose();
+		return new DiffuseBasicMethod();
 	}
 
 	/**
@@ -100,15 +30,12 @@ export class DiffuseCompositeMethod extends DiffuseBasicMethod
 	 */
 	public get texture():TextureBase
 	{
-		return this.pBaseMethod.texture;
+		return (<DiffuseBasicMethod> this._baseMethod).texture;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	public set texture(value:TextureBase)
 	{
-		this.pBaseMethod.texture = value;
+		(<DiffuseBasicMethod> this._baseMethod).texture = value;
 	}
 
 	/**
@@ -116,15 +43,12 @@ export class DiffuseCompositeMethod extends DiffuseBasicMethod
 	 */
 	public get color():number
 	{
-		return this.pBaseMethod.color;
+		return (<DiffuseBasicMethod> this._baseMethod).color;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	public set color(value:number)
 	{
-		this.pBaseMethod.color = value;
+		(<DiffuseBasicMethod> this._baseMethod).color = value;
 	}
 
 	/**
@@ -132,107 +56,11 @@ export class DiffuseCompositeMethod extends DiffuseBasicMethod
 	 */
 	public get multiply():boolean
 	{
-		return this.pBaseMethod.multiply;
+		return (<DiffuseBasicMethod> this._baseMethod).multiply;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	public set multiply(value:boolean)
 	{
-		this.pBaseMethod.multiply = value;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iGetFragmentPreLightingCode(shader:LightingShader, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		return this.pBaseMethod.iGetFragmentPreLightingCode(shader, methodVO, registerCache, sharedRegisters);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iGetFragmentCodePerLight(shader:LightingShader, methodVO:MethodVO, lightDirReg:ShaderRegisterElement, lightColReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string = this.pBaseMethod.iGetFragmentCodePerLight(shader, methodVO, lightDirReg, lightColReg, registerCache, sharedRegisters);
-		this._pTotalLightColorReg = this.pBaseMethod._pTotalLightColorReg;
-		return code;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iGetFragmentCodePerProbe(shader:LightingShader, methodVO:MethodVO, cubeMapReg:ShaderRegisterElement, weightRegister:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string = this.pBaseMethod.iGetFragmentCodePerProbe(shader, methodVO, cubeMapReg, weightRegister, registerCache, sharedRegisters);
-		this._pTotalLightColorReg = this.pBaseMethod._pTotalLightColorReg;
-		return code;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage):void
-	{
-		this.pBaseMethod.iActivate(shader, methodVO, stage);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
-	{
-		this.pBaseMethod.iSetRenderState(shader, methodVO, renderable, stage, projection);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iDeactivate(shader:LightingShader, methodVO:MethodVO, stage:Stage):void
-	{
-		this.pBaseMethod.iDeactivate(shader, methodVO, stage);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iGetVertexCode(shader:ShaderBase, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		return this.pBaseMethod.iGetVertexCode(shader, methodVO, registerCache, sharedRegisters);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iGetFragmentPostLightingCode(shader:LightingShader, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		return this.pBaseMethod.iGetFragmentPostLightingCode(shader, methodVO, targetReg, registerCache, sharedRegisters);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iReset():void
-	{
-		this.pBaseMethod.iReset();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iCleanCompilationData():void
-	{
-		super.iCleanCompilationData();
-		this.pBaseMethod.iCleanCompilationData();
-	}
-
-	/**
-	 * Called when the base method's shader code is invalidated.
-	 */
-	private onShaderInvalidated(event:ShadingMethodEvent):void
-	{
-		this.iInvalidateShaderProgram();
+		(<DiffuseBasicMethod> this._baseMethod).multiply = value;
 	}
 }

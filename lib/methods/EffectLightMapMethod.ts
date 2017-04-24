@@ -1,19 +1,13 @@
 import {TextureBase} from "@awayjs/graphics";
 
-import {ProjectionBase} from "@awayjs/core";
-
-import {Stage, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
-
-import {MethodVO} from "../data/MethodVO";
-
-import {EffectMethodBase} from "./EffectMethodBase";
+import {ShadingMethodBase} from "./ShadingMethodBase";
 
 /**
  * EffectLightMapMethod provides a method that allows applying a light map texture to the calculated pixel colour.
  * It is different from DiffuseLightMapMethod in that the latter only modulates the diffuse shading value rather
  * than the whole pixel colour.
  */
-export class EffectLightMapMethod extends EffectMethodBase
+export class EffectLightMapMethod extends ShadingMethodBase
 {
 	/**
 	 * Indicates the light map should be multiplied with the calculated shading result.
@@ -26,43 +20,17 @@ export class EffectLightMapMethod extends EffectMethodBase
 	public static ADD:string = "add";
 
 	private _lightMap:TextureBase;
-
 	private _blendMode:string;
 	private _useSecondaryUV:boolean;
 
-	/**
-	 * Creates a new EffectLightMapMethod object.
-	 *
-	 * @param lightMap The texture containing the light map.
-	 * @param blendMode The blend mode with which the light map should be applied to the lighting result.
-	 * @param useSecondaryUV Indicates whether the secondary UV set should be used to map the light map.
-	 */
-	constructor(lightMap:TextureBase, blendMode:string = "multiply", useSecondaryUV:boolean = false)
-	{
-		super();
-
-		if (blendMode != EffectLightMapMethod.ADD && blendMode != EffectLightMapMethod.MULTIPLY)
-			throw new Error("Unknown blendmode!");
-
-		this._lightMap = lightMap;
-		this._blendMode = blendMode;
-		this._useSecondaryUV = useSecondaryUV;
-
-		if (this._lightMap)
-			this.iAddTexture(this._lightMap);
-	}
+	public static assetType:string = "[asset EffectLightMapMethod]";
 
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shader:ShaderBase, methodVO:MethodVO):void
+	public get assetType():string
 	{
-		methodVO.textureGL = shader.getAbstraction(this._lightMap);
-
-		if (this._useSecondaryUV)
-			shader.secondaryUVDependencies++;
-		else
-			shader.uvDependencies++;
+		return EffectLightMapMethod.assetType;
 	}
 
 	/**
@@ -86,7 +54,7 @@ export class EffectLightMapMethod extends EffectMethodBase
 
 		this._blendMode = value;
 
-		this.iInvalidateShaderProgram();
+		this.invalidateShaderProgram();
 	}
 
 	/**
@@ -110,7 +78,7 @@ export class EffectLightMapMethod extends EffectMethodBase
 		if (this._lightMap)
 			this.iAddTexture(this._lightMap);
 
-		this.iInvalidateShaderProgram();
+		this.invalidateShaderProgram();
 	}
 
 	/**
@@ -128,42 +96,28 @@ export class EffectLightMapMethod extends EffectMethodBase
 
 		this._useSecondaryUV = value;
 
-		this.iInvalidateShaderProgram();
+		this.invalidateShaderProgram();
 	}
 
 	/**
-	 * @inheritDoc
+	 * Creates a new EffectLightMapMethod object.
+	 *
+	 * @param lightMap The texture containing the light map.
+	 * @param blendMode The blend mode with which the light map should be applied to the lighting result.
+	 * @param useSecondaryUV Indicates whether the secondary UV set should be used to map the light map.
 	 */
-	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	constructor(lightMap:TextureBase, blendMode:string = "multiply", useSecondaryUV:boolean = false)
 	{
-		var code:string;
-		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
+		super();
 
-		code = methodVO.secondaryTextureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
+		if (blendMode != EffectLightMapMethod.ADD && blendMode != EffectLightMapMethod.MULTIPLY)
+			throw new Error("Unknown blendmode!");
 
-		switch (this._blendMode) {
-			case EffectLightMapMethod.MULTIPLY:
-				code += "mul " + targetReg + ", " + targetReg + ", " + temp + "\n";
-				break;
-			case EffectLightMapMethod.ADD:
-				code += "add " + targetReg + ", " + targetReg + ", " + temp + "\n";
-				break;
-		}
+		this._lightMap = lightMap;
+		this._blendMode = blendMode;
+		this._useSecondaryUV = useSecondaryUV;
 
-		return code;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
-	{
-		methodVO.textureGL.activate(methodVO.pass._render);
-	}
-
-
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
-	{
-		methodVO.textureGL._setRenderState(renderable);
+		if (this._lightMap)
+			this.iAddTexture(this._lightMap);
 	}
 }

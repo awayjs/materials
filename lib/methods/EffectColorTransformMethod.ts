@@ -1,25 +1,23 @@
 import {ColorTransform} from "@awayjs/core";
 
-import {Stage, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
-
-import {MethodVO} from "../data/MethodVO";
-
-import {EffectMethodBase} from "./EffectMethodBase";
+import {ShadingMethodBase} from "./ShadingMethodBase";
 
 /**
  * EffectColorTransformMethod provides a shading method that changes the colour of a material analogous to a
  * ColorTransform object.
  */
-export class EffectColorTransformMethod extends EffectMethodBase
+export class EffectColorTransformMethod extends ShadingMethodBase
 {
 	private _colorTransform:ColorTransform;
 
+	public static assetType:string = "[asset EffectColorTransformMethod]";
+
 	/**
-	 * Creates a new EffectColorTransformMethod.
+	 * @inheritDoc
 	 */
-	constructor()
+	public get assetType():string
 	{
-		super();
+		return EffectColorTransformMethod.assetType;
 	}
 
 	/**
@@ -33,43 +31,17 @@ export class EffectColorTransformMethod extends EffectMethodBase
 	public set colorTransform(value:ColorTransform)
 	{
 		this._colorTransform = value;
+
+		this.invalidate();
 	}
 
 	/**
-	 * @inheritDoc
+	 * Creates a new EffectColorTransformMethod.
 	 */
-	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	constructor(colorTransform:ColorTransform = null)
 	{
-		var code:string = "";
-		var colorMultReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
-		var colorOffsReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
+		super();
 
-		methodVO.fragmentConstantsIndex = colorMultReg.index*4;
-
-		//TODO: AGAL <> GLSL
-
-		code += "mul " + targetReg + ", " + targetReg + ", " + colorMultReg + "\n" + "add " + targetReg + ", " + targetReg + ", " + colorOffsReg + "\n";
-
-		return code;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
-	{
-		var inv:number = 1/0xff;
-		var index:number = methodVO.fragmentConstantsIndex;
-		var data:Float32Array = shader.fragmentConstantData;
-
-		data[index] = this._colorTransform.redMultiplier;
-		data[index + 1] = this._colorTransform.greenMultiplier;
-		data[index + 2] = this._colorTransform.blueMultiplier;
-		data[index + 3] = this._colorTransform.alphaMultiplier;
-		data[index + 4] = this._colorTransform.redOffset*inv;
-		data[index + 5] = this._colorTransform.greenOffset*inv;
-		data[index + 6] = this._colorTransform.blueOffset*inv;
-		data[index + 7] = this._colorTransform.alphaOffset*inv;
-
+		this._colorTransform = colorTransform;
 	}
 }

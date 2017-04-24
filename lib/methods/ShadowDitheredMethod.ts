@@ -1,14 +1,6 @@
-import {ProjectionBase} from "@awayjs/core";
-
 import {BitmapImage2D, Single2DTexture} from "@awayjs/graphics";
 
 import {DirectionalLight} from "@awayjs/scene";
-
-import {Stage, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
-
-import {LightingShader} from "@awayjs/renderer";
-
-import {MethodVO} from "../data/MethodVO";
 
 import {ShadowMethodBase} from "./ShadowMethodBase";
 
@@ -17,31 +9,21 @@ import {ShadowMethodBase} from "./ShadowMethodBase";
  */
 export class ShadowDitheredMethod extends ShadowMethodBase
 {
-	private static _grainTexture:Single2DTexture;
+	public static _grainTexture:Single2DTexture;
 	private static _grainUsages:number;
 	private static _grainBitmapImage2D:BitmapImage2D;
 	private _depthMapSize:number;
 	private _range:number;
 	private _numSamples:number;
 
+	public static assetType:string = "[asset ShadowDitheredMethod]";
+
 	/**
-	 * Creates a new ShadowDitheredMethod object.
-	 * @param castingLight The light casting the shadows
-	 * @param numSamples The amount of samples to take for dithering. Minimum 1, maximum 24.
+	 * @inheritDoc
 	 */
-	constructor(castingLight:DirectionalLight, numSamples:number = 4, range:number = 1)
+	public get assetType():string
 	{
-		super(castingLight);
-
-		this._depthMapSize = this._pCastingLight.shadowMapper.depthMapSize;
-
-		this.numSamples = numSamples;
-		this.range = range;
-
-		++ShadowDitheredMethod._grainUsages;
-
-		if (!ShadowDitheredMethod._grainTexture)
-			this.initGrainTexture();
+		return ShadowDitheredMethod.assetType;
 	}
 
 	/**
@@ -65,31 +47,7 @@ export class ShadowDitheredMethod extends ShadowMethodBase
 
 		this._numSamples = value;
 
-		this.iInvalidateShaderProgram();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iInitVO(shader:LightingShader, methodVO:MethodVO):void
-	{
-		super.iInitVO(shader, methodVO);
-
-		methodVO.needsProjection = true;
-
-		methodVO.secondaryTextureGL = shader.getAbstraction(ShadowDitheredMethod._grainTexture);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
-	{
-		super.iInitConstants(shader, methodVO);
-
-		var fragmentData:Float32Array = shader.fragmentConstantData;
-		var index:number = methodVO.fragmentConstantsIndex;
-		fragmentData[index + 8] = 1/this._numSamples;
+		this.invalidateShaderProgram();
 	}
 
 	/**
@@ -105,6 +63,26 @@ export class ShadowDitheredMethod extends ShadowMethodBase
 		this._range = value/2;
 	}
 
+	/**
+	 * Creates a new ShadowDitheredMethod object.
+	 * @param castingLight The light casting the shadows
+	 * @param numSamples The amount of samples to take for dithering. Minimum 1, maximum 24.
+	 */
+	constructor(castingLight:DirectionalLight, numSamples:number = 4, range:number = 1)
+	{
+		super(castingLight);
+
+		this._depthMapSize = this._castingLight.shadowMapper.depthMapSize;
+
+		this.numSamples = numSamples;
+		this.range = range;
+
+		++ShadowDitheredMethod._grainUsages;
+
+		if (!ShadowDitheredMethod._grainTexture)
+			this.initGrainTexture();
+	}
+	
 	/**
 	 * Creates a texture containing the dithering noise texture.
 	 */
@@ -148,168 +126,5 @@ export class ShadowDitheredMethod extends ShadowMethodBase
 			ShadowDitheredMethod._grainBitmapImage2D.dispose();
 			ShadowDitheredMethod._grainTexture = null;
 		}
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
-	{
-		super.iActivate(shader, methodVO, stage);
-
-		var data:Float32Array = shader.fragmentConstantData;
-		var index:number /*uint*/ = methodVO.fragmentConstantsIndex;
-		data[index + 9] = (stage.width - 1)/63;
-		data[index + 10] = (stage.height - 1)/63;
-		data[index + 11] = 2*this._range/this._depthMapSize;
-
-		methodVO.secondaryTextureGL.activate(methodVO.pass._render);
-	}
-
-
-	/**
-	 * @inheritDoc
-	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
-	{
-		super.iSetRenderState(shader, methodVO, renderable, stage, projection);
-
-		methodVO.secondaryTextureGL._setRenderState(renderable);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public _pGetPlanarFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var decReg:ShaderRegisterElement = regCache.getFreeFragmentConstant();
-		var dataReg:ShaderRegisterElement = regCache.getFreeFragmentConstant();
-		var customDataReg:ShaderRegisterElement = regCache.getFreeFragmentConstant();
-
-		methodVO.fragmentConstantsIndex = decReg.index*4;
-
-		return this.getSampleCode(shader, methodVO, customDataReg, decReg, targetReg, regCache, sharedRegisters);
-	}
-
-	/**
-	 * Get the actual shader code for shadow mapping
-	 * @param regCache The register cache managing the registers.
-	 * @param depthMapRegister The texture register containing the depth map.
-	 * @param decReg The register containing the depth map decoding data.
-	 * @param targetReg The target register to add the shadow coverage.
-	 */
-	private getSampleCode(shader:ShaderBase, methodVO:MethodVO, customDataReg:ShaderRegisterElement, decReg:ShaderRegisterElement, targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string = "";
-		var numSamples:number = this._numSamples;
-		var uvReg:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
-		regCache.addFragmentTempUsages(uvReg, 1);
-		var temp:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
-		regCache.addFragmentTempUsages(temp, 1);
-
-		var projectionReg:ShaderRegisterElement = sharedRegisters.projectionFragment;
-
-		code += "div " + uvReg + ", " + projectionReg + ", " + projectionReg + ".w\n" +
-			"mul " + uvReg + ".xy, " + uvReg + ".xy, " + customDataReg + ".yz\n";
-
-		while (numSamples > 0) {
-			if (numSamples == this._numSamples) {
-				code += methodVO.secondaryTextureGL._iGetFragmentCode(uvReg, regCache, sharedRegisters, uvReg);
-			} else {
-				code += "mov " + temp + ", " + uvReg + ".zwxy \n" +
-					methodVO.secondaryTextureGL._iGetFragmentCode(uvReg, regCache, sharedRegisters, temp);
-			}
-
-			// keep grain in uvReg.zw
-			code += "sub " + uvReg + ".zw, " + uvReg + ".xy, fc0.xx\n" + // uv-.5
-				"mul " + uvReg + ".zw, " + uvReg + ".zw, " + customDataReg + ".w\n"; // (tex unpack scale and tex scale in one)
-
-			if (numSamples == this._numSamples) {
-				// first sample
-				code += "add " + uvReg + ".xy, " + uvReg + ".zw, " + this._pDepthMapCoordReg + ".xy\n" +
-					methodVO.textureGL._iGetFragmentCode(temp, regCache, sharedRegisters, uvReg) +
-					"dp4 " + temp + ".z, " + temp + ", " + decReg + "\n" +
-					"slt " + targetReg + ".w, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n"; // 0 if in shadow
-			} else {
-				code += this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache, sharedRegisters);
-			}
-
-			if (numSamples > 4)
-				code += "add " + uvReg + ".xy, " + uvReg + ".xy, " + uvReg + ".zw\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache, sharedRegisters);
-
-			if (numSamples > 1)
-				code += "sub " + uvReg + ".xy, " + this._pDepthMapCoordReg + ".xy, " + uvReg + ".zw\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache, sharedRegisters);
-
-			if (numSamples > 5)
-				code += "sub " + uvReg + ".xy, " + uvReg + ".xy, " + uvReg + ".zw\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache, sharedRegisters);
-
-			if (numSamples > 2) {
-				code += "neg " + uvReg + ".w, " + uvReg + ".w\n"; // will be rotated 90 degrees when being accessed as wz
-				code += "add " + uvReg + ".xy, " + uvReg + ".wz, " + this._pDepthMapCoordReg + ".xy\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache, sharedRegisters);
-			}
-
-			if (numSamples > 6)
-				code += "add " + uvReg + ".xy, " + uvReg + ".xy, " + uvReg + ".wz\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache, sharedRegisters);
-
-			if (numSamples > 3)
-				code += "sub " + uvReg + ".xy, " + this._pDepthMapCoordReg + ".xy, " + uvReg + ".wz\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache, sharedRegisters);
-
-			if (numSamples > 7)
-				code += "sub " + uvReg + ".xy, " + uvReg + ".xy, " + uvReg + ".wz\n" + this.addSample(shader, methodVO, uvReg, decReg, targetReg, regCache, sharedRegisters);
-
-			numSamples -= 8;
-		}
-
-		regCache.removeFragmentTempUsage(temp);
-		regCache.removeFragmentTempUsage(uvReg);
-		code += "mul " + targetReg + ".w, " + targetReg + ".w, " + customDataReg + ".x\n"; // average
-		return code;
-	}
-
-	/**
-	 * Adds the code for another tap to the shader code.
-	 * @param uvReg The uv register for the tap.
-	 * @param depthMapRegister The texture register containing the depth map.
-	 * @param decReg The register containing the depth map decoding data.
-	 * @param targetReg The target register to add the tap comparison result.
-	 * @param regCache The register cache managing the registers.
-	 * @return
-	 */
-	private addSample(shader:ShaderBase, methodVO:MethodVO, uvReg:ShaderRegisterElement, decReg:ShaderRegisterElement, targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var temp:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
-
-		return methodVO.textureGL._iGetFragmentCode(temp, regCache, sharedRegisters, uvReg) +
-			"dp4 " + temp + ".z, " + temp + ", " + decReg + "\n" +
-			"slt " + temp + ".z, " + this._pDepthMapCoordReg + ".z, " + temp + ".z\n" + // 0 if in shadow
-			"add " + targetReg + ".w, " + targetReg + ".w, " + temp + ".z\n";
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iActivateForCascade(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
-	{
-		var data:Float32Array = shader.fragmentConstantData;
-		var index:number /*uint*/ = methodVO.secondaryFragmentConstantsIndex;
-		data[index] = 1/this._numSamples;
-		data[index + 1] = (stage.width - 1)/63;
-		data[index + 2] = (stage.height - 1)/63;
-		data[index + 3] = 2*this._range/this._depthMapSize;
-
-		methodVO.secondaryTextureGL.activate(methodVO.pass._render);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public _iGetCascadeFragmentCode(shader:ShaderBase, methodVO:MethodVO, decodeRegister:ShaderRegisterElement, depthProjection:ShaderRegisterElement, targetRegister:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		this._pDepthMapCoordReg = depthProjection;
-
-		var dataReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
-		methodVO.secondaryFragmentConstantsIndex = dataReg.index*4;
-
-		return this.getSampleCode(shader, methodVO, dataReg, decodeRegister, targetRegister, registerCache, sharedRegisters);
 	}
 }

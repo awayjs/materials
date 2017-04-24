@@ -2,16 +2,17 @@ import {AssetEvent} from "@awayjs/core";
 
 import {BlendMode} from "@awayjs/graphics";
 
-import {StaticLightPicker} from "@awayjs/scene";
+import {StaticLightPicker, LightPickerBase} from "@awayjs/scene";
 
 import {ContextGLCompareMode, IElementsClassGL, GL_MaterialBase, MaterialPool} from "@awayjs/stage";
 
 import {MethodPassMode} from "../surfaces/passes/MethodPassMode";
 import {MethodPass} from "../surfaces/passes/MethodPass";
-import {EffectMethodBase} from "../methods/EffectMethodBase";
+import {ShadingMethodBase} from "../methods/ShadingMethodBase";
 
 import {MethodMaterial} from "../MethodMaterial";
 import {MethodMaterialMode} from "../MethodMaterialMode";
+
 
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
@@ -39,6 +40,42 @@ export class GL_MethodMaterial extends GL_MaterialBase
 	private get numNonCasters():number
 	{
 		return this._methodMaterial.lightPicker? this._methodMaterial.lightPicker.numLightProbes + this._methodMaterial.lightPicker.numDirectionalLights + this._methodMaterial.lightPicker.numPointLights : 0;
+	}
+
+	public get lightPicker():LightPickerBase
+	{
+		return this._methodMaterial.lightPicker;
+	}
+	
+	/**
+	 * Whether or not to use fallOff and radius properties for lights. This can be used to improve performance and
+	 * compatibility for constrained mode.
+	 */
+	public get enableLightFallOff():boolean
+	{
+		return this._methodMaterial.enableLightFallOff;
+	}
+
+	/**
+	 * Define which light source types to use for diffuse reflections. This allows choosing between regular lights
+	 * and/or light probes for diffuse reflections.
+	 *
+	 * @see away3d.materials.LightSources
+	 */
+	public get diffuseLightSources():number
+	{
+		return this._methodMaterial.diffuseLightSources;
+	}
+
+	/**
+	 * Define which light source types to use for specular reflections. This allows choosing between regular lights
+	 * and/or light probes for specular reflections.
+	 *
+	 * @see away3d.materials.LightSources
+	 */
+	public get specularLightSources():number
+	{
+		return this._methodMaterial.specularLightSources;
 	}
 
 	/**
@@ -167,7 +204,7 @@ export class GL_MethodMaterial extends GL_MaterialBase
 	{
 
 		if (this._casterLightPass == null)
-			this._casterLightPass = new MethodPass(MethodPassMode.LIGHTING, this, this._methodMaterial, this._materialPool);
+			this._casterLightPass = new MethodPass(MethodPassMode.LIGHTING, this, this._materialPool);
 
 		this._casterLightPass.lightPicker = new StaticLightPicker([this._methodMaterial.shadowMethod.castingLight]);
 		this._casterLightPass.shadowMethod = this._methodMaterial.shadowMethod;
@@ -203,7 +240,7 @@ export class GL_MethodMaterial extends GL_MaterialBase
 		this._nonCasterLightPasses = new Array<MethodPass>();
 
 		while (dirLightOffset < numDirLights || pointLightOffset < numPointLights || probeOffset < numLightProbes) {
-			pass = new MethodPass(MethodPassMode.LIGHTING, this, this._methodMaterial, this._materialPool);
+			pass = new MethodPass(MethodPassMode.LIGHTING, this, this._materialPool);
 			pass.includeCasters = this._methodMaterial.shadowMethod == null;
 			pass.directionalLightsOffset = dirLightOffset;
 			pass.pointLightsOffset = pointLightOffset;
@@ -253,7 +290,7 @@ export class GL_MethodMaterial extends GL_MaterialBase
 	private initEffectPass():void
 	{
 		if (this._pass == null)
-			this._pass = new MethodPass(MethodPassMode.SUPER_SHADER, this, this._methodMaterial, this._materialPool);
+			this._pass = new MethodPass(MethodPassMode.SUPER_SHADER, this, this._materialPool);
 
 		if (this._methodMaterial.mode == MethodMaterialMode.SINGLE_PASS) {
 			this._pass.ambientMethod = this._methodMaterial.ambientMethod;
@@ -274,7 +311,7 @@ export class GL_MethodMaterial extends GL_MaterialBase
 
 		//update effect methods
 		var i:number = 0;
-		var effectMethod:EffectMethodBase;
+		var effectMethod:ShadingMethodBase;
 		var len:number = Math.max(this._methodMaterial.numEffectMethods, this._pass.numEffectMethods);
 
 		while (i < len) {

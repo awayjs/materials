@@ -1,9 +1,3 @@
-import {Stage, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
-
-import {LightingShader} from "@awayjs/renderer";
-
-import {MethodVO} from "../data/MethodVO";
-
 import {SpecularBasicMethod} from "./SpecularBasicMethod";
 import {SpecularCompositeMethod} from "./SpecularCompositeMethod";
 
@@ -12,22 +6,17 @@ import {SpecularCompositeMethod} from "./SpecularCompositeMethod";
  */
 export class SpecularCelMethod extends SpecularCompositeMethod
 {
-	private _dataReg:ShaderRegisterElement;
-	private _smoothness:number = .1;
-	private _specularCutOff:number = .1;
+	private _smoothness:number;
+	private _specularCutOff:number;
+
+	public static assetType:string = "[asset SpecularCelMethod]";
 
 	/**
-	 * Creates a new SpecularCelMethod object.
-	 * @param specularCutOff The threshold at which the specular highlight should be shown.
-	 * @param baseMethod An optional specular method on which the cartoon shading is based. If ommitted, SpecularBasicMethod is used.
+	 * @inheritDoc
 	 */
-	constructor(specularCutOff:number = .5, baseMethod:SpecularBasicMethod = null)
+	public get assetType():string
 	{
-		super(null, baseMethod);
-
-		this.baseMethod._iModulateMethod = (shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData) => this.clampSpecular(shader, methodVO, targetReg, registerCache, sharedRegisters);
-
-		this._specularCutOff = specularCutOff;
+		return SpecularCelMethod.assetType;
 	}
 
 	/**
@@ -40,7 +29,12 @@ export class SpecularCelMethod extends SpecularCompositeMethod
 
 	public set smoothness(value:number)
 	{
+		if (this._smoothness == value)
+			return;
+
 		this._smoothness = value;
+
+		this.invalidate();
 	}
 
 	/**
@@ -53,56 +47,25 @@ export class SpecularCelMethod extends SpecularCompositeMethod
 
 	public set specularCutOff(value:number)
 	{
+		if (this._specularCutOff == value)
+			return;
+
 		this._specularCutOff = value;
+
+		this.invalidate();
 	}
 
 	/**
-	 * @inheritDoc
+	 * Creates a new SpecularCelMethod object.
+	 * @param specularCutOff The threshold at which the specular highlight should be shown.
+	 * @param smoothness The smoothness of the highlight edge.
+	 * @param baseMethod An optional specular method on which the cartoon shading is based. If ommitted, SpecularBasicMethod is used.
 	 */
-	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage):void
+	constructor(specularCutOff:number = 0.5, smoothness:number = 0.1, baseMethod:SpecularBasicMethod | SpecularCompositeMethod = null)
 	{
-		super.iActivate(shader, methodVO, stage);
+		super(baseMethod);
 
-		var index:number = methodVO.secondaryFragmentConstantsIndex;
-		var data:Float32Array = shader.fragmentConstantData;
-		data[index] = this._smoothness;
-		data[index + 1] = this._specularCutOff;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iCleanCompilationData():void
-	{
-		super.iCleanCompilationData();
-		this._dataReg = null;
-	}
-
-	/**
-	 * Snaps the specular shading strength of the wrapped method to zero or one, depending on whether or not it exceeds the specularCutOff
-	 * @param vo The MethodVO used to compile the current shader.
-	 * @param t The register containing the specular strength in the "w" component, and either the half-vector or the reflection vector in "xyz".
-	 * @param regCache The register cache used for the shader compilation.
-	 * @param sharedRegisters The shared register data for this shader.
-	 * @return The AGAL fragment code for the method.
-	 */
-	private clampSpecular(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		return "sub " + targetReg + ".y, " + targetReg + ".w, " + this._dataReg + ".y\n" + // x - cutoff
-			"div " + targetReg + ".y, " + targetReg + ".y, " + this._dataReg + ".x\n" + // (x - cutoff)/epsilon
-			"sat " + targetReg + ".y, " + targetReg + ".y\n" +
-			"sge " + targetReg + ".w, " + targetReg + ".w, " + this._dataReg + ".y\n" +
-			"mul " + targetReg + ".w, " + targetReg + ".w, " + targetReg + ".y\n";
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iGetFragmentPreLightingCode(shader:LightingShader, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		this._dataReg = registerCache.getFreeFragmentConstant();
-		methodVO.secondaryFragmentConstantsIndex = this._dataReg.index*4;
-
-		return super.iGetFragmentPreLightingCode(shader, methodVO, registerCache, sharedRegisters);
+		this._specularCutOff = specularCutOff;
+		this._smoothness = smoothness;
 	}
 }

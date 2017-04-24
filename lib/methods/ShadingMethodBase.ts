@@ -2,13 +2,7 @@ import {AssetBase} from "@awayjs/core";
 
 import {IMaterial, TextureBase} from "@awayjs/graphics";
 
-import {ProjectionBase} from "@awayjs/core";
-
-import {Stage, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
-
 import {ShadingMethodEvent} from "@awayjs/renderer";
-
-import {MethodVO} from "../data/MethodVO";
 
 
 /**
@@ -22,60 +16,12 @@ export class ShadingMethodBase extends AssetBase
 	public _owners:Array<IMaterial> = new Array<IMaterial>();
 	public _counts:Array<number> = new Array<number>();
 
-	public static assetType:string = "[asset ShadingMethod]";
-
-	/**
-	 * @inheritDoc
-	 */
-	public get assetType():string
-	{
-		return ShadingMethodBase.assetType;
-	}
-
 	/**
 	 * Create a new ShadingMethodBase object.
 	 */
 	constructor()
 	{
 		super();
-	}
-
-	public iIsUsed(shader:ShaderBase):boolean
-	{
-		return true;
-	}
-
-	/**
-	 * Initializes the properties for a MethodVO, including register and texture indices.
-	 *
-	 * @param methodVO The MethodVO object linking this method with the pass currently being compiled.
-	 *
-	 * @internal
-	 */
-	public iInitVO(shader:ShaderBase, methodVO:MethodVO):void
-	{
-
-	}
-
-	/**
-	 * Initializes unchanging shader constants using the data from a MethodVO.
-	 *
-	 * @param methodVO The MethodVO object linking this method with the pass currently being compiled.
-	 *
-	 * @internal
-	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
-	{
-
-
-	}
-
-	/**
-	 * Indicates whether or not this method expects normals in tangent space. Override for object-space normals.
-	 */
-	public iUsesTangentSpace():boolean
-	{
-		return true;
 	}
 
 	/**
@@ -148,91 +94,14 @@ export class ShadingMethodBase extends AssetBase
 	}
 
 	/**
-	 * Resets the compilation state of the method.
-	 *
-	 * @internal
-	 */
-	public iReset():void
-	{
-		this.iCleanCompilationData();
-	}
-
-	/**
-	 * Resets the method's state for compilation.
-	 *
-	 * @internal
-	 */
-	public iCleanCompilationData():void
-	{
-	}
-
-	/**
-	 * Get the vertex shader code for this method.
-	 * @param vo The MethodVO object linking this method with the pass currently being compiled.
-	 * @param regCache The register cache used during the compilation.
-	 *
-	 * @internal
-	 */
-	public iGetVertexCode(shader:ShaderBase, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		return "";
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		return null;
-	}
-
-	/**
-	 * Sets the render state for this method.
-	 *
-	 * @param methodVO The MethodVO object linking this method with the pass currently being compiled.
-	 * @param stage The Stage object currently used for rendering.
-	 *
-	 * @internal
-	 */
-	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
-	{
-
-	}
-
-	/**
-	 * Sets the render state for a single renderable.
-	 *
-	 * @param vo The MethodVO object linking this method with the pass currently being compiled.
-	 * @param renderable The renderable currently being rendered.
-	 * @param stage The Stage object currently used for rendering.
-	 * @param camera The camera from which the scene is currently rendered.
-	 *
-	 * @internal
-	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
-	{
-
-	}
-
-	/**
-	 * Clears the render state for this method.
-	 * @param vo The MethodVO object linking this method with the pass currently being compiled.
-	 * @param stage The Stage object currently used for rendering.
-	 *
-	 * @internal
-	 */
-	public iDeactivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
-	{
-
-	}
-
-	/**
 	 * Marks the shader program as invalid, so it will be recompiled before the next render.
 	 *
 	 * @internal
 	 */
-	public iInvalidateShaderProgram():void
+	public invalidateShaderProgram():void
 	{
+		this.invalidate();
+
 		this.dispatchEvent(new ShadingMethodEvent(ShadingMethodEvent.SHADER_INVALIDATED));
 	}
 

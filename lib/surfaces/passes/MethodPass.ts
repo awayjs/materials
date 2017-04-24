@@ -7,20 +7,132 @@ import {Stage, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegist
 
 import {LightingShader, ShadingMethodEvent, ILightingPass} from "@awayjs/renderer";
 
-import {MethodMaterial} from "../../MethodMaterial";
-import {MethodVO} from "../../data/MethodVO";
+import {ChunkVO} from "../../data/ChunkVO";
+
+import {ILightingChunk} from "../../chunks/ILightingChunk";
+import {IShaderChunk} from "../../chunks/IShaderChunk";
+
+import {AmbientBasicChunk} from "../../chunks/AmbientBasicChunk";
+import {AmbientDepthChunk} from "../../chunks/AmbientDepthChunk";
+
+import {DiffuseBasicChunk} from "../../chunks/DiffuseBasicChunk";
+import {DiffuseCelChunk} from "../../chunks/DiffuseCelChunk";
+import {DiffuseGradientChunk} from "../../chunks/DiffuseGradientChunk";
+import {DiffuseLightMapChunk} from "../../chunks/DiffuseLightMapChunk";
+import {DiffuseWrapChunk} from "../../chunks/DiffuseWrapChunk";
+
+import {EffectAlphaMaskChunk} from "../../chunks/EffectAlphaMaskChunk";
+import {EffectColorMatrixChunk} from "../../chunks/EffectColorMatrixChunk";
+import {EffectColorTransformChunk} from "../../chunks/EffectColorTransformChunk";
+import {EffectEnvMapChunk} from "../../chunks/EffectEnvMapChunk";
+import {EffectFogChunk} from "../../chunks/EffectFogChunk";
+import {EffectFresnelEnvMapChunk} from "../../chunks/EffectFresnelEnvMapChunk";
+import {EffectLightMapChunk} from "../../chunks/EffectLightMapChunk";
+import {EffectProjectiveTextureChunk} from "../../chunks/EffectProjectiveTextureChunk";
+import {EffectRefractionEnvMapChunk} from "../../chunks/EffectRefractionEnvMapChunk";
+import {EffectRimLightChunk} from "../../chunks/EffectRimLightChunk";
+
+import {NormalBasicChunk} from "../../chunks/NormalBasicChunk";
+import {NormalHeightMapChunk} from "../../chunks/NormalHeightMapChunk";
+import {NormalSimpleWaterChunk} from "../../chunks/NormalSimpleWaterChunk";
+
+import {ShadowCascadeChunk} from "../../chunks/ShadowCascadeChunk";
+import {ShadowDitheredChunk} from "../../chunks/ShadowDitheredChunk";
+import {ShadowFilteredChunk} from "../../chunks/ShadowFilteredChunk";
+import {ShadowHardChunk} from "../../chunks/ShadowHardChunk";
+import {ShadowNearChunk} from "../../chunks/ShadowNearChunk";
+import {ShadowSoftChunk} from "../../chunks/ShadowSoftChunk";
+
+import {SpecularAnisotropicChunk} from "../../chunks/SpecularAnisotropicChunk";
+import {SpecularBasicChunk} from "../../chunks/SpecularBasicChunk";
+import {SpecularCelChunk} from "../../chunks/SpecularCelChunk";
+import {SpecularFresnelChunk} from "../../chunks/SpecularFresnelChunk";
+import {SpecularPhongChunk} from "../../chunks/SpecularPhongChunk";
+
+import {ShaderChunkBase} from "../../chunks/ShaderChunkBase";
+import {LightingCompositeChunk} from "../../chunks/LightingCompositeChunk";
+
 import {AmbientBasicMethod} from "../../methods/AmbientBasicMethod";
+import {AmbientDepthMethod} from "../../methods/AmbientDepthMethod";
+
 import {DiffuseBasicMethod} from "../../methods/DiffuseBasicMethod";
+import {DiffuseCelMethod} from "../../methods/DiffuseCelMethod";
+import {DiffuseGradientMethod} from "../../methods/DiffuseGradientMethod";
+import {DiffuseLightMapMethod} from "../../methods/DiffuseLightMapMethod";
+import {DiffuseWrapMethod} from "../../methods/DiffuseWrapMethod";
+
+import {EffectAlphaMaskMethod} from "../../methods/EffectAlphaMaskMethod";
+import {EffectColorMatrixMethod} from "../../methods/EffectColorMatrixMethod";
 import {EffectColorTransformMethod} from "../../methods/EffectColorTransformMethod";
-import {EffectMethodBase} from "../../methods/EffectMethodBase";
-import {LightingMethodBase} from "../../methods/LightingMethodBase";
+import {EffectEnvMapMethod} from "../../methods/EffectEnvMapMethod";
+import {EffectFogMethod} from "../../methods/EffectFogMethod";
+import {EffectFresnelEnvMapMethod} from "../../methods/EffectFresnelEnvMapMethod";
+import {EffectLightMapMethod} from "../../methods/EffectLightMapMethod";
+import {EffectProjectiveTextureMethod} from "../../methods/EffectProjectiveTextureMethod";
+import {EffectRefractionEnvMapMethod} from "../../methods/EffectRefractionEnvMapMethod";
+import {EffectRimLightMethod} from "../../methods/EffectRimLightMethod";
+
 import {NormalBasicMethod} from "../../methods/NormalBasicMethod";
-import {ShadowMapMethodBase} from "../../methods/ShadowMapMethodBase";
+import {NormalHeightMapMethod} from "../../methods/NormalHeightMapMethod";
+import {NormalSimpleWaterMethod} from "../../methods/NormalSimpleWaterMethod";
+
+import {ShadowCascadeMethod} from "../../methods/ShadowCascadeMethod";
+import {ShadowDitheredMethod} from "../../methods/ShadowDitheredMethod";
+import {ShadowFilteredMethod} from "../../methods/ShadowFilteredMethod";
+import {ShadowHardMethod} from "../../methods/ShadowHardMethod";
+import {ShadowNearMethod} from "../../methods/ShadowNearMethod";
+import {ShadowSoftMethod} from "../../methods/ShadowSoftMethod";
+
+import {SpecularAnisotropicMethod} from "../../methods/SpecularAnisotropicMethod";
 import {SpecularBasicMethod} from "../../methods/SpecularBasicMethod";
+import {SpecularCelMethod} from "../../methods/SpecularCelMethod";
+import {SpecularFresnelMethod} from "../../methods/SpecularFresnelMethod";
+import {SpecularPhongMethod} from "../../methods/SpecularPhongMethod";
+
+import {ShadingMethodBase} from "../../methods/ShadingMethodBase";
+
+import {MethodMaterial} from "../../MethodMaterial";
 
 import {GL_MethodMaterial} from "../GL_MethodMaterial";
 
 import {MethodPassMode} from "./MethodPassMode";
+
+ShaderBase.registerAbstraction(AmbientBasicChunk, AmbientBasicMethod);
+ShaderBase.registerAbstraction(AmbientDepthChunk, AmbientDepthMethod);
+
+ShaderBase.registerAbstraction(DiffuseBasicChunk, DiffuseBasicMethod);
+ShaderBase.registerAbstraction(DiffuseCelChunk, DiffuseCelMethod);
+ShaderBase.registerAbstraction(DiffuseGradientChunk, DiffuseGradientMethod);
+ShaderBase.registerAbstraction(DiffuseLightMapChunk, DiffuseLightMapMethod);
+ShaderBase.registerAbstraction(DiffuseWrapChunk, DiffuseWrapMethod);
+
+ShaderBase.registerAbstraction(EffectAlphaMaskChunk, EffectAlphaMaskMethod);
+ShaderBase.registerAbstraction(EffectColorMatrixChunk, EffectColorMatrixMethod);
+ShaderBase.registerAbstraction(EffectColorTransformChunk, EffectColorTransformMethod);
+ShaderBase.registerAbstraction(EffectEnvMapChunk, EffectEnvMapMethod);
+ShaderBase.registerAbstraction(EffectFogChunk, EffectFogMethod);
+ShaderBase.registerAbstraction(EffectFresnelEnvMapChunk, EffectFresnelEnvMapMethod);
+ShaderBase.registerAbstraction(EffectLightMapChunk, EffectLightMapMethod);
+ShaderBase.registerAbstraction(EffectProjectiveTextureChunk, EffectProjectiveTextureMethod);
+ShaderBase.registerAbstraction(EffectRefractionEnvMapChunk, EffectRefractionEnvMapMethod);
+ShaderBase.registerAbstraction(EffectRimLightChunk, EffectRimLightMethod);
+
+ShaderBase.registerAbstraction(NormalBasicChunk, NormalBasicMethod);
+ShaderBase.registerAbstraction(NormalHeightMapChunk, NormalHeightMapMethod);
+ShaderBase.registerAbstraction(NormalSimpleWaterChunk, NormalSimpleWaterMethod);
+
+ShaderBase.registerAbstraction(ShadowCascadeChunk, ShadowCascadeMethod);
+ShaderBase.registerAbstraction(ShadowDitheredChunk, ShadowDitheredMethod);
+ShaderBase.registerAbstraction(ShadowFilteredChunk, ShadowFilteredMethod);
+ShaderBase.registerAbstraction(ShadowHardChunk, ShadowHardMethod);
+ShaderBase.registerAbstraction(ShadowNearChunk, ShadowNearMethod);
+ShaderBase.registerAbstraction(ShadowSoftChunk, ShadowSoftMethod);
+
+ShaderBase.registerAbstraction(SpecularAnisotropicChunk, SpecularAnisotropicMethod);
+ShaderBase.registerAbstraction(SpecularBasicChunk, SpecularBasicMethod);
+ShaderBase.registerAbstraction(SpecularCelChunk, SpecularCelMethod);
+ShaderBase.registerAbstraction(SpecularFresnelChunk, SpecularFresnelMethod);
+ShaderBase.registerAbstraction(SpecularPhongChunk, SpecularPhongMethod);
 
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
@@ -31,18 +143,24 @@ export class MethodPass extends PassBase implements ILightingPass
 	private _maxLights:number = 3;
 
 	private _mode:number = 0x03;
-	private _methodMaterial:MethodMaterial;
 	private _lightPicker:LightPickerBase;
 
 	private _includeCasters:boolean = true;
 
-	public _iColorTransformMethodVO:MethodVO;
-	public _iNormalMethodVO:MethodVO;
-	public _iAmbientMethodVO:MethodVO;
-	public _iShadowMethodVO:MethodVO;
-	public _iDiffuseMethodVO:MethodVO;
-	public _iSpecularMethodVO:MethodVO;
-	public _iMethodVOs:Array<MethodVO> = new Array<MethodVO>();
+	public _colorTransformChunk:IShaderChunk;
+	public _colorTransformMethod:EffectColorTransformMethod;
+	public _normalChunk:IShaderChunk;
+	public _normalMethod:ShadingMethodBase;
+	public _ambientChunk:IShaderChunk;
+	public _ambientMethod:ShadingMethodBase;
+	public _shadowChunk:IShaderChunk;
+	public _shadowMethod:ShadingMethodBase;
+	public _diffuseChunk:ILightingChunk;
+	public _diffuseMethod:ShadingMethodBase;
+	public _specularChunk:ILightingChunk;
+	public _specularMethod:ShadingMethodBase;
+	public _chunks:Array<IShaderChunk> = new Array<IShaderChunk>();
+	public _methods:Array<ShadingMethodBase> = new Array<ShadingMethodBase>();
 
 	public _numEffectDependencies:number = 0;
 
@@ -128,7 +246,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 */
 	public get enableLightFallOff():boolean
 	{
-		return this._methodMaterial.enableLightFallOff;
+		return (<GL_MethodMaterial>  this._material).enableLightFallOff;
 	}
 
 	/**
@@ -139,7 +257,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 */
 	public get diffuseLightSources():number
 	{
-		return this._methodMaterial.diffuseLightSources;
+		return (<GL_MethodMaterial>  this._material).diffuseLightSources;
 	}
 
 	/**
@@ -150,7 +268,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 */
 	public get specularLightSources():number
 	{
-		return this._methodMaterial.specularLightSources;
+		return (<GL_MethodMaterial>  this._material).specularLightSources;
 	}
 
 	/**
@@ -158,13 +276,11 @@ export class MethodPass extends PassBase implements ILightingPass
 	 *
 	 * @param material The material to which this pass belongs.
 	 */
-	constructor(mode:number, render:GL_MethodMaterial, material:MethodMaterial, materialPool:MaterialPool)
+	constructor(mode:number, material:GL_MethodMaterial, materialPool:MaterialPool)
 	{
-		super(render, material, materialPool);
+		super(material, materialPool);
 
 		this._mode = mode;
-
-		this._methodMaterial = material;
 
 		this._onLightsChangeDelegate = (event:AssetEvent) => this.onLightsChange(event);
 		
@@ -203,9 +319,9 @@ export class MethodPass extends PassBase implements ILightingPass
 		super._iInitConstantData(shader);
 
 		//Updates method constants if they have changed.
-		var len:number = this._iMethodVOs.length;
+		var len:number = this._chunks.length;
 		for (var i:number = 0; i < len; ++i)
-			this._iMethodVOs[i].method.iInitConstants(shader, this._iMethodVOs[i]);
+			this._chunks[i]._initConstants();
 	}
 
 	/**
@@ -235,50 +351,63 @@ export class MethodPass extends PassBase implements ILightingPass
 	 */
 	public get colorTransformMethod():EffectColorTransformMethod
 	{
-		return this._iColorTransformMethodVO? <EffectColorTransformMethod> this._iColorTransformMethodVO.method : null;
+		return this._colorTransformMethod;
 	}
 
 	public set colorTransformMethod(value:EffectColorTransformMethod)
 	{
-		if (this._iColorTransformMethodVO && this._iColorTransformMethodVO.method == value)
+		if (this._colorTransformMethod == value)
 			return;
 
-		if (this._iColorTransformMethodVO) {
-			this._removeDependency(this._iColorTransformMethodVO);
-			this._iColorTransformMethodVO = null;
+		if (this._colorTransformMethod) {
+			this._removeDependency(this._colorTransformMethod);
+			this._colorTransformChunk = null;
 		}
 
+		this._colorTransformMethod = value;
+
 		if (value) {
-			this._iColorTransformMethodVO = new MethodVO(value, this);
-			this._addDependency(this._iColorTransformMethodVO);
+			this._colorTransformChunk = <ShaderChunkBase> this._shader.getAbstraction(value);
+			this._addDependency(value);
 		}
 	}
 
-	private _removeDependency(methodVO:MethodVO, effectsDependency:boolean = false):void
+	private _removeDependency(method:ShadingMethodBase, effectsDependency:boolean = false):void
 	{
-		var index:number = this._iMethodVOs.indexOf(methodVO);
+		var index:number = this._methods.indexOf(method);
 
+		if (index == -1)
+			return;
+		
 		if (!effectsDependency)
 			this._numEffectDependencies--;
 
-		methodVO.method.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
-		this._iMethodVOs.splice(index, 1);
+		method.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
+
+		this._methods.splice(index, 1);
+		this._chunks.splice(index, 1);
 
 		this.invalidate();
 	}
 
-	private _addDependency(methodVO:MethodVO, effectsDependency:boolean = false, index:number = -1):void
+	private _addDependency(method:ShadingMethodBase, effectsDependency:boolean = false, index:number = -1):void
 	{
-		methodVO.method.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
+		method.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
+
+		var chunk:IShaderChunk = <ShaderChunkBase> this._shader.getAbstraction(method);
 
 		if (effectsDependency) {
-			if (index != -1)
-				this._iMethodVOs.splice(index + this._iMethodVOs.length - this._numEffectDependencies, 0, methodVO);
-			else
-				this._iMethodVOs.push(methodVO);
+			if (index != -1) {
+				this._methods.splice(index + this._methods.length - this._numEffectDependencies, 0, method);
+				this._chunks.splice(index + this._chunks.length - this._numEffectDependencies, 0, chunk);
+			} else {
+				this._methods.push(method);
+				this._chunks.push(chunk);
+			}
 			this._numEffectDependencies++;
 		} else {
-			this._iMethodVOs.splice(this._iMethodVOs.length - this._numEffectDependencies, 0, methodVO);
+			this._methods.splice(this._methods.length - this._numEffectDependencies, 0, method);
+			this._chunks.splice(this._chunks.length - this._numEffectDependencies, 0, chunk);
 		}
 
 		this.invalidate();
@@ -289,9 +418,9 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * but modulate the shaded colour, used for fog, outlines, etc. The method will be applied to the result of the
 	 * methods added prior.
 	 */
-	public addEffectMethod(method:EffectMethodBase):void
+	public addEffectMethod(method:ShadingMethodBase):void
 	{
-		this._addDependency(new MethodVO(method, this), true);
+		this._addDependency(method, true);
 	}
 
 	/**
@@ -308,9 +437,9 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * @param method The method to be queried.
 	 * @return true if the method was added to the material, false otherwise.
 	 */
-	public hasEffectMethod(method:EffectMethodBase):boolean
+	public hasEffectMethod(method:ShadingMethodBase):boolean
 	{
-		return this.getDependencyForMethod(method) != null;
+		return this._methods.indexOf(method) != -1;
 	}
 
 	/**
@@ -318,12 +447,12 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * @param index The index of the method to retrieve.
 	 * @return The method at the given index.
 	 */
-	public getEffectMethodAt(index:number):EffectMethodBase
+	public getEffectMethodAt(index:number):ShadingMethodBase
 	{
 		if (index < 0 || index > this._numEffectDependencies - 1)
 			return null;
 
-		return <EffectMethodBase> this._iMethodVOs[index + this._iMethodVOs.length - this._numEffectDependencies].method;
+		return this._methods[index + this._methods.length - this._numEffectDependencies];
 	}
 
 	/**
@@ -331,21 +460,18 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * methods are those that do not influence the lighting but modulate the shaded colour, used for fog, outlines,
 	 * etc. The method will be applied to the result of the methods with a lower index.
 	 */
-	public addEffectMethodAt(method:EffectMethodBase, index:number):void
+	public addEffectMethodAt(method:ShadingMethodBase, index:number):void
 	{
-		this._addDependency(new MethodVO(method, this), true, index);
+		this._addDependency(method, true, index);
 	}
 
 	/**
 	 * Removes an effect method from the material.
 	 * @param method The method to be removed.
 	 */
-	public removeEffectMethod(method:EffectMethodBase):void
+	public removeEffectMethod(method:ShadingMethodBase):void
 	{
-		var methodVO:MethodVO = this.getDependencyForMethod(method);
-
-		if (methodVO != null)
-			this._removeDependency(methodVO, true);
+		this._removeDependency(method, true);
 	}
 
 
@@ -354,143 +480,135 @@ export class MethodPass extends PassBase implements ILightingPass
 	 */
 	public removeEffectMethodAt(index:number):void
 	{
-		if (index < 0 || index > this._numEffectDependencies - 1)
-			return;
+		var method:ShadingMethodBase = this.getEffectMethodAt(index);
 
-		var methodVO:MethodVO = this._iMethodVOs[index + this._iMethodVOs.length - this._numEffectDependencies];
-
-		if (methodVO != null)
-			this._removeDependency(methodVO, true);
-	}
-
-
-	private getDependencyForMethod(method:EffectMethodBase):MethodVO
-	{
-		var len:number = this._iMethodVOs.length;
-		for (var i:number = 0; i < len; ++i)
-			if (this._iMethodVOs[i].method == method)
-				return this._iMethodVOs[i];
-
-		return null;
+		if (method != null)
+			this._removeDependency(method, true);
 	}
 
 	/**
 	 * The method used to generate the per-pixel normals. Defaults to NormalBasicMethod.
 	 */
-	public get normalMethod():NormalBasicMethod
+	public get normalMethod():ShadingMethodBase
 	{
-		return this._iNormalMethodVO? <NormalBasicMethod> this._iNormalMethodVO.method : null;
+		return this._normalMethod;
 	}
 
-	public set normalMethod(value:NormalBasicMethod)
+	public set normalMethod(value:ShadingMethodBase)
 	{
-		if (this._iNormalMethodVO && this._iNormalMethodVO.method == value)
+		if (this._normalMethod == value)
 			return;
 
-		if (this._iNormalMethodVO) {
-			this._removeDependency(this._iNormalMethodVO);
-			this._iNormalMethodVO = null;
+		if (this._normalMethod) {
+			this._removeDependency(this._normalMethod);
+			this._normalChunk = null;
 		}
 
+		this._normalMethod = value;
+
 		if (value) {
-			this._iNormalMethodVO = new MethodVO(value, this);
-			this._addDependency(this._iNormalMethodVO);
+			this._normalChunk = <ShaderChunkBase> this._shader.getAbstraction(value);
+			this._addDependency(value);
 		}
 	}
 
 	/**
 	 * The method that provides the ambient lighting contribution. Defaults to AmbientBasicMethod.
 	 */
-	public get ambientMethod():AmbientBasicMethod
+	public get ambientMethod():ShadingMethodBase
 	{
-		return this._iAmbientMethodVO? <AmbientBasicMethod> this._iAmbientMethodVO.method : null;
+		return this._ambientMethod;
 	}
 
-	public set ambientMethod(value:AmbientBasicMethod)
+	public set ambientMethod(value:ShadingMethodBase)
 	{
-		if (this._iAmbientMethodVO && this._iAmbientMethodVO.method == value)
+		if (this._ambientMethod == value)
 			return;
 
-		if (this._iAmbientMethodVO) {
-			this._removeDependency(this._iAmbientMethodVO);
-			this._iAmbientMethodVO = null;
+		if (this._ambientMethod) {
+			this._removeDependency(this._ambientMethod);
+			this._ambientChunk = null;
 		}
 
+		this._ambientMethod = value;
+
 		if (value) {
-			this._iAmbientMethodVO = new MethodVO(value, this);
-			this._addDependency(this._iAmbientMethodVO);
+			this._ambientChunk = <ShaderChunkBase> this._shader.getAbstraction(value);
+			this._addDependency(value);
 		}
 	}
 
 	/**
 	 * The method used to render shadows cast on this surface, or null if no shadows are to be rendered. Defaults to null.
 	 */
-	public get shadowMethod():ShadowMapMethodBase
+	public get shadowMethod():ShadingMethodBase
 	{
-		return this._iShadowMethodVO? <ShadowMapMethodBase> this._iShadowMethodVO.method : null;
+		return this._shadowMethod;
 	}
 
-	public set shadowMethod(value:ShadowMapMethodBase)
+	public set shadowMethod(value:ShadingMethodBase)
 	{
-		if (this._iShadowMethodVO && this._iShadowMethodVO.method == value)
+		if (this._shadowMethod == value)
 			return;
 
-		if (this._iShadowMethodVO) {
-			this._removeDependency(this._iShadowMethodVO);
-			this._iShadowMethodVO = null;
+		if (this._shadowMethod) {
+			this._removeDependency(this._shadowMethod);
+			this._shadowChunk = null;
 		}
 
+		this._shadowMethod = value;
+
 		if (value) {
-			this._iShadowMethodVO = new MethodVO(value, this);
-			this._addDependency(this._iShadowMethodVO);
+			this._shadowChunk = <ShaderChunkBase> this._shader.getAbstraction(value);
+			this._addDependency(value);
 		}
 	}
 
 	/**
 	 * The method that provides the diffuse lighting contribution. Defaults to DiffuseBasicMethod.
 	 */
-	public get diffuseMethod():DiffuseBasicMethod
+	public get diffuseMethod():ShadingMethodBase
 	{
-		return this._iDiffuseMethodVO? <DiffuseBasicMethod> this._iDiffuseMethodVO.method : null;
+		return this._diffuseMethod;
 	}
 
-	public set diffuseMethod(value:DiffuseBasicMethod)
+	public set diffuseMethod(value:ShadingMethodBase)
 	{
-		if (this._iDiffuseMethodVO && this._iDiffuseMethodVO.method == value)
+		if (this._diffuseMethod == value)
 			return;
 
-		if (this._iDiffuseMethodVO) {
-			this._removeDependency(this._iDiffuseMethodVO);
-			this._iDiffuseMethodVO = null;
+		if (this._diffuseMethod) {
+			this._removeDependency(this._diffuseMethod);
+			this._diffuseChunk = null;
 		}
 
 		if (value) {
-			this._iDiffuseMethodVO = new MethodVO(value, this);
-			this._addDependency(this._iDiffuseMethodVO);
+			this._diffuseChunk = <LightingCompositeChunk | DiffuseBasicChunk> this._shader.getAbstraction(value);
+			this._addDependency(value);
 		}
 	}
 
 	/**
 	 * The method that provides the specular lighting contribution. Defaults to SpecularBasicMethod.
 	 */
-	public get specularMethod():SpecularBasicMethod
+	public get specularMethod():ShadingMethodBase
 	{
-		return this._iSpecularMethodVO? <SpecularBasicMethod> this._iSpecularMethodVO.method : null;
+		return this._specularMethod;
 	}
 
-	public set specularMethod(value:SpecularBasicMethod)
+	public set specularMethod(value:ShadingMethodBase)
 	{
-		if (this._iSpecularMethodVO && this._iSpecularMethodVO.method == value)
+		if (this._specularMethod == value)
 			return;
 
-		if (this._iSpecularMethodVO) {
-			this._removeDependency(this._iSpecularMethodVO);
-			this._iSpecularMethodVO = null;
+		if (this._specularMethod) {
+			this._removeDependency(this._specularMethod);
+			this._specularChunk = null;
 		}
 
 		if (value) {
-			this._iSpecularMethodVO = new MethodVO(value, this);
-			this._addDependency(this._iSpecularMethodVO);
+			this._specularChunk = <LightingCompositeChunk | SpecularBasicChunk> this._shader.getAbstraction(value);
+			this._addDependency(value);
 		}
 	}
 
@@ -502,12 +620,13 @@ export class MethodPass extends PassBase implements ILightingPass
 		if (this._lightPicker)
 			this._lightPicker.removeEventListener(AssetEvent.INVALIDATE, this._onLightsChangeDelegate);
 
-		while (this._iMethodVOs.length)
-			this._removeDependency(this._iMethodVOs[0]);
+		while (this._methods.length)
+			this._removeDependency(this._methods[0]);
 
 		super.dispose();
 
-		this._iMethodVOs = null;
+		this._chunks = null;
+		this._methods = null;
 	}
 
 	/**
@@ -527,12 +646,12 @@ export class MethodPass extends PassBase implements ILightingPass
 	{
 		super._iActivate(projection);
 
-		var methodVO:MethodVO;
-		var len:number = this._iMethodVOs.length;
+		var chunk:IShaderChunk;
+		var len:number = this._chunks.length;
 		for (var i:number = 0; i < len; ++i) {
-			methodVO = this._iMethodVOs[i];
-			if (methodVO.useMethod)
-				methodVO.method.iActivate(this._shader, methodVO, this._stage);
+			chunk = this._chunks[i];
+			if (chunk.chunkVO.useChunk)
+				chunk._activate();
 		}
 	}
 
@@ -547,12 +666,12 @@ export class MethodPass extends PassBase implements ILightingPass
 	{
 		super._setRenderState(renderable, projection);
 
-		var methodVO:MethodVO;
-		var len:number = this._iMethodVOs.length;
+		var chunk:IShaderChunk;
+		var len:number = this._chunks.length;
 		for (var i:number = 0; i < len; ++i) {
-			methodVO = this._iMethodVOs[i];
-			if (methodVO.useMethod)
-				methodVO.method.iSetRenderState(this._shader, methodVO, renderable, this._stage, projection);
+			chunk = this._chunks[i];
+			if (chunk.chunkVO.useChunk)
+				chunk._setRenderState(renderable, projection);
 		}
 	}
 
@@ -563,12 +682,12 @@ export class MethodPass extends PassBase implements ILightingPass
 	{
 		super._iDeactivate();
 
-		var methodVO:MethodVO;
-		var len:number = this._iMethodVOs.length;
+		var chunk:IShaderChunk;
+		var len:number = this._chunks.length;
 		for (var i:number = 0; i < len; ++i) {
-			methodVO = this._iMethodVOs[i];
-			if (methodVO.useMethod)
-				methodVO.method.iDeactivate(this._shader, methodVO, this._stage);
+			chunk = this._chunks[i];
+			if (chunk.chunkVO.useChunk)
+				chunk._deactivate();
 		}
 	}
 
@@ -583,21 +702,21 @@ export class MethodPass extends PassBase implements ILightingPass
 			shader.usesCommonData = true;
 
 		var i:number;
-		var len:number = this._iMethodVOs.length;
+		var len:number = this._chunks.length;
 		for (i = 0; i < len; ++i)
-			this.setupAndCountDependencies(shader, this._iMethodVOs[i]);
+			this.setupAndCountDependencies(shader, this._chunks[i]);
 
 		var usesTangentSpace:boolean = true;
 
-		var methodVO:MethodVO;
+		var chunk:IShaderChunk;
 		for (i = 0; i < len; ++i) {
-			methodVO = this._iMethodVOs[i];
-			if ((methodVO.useMethod = methodVO.method.iIsUsed(shader)) && !methodVO.method.iUsesTangentSpace())
+			chunk = this._chunks[i];
+			if ((chunk.chunkVO.useChunk = chunk._isUsed()) && !chunk._usesTangentSpace())
 				usesTangentSpace = false;
 		}
 
-		shader.outputsNormals = this._iNormalMethodVO && this._iNormalMethodVO.useMethod;
-		shader.outputsTangentNormals = shader.outputsNormals && (<NormalBasicMethod> this._iNormalMethodVO.method).iOutputsTangentNormals();
+		shader.outputsNormals = this._normalChunk && this._normalChunk.chunkVO.useChunk;
+		shader.outputsTangentNormals = shader.outputsNormals && (<NormalBasicChunk> this._normalChunk)._outputsTangentNormals();
 		shader.usesTangentSpace = shader.outputsTangentNormals && !shader.usesProbes && usesTangentSpace;
 
 		if (!shader.usesTangentSpace) {
@@ -615,48 +734,40 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * Counts the dependencies for a given method.
 	 * @param method The method to count the dependencies for.
-	 * @param methodVO The method's data for this material.
+	 * @param chunk The method's data for this material.
 	 */
-	private setupAndCountDependencies(shader:ShaderBase, methodVO:MethodVO):void
+	private setupAndCountDependencies(shader:ShaderBase, chunk:IShaderChunk):void
 	{
-		methodVO.reset();
+		var chunkVO:ChunkVO = chunk.chunkVO;
+		chunk._reset(chunkVO);
 
-		methodVO.method.iInitVO(shader, methodVO);
+		chunk._initVO(chunkVO);
 
-		if (methodVO.needsProjection)
+		if (chunkVO.needsProjection)
 			shader.projectionDependencies++;
 
-		if (methodVO.needsGlobalVertexPos || methodVO.needsGlobalFragmentPos) {
+		if (chunkVO.needsGlobalVertexPos || chunkVO.needsGlobalFragmentPos) {
 
 			shader.globalPosDependencies++;
 
-			if (methodVO.needsGlobalFragmentPos)
+			if (chunkVO.needsGlobalFragmentPos)
 				shader.usesGlobalPosFragment = true;
 
 		}
 
-		if (methodVO.needsNormals)
+		if (chunkVO.needsNormals)
 			shader.normalDependencies++;
 
-		if (methodVO.needsTangents)
+		if (chunkVO.needsTangents)
 			shader.tangentDependencies++;
 
-		if (methodVO.needsView)
+		if (chunkVO.needsView)
 			shader.viewDirDependencies++;
 	}
 
 	public _iGetPreLightingVertexCode(shader:ShaderBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
-
-		if (this._iAmbientMethodVO && this._iAmbientMethodVO.useMethod)
-			code += this._iAmbientMethodVO.method.iGetVertexCode(shader, this._iAmbientMethodVO, registerCache, sharedRegisters);
-
-		if (this._iDiffuseMethodVO && this._iDiffuseMethodVO.useMethod)
-			code += this._iDiffuseMethodVO.method.iGetVertexCode(shader, this._iDiffuseMethodVO, registerCache, sharedRegisters);
-
-		if (this._iSpecularMethodVO && this._iSpecularMethodVO.useMethod)
-			code += this._iSpecularMethodVO.method.iGetVertexCode(shader, this._iSpecularMethodVO, registerCache, sharedRegisters);
 
 		return code;
 	}
@@ -665,51 +776,38 @@ export class MethodPass extends PassBase implements ILightingPass
 	{
 		var code:string = "";
 
-		if (this._iAmbientMethodVO && this._iAmbientMethodVO.useMethod) {
-			code += this._iAmbientMethodVO.method.iGetFragmentCode(shader, this._iAmbientMethodVO, sharedRegisters.shadedTarget, registerCache, sharedRegisters);
+		if (this._diffuseChunk && this._diffuseChunk.chunkVO.useChunk)
+			code += this._diffuseChunk._getFragmentPreLightingCode(registerCache, sharedRegisters);
 
-			if (this._iAmbientMethodVO.needsNormals)
-				registerCache.removeFragmentTempUsage(sharedRegisters.normalFragment);
-
-			if (this._iAmbientMethodVO.needsView)
-				registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
-		}
-
-		if (this._iDiffuseMethodVO && this._iDiffuseMethodVO.useMethod)
-			code += (<LightingMethodBase> this._iDiffuseMethodVO.method).iGetFragmentPreLightingCode(<LightingShader> shader, this._iDiffuseMethodVO, registerCache, sharedRegisters);
-
-		if (this._iSpecularMethodVO && this._iSpecularMethodVO.useMethod)
-			code += (<LightingMethodBase> this._iSpecularMethodVO.method).iGetFragmentPreLightingCode(<LightingShader> shader, this._iSpecularMethodVO, registerCache, sharedRegisters);
+		if (this._specularChunk && this._specularChunk.chunkVO.useChunk)
+			code += this._specularChunk._getFragmentPreLightingCode(registerCache, sharedRegisters);
 
 		return code;
 	}
 
 	public _iGetPerLightDiffuseFragmentCode(shader:LightingShader, lightDirReg:ShaderRegisterElement, diffuseColorReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		return (<LightingMethodBase> this._iDiffuseMethodVO.method).iGetFragmentCodePerLight(shader, this._iDiffuseMethodVO, lightDirReg, diffuseColorReg, registerCache, sharedRegisters);
+		return this._diffuseChunk._getFragmentCodePerLight(lightDirReg, diffuseColorReg, registerCache, sharedRegisters);
 	}
 
 	public _iGetPerLightSpecularFragmentCode(shader:LightingShader, lightDirReg:ShaderRegisterElement, specularColorReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		return (<LightingMethodBase> this._iSpecularMethodVO.method).iGetFragmentCodePerLight(shader, this._iSpecularMethodVO, lightDirReg, specularColorReg, registerCache, sharedRegisters);
+		return this._specularChunk._getFragmentCodePerLight(lightDirReg, specularColorReg, registerCache, sharedRegisters);
 	}
 
 	public _iGetPerProbeDiffuseFragmentCode(shader:LightingShader, texReg:ShaderRegisterElement, weightReg:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		return (<LightingMethodBase> this._iDiffuseMethodVO.method).iGetFragmentCodePerProbe(shader, this._iDiffuseMethodVO, texReg, weightReg, registerCache, sharedRegisters);
+		return this._diffuseChunk._getFragmentCodePerProbe(texReg, weightReg, registerCache, sharedRegisters);
 	}
 
 	public _iGetPerProbeSpecularFragmentCode(shader:LightingShader, texReg:ShaderRegisterElement, weightReg:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		return (<LightingMethodBase> this._iSpecularMethodVO.method).iGetFragmentCodePerProbe(shader, this._iSpecularMethodVO, texReg, weightReg, registerCache, sharedRegisters);
+		return this._specularChunk._getFragmentCodePerProbe(texReg, weightReg, registerCache, sharedRegisters);
 	}
 
 	public _iGetPostLightingVertexCode(shader:LightingShader, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
-
-		if (this._iShadowMethodVO)
-			code += this._iShadowMethodVO.method.iGetVertexCode(shader, this._iShadowMethodVO, registerCache, sharedRegisters);
 
 		return code;
 	}
@@ -718,55 +816,23 @@ export class MethodPass extends PassBase implements ILightingPass
 	{
 		var code:string = "";
 
-		if (shader.useAlphaPremultiplied && shader.usesBlending) {
-			code += "add " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.commons + ".z\n" +
-			"div " + sharedRegisters.shadedTarget + ".xyz, " + sharedRegisters.shadedTarget + ", " + sharedRegisters.shadedTarget + ".w\n" +
-			"sub " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.commons + ".z\n" +
-			"sat " + sharedRegisters.shadedTarget + ".xyz, " + sharedRegisters.shadedTarget + "\n";
-		}
-
-		if (this._iShadowMethodVO)
-			code += this._iShadowMethodVO.method.iGetFragmentCode(shader, this._iShadowMethodVO, sharedRegisters.shadowTarget, registerCache, sharedRegisters);
-
-		if (this._iDiffuseMethodVO && this._iDiffuseMethodVO.useMethod) {
-			code += (<LightingMethodBase> this._iDiffuseMethodVO.method).iGetFragmentPostLightingCode(shader, this._iDiffuseMethodVO, sharedRegisters.shadedTarget, registerCache, sharedRegisters);
-
-			// resolve other dependencies as well?
-			if (this._iDiffuseMethodVO.needsNormals)
-				registerCache.removeFragmentTempUsage(sharedRegisters.normalFragment);
-
-			if (this._iDiffuseMethodVO.needsView)
-				registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
-		}
-
-		if (this._iSpecularMethodVO && this._iSpecularMethodVO.useMethod) {
-			code += (<LightingMethodBase> this._iSpecularMethodVO.method).iGetFragmentPostLightingCode(shader, this._iSpecularMethodVO, sharedRegisters.shadedTarget, registerCache, sharedRegisters);
-			if (this._iSpecularMethodVO.needsNormals)
-				registerCache.removeFragmentTempUsage(sharedRegisters.normalFragment);
-			if (this._iSpecularMethodVO.needsView)
-				registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
-		}
-
-		if (this._iShadowMethodVO)
-			registerCache.removeFragmentTempUsage(sharedRegisters.shadowTarget);
-
 		return code;
 	}
 
 
 	public _iGetNormalVertexCode(shader:ShaderBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		return this._iNormalMethodVO.method.iGetVertexCode(shader, this._iNormalMethodVO, registerCache, sharedRegisters);
+		return this._normalChunk._getVertexCode(registerCache, sharedRegisters);
 	}
 
 	public _iGetNormalFragmentCode(shader:ShaderBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
-		var code:string = this._iNormalMethodVO.method.iGetFragmentCode(shader, this._iNormalMethodVO, sharedRegisters.normalFragment, registerCache, sharedRegisters);
+		var code:string = this._normalChunk._getFragmentCode(sharedRegisters.normalFragment, registerCache, sharedRegisters);
 
-		if (this._iNormalMethodVO.needsView)
+		if (this._normalChunk.chunkVO.needsView)
 			registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
 
-		if (this._iNormalMethodVO.needsGlobalFragmentPos || this._iNormalMethodVO.needsGlobalVertexPos)
+		if (this._normalChunk.chunkVO.needsGlobalFragmentPos || this._normalChunk.chunkVO.needsGlobalVertexPos)
 			registerCache.removeVertexTempUsage(sharedRegisters.globalPositionVertex);
 
 		return code;
@@ -775,23 +841,36 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * @inheritDoc
 	 */
-	public _iGetVertexCode(shader:ShaderBase, regCache:ShaderRegisterCache, sharedReg:ShaderRegisterData):string
+	public _iGetVertexCode(shader:ShaderBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
-		var methodVO:MethodVO;
-		var len:number = this._iMethodVOs.length;
-		for (var i:number = len - this._numEffectDependencies; i < len; i++) {
-			methodVO = this._iMethodVOs[i];
-			if (methodVO.useMethod) {
-				code += methodVO.method.iGetVertexCode(shader, methodVO, regCache, sharedReg);
 
-				if (methodVO.needsGlobalVertexPos || methodVO.needsGlobalFragmentPos)
-					regCache.removeVertexTempUsage(sharedReg.globalPositionVertex);
+		if (this._ambientChunk && this._ambientChunk.chunkVO.useChunk)
+			code += this._ambientChunk._getVertexCode(registerCache, sharedRegisters);
+
+		if (this._shadowChunk)
+			code += this._shadowChunk._getVertexCode(registerCache, sharedRegisters);
+
+		if (this._diffuseChunk && this._diffuseChunk.chunkVO.useChunk)
+			code += this._diffuseChunk._getVertexCode(registerCache, sharedRegisters);
+
+		if (this._specularChunk && this._specularChunk.chunkVO.useChunk)
+			code += this._specularChunk._getVertexCode(registerCache, sharedRegisters);
+
+		var chunk:IShaderChunk;
+		var len:number = this._chunks.length;
+		for (var i:number = len - this._numEffectDependencies; i < len; i++) {
+			chunk = this._chunks[i];
+			if (chunk.chunkVO.useChunk) {
+				code += chunk._getVertexCode(registerCache, sharedRegisters);
+
+				if (chunk.chunkVO.needsGlobalVertexPos || chunk.chunkVO.needsGlobalFragmentPos)
+					registerCache.removeVertexTempUsage(sharedRegisters.globalPositionVertex);
 			}
 		}
 
-		if (this._iColorTransformMethodVO && this._iColorTransformMethodVO.useMethod)
-			code += this._iColorTransformMethodVO.method.iGetVertexCode(shader, this._iColorTransformMethodVO, regCache, sharedReg);
+		if (this._colorTransformChunk && this._colorTransformChunk.chunkVO.useChunk)
+			code += this._colorTransformChunk._getVertexCode(registerCache, sharedRegisters);
 
 		return code;
 	}
@@ -799,40 +878,82 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * @inheritDoc
 	 */
-	public _iGetFragmentCode(shader:ShaderBase, regCache:ShaderRegisterCache, sharedReg:ShaderRegisterData):string
+	public _iGetFragmentCode(shader:ShaderBase, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
 		var alphaReg:ShaderRegisterElement;
 
-		if (this.preserveAlpha && this._numEffectDependencies > 0) {
-			alphaReg = regCache.getFreeFragmentSingleTemp();
-			regCache.addFragmentTempUsages(alphaReg, 1);
-			code += "mov " + alphaReg + ", " + sharedReg.shadedTarget + ".w\n";
+		if (this._ambientChunk && this._ambientChunk.chunkVO.useChunk) {
+			code += this._ambientChunk._getFragmentCode(sharedRegisters.shadedTarget, registerCache, sharedRegisters);
+
+			if (this._ambientChunk.chunkVO.needsNormals)
+				registerCache.removeFragmentTempUsage(sharedRegisters.normalFragment);
+
+			if (this._ambientChunk.chunkVO.needsView)
+				registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
 		}
 
-		var methodVO:MethodVO;
-		var len:number = this._iMethodVOs.length;
+		if (shader.useAlphaPremultiplied && shader.usesBlending) {
+			code += "add " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.commons + ".z\n" +
+				"div " + sharedRegisters.shadedTarget + ".xyz, " + sharedRegisters.shadedTarget + ", " + sharedRegisters.shadedTarget + ".w\n" +
+				"sub " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.commons + ".z\n" +
+				"sat " + sharedRegisters.shadedTarget + ".xyz, " + sharedRegisters.shadedTarget + "\n";
+		}
+
+		if (this._shadowChunk)
+			code += this._shadowChunk._getFragmentCode(sharedRegisters.shadowTarget, registerCache, sharedRegisters);
+
+		if (this._diffuseChunk && this._diffuseChunk.chunkVO.useChunk) {
+			code += this._diffuseChunk._getFragmentCode(sharedRegisters.shadedTarget, registerCache, sharedRegisters);
+
+			// resolve other dependencies as well?
+			if (this._diffuseChunk.chunkVO.needsNormals)
+				registerCache.removeFragmentTempUsage(sharedRegisters.normalFragment);
+
+			if (this._diffuseChunk.chunkVO.needsView)
+				registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
+		}
+
+		if (this._specularChunk && this._specularChunk.chunkVO.useChunk) {
+			code += this._specularChunk._getFragmentCode(sharedRegisters.shadedTarget, registerCache, sharedRegisters);
+			if (this._specularChunk.chunkVO.needsNormals)
+				registerCache.removeFragmentTempUsage(sharedRegisters.normalFragment);
+			if (this._specularChunk.chunkVO.needsView)
+				registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
+		}
+
+		if (this._shadowChunk)
+			registerCache.removeFragmentTempUsage(sharedRegisters.shadowTarget);
+
+		if (this.preserveAlpha && this._numEffectDependencies > 0) {
+			alphaReg = registerCache.getFreeFragmentSingleTemp();
+			registerCache.addFragmentTempUsages(alphaReg, 1);
+			code += "mov " + alphaReg + ", " + sharedRegisters.shadedTarget + ".w\n";
+		}
+
+		var chunk:IShaderChunk;
+		var len:number = this._chunks.length;
 		for (var i:number = len - this._numEffectDependencies; i < len; i++) {
-			methodVO = this._iMethodVOs[i];
-			if (methodVO.useMethod) {
-				code += methodVO.method.iGetFragmentCode(shader, methodVO, sharedReg.shadedTarget, regCache, sharedReg);
+			chunk = this._chunks[i];
+			if (chunk.chunkVO.useChunk) {
+				code += chunk._getFragmentCode(sharedRegisters.shadedTarget, registerCache, sharedRegisters);
 
-				if (methodVO.needsNormals)
-					regCache.removeFragmentTempUsage(sharedReg.normalFragment);
+				if (chunk.chunkVO.needsNormals)
+					registerCache.removeFragmentTempUsage(sharedRegisters.normalFragment);
 
-				if (methodVO.needsView)
-					regCache.removeFragmentTempUsage(sharedReg.viewDirFragment);
+				if (chunk.chunkVO.needsView)
+					registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
 
 			}
 		}
 
 		if (this.preserveAlpha && this._numEffectDependencies > 0) {
-			code += "mov " + sharedReg.shadedTarget + ".w, " + alphaReg + "\n";
-			regCache.removeFragmentTempUsage(alphaReg);
+			code += "mov " + sharedRegisters.shadedTarget + ".w, " + alphaReg + "\n";
+			registerCache.removeFragmentTempUsage(alphaReg);
 		}
 
-		if (this._iColorTransformMethodVO && this._iColorTransformMethodVO.useMethod)
-			code += this._iColorTransformMethodVO.method.iGetFragmentCode(shader, this._iColorTransformMethodVO, sharedReg.shadedTarget, regCache, sharedReg);
+		if (this._colorTransformChunk && this._colorTransformChunk.chunkVO.useChunk)
+			code += this._colorTransformChunk._getFragmentCode(sharedRegisters.shadedTarget, registerCache, sharedRegisters);
 
 		return code;
 	}
@@ -841,7 +962,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 */
 	public _iUsesShadows(shader:ShaderBase):boolean
 	{
-		return Boolean(this._iShadowMethodVO && (this._lightPicker.castingDirectionalLights.length > 0 || this._lightPicker.castingPointLights.length > 0));
+		return Boolean(this._shadowChunk && (this._lightPicker.castingDirectionalLights.length > 0 || this._lightPicker.castingPointLights.length > 0));
 	}
 
 	/**
@@ -849,7 +970,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 */
 	public _iUsesSpecular(shader:ShaderBase):boolean
 	{
-		return Boolean(this._iSpecularMethodVO);
+		return Boolean(this._specularChunk);
 	}
 
 	/**
@@ -857,7 +978,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 */
 	public _iUsesDiffuse(shader:ShaderBase):boolean
 	{
-		return Boolean(this._iDiffuseMethodVO);
+		return Boolean(this._diffuseChunk);
 	}
 
 
@@ -925,10 +1046,10 @@ export class MethodPass extends PassBase implements ILightingPass
 	{
 		var numChannels:number = 0;
 
-		if ((this.specularLightSources & LightSources.PROBES) != 0)
+		if (((<GL_MethodMaterial> this._material).specularLightSources & LightSources.PROBES) != 0)
 			++numChannels;
 
-		if ((this.diffuseLightSources & LightSources.PROBES) != 0)
+		if (((<GL_MethodMaterial> this._material).diffuseLightSources & LightSources.PROBES) != 0)
 			++numChannels;
 
 		// 4 channels available

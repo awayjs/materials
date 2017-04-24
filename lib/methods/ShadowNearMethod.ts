@@ -1,13 +1,6 @@
-import {ProjectionBase} from "@awayjs/core";
-
 import {NearDirectionalShadowMapper} from "@awayjs/scene";
 
-import {Stage, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
-
-import {ShadingMethodEvent, LightingShader} from "@awayjs/renderer";
-
-import {MethodVO} from "../data/MethodVO";
-
+import {ShadowCompositeMethod} from "./ShadowCompositeMethod";
 import {ShadowMethodBase} from "./ShadowMethodBase";
 
 // TODO: shadow mappers references in materials should be an interface so that this class should NOT extend ShadowMapMethodBase just for some delegation work
@@ -17,112 +10,18 @@ import {ShadowMethodBase} from "./ShadowMethodBase";
  *
  * @see away.lights.NearDirectionalShadowMapper
  */
-export class ShadowNearMethod extends ShadowMethodBase
+export class ShadowNearMethod extends ShadowCompositeMethod
 {
-	private _baseMethod:ShadowMethodBase;
-
 	private _fadeRatio:number;
-	private _nearShadowMapper:NearDirectionalShadowMapper;
 
-	private _onShaderInvalidatedDelegate:(event:ShadingMethodEvent) => void;
-
-	/**
-	 * Creates a new ShadowNearMethod object.
-	 * @param baseMethod The shadow map sampling method used to sample individual cascades (fe: ShadowHardMethod, ShadowSoftMethod)
-	 * @param fadeRatio The amount of shadow fading to the outer shadow area. A value of 1 would mean the shadows start fading from the camera's near plane.
-	 */
-	constructor(baseMethod:ShadowMethodBase, fadeRatio:number = .1)
-	{
-		super(baseMethod.castingLight);
-
-		this._onShaderInvalidatedDelegate = (event:ShadingMethodEvent) => this.onShaderInvalidated(event);
-
-		this._baseMethod = baseMethod;
-		this._fadeRatio = fadeRatio;
-		this._nearShadowMapper = <NearDirectionalShadowMapper> this._pCastingLight.shadowMapper;
-		if (!this._nearShadowMapper)
-			throw new Error("ShadowNearMethod requires a light that has a NearDirectionalShadowMapper instance assigned to shadowMapper.");
-		this._baseMethod.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
-	}
-
-	/**
-	 * The base shadow map method on which this method's shading is based.
-	 */
-	public get baseMethod():ShadowMethodBase
-	{
-		return this._baseMethod;
-	}
-
-	public set baseMethod(value:ShadowMethodBase)
-	{
-		if (this._baseMethod == value)
-			return;
-
-		this._baseMethod.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
-
-		this._baseMethod = value;
-
-		this._baseMethod.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
-
-		this.iInvalidateShaderProgram();
-	}
+	public static assetType:string = "[asset ShadowNearMethod]";
 
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
+	public get assetType():string
 	{
-		super.iInitConstants(shader, methodVO);
-		this._baseMethod.iInitConstants(shader, methodVO);
-
-		var fragmentData:Float32Array = shader.fragmentConstantData;
-		var index:number = methodVO.secondaryFragmentConstantsIndex;
-		fragmentData[index + 2] = 0;
-		fragmentData[index + 3] = 1;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iInitVO(shader:LightingShader, methodVO:MethodVO):void
-	{
-		this._baseMethod.iInitVO(shader, methodVO);
-
-		methodVO.needsProjection = true;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public dispose():void
-	{
-		this._baseMethod.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onShaderInvalidatedDelegate);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public get alpha():number
-	{
-		return this._baseMethod.alpha;
-	}
-
-	public set alpha(value:number)
-	{
-		this._baseMethod.alpha = value;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public get epsilon():number
-	{
-		return this._baseMethod.epsilon;
-	}
-
-	public set epsilon(value:number)
-	{
-		this._baseMethod.epsilon = value;
+		return ShadowNearMethod.assetType;
 	}
 
 	/**
@@ -139,96 +38,17 @@ export class ShadowNearMethod extends ShadowMethodBase
 	}
 
 	/**
-	 * @inheritDoc
+	 * Creates a new ShadowNearMethod object.
+	 * @param baseMethod The shadow map sampling method used to sample individual cascades (fe: ShadowHardMethod, ShadowSoftMethod)
+	 * @param fadeRatio The amount of shadow fading to the outer shadow area. A value of 1 would mean the shadows start fading from the camera's near plane.
 	 */
-	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	constructor(baseMethod:ShadowMethodBase = null, fadeRatio:number = .1)
 	{
-		var code:string = this._baseMethod.iGetFragmentCode(shader, methodVO, targetReg, registerCache, sharedRegisters);
+		super(baseMethod);
 
-		var dataReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
-		var temp:ShaderRegisterElement = registerCache.getFreeFragmentSingleTemp();
-		methodVO.secondaryFragmentConstantsIndex = dataReg.index*4;
+		this._fadeRatio = fadeRatio;
 
-		code += "abs " + temp + ", " + sharedRegisters.projectionFragment + ".w\n" +
-			"sub " + temp + ", " + temp + ", " + dataReg + ".x\n" +
-			"mul " + temp + ", " + temp + ", " + dataReg + ".y\n" +
-			"sat " + temp + ", " + temp + "\n" +
-			"sub " + temp + ", " + dataReg + ".w," + temp + "\n" +
-			"sub " + targetReg + ".w, " + dataReg + ".w," + targetReg + ".w\n" +
-			"mul " + targetReg + ".w, " + targetReg + ".w, " + temp + "\n" +
-			"sub " + targetReg + ".w, " + dataReg + ".w," + targetReg + ".w\n";
-
-		return code;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
-	{
-		this._baseMethod.iActivate(shader, methodVO, stage);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iDeactivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
-	{
-		this._baseMethod.iDeactivate(shader, methodVO, stage);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
-	{
-		// todo: move this to activate (needs camera)
-		var near:number = projection.near;
-		var d:number = projection.far - near;
-		var maxDistance:number = this._nearShadowMapper.coverageRatio;
-		var minDistance:number = maxDistance*(1 - this._fadeRatio);
-
-		maxDistance = near + maxDistance*d;
-		minDistance = near + minDistance*d;
-
-		var fragmentData:Float32Array = shader.fragmentConstantData;
-		var index:number = methodVO.secondaryFragmentConstantsIndex;
-		fragmentData[index] = minDistance;
-		fragmentData[index + 1] = 1/(maxDistance - minDistance);
-
-		this._baseMethod.iSetRenderState(shader, methodVO, renderable, stage, projection);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iGetVertexCode(shader:ShaderBase, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		return this._baseMethod.iGetVertexCode(shader, methodVO, registerCache, sharedRegisters);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iReset():void
-	{
-		this._baseMethod.iReset();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iCleanCompilationData():void
-	{
-		super.iCleanCompilationData();
-		this._baseMethod.iCleanCompilationData();
-	}
-
-	/**
-	 * Called when the base method's shader code is invalidated.
-	 */
-	private onShaderInvalidated(event:ShadingMethodEvent):void
-	{
-		this.iInvalidateShaderProgram();
+		if (!(baseMethod.castingLight.shadowMapper instanceof NearDirectionalShadowMapper))
+			throw new Error("ShadowNearMethod requires a light that has a NearDirectionalShadowMapper instance assigned to shadowMapper.");
 	}
 }

@@ -1,9 +1,3 @@
-import {Stage, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
-
-import {LightingShader} from "@awayjs/renderer";
-
-import {MethodVO} from "../data/MethodVO";
-
 import {SpecularBasicMethod} from "./SpecularBasicMethod";
 import {SpecularCompositeMethod} from "./SpecularCompositeMethod";
 
@@ -12,35 +6,32 @@ import {SpecularCompositeMethod} from "./SpecularCompositeMethod";
  */
 export class SpecularFresnelMethod extends SpecularCompositeMethod
 {
-	private _dataReg:ShaderRegisterElement;
-	private _incidentLight:boolean;
-	private _fresnelPower:number = 5;
-	private _normalReflectance:number = .028; // default value for skin
+	private _basedOnSurface:boolean;
+	private _fresnelPower:number;
+	private _normalReflectance:number;
+
+	public static assetType:string = "[asset SpecularFresnelMethod]";
+
+	/**
+	 * @inheritDoc
+	 */
+	public get assetType():string
+	{
+		return SpecularFresnelMethod.assetType;
+	}
 
 	/**
 	 * Creates a new SpecularFresnelMethod object.
 	 * @param basedOnSurface Defines whether the fresnel effect should be based on the view angle on the surface (if true), or on the angle between the light and the view.
 	 * @param baseMethod The specular method to which the fresnel equation. Defaults to SpecularBasicMethod.
 	 */
-	constructor(basedOnSurface:boolean = true, baseMethod:SpecularBasicMethod = null)
+	constructor(basedOnSurface:boolean = true, fresnelPower:number = 5, normalReflectance:number = 0.028, baseMethod:SpecularBasicMethod | SpecularCompositeMethod = null)
 	{
-		// may want to offer diff speculars
-		super(null, baseMethod);
+		super(baseMethod);
 
-		this.baseMethod._iModulateMethod = (shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData) => this.modulateSpecular(shader, methodVO, targetReg, registerCache, sharedRegisters);
-
-		this._incidentLight = !basedOnSurface;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
-	{
-
-		var index:number = methodVO.secondaryFragmentConstantsIndex;
-		shader.fragmentConstantData[index + 2] = 1;
-		shader.fragmentConstantData[index + 3] = 0;
+		this._basedOnSurface = basedOnSurface;
+		this._fresnelPower = fresnelPower;
+		this._normalReflectance = normalReflectance;
 	}
 
 	/**
@@ -48,17 +39,17 @@ export class SpecularFresnelMethod extends SpecularCompositeMethod
 	 */
 	public get basedOnSurface():boolean
 	{
-		return !this._incidentLight;
+		return this._basedOnSurface;
 	}
 
 	public set basedOnSurface(value:boolean)
 	{
-		if (this._incidentLight != value)
+		if (this._basedOnSurface == value)
 			return;
 
-		this._incidentLight = !value;
+		this._basedOnSurface = value;
 
-		this.iInvalidateShaderProgram();
+		this.invalidateShaderProgram();
 	}
 
 	/**
@@ -71,16 +62,12 @@ export class SpecularFresnelMethod extends SpecularCompositeMethod
 
 	public set fresnelPower(value:number)
 	{
+		if (this._fresnelPower == value)
+			return;
+		
 		this._fresnelPower = value;
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public iCleanCompilationData():void
-	{
-		super.iCleanCompilationData();
-		this._dataReg = null;
+		this.invalidate();
 	}
 
 	/**
@@ -93,57 +80,11 @@ export class SpecularFresnelMethod extends SpecularCompositeMethod
 
 	public set normalReflectance(value:number)
 	{
+		if (this._normalReflectance == value)
+			return;
+		
 		this._normalReflectance = value;
+
+		this.invalidate();
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage):void
-	{
-		super.iActivate(shader, methodVO, stage);
-
-		var fragmentData:Float32Array = shader.fragmentConstantData;
-
-		var index:number = methodVO.secondaryFragmentConstantsIndex;
-		fragmentData[index] = this._normalReflectance;
-		fragmentData[index + 1] = this._fresnelPower;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iGetFragmentPreLightingCode(shader:LightingShader, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		this._dataReg = registerCache.getFreeFragmentConstant();
-
-		methodVO.secondaryFragmentConstantsIndex = this._dataReg.index*4;
-
-		return super.iGetFragmentPreLightingCode(shader, methodVO, registerCache, sharedRegisters);
-	}
-
-	/**
-	 * Applies the fresnel effect to the specular strength.
-	 *
-	 * @param vo The MethodVO object containing the method data for the currently compiled material pass.
-	 * @param target The register containing the specular strength in the "w" component, and the half-vector/reflection vector in "xyz".
-	 * @param regCache The register cache used for the shader compilation.
-	 * @param sharedRegisters The shared registers created by the compiler.
-	 * @return The AGAL fragment code for the method.
-	 */
-	private modulateSpecular(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string;
-
-		code = "dp3 " + targetReg + ".y, " + sharedRegisters.viewDirFragment + ".xyz, " + (this._incidentLight? targetReg : sharedRegisters.normalFragment) + ".xyz\n" +   // dot(V, H)
-			"sub " + targetReg + ".y, " + this._dataReg + ".z, " + targetReg + ".y\n" +             // base = 1-dot(V, H)
-			"pow " + targetReg + ".x, " + targetReg + ".y, " + this._dataReg + ".y\n" +             // exp = pow(base, 5)
-			"sub " + targetReg + ".y, " + this._dataReg + ".z, " + targetReg + ".y\n" +             // 1 - exp
-			"mul " + targetReg + ".y, " + this._dataReg + ".x, " + targetReg + ".y\n" +             // f0*(1 - exp)
-			"add " + targetReg + ".y, " + targetReg + ".x, " + targetReg + ".y\n" +          // exp + f0*(1 - exp)
-			"mul " + targetReg + ".w, " + targetReg + ".w, " + targetReg + ".y\n";
-
-		return code;
-	}
-
 }

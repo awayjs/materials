@@ -8,10 +8,13 @@ import {ContextGLCompareMode} from "@awayjs/stage";
 
 import {AmbientBasicMethod} from "./methods/AmbientBasicMethod";
 import {DiffuseBasicMethod} from "./methods/DiffuseBasicMethod";
-import {EffectMethodBase} from "./methods/EffectMethodBase";
+import {DiffuseCompositeMethod} from "./methods/DiffuseCompositeMethod";
+import {ShadingMethodBase} from "./methods/ShadingMethodBase";
 import {NormalBasicMethod} from "./methods/NormalBasicMethod";
-import {ShadowMapMethodBase} from "./methods/ShadowMapMethodBase";
+import {ShadowMethodBase} from "./methods/ShadowMethodBase";
+import {ShadowCompositeMethod} from "./methods/ShadowCompositeMethod";
 import {SpecularBasicMethod} from "./methods/SpecularBasicMethod";
+import {SpecularCompositeMethod} from "./methods/SpecularCompositeMethod";
 import {MethodMaterialMode} from "./MethodMaterialMode";
 
 /**
@@ -22,7 +25,7 @@ export class MethodMaterial extends MaterialBase
 {
 	public static assetType:string = "[materials MethodMaterial]";
 
-	private _effectMethods:Array<EffectMethodBase> = new Array<EffectMethodBase>();
+	private _effectMethods:Array<ShadingMethodBase> = new Array<ShadingMethodBase>();
 	private _mode:string;
 
 	private _enableLightFallOff:boolean = true;
@@ -30,10 +33,10 @@ export class MethodMaterial extends MaterialBase
 	private _diffuseLightSources:number = 0x03;
 	
 	private _ambientMethod:AmbientBasicMethod = new AmbientBasicMethod();
-	private _shadowMethod:ShadowMapMethodBase;
-	private _diffuseMethod:DiffuseBasicMethod = new DiffuseBasicMethod();
+	private _shadowMethod:ShadowMethodBase | ShadowCompositeMethod;
+	private _diffuseMethod:DiffuseBasicMethod | DiffuseCompositeMethod = new DiffuseBasicMethod();
 	private _normalMethod:NormalBasicMethod = new NormalBasicMethod();
-	private _specularMethod:SpecularBasicMethod = new SpecularBasicMethod();
+	private _specularMethod:SpecularBasicMethod | SpecularCompositeMethod = new SpecularBasicMethod();
 	public _pLightPicker:LightPickerBase;
 
 	private _depthCompareMode:ContextGLCompareMode = ContextGLCompareMode.LESS_EQUAL;
@@ -204,19 +207,6 @@ export class MethodMaterial extends MaterialBase
 	}
 
 	/**
-	 * The texture object to use for the ambient colour.
-	 */
-	public get diffuseTexture():TextureBase
-	{
-		return this._diffuseMethod.texture;
-	}
-
-	public set diffuseTexture(value:TextureBase)
-	{
-		this._diffuseMethod.texture = value;
-	}
-
-	/**
 	 * The method that provides the ambient lighting contribution. Defaults to AmbientBasicMethod.
 	 */
 	public get ambientMethod():AmbientBasicMethod
@@ -243,12 +233,12 @@ export class MethodMaterial extends MaterialBase
 	/**
 	 * The method used to render shadows cast on this surface, or null if no shadows are to be rendered. Defaults to null.
 	 */
-	public get shadowMethod():ShadowMapMethodBase
+	public get shadowMethod():ShadowMethodBase | ShadowCompositeMethod
 	{
 		return this._shadowMethod;
 	}
 
-	public set shadowMethod(value:ShadowMapMethodBase)
+	public set shadowMethod(value:ShadowMethodBase | ShadowCompositeMethod)
 	{
 		if (this._shadowMethod == value)
 			return;
@@ -267,12 +257,12 @@ export class MethodMaterial extends MaterialBase
 	/**
 	 * The method that provides the diffuse lighting contribution. Defaults to DiffuseBasicMethod.
 	 */
-	public get diffuseMethod():DiffuseBasicMethod
+	public get diffuseMethod():DiffuseBasicMethod | DiffuseCompositeMethod
 	{
 		return this._diffuseMethod;
 	}
 
-	public set diffuseMethod(value:DiffuseBasicMethod)
+	public set diffuseMethod(value:DiffuseBasicMethod | DiffuseCompositeMethod)
 	{
 		if (this._diffuseMethod == value)
 			return;
@@ -291,12 +281,12 @@ export class MethodMaterial extends MaterialBase
 	/**
 	 * The method that provides the specular lighting contribution. Defaults to SpecularBasicMethod.
 	 */
-	public get specularMethod():SpecularBasicMethod
+	public get specularMethod():SpecularBasicMethod | SpecularCompositeMethod
 	{
 		return this._specularMethod;
 	}
 
-	public set specularMethod(value:SpecularBasicMethod)
+	public set specularMethod(value:SpecularBasicMethod | SpecularCompositeMethod)
 	{
 		if (this._specularMethod == value)
 			return;
@@ -346,7 +336,7 @@ export class MethodMaterial extends MaterialBase
 	 * but modulate the shaded colour, used for fog, outlines, etc. The method will be applied to the result of the
 	 * methods added prior.
 	 */
-	public addEffectMethod(method:EffectMethodBase):void
+	public addEffectMethod(method:ShadingMethodBase):void
 	{
 		method.iAddOwner(this);
 
@@ -360,7 +350,7 @@ export class MethodMaterial extends MaterialBase
 	 * @param index The index of the method to retrieve.
 	 * @return The method at the given index.
 	 */
-	public getEffectMethodAt(index:number):EffectMethodBase
+	public getEffectMethodAt(index:number):ShadingMethodBase
 	{
 		return this._effectMethods[index];
 	}
@@ -370,7 +360,7 @@ export class MethodMaterial extends MaterialBase
 	 * methods are those that do not influence the lighting but modulate the shaded colour, used for fog, outlines,
 	 * etc. The method will be applied to the result of the methods with a lower index.
 	 */
-	public addEffectMethodAt(method:EffectMethodBase, index:number):void
+	public addEffectMethodAt(method:ShadingMethodBase, index:number):void
 	{
 		method.iAddOwner(this);
 
@@ -383,7 +373,7 @@ export class MethodMaterial extends MaterialBase
 	 * Removes an effect method from the material.
 	 * @param method The method to be removed.
 	 */
-	public removeEffectMethod(method:EffectMethodBase):void
+	public removeEffectMethod(method:ShadingMethodBase):void
 	{
 		method.iRemoveOwner(this);
 

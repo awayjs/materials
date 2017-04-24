@@ -1,74 +1,25 @@
 import {TextureBase} from "@awayjs/graphics";
 
-import {ProjectionBase} from "@awayjs/core";
-
-import {Stage, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
-
-
-import {LightingShader} from "@awayjs/renderer";
-
-import {MethodVO} from "../data/MethodVO";
-
-import {EffectMethodBase} from "./EffectMethodBase";
+import {ShadingMethodBase} from "./ShadingMethodBase";
 
 /**
  * EffectAlphaMaskMethod allows the use of an additional texture to specify the alpha value of the material. When used
  * with the secondary uv set, it allows for a tiled main texture with independently varying alpha (useful for water
  * etc).
  */
-export class EffectAlphaMaskMethod extends EffectMethodBase
+export class EffectAlphaMaskMethod extends ShadingMethodBase
 {
 	private _texture:TextureBase;
 	private _useSecondaryUV:boolean;
 
-	/**
-	 * Creates a new EffectAlphaMaskMethod object.
-	 *
-	 * @param texture The texture to use as the alpha mask.
-	 * @param useSecondaryUV Indicated whether or not the secondary uv set for the mask. This allows mapping alpha independently.
-	 */
-	constructor(texture:TextureBase, useSecondaryUV:boolean = false)
-	{
-		super();
-
-		this._texture = texture;
-		this._useSecondaryUV = useSecondaryUV;
-
-		if (this._texture)
-			this.iAddTexture(this._texture);
-	}
+	public static assetType:string = "[asset EffectAlphaMaskMethod]";
 
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shader:ShaderBase, methodVO:MethodVO):void
+	public get assetType():string
 	{
-		methodVO.textureGL = shader.getAbstraction(this._texture);
-
-		if (this._useSecondaryUV)
-			shader.secondaryUVDependencies++;
-		else
-			shader.uvDependencies++;
-	}
-
-	/**
-	 * Indicated whether or not the secondary uv set for the mask. This allows mapping alpha independently, for
-	 * instance to tile the main texture and normal map while providing untiled alpha, for example to define the
-	 * transparency over a tiled water surface.
-	 */
-	public get useSecondaryUV():boolean
-	{
-		return this._useSecondaryUV;
-	}
-
-	public set useSecondaryUV(value:boolean)
-	{
-		if (this._useSecondaryUV == value)
-			return;
-
-		this._useSecondaryUV = value;
-
-		this.iInvalidateShaderProgram();
+		return EffectAlphaMaskMethod.assetType;
 	}
 
 	/**
@@ -92,34 +43,43 @@ export class EffectAlphaMaskMethod extends EffectMethodBase
 		if (this._texture)
 			this.iAddTexture(this._texture);
 
-		this.iInvalidateShaderProgram();
+		this.invalidateShaderProgram();
 	}
 
 	/**
-	 * @inheritDoc
+	 * Indicated whether or not the secondary uv set for the mask. This allows mapping alpha independently, for
+	 * instance to tile the main texture and normal map while providing untiled alpha, for example to define the
+	 * transparency over a tiled water surface.
 	 */
-	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+	public get useSecondaryUV():boolean
 	{
-		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
-
-		return methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, this._useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying) +
-			"mul " + targetReg + ", " + targetReg + ", " + temp + ".x\n";
+		return this._useSecondaryUV;
 	}
 
+	public set useSecondaryUV(value:boolean)
+	{
+		if (this._useSecondaryUV == value)
+			return;
+
+		this._useSecondaryUV = value;
+
+		this.invalidateShaderProgram();
+	}
 
 	/**
-	 * @inheritDoc
+	 * Creates a new EffectAlphaMaskMethod object.
+	 *
+	 * @param texture The texture to use as the alpha mask.
+	 * @param useSecondaryUV Indicated whether or not the secondary uv set for the mask. This allows mapping alpha independently.
 	 */
-	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage):void
+	constructor(texture:TextureBase, useSecondaryUV:boolean = false)
 	{
-		super.iActivate(shader, methodVO, stage);
+		super();
 
-		methodVO.textureGL.activate(methodVO.pass._render);
-	}
+		this._texture = texture;
+		this._useSecondaryUV = useSecondaryUV;
 
-
-	public iSetRenderState(shader:ShaderBase, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
-	{
-		methodVO.textureGL._setRenderState(renderable);
+		if (this._texture)
+			this.iAddTexture(this._texture);
 	}
 }

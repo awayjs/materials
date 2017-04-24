@@ -1,8 +1,4 @@
-import {Single2DTexture, TextureBase} from "@awayjs/graphics";
-
-import {ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
-
-import {MethodVO} from "../data/MethodVO";
+import {TextureBase} from "@awayjs/graphics";
 
 import {NormalBasicMethod} from "./NormalBasicMethod";
 import {ShadingMethodBase} from "./ShadingMethodBase";
@@ -15,6 +11,26 @@ export class NormalHeightMapMethod extends NormalBasicMethod
 	private _worldXYRatio:number;
 	private _worldXZRatio:number;
 
+	public static assetType:string = "[asset NormalHeightMapMethod]";
+
+	/**
+	 * @inheritDoc
+	 */
+	public get assetType():string
+	{
+		return NormalHeightMapMethod.assetType;
+	}
+
+	public get worldXYRatio():number
+	{
+		return this._worldXYRatio;
+	}
+
+	public get worldXZRatio():number
+	{
+		return this._worldXZRatio;
+	}
+	
 	/**
 	 * Creates a new NormalHeightMapMethod method.
 	 *
@@ -35,69 +51,11 @@ export class NormalHeightMapMethod extends NormalBasicMethod
 	/**
 	 * @inheritDoc
 	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
-	{
-		var index:number = methodVO.fragmentConstantsIndex;
-		var data:Float32Array = shader.fragmentConstantData;
-		data[index] = 1/(<Single2DTexture> this.texture).image2D.width;
-		data[index + 1] = 1/(<Single2DTexture> this.texture).image2D.height;
-		data[index + 2] = 0;
-		data[index + 3] = 1;
-		data[index + 4] = this._worldXYRatio;
-		data[index + 5] = this._worldXZRatio;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public get tangentSpace():boolean
-	{
-		return false;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	public copyFrom(method:ShadingMethodBase):void
 	{
 		super.copyFrom(method);
 
 		this._worldXYRatio = (<NormalHeightMapMethod> method)._worldXYRatio;
 		this._worldXZRatio = (<NormalHeightMapMethod> method)._worldXZRatio;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string = "";
-		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
-		registerCache.addFragmentTempUsages(temp, 1);
-
-		var dataReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
-		var dataReg2:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
-
-		methodVO.fragmentConstantsIndex = dataReg.index*4;
-
-		code+= methodVO.textureGL._iGetFragmentCode(targetReg, registerCache, sharedRegisters, sharedRegisters.uvVarying) +
-
-			"add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg + ".xzzz\n" +
-
-		methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, temp) +
-
-			"sub " + targetReg + ".x, " + targetReg + ".x, " + temp + ".x\n" +
-			"add " + temp + ", " + sharedRegisters.uvVarying + ", " + dataReg + ".zyzz\n" +
-
-		methodVO.textureGL._iGetFragmentCode(temp, registerCache, sharedRegisters, temp) +
-
-			"sub " + targetReg + ".z, " + targetReg + ".z, " + temp + ".x\n" +
-			"mov " + targetReg + ".y, " + dataReg + ".w\n" +
-			"mul " + targetReg + ".xz, " + targetReg + ".xz, " + dataReg2 + ".xy\n" +
-			"nrm " + targetReg + ".xyz, " + targetReg + ".xyz\n";
-
-		registerCache.removeFragmentTempUsage(temp);
-
-		return code;
 	}
 }

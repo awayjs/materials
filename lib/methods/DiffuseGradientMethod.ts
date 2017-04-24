@@ -1,13 +1,4 @@
-import {ProjectionBase} from "@awayjs/core";
-
 import {TextureBase} from "@awayjs/graphics";
-
-import {Stage, GL_RenderableBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
-
-
-import {LightingShader} from "@awayjs/renderer";
-
-import {MethodVO} from "../data/MethodVO";
 
 import {DiffuseBasicMethod} from "./DiffuseBasicMethod";
 
@@ -21,26 +12,14 @@ export class DiffuseGradientMethod extends DiffuseBasicMethod
 {
 	private _gradient:TextureBase;
 
+	public static assetType:string = "[asset DiffuseGradientMethod]";
+
 	/**
-	 * Creates a new DiffuseGradientMethod object.
-	 * @param gradient A texture that contains the light colour based on the angle. This can be used to change
-	 * the light colour due to subsurface scattering when the surface faces away from the light.
+	 * @inheritDoc
 	 */
-	constructor(gradient:TextureBase)
+	public get assetType():string
 	{
-		super();
-
-		this._gradient = gradient;
-
-		if (this._gradient)
-			this.iAddTexture(this._gradient);
-	}
-
-	public iInitVO(shader:LightingShader, methodVO:MethodVO):void
-	{
-		super.iInitVO(shader, methodVO);
-
-		methodVO.secondaryTextureGL = shader.getAbstraction(this._gradient);
+		return DiffuseGradientMethod.assetType;
 	}
 
 	/**
@@ -65,97 +44,20 @@ export class DiffuseGradientMethod extends DiffuseBasicMethod
 		if (this._gradient)
 			this.iAddTexture(this._gradient);
 
-		this.iInvalidateShaderProgram();
+		this.invalidateShaderProgram();
 	}
 
 	/**
-	 * @inheritDoc
+	 * Creates a new DiffuseGradientMethod object.
+	 * @param gradient A texture that contains the light colour based on the angle. This can be used to change
+	 * the light colour due to subsurface scattering when the surface faces away from the light.
 	 */
-	public iCleanCompilationData():void
+	constructor(gradient:TextureBase)
 	{
-		super.iCleanCompilationData();
-	}
+		super();
 
-	/**
-	 * @inheritDoc
-	 */
-	public iGetFragmentPreLightingCode(shader:LightingShader, methodVO:MethodVO, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string = super.iGetFragmentPreLightingCode(shader, methodVO, registerCache, sharedRegisters);
-		this._pIsFirstLight = true;
+		this._gradient = gradient;
 
-		return code;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iGetFragmentCodePerLight(shader:LightingShader, methodVO:MethodVO, lightDirReg:ShaderRegisterElement, lightColReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string = "";
-		var t:ShaderRegisterElement;
-
-		// write in temporary if not first light, so we can add to total diffuse colour
-		if (this._pIsFirstLight)
-			t = this._pTotalLightColorReg;
-		else {
-			t = registerCache.getFreeFragmentVectorTemp();
-			registerCache.addFragmentTempUsages(t, 1);
-		}
-
-		code += "dp3 " + t + ".w, " + lightDirReg + ".xyz, " + sharedRegisters.normalFragment + ".xyz\n" +
-			"mul " + t + ".w, " + t + ".w, " + sharedRegisters.commons + ".x\n" +
-			"add " + t + ".w, " + t + ".w, " + sharedRegisters.commons + ".x\n" +
-			"mul " + t + ".xyz, " + t + ".w, " + lightDirReg + ".w\n";
-
-		if (this._iModulateMethod != null)
-			code += this._iModulateMethod(shader, methodVO, t, registerCache, sharedRegisters);
-
-		code += methodVO.secondaryTextureGL._iGetFragmentCode(t, registerCache, sharedRegisters, t) +
-			//					"mul " + t + ".xyz, " + t + ".xyz, " + t + ".w\n" +
-			"mul " + t + ".xyz, " + t + ".xyz, " + lightColReg + ".xyz\n";
-
-		if (!this._pIsFirstLight) {
-			code += "add " + this._pTotalLightColorReg + ".xyz, " + this._pTotalLightColorReg + ".xyz, " + t + ".xyz\n";
-			registerCache.removeFragmentTempUsage(t);
-		}
-
-		this._pIsFirstLight = false;
-
-		return code;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public pApplyShadow(shader:LightingShader, methodVO:MethodVO, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var t:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
-
-		return "mov " + t + ", " + sharedRegisters.shadowTarget + ".wwww\n" +
-			methodVO.secondaryTextureGL._iGetFragmentCode(t, regCache, sharedRegisters, sharedRegisters.uvVarying) +
-			"mul " + this._pTotalLightColorReg + ".xyz, " + this._pTotalLightColorReg + ", " + t + "\n";
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iActivate(shader:LightingShader, methodVO:MethodVO, stage:Stage):void
-	{
-		super.iActivate(shader, methodVO, stage);
-
-		methodVO.secondaryTextureGL.activate(methodVO.pass._render);
-	}
-
-
-	/**
-	 * @inheritDoc
-	 */
-	public iSetRenderState(shader:LightingShader, methodVO:MethodVO, renderable:GL_RenderableBase, stage:Stage, projection:ProjectionBase):void
-	{
-		super.iSetRenderState(shader, methodVO, renderable, stage, projection);
-
-		if (shader.numLights > 0)
-			methodVO.secondaryTextureGL._setRenderState(renderable);
+		this.iAddTexture(this._gradient);
 	}
 }

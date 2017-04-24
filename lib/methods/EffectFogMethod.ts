@@ -1,55 +1,22 @@
-import {Stage, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
-
-import {LightingShader} from "@awayjs/renderer";
-
-import {MethodVO} from "../data/MethodVO";
-
-import {EffectMethodBase} from "./EffectMethodBase";
+import {ShadingMethodBase} from "./ShadingMethodBase";
 
 /**
  * EffectFogMethod provides a method to add distance-based fog to a material.
  */
-export class EffectFogMethod extends EffectMethodBase
+export class EffectFogMethod extends ShadingMethodBase
 {
-	private _minDistance:number = 0;
-	private _maxDistance:number = 1000;
-	private _fogColor:number /*uint*/;
-	private _fogR:number;
-	private _fogG:number;
-	private _fogB:number;
+	private _minDistance:number;
+	private _maxDistance:number;
+	private _fogColor:number;
 
-	/**
-	 * Creates a new EffectFogMethod object.
-	 * @param minDistance The distance from which the fog starts appearing.
-	 * @param maxDistance The distance at which the fog is densest.
-	 * @param fogColor The colour of the fog.
-	 */
-	constructor(minDistance:number, maxDistance:number, fogColor:number /*uint*/ = 0x808080)
-	{
-		super();
-		this.minDistance = minDistance;
-		this.maxDistance = maxDistance;
-		this.fogColor = fogColor;
-	}
+	public static assetType:string = "[asset EffectFogMethod]";
 
 	/**
 	 * @inheritDoc
 	 */
-	public iInitVO(shader:LightingShader, methodVO:MethodVO):void
+	public get assetType():string
 	{
-		methodVO.needsProjection = true;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iInitConstants(shader:ShaderBase, methodVO:MethodVO):void
-	{
-		var data:Float32Array = shader.fragmentConstantData;
-		var index:number = methodVO.fragmentConstantsIndex;
-		data[index + 3] = 1;
-		data[index + 6] = 0;
-		data[index + 7] = 0;
+		return EffectFogMethod.assetType;
 	}
 
 	/**
@@ -63,6 +30,8 @@ export class EffectFogMethod extends EffectMethodBase
 	public set minDistance(value:number)
 	{
 		this._minDistance = value;
+
+		this.invalidate();
 	}
 
 	/**
@@ -76,60 +45,36 @@ export class EffectFogMethod extends EffectMethodBase
 	public set maxDistance(value:number)
 	{
 		this._maxDistance = value;
+
+		this.invalidate();
 	}
 
 	/**
 	 * The colour of the fog.
 	 */
-	public get fogColor():number /*uint*/
+	public get fogColor():number
 	{
 		return this._fogColor;
 	}
 
-	public set fogColor(value:number/*uint*/)
+	public set fogColor(value:number)
 	{
 		this._fogColor = value;
-		this._fogR = ((value >> 16) & 0xff)/0xff;
-		this._fogG = ((value >> 8) & 0xff)/0xff;
-		this._fogB = (value & 0xff)/0xff;
+
+		this.invalidate();
 	}
 
 	/**
-	 * @inheritDoc
+	 * Creates a new EffectFogMethod object.
+	 * @param minDistance The distance from which the fog starts appearing.
+	 * @param maxDistance The distance at which the fog is densest.
+	 * @param fogColor The colour of the fog.
 	 */
-	public iActivate(shader:ShaderBase, methodVO:MethodVO, stage:Stage):void
+	constructor(minDistance:number = 0, maxDistance:number = 1000, fogColor:number = 0x808080)
 	{
-		var data:Float32Array = shader.fragmentConstantData;
-		var index:number = methodVO.fragmentConstantsIndex;
-		data[index] = this._fogR;
-		data[index + 1] = this._fogG;
-		data[index + 2] = this._fogB;
-		data[index + 4] = this._minDistance;
-		data[index + 5] = 1/(this._maxDistance - this._minDistance);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public iGetFragmentCode(shader:ShaderBase, methodVO:MethodVO, targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var fogColor:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
-		var fogData:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
-		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
-		registerCache.addFragmentTempUsages(temp, 1);
-		var temp2:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
-		var code:string = "";
-		methodVO.fragmentConstantsIndex = fogColor.index*4;
-
-		code += "sub " + temp2 + ".w, " + sharedRegisters.projectionFragment + ".z, " + fogData + ".x\n" +
-				"mul " + temp2 + ".w, " + temp2 + ".w, " + fogData + ".y\n" +
-				"sat " + temp2 + ".w, " + temp2 + ".w\n" +
-				"sub " + temp + ", " + fogColor + ", " + targetReg + "\n" + // (fogColor- col)
-				"mul " + temp + ", " + temp + ", " + temp2 + ".w\n" + // (fogColor- col)*fogRatio
-				"add " + targetReg + ", " + targetReg + ", " + temp + "\n"; // fogRatio*(fogColor- col) + col
-
-		registerCache.removeFragmentTempUsage(temp);
-
-		return code;
+		super();
+		this._minDistance = minDistance;
+		this._maxDistance = maxDistance;
+		this._fogColor = fogColor;
 	}
 }
