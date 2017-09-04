@@ -61,7 +61,7 @@ export class MethodMaterial extends MaterialBase
 	 */
 	constructor(image?:Image2D, alpha?:number);
 	constructor(color?:number, alpha?:number);
-	constructor(imageColor:any = null, alpha:number = 1)
+	constructor(imageColor:any = 0xFFFFFF, alpha:number = 1)
 	{
 		super(imageColor, alpha);
 
