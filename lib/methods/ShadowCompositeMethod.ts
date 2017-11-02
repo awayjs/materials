@@ -1,6 +1,6 @@
 import {AssetEvent} from "@awayjs/core";
 
-import {DirectionalLight, LightBase} from "@awayjs/scene";
+import {DirectionalLight, LightBase} from "@awayjs/graphics";
 
 import {CompositeMethodBase} from "./CompositeMethodBase";
 import {ShadowMethodBase} from "./ShadowMethodBase";

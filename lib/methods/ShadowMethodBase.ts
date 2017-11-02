@@ -1,4 +1,4 @@
-import {LightBase, ShadowMapperBase} from "@awayjs/scene";
+import {LightBase, ShadowMapperBase} from "@awayjs/graphics";
 
 import {ShadingMethodBase} from "./ShadingMethodBase";
 
@@ -58,6 +58,6 @@ export class ShadowMethodBase extends ShadingMethodBase
 
 		this._castingLight = castingLight;
 
-		this.iAddTexture(castingLight.shadowMapper.depthMap);
+		this.iAddTexture(castingLight.shadowMapper.textureMap);
 	}
 }

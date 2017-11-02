@@ -1,6 +1,6 @@
 import {Vector3D, Matrix3D, AbstractMethodError, ProjectionBase} from "@awayjs/core";
 
-import {LightBase, PointLight, DirectionalShadowMapper} from "@awayjs/scene";
+import {LightBase, PointLight, DirectionalShadowMapper} from "@awayjs/graphics";
 
 import {GL_TextureBase, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
@@ -55,7 +55,7 @@ export class ShadowChunkBase extends ShaderChunkBase
 		chunkVO.needsGlobalFragmentPos = this._usePoint;
 		chunkVO.needsNormals = this._shader.numLights > 0;
 
-		this._depthMap = <GL_TextureBase> this._shader.getAbstraction(this._method.castingLight.shadowMapper.depthMap);
+		this._depthMap = <GL_TextureBase> this._shader.getAbstraction(this._method.castingLight.shadowMapper.textureMap);
 	}
 
 	/**
@@ -177,7 +177,7 @@ export class ShadowChunkBase extends ShaderChunkBase
 		fragmentData[index + 5] = 1 - this._method.alpha;
 
 		if (this._usePoint) {
-			var pos:Vector3D = this._method.castingLight.scenePosition;
+			var pos:Vector3D = this._method.castingLight.transform.concatenatedMatrix3D.position;
 			fragmentData[index + 8] = pos.x;
 			fragmentData[index + 9] = pos.y;
 			fragmentData[index + 10] = pos.z;

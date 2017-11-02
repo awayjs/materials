@@ -19,7 +19,7 @@ export class AmbientDepthChunk extends AmbientBasicChunk
 	{
 		super(method, shader);
 
-		this._shadowTexture = <GL_TextureBase> shader.getAbstraction(method.castingLight.shadowMapper.depthMap);
+		this._shadowTexture = <GL_TextureBase> shader.getAbstraction(method.castingLight.shadowMapper.textureMap);
 	}
 
 	/**

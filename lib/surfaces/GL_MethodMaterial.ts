@@ -1,8 +1,6 @@
 import {AssetEvent} from "@awayjs/core";
 
-import {BlendMode} from "@awayjs/graphics";
-
-import {StaticLightPicker, LightPickerBase} from "@awayjs/scene";
+import {BlendMode, StaticLightPicker, LightPickerBase} from "@awayjs/graphics";
 
 import {ContextGLCompareMode, IElementsClassGL, GL_MaterialBase, MaterialPool} from "@awayjs/stage";
 

@@ -1,4 +1,4 @@
-import {LightBase} from "@awayjs/scene";
+import {LightBase} from "@awayjs/graphics";
 
 import {Stage, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 

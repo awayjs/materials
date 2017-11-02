@@ -1,4 +1,4 @@
-import {NearDirectionalShadowMapper} from "@awayjs/scene";
+import {NearDirectionalShadowMapper} from "@awayjs/graphics";
 
 import {ShadowCompositeMethod} from "./ShadowCompositeMethod";
 import {ShadowMethodBase} from "./ShadowMethodBase";

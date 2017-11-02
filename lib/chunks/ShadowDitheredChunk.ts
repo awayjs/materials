@@ -1,8 +1,6 @@
 import {ProjectionBase} from "@awayjs/core";
 
-import {BitmapImage2D, Single2DTexture} from "@awayjs/graphics";
-
-import {DirectionalLight} from "@awayjs/scene";
+import {BitmapImage2D, Single2DTexture, DirectionalLight} from "@awayjs/graphics";
 
 import {GL_TextureBase, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
@@ -64,7 +62,7 @@ export class ShadowDitheredChunk extends ShadowChunkBase
 		var index:number = this._fragmentConstantsIndex;
 		data[index + 9] = (this._stage.width - 1)/63;
 		data[index + 10] = (this._stage.height - 1)/63;
-		data[index + 11] = 2*(<ShadowDitheredMethod> this._method).range/this._method.castingLight.shadowMapper.depthMapSize;
+		data[index + 11] = 2*(<ShadowDitheredMethod> this._method).range/this._method.castingLight.shadowMapper.size;
 
 		this._grainMap.activate();
 	}
@@ -109,7 +107,7 @@ export class ShadowDitheredChunk extends ShadowChunkBase
 		data[index] = 1/(<ShadowDitheredMethod> this._method).numSamples;
 		data[index + 1] = (this._stage.width - 1)/63;
 		data[index + 2] = (this._stage.height - 1)/63;
-		data[index + 3] = 2*(<ShadowDitheredMethod> this._method).range/this._method.castingLight.shadowMapper.depthMapSize;
+		data[index + 3] = 2*(<ShadowDitheredMethod> this._method).range/this._method.castingLight.shadowMapper.size;
 
 		this._grainMap.activate();
 	}

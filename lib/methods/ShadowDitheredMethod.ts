@@ -1,6 +1,4 @@
-import {BitmapImage2D, Single2DTexture} from "@awayjs/graphics";
-
-import {DirectionalLight} from "@awayjs/scene";
+import {BitmapImage2D, Single2DTexture, DirectionalLight} from "@awayjs/graphics";
 
 import {ShadowMethodBase} from "./ShadowMethodBase";
 
@@ -72,7 +70,7 @@ export class ShadowDitheredMethod extends ShadowMethodBase
 	{
 		super(castingLight);
 
-		this._depthMapSize = this._castingLight.shadowMapper.depthMapSize;
+		this._depthMapSize = this._castingLight.shadowMapper.size;
 
 		this.numSamples = numSamples;
 		this.range = range;

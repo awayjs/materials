@@ -1,6 +1,6 @@
 import {ProjectionBase} from "@awayjs/core";
 
-import {NearDirectionalShadowMapper} from "@awayjs/scene";
+import {NearDirectionalShadowMapper} from "@awayjs/graphics";
 
 import {Stage, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
@@ -22,7 +22,6 @@ export class ShadowNearChunk extends CompositeChunkBase
 {
 	protected _method:ShadowNearMethod;
 	protected _shader:LightingShader;
-	private _fadeRatio:number;
 	private _fragmentConstantsIndex:number;
 	/**
 	 * Creates a new ShadowNearChunk.
@@ -90,7 +89,7 @@ export class ShadowNearChunk extends CompositeChunkBase
 		var near:number = projection.near;
 		var d:number = projection.far - near;
 		var maxDistance:number = (<NearDirectionalShadowMapper> this._method.castingLight.shadowMapper).coverageRatio;
-		var minDistance:number = maxDistance*(1 - this._fadeRatio);
+		var minDistance:number = maxDistance*(1 - this._method.fadeRatio);
 
 		maxDistance = near + maxDistance*d;
 		minDistance = near + minDistance*d;

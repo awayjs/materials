@@ -1,8 +1,6 @@
 ﻿import {AssetEvent} from "@awayjs/core";
 
-import {Image2D, MaterialBase, Single2DTexture, TextureBase} from "@awayjs/graphics";
-
-import {LightPickerBase} from "@awayjs/scene";
+import {Image2D, MaterialBase, Single2DTexture, TextureBase, LightPickerBase} from "@awayjs/graphics";
 
 import {ContextGLCompareMode} from "@awayjs/stage";
 

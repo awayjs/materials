@@ -1,6 +1,6 @@
 import {ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {LightBase, ShadowMapperBase} from "@awayjs/scene";
+import {LightBase, ShadowMapperBase} from "@awayjs/graphics";
 
 import {AmbientBasicMethod} from "./AmbientBasicMethod";
 
@@ -32,7 +32,7 @@ export class AmbientDepthMethod extends AmbientBasicMethod
 		castingLight.shadowsEnabled = true;
 		this._shadowMapper = castingLight.shadowMapper;
 
-		this.iAddTexture(castingLight.shadowMapper.depthMap);
+		this.iAddTexture(castingLight.shadowMapper.textureMap);
 	}
 
 	/**

@@ -1,6 +1,6 @@
 import {PoissonLookup} from "@awayjs/core";
 
-import {DirectionalLight} from "@awayjs/scene";
+import {DirectionalLight} from "@awayjs/graphics";
 
 import {ShadowMethodBase} from "./ShadowMethodBase";
 

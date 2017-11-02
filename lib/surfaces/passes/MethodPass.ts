@@ -1,7 +1,6 @@
 import {ColorTransform, Matrix3D, AssetEvent, ProjectionBase} from "@awayjs/core";
 
-
-import {LightPickerBase, LightSources} from "@awayjs/scene";
+import {LightPickerBase, LightSources} from "@awayjs/graphics";
 
 import {Stage, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, GL_RenderableBase, PassBase, IElementsClassGL, MaterialPool} from "@awayjs/stage";
 

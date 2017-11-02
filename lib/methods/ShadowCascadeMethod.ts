@@ -1,6 +1,6 @@
 import {AssetEvent} from "@awayjs/core";
 
-import {DirectionalLight, CascadeShadowMapper} from "@awayjs/scene";
+import {DirectionalLight, CascadeShadowMapper} from "@awayjs/graphics";
 
 import {ShadowCompositeMethod} from "./ShadowCompositeMethod";
 import {ShadowMethodBase} from "./ShadowMethodBase";

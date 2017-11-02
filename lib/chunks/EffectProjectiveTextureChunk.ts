@@ -1,7 +1,5 @@
 import {ErrorBase, Matrix3D, ProjectionBase} from "@awayjs/core";
 
-import {TextureProjector} from "@awayjs/scene";
-
 import {GL_TextureBase, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
 import {ChunkVO} from "../data/ChunkVO";

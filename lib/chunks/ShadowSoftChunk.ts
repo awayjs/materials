@@ -1,6 +1,6 @@
 import {PoissonLookup} from "@awayjs/core";
 
-import {DirectionalLight} from "@awayjs/scene";
+import {DirectionalLight} from "@awayjs/graphics";
 
 import {Stage, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
@@ -43,7 +43,7 @@ export class ShadowSoftChunk extends ShadowChunkBase
 	{
 		super._activate();
 
-		var texRange:number = .5*(<ShadowSoftMethod> this._method).range/this._method.castingLight.shadowMapper.depthMapSize;
+		var texRange:number = .5*(<ShadowSoftMethod> this._method).range/this._method.castingLight.shadowMapper.size;
 		var data:Float32Array = this._shader.fragmentConstantData;
 		var index:number = this._fragmentConstantsIndex + 10;
 		var len:number = (<ShadowSoftMethod> this._method).numSamples << 1;
@@ -92,7 +92,7 @@ export class ShadowSoftChunk extends ShadowChunkBase
 	{
 		super._activate();
 
-		var texRange:number = (<ShadowSoftMethod> this._method).range/this._method.castingLight.shadowMapper.depthMapSize;
+		var texRange:number = (<ShadowSoftMethod> this._method).range/this._method.castingLight.shadowMapper.size;
 		var data:Float32Array = this._shader.fragmentConstantData;
 		var index:number /*uint*/ = this._secondaryFragmentConstantsIndex;
 		var len:number /*uint*/ = (<ShadowSoftMethod> this._method).numSamples << 1;

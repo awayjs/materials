@@ -32,7 +32,7 @@ export class ShadowFilteredChunk extends ShadowChunkBase
 		var fragmentData:Float32Array = this._shader.fragmentConstantData;
 		var index:number = this._fragmentConstantsIndex;
 		fragmentData[index + 8] = .5;
-		var size:number = this._method.castingLight.shadowMapper.depthMapSize;
+		var size:number = this._method.castingLight.shadowMapper.size;
 		fragmentData[index + 9] = size;
 		fragmentData[index + 10] = 1/size;
 	}
@@ -105,7 +105,7 @@ export class ShadowFilteredChunk extends ShadowChunkBase
 	 */
 	public _activateForCascade():void
 	{
-		var size:number = this._method.castingLight.shadowMapper.depthMapSize;
+		var size:number = this._method.castingLight.shadowMapper.size;
 		var index:number = this._cascadeFragmentConstantsIndex;
 		var data:Float32Array = this._shader.fragmentConstantData;
 		data[index] = size;
