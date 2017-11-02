@@ -1,6 +1,6 @@
 {
   "name": "@awayjs/materials",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Materials for AwayJS",
   "main": "bundle/awayjs-materials.umd.js",
   "types": "dist/index.d.ts",
