@@ -1,4 +1,6 @@
-import {TextureBase, TextureProjector, TextureProjectorEvent} from "@awayjs/graphics";
+import {TextureBase, } from "../textures/TextureBase";
+import {TextureProjector} from "../lights/TextureProjector";
+import {TextureProjectorEvent} from "../events/TextureProjectorEvent";
 
 import {ShadingMethodBase} from "./ShadingMethodBase";
 

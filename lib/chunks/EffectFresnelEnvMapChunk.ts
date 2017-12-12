@@ -1,6 +1,8 @@
 import {ProjectionBase} from "@awayjs/core";
 
-import {GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+
+import {ShaderBase} from "@awayjs/renderer";
 
 import {EffectEnvMapChunk} from "./EffectEnvMapChunk";
 

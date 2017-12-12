@@ -1,4 +1,4 @@
-import {TextureBase} from "@awayjs/graphics";
+import {TextureBase} from "../textures/TextureBase";
 
 import {CompositeMethodBase} from "./CompositeMethodBase";
 import {SpecularBasicMethod} from "./SpecularBasicMethod";

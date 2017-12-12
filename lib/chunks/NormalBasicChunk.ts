@@ -1,8 +1,9 @@
 import {ProjectionBase} from "@awayjs/core";
 
-import {GL_TextureBase, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {ChunkVO} from "../data/ChunkVO";
+import {RenderStateBase, ShaderBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
+
 import {NormalBasicMethod} from "../methods/NormalBasicMethod";
 
 import {ShaderChunkBase} from "./ShaderChunkBase";
@@ -15,7 +16,7 @@ export class NormalBasicChunk extends ShaderChunkBase
 	protected _method:NormalBasicMethod;
 	protected _shader:ShaderBase;
 
-	protected _texture:GL_TextureBase;
+	protected _texture:TextureStateBase;
 
 	/**
 	 * Creates a new EffectEnvMapChunk.
@@ -42,10 +43,22 @@ export class NormalBasicChunk extends ShaderChunkBase
 	public _initVO(chunkVO:ChunkVO):void
 	{
 		if (this._method.texture) {
-			this._texture = <GL_TextureBase> this._shader.getAbstraction(this._method.texture);
+			this._texture = <TextureStateBase> this._shader.getAbstraction(this._method.texture);
+
+            this._texture._initVO(chunkVO);
+
 			this._shader.uvDependencies++;
 		}
 	}
+
+    /**
+     * @inheritDoc
+     */
+    public _initConstants():void
+    {
+        if (this._method.texture)
+        	this._texture._initConstants();
+    }
 
 	/**
 	 * Indicates whether or not this method outputs normals in tangent space. Override for object-space normals.
@@ -64,10 +77,10 @@ export class NormalBasicChunk extends ShaderChunkBase
 			this._texture.activate();
 	}
 
-	public _setRenderState(renderable:GL_RenderableBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
 	{
 		if (this._texture)
-			this._texture._setRenderState(renderable);
+			this._texture._setRenderState(renderState);
 	}
 
 	/**

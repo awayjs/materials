@@ -1,12 +1,10 @@
-import {AssetEvent} from "@awayjs/core";
+import {AssetEvent, ProjectionBase} from "@awayjs/core";
 
-import {MappingMode} from "@awayjs/graphics";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {ProjectionBase} from "@awayjs/core";
+import {RenderStateBase, IRenderable, ShaderBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
 
-import {GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, GL_TextureBase} from "@awayjs/stage";
-
-import {ChunkVO} from "../data/ChunkVO";
+import {TextureCube} from "../textures/TextureCube";
 import {AmbientBasicMethod} from "../methods/AmbientBasicMethod";
 
 import {ShaderChunkBase} from "./ShaderChunkBase";
@@ -19,7 +17,7 @@ export class AmbientBasicChunk extends ShaderChunkBase
 	protected _method:AmbientBasicMethod;
 	protected _shader:ShaderBase;
 
-	protected _texture:GL_TextureBase;
+	protected _texture:TextureStateBase;
 
 	private _colorIndex:number;
 
@@ -56,9 +54,11 @@ export class AmbientBasicChunk extends ShaderChunkBase
 	public _initVO(chunkVO:ChunkVO):void
 	{
 		if (this._method.texture) {
-			this._texture = <GL_TextureBase> this._shader.getAbstraction(this._method.texture);
+			this._texture = <TextureStateBase> this._shader.getAbstraction(this._method.texture);
 
-			if (this._method.texture.mappingMode == MappingMode.CUBE)
+            this._texture._initVO(chunkVO);
+
+			if (this._method.texture instanceof TextureCube)
 				chunkVO.needsNormals = true;
 			else
 				this._shader.uvDependencies++;
@@ -68,6 +68,15 @@ export class AmbientBasicChunk extends ShaderChunkBase
 		}
 	}
 
+    /**
+     * @inheritDoc
+     */
+    public _initConstants():void
+	{
+        if (this._texture)
+        	this._texture._initConstants();
+    }
+
 	/**
 	 * @inheritDoc
 	 */
@@ -76,7 +85,7 @@ export class AmbientBasicChunk extends ShaderChunkBase
 		var code:string = "";
 
 		if (this._texture) {
-			code += this._texture._getFragmentCode(targetReg, registerCache, sharedRegisters, (this._method.texture.mappingMode == MappingMode.CUBE)? sharedRegisters.normalFragment : sharedRegisters.uvVarying);
+			code += this._texture._getFragmentCode(targetReg, registerCache, sharedRegisters, (this._method.texture instanceof TextureCube)? sharedRegisters.normalFragment : sharedRegisters.uvVarying);
 
 			if (this._shader.alphaThreshold > 0) {
 				var cutOffReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
@@ -111,7 +120,7 @@ export class AmbientBasicChunk extends ShaderChunkBase
 		} else if (this._invalid) {
 			var index:number = this._colorIndex;
 			var data:Float32Array = this._shader.fragmentConstantData;
-			var color:number = this._shader.numLights? 0xFFFFFF : this._shader.pass.style.color;
+			var color:number = this._shader.numLights? 0xFFFFFF : this._shader.materialState.style.color;
 
 			data[index] = ((color >> 16) & 0xff)/0xff*this._method.strength;
 			data[index + 1] = ((color >> 8) & 0xff)/0xff*this._method.strength;
@@ -120,9 +129,9 @@ export class AmbientBasicChunk extends ShaderChunkBase
 		}
 	}
 
-	public _setRenderState(renderable:GL_RenderableBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
 	{
 		if (this._texture)
-			this._texture._setRenderState(renderable);
+			this._texture._setRenderState(renderState);
 	}
 }

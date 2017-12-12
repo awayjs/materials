@@ -1,7 +1,6 @@
-import {Stage, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {LightingShader} from "@awayjs/renderer";
-
+import {LightingShader} from "../shaders/LightingShader";
 import {SpecularPhongMethod} from "../methods/SpecularPhongMethod";
 
 import {SpecularBasicChunk} from "./SpecularBasicChunk";

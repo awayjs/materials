@@ -1,6 +1,7 @@
-import {ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {ChunkVO} from "../data/ChunkVO";
+import {ShaderBase, ChunkVO} from "@awayjs/renderer";
+
 import {EffectRimLightMethod} from "../methods/EffectRimLightMethod";
 
 import {ShaderChunkBase} from "./ShaderChunkBase";

@@ -1,7 +1,10 @@
-import {Stage, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {Stage} from "@awayjs/stage";
 
-import {LightingShader} from "@awayjs/renderer";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
+import {ShaderBase} from "@awayjs/renderer";
+
+import {LightingShader} from "../shaders/LightingShader";
 import {DiffuseCelMethod} from "../methods/DiffuseCelMethod";
 
 import {ILightingChunk} from "./ILightingChunk";

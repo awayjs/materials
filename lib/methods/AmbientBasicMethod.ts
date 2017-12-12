@@ -1,10 +1,10 @@
 import {AssetEvent} from "@awayjs/core";
 
-import {TextureBase} from "@awayjs/graphics";
-
 import {ProjectionBase} from "@awayjs/core";
 
-import {Stage, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {Stage} from "@awayjs/stage";
+
+import {TextureBase} from "../textures/TextureBase";
 
 import {ShadingMethodBase} from "./ShadingMethodBase";
 

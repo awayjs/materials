@@ -1,8 +1,9 @@
 import {ProjectionBase} from "@awayjs/core";
 
-import {GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, GL_TextureBase} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {ChunkVO} from "../data/ChunkVO";
+import {RenderStateBase, ShaderBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
+
 import {EffectEnvMapMethod} from "../methods/EffectEnvMapMethod";
 
 import {ShaderChunkBase} from "./ShaderChunkBase";
@@ -15,8 +16,8 @@ export class EffectEnvMapChunk extends ShaderChunkBase
 	protected _method:EffectEnvMapMethod;
 	protected _shader:ShaderBase;
 
-	protected _envMap:GL_TextureBase;
-	protected _maskMap:GL_TextureBase;
+	protected _envMap:TextureStateBase;
+	protected _maskMap:TextureStateBase;
 	protected _fragmentIndex:number;
 
 	/**
@@ -38,15 +39,25 @@ export class EffectEnvMapChunk extends ShaderChunkBase
 		chunkVO.needsNormals = true;
 		chunkVO.needsView = true;
 
-		this._envMap = <GL_TextureBase> this._shader.getAbstraction(this._method.envMap);
+		this._envMap = <TextureStateBase> this._shader.getAbstraction(this._method.envMap);
+
+        this._envMap._initVO(chunkVO);
 
 		if (this._method.mask) {
-			this._maskMap = <GL_TextureBase> this._shader.getAbstraction(this._method.mask);
+			this._maskMap = <TextureStateBase> this._shader.getAbstraction(this._method.mask);
 			this._shader.uvDependencies++;
 		} else if (this._maskMap) {
 			this._maskMap = null;
 		}
 	}
+
+    /**
+     * @inheritDoc
+     */
+    public _initConstants():void
+    {
+        this._envMap._initConstants();
+    }
 
 	/**
 	 * @inheritDoc
@@ -71,12 +82,12 @@ export class EffectEnvMapChunk extends ShaderChunkBase
 			this._updateProperties();
 	}
 
-	public _setRenderState(renderable:GL_RenderableBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
 	{
-		this._envMap._setRenderState(renderable);
+		this._envMap._setRenderState(renderState);
 
 		if (this._maskMap)
-			this._maskMap._setRenderState(renderable);
+			this._maskMap._setRenderState(renderState);
 	}
 
 	/**

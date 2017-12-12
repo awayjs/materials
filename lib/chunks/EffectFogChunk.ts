@@ -1,8 +1,8 @@
-import {ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {LightingShader} from "@awayjs/renderer";
+import {ShaderBase, ChunkVO} from "@awayjs/renderer";
 
-import {ChunkVO} from "../data/ChunkVO";
+import {LightingShader} from "../shaders/LightingShader";
 import {EffectFogMethod} from "../methods/EffectFogMethod";
 
 import {ShaderChunkBase} from "./ShaderChunkBase";

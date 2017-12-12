@@ -1,14 +1,12 @@
 import {ProjectionBase} from "@awayjs/core";
 
-import {DefaultMaterialManager} from "@awayjs/graphics";
+import {Stage, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {Stage, GL_RenderableBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, GL_TextureBase} from "@awayjs/stage";
+import {RenderStateBase, TextureStateBase, MaterialUtils, ChunkVO} from "@awayjs/renderer";
 
-
-import {LightingShader} from "@awayjs/renderer";
-
-import {ChunkVO} from "../data/ChunkVO";
+import {LightingShader} from "../shaders/LightingShader";
 import {DiffuseGradientMethod} from "../methods/DiffuseGradientMethod";
+import {ImageTexture2D} from "../textures/ImageTexture2D";
 
 import {DiffuseBasicChunk} from "./DiffuseBasicChunk";
 
@@ -20,7 +18,7 @@ import {DiffuseBasicChunk} from "./DiffuseBasicChunk";
  */
 export class DiffuseGradientChunk extends DiffuseBasicChunk
 {
-	private _gradient:GL_TextureBase;
+	private _gradient:TextureStateBase;
 
 	/**
 	 * Creates a new DiffuseGradientChunk object.
@@ -36,8 +34,18 @@ export class DiffuseGradientChunk extends DiffuseBasicChunk
 	{
 		super._initVO(chunkVO);
 
-		this._gradient = <GL_TextureBase> this._shader.getAbstraction((<DiffuseGradientMethod> this._method).gradient || DefaultMaterialManager.getDefaultTexture());
+		this._gradient = <TextureStateBase> this._shader.getAbstraction((<DiffuseGradientMethod> this._method).gradient || new ImageTexture2D());
+
+        this._gradient._initVO(chunkVO);
 	}
+
+    /**
+     * @inheritDoc
+     */
+    public _initConstants():void
+    {
+        this._gradient._initConstants();
+    }
 
 	/**
 	 * @inheritDoc
@@ -103,10 +111,10 @@ export class DiffuseGradientChunk extends DiffuseBasicChunk
 	/**
 	 * @inheritDoc
 	 */
-	public _setRenderState(renderable:GL_RenderableBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
 	{
-		super._setRenderState(renderable, projection);
+		super._setRenderState(renderState, projection);
 
-		this._gradient._setRenderState(renderable);
+		this._gradient._setRenderState(renderState);
 	}
 }

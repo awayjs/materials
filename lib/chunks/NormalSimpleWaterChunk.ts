@@ -1,8 +1,9 @@
 import {AssetEvent, ProjectionBase} from "@awayjs/core";
 
-import {GL_TextureBase, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {ChunkVO} from "../data/ChunkVO";
+import {RenderStateBase, ShaderBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
+
 import {NormalSimpleWaterMethod} from "../methods/NormalSimpleWaterMethod";
 
 import {NormalBasicChunk} from "./NormalBasicChunk";
@@ -12,7 +13,7 @@ import {NormalBasicChunk} from "./NormalBasicChunk";
  */
 export class NormalSimpleWaterChunk extends NormalBasicChunk
 {
-	private _secondaryNormalMap:GL_TextureBase;
+	private _secondaryNormalMap:TextureStateBase;
 	private _fragmentConstantsIndex:number;
 	
 	/**
@@ -28,6 +29,8 @@ export class NormalSimpleWaterChunk extends NormalBasicChunk
 	 */
 	public _initConstants():void
 	{
+		super._initConstants();
+
 		var index:number = this._fragmentConstantsIndex;
 		var data:Float32Array = this._shader.fragmentConstantData;
 		data[index] = .5;
@@ -44,7 +47,7 @@ export class NormalSimpleWaterChunk extends NormalBasicChunk
 		super._initVO(chunkVO);
 		
 		if ((<NormalSimpleWaterMethod> this._method).secondaryNormalMap) {
-			this._secondaryNormalMap = <GL_TextureBase> this._shader.getAbstraction((<NormalSimpleWaterMethod> this._method).secondaryNormalMap);
+			this._secondaryNormalMap = <TextureStateBase> this._shader.getAbstraction((<NormalSimpleWaterMethod> this._method).secondaryNormalMap);
 			this._shader.uvDependencies++;
 		}
 	}
@@ -83,12 +86,12 @@ export class NormalSimpleWaterChunk extends NormalBasicChunk
 	/**
 	 * @inheritDoc
 	 */
-	public _setRenderState(renderable:GL_RenderableBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
 	{
-		super._setRenderState(renderable, projection);
+		super._setRenderState(renderState, projection);
 
 		if (this._secondaryNormalMap)
-			this._secondaryNormalMap._setRenderState(renderable);
+			this._secondaryNormalMap._setRenderState(renderState);
 	}
 
 	/**

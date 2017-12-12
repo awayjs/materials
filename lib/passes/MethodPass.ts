@@ -1,96 +1,97 @@
 import {ColorTransform, Matrix3D, AssetEvent, ProjectionBase} from "@awayjs/core";
 
-import {LightPickerBase, LightSources} from "@awayjs/graphics";
+import {Stage, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {Stage, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, GL_RenderableBase, PassBase, IElementsClassGL, MaterialPool} from "@awayjs/stage";
+import {IRenderable, RenderStateBase, MaterialStatePool, ShaderBase, ChunkVO} from "@awayjs/renderer";
 
-import {LightingShader, ShadingMethodEvent, ILightingPass} from "@awayjs/renderer";
+import {LightPickerBase} from "../lightpickers/LightPickerBase";
+import {LightSources} from "../lightpickers/LightSources";
 
-import {ChunkVO} from "../../data/ChunkVO";
+import {ShadingMethodEvent} from "../events/ShadingMethodEvent";
+import {ILightingPass} from "../passes/ILightingPass";
 
-import {ILightingChunk} from "../../chunks/ILightingChunk";
-import {IShaderChunk} from "../../chunks/IShaderChunk";
+import {LightingShader} from "../shaders/LightingShader";
+import {PassBase} from "../passes/PassBase";
 
-import {AmbientBasicChunk} from "../../chunks/AmbientBasicChunk";
-import {AmbientDepthChunk} from "../../chunks/AmbientDepthChunk";
+import {ILightingChunk} from "../chunks/ILightingChunk";
+import {IShaderChunk} from "../chunks/IShaderChunk";
 
-import {DiffuseBasicChunk} from "../../chunks/DiffuseBasicChunk";
-import {DiffuseCelChunk} from "../../chunks/DiffuseCelChunk";
-import {DiffuseGradientChunk} from "../../chunks/DiffuseGradientChunk";
-import {DiffuseLightMapChunk} from "../../chunks/DiffuseLightMapChunk";
-import {DiffuseWrapChunk} from "../../chunks/DiffuseWrapChunk";
+import {AmbientBasicChunk} from "../chunks/AmbientBasicChunk";
+import {AmbientDepthChunk} from "../chunks/AmbientDepthChunk";
 
-import {EffectAlphaMaskChunk} from "../../chunks/EffectAlphaMaskChunk";
-import {EffectColorMatrixChunk} from "../../chunks/EffectColorMatrixChunk";
-import {EffectColorTransformChunk} from "../../chunks/EffectColorTransformChunk";
-import {EffectEnvMapChunk} from "../../chunks/EffectEnvMapChunk";
-import {EffectFogChunk} from "../../chunks/EffectFogChunk";
-import {EffectFresnelEnvMapChunk} from "../../chunks/EffectFresnelEnvMapChunk";
-import {EffectLightMapChunk} from "../../chunks/EffectLightMapChunk";
-import {EffectProjectiveTextureChunk} from "../../chunks/EffectProjectiveTextureChunk";
-import {EffectRefractionEnvMapChunk} from "../../chunks/EffectRefractionEnvMapChunk";
-import {EffectRimLightChunk} from "../../chunks/EffectRimLightChunk";
+import {DiffuseBasicChunk} from "../chunks/DiffuseBasicChunk";
+import {DiffuseCelChunk} from "../chunks/DiffuseCelChunk";
+import {DiffuseGradientChunk} from "../chunks/DiffuseGradientChunk";
+import {DiffuseLightMapChunk} from "../chunks/DiffuseLightMapChunk";
+import {DiffuseWrapChunk} from "../chunks/DiffuseWrapChunk";
 
-import {NormalBasicChunk} from "../../chunks/NormalBasicChunk";
-import {NormalHeightMapChunk} from "../../chunks/NormalHeightMapChunk";
-import {NormalSimpleWaterChunk} from "../../chunks/NormalSimpleWaterChunk";
+import {EffectAlphaMaskChunk} from "../chunks/EffectAlphaMaskChunk";
+import {EffectColorMatrixChunk} from "../chunks/EffectColorMatrixChunk";
+import {EffectColorTransformChunk} from "../chunks/EffectColorTransformChunk";
+import {EffectEnvMapChunk} from "../chunks/EffectEnvMapChunk";
+import {EffectFogChunk} from "../chunks/EffectFogChunk";
+import {EffectFresnelEnvMapChunk} from "../chunks/EffectFresnelEnvMapChunk";
+import {EffectLightMapChunk} from "../chunks/EffectLightMapChunk";
+import {EffectProjectiveTextureChunk} from "../chunks/EffectProjectiveTextureChunk";
+import {EffectRefractionEnvMapChunk} from "../chunks/EffectRefractionEnvMapChunk";
+import {EffectRimLightChunk} from "../chunks/EffectRimLightChunk";
 
-import {ShadowCascadeChunk} from "../../chunks/ShadowCascadeChunk";
-import {ShadowDitheredChunk} from "../../chunks/ShadowDitheredChunk";
-import {ShadowFilteredChunk} from "../../chunks/ShadowFilteredChunk";
-import {ShadowHardChunk} from "../../chunks/ShadowHardChunk";
-import {ShadowNearChunk} from "../../chunks/ShadowNearChunk";
-import {ShadowSoftChunk} from "../../chunks/ShadowSoftChunk";
+import {NormalBasicChunk} from "../chunks/NormalBasicChunk";
+import {NormalHeightMapChunk} from "../chunks/NormalHeightMapChunk";
+import {NormalSimpleWaterChunk} from "../chunks/NormalSimpleWaterChunk";
 
-import {SpecularAnisotropicChunk} from "../../chunks/SpecularAnisotropicChunk";
-import {SpecularBasicChunk} from "../../chunks/SpecularBasicChunk";
-import {SpecularCelChunk} from "../../chunks/SpecularCelChunk";
-import {SpecularFresnelChunk} from "../../chunks/SpecularFresnelChunk";
-import {SpecularPhongChunk} from "../../chunks/SpecularPhongChunk";
+import {ShadowDitheredChunk} from "../chunks/ShadowDitheredChunk";
+import {ShadowFilteredChunk} from "../chunks/ShadowFilteredChunk";
+import {ShadowHardChunk} from "../chunks/ShadowHardChunk";
+import {ShadowSoftChunk} from "../chunks/ShadowSoftChunk";
 
-import {ShaderChunkBase} from "../../chunks/ShaderChunkBase";
-import {LightingCompositeChunk} from "../../chunks/LightingCompositeChunk";
+import {SpecularAnisotropicChunk} from "../chunks/SpecularAnisotropicChunk";
+import {SpecularBasicChunk} from "../chunks/SpecularBasicChunk";
+import {SpecularCelChunk} from "../chunks/SpecularCelChunk";
+import {SpecularFresnelChunk} from "../chunks/SpecularFresnelChunk";
+import {SpecularPhongChunk} from "../chunks/SpecularPhongChunk";
 
-import {AmbientBasicMethod} from "../../methods/AmbientBasicMethod";
-import {AmbientDepthMethod} from "../../methods/AmbientDepthMethod";
+import {ShaderChunkBase} from "../chunks/ShaderChunkBase";
+import {LightingCompositeChunk} from "../chunks/LightingCompositeChunk";
 
-import {DiffuseBasicMethod} from "../../methods/DiffuseBasicMethod";
-import {DiffuseCelMethod} from "../../methods/DiffuseCelMethod";
-import {DiffuseGradientMethod} from "../../methods/DiffuseGradientMethod";
-import {DiffuseLightMapMethod} from "../../methods/DiffuseLightMapMethod";
-import {DiffuseWrapMethod} from "../../methods/DiffuseWrapMethod";
+import {AmbientBasicMethod} from "../methods/AmbientBasicMethod";
+import {AmbientDepthMethod} from "../methods/AmbientDepthMethod";
 
-import {EffectAlphaMaskMethod} from "../../methods/EffectAlphaMaskMethod";
-import {EffectColorMatrixMethod} from "../../methods/EffectColorMatrixMethod";
-import {EffectColorTransformMethod} from "../../methods/EffectColorTransformMethod";
-import {EffectEnvMapMethod} from "../../methods/EffectEnvMapMethod";
-import {EffectFogMethod} from "../../methods/EffectFogMethod";
-import {EffectFresnelEnvMapMethod} from "../../methods/EffectFresnelEnvMapMethod";
-import {EffectLightMapMethod} from "../../methods/EffectLightMapMethod";
-import {EffectProjectiveTextureMethod} from "../../methods/EffectProjectiveTextureMethod";
-import {EffectRefractionEnvMapMethod} from "../../methods/EffectRefractionEnvMapMethod";
-import {EffectRimLightMethod} from "../../methods/EffectRimLightMethod";
+import {DiffuseBasicMethod} from "../methods/DiffuseBasicMethod";
+import {DiffuseCelMethod} from "../methods/DiffuseCelMethod";
+import {DiffuseGradientMethod} from "../methods/DiffuseGradientMethod";
+import {DiffuseLightMapMethod} from "../methods/DiffuseLightMapMethod";
+import {DiffuseWrapMethod} from "../methods/DiffuseWrapMethod";
 
-import {NormalBasicMethod} from "../../methods/NormalBasicMethod";
-import {NormalHeightMapMethod} from "../../methods/NormalHeightMapMethod";
-import {NormalSimpleWaterMethod} from "../../methods/NormalSimpleWaterMethod";
+import {EffectAlphaMaskMethod} from "../methods/EffectAlphaMaskMethod";
+import {EffectColorMatrixMethod} from "../methods/EffectColorMatrixMethod";
+import {EffectColorTransformMethod} from "../methods/EffectColorTransformMethod";
+import {EffectEnvMapMethod} from "../methods/EffectEnvMapMethod";
+import {EffectFogMethod} from "../methods/EffectFogMethod";
+import {EffectFresnelEnvMapMethod} from "../methods/EffectFresnelEnvMapMethod";
+import {EffectLightMapMethod} from "../methods/EffectLightMapMethod";
+import {EffectProjectiveTextureMethod} from "../methods/EffectProjectiveTextureMethod";
+import {EffectRefractionEnvMapMethod} from "../methods/EffectRefractionEnvMapMethod";
+import {EffectRimLightMethod} from "../methods/EffectRimLightMethod";
 
-import {ShadowCascadeMethod} from "../../methods/ShadowCascadeMethod";
-import {ShadowDitheredMethod} from "../../methods/ShadowDitheredMethod";
-import {ShadowFilteredMethod} from "../../methods/ShadowFilteredMethod";
-import {ShadowHardMethod} from "../../methods/ShadowHardMethod";
-import {ShadowNearMethod} from "../../methods/ShadowNearMethod";
-import {ShadowSoftMethod} from "../../methods/ShadowSoftMethod";
+import {NormalBasicMethod} from "../methods/NormalBasicMethod";
+import {NormalHeightMapMethod} from "../methods/NormalHeightMapMethod";
+import {NormalSimpleWaterMethod} from "../methods/NormalSimpleWaterMethod";
 
-import {SpecularAnisotropicMethod} from "../../methods/SpecularAnisotropicMethod";
-import {SpecularBasicMethod} from "../../methods/SpecularBasicMethod";
-import {SpecularCelMethod} from "../../methods/SpecularCelMethod";
-import {SpecularFresnelMethod} from "../../methods/SpecularFresnelMethod";
-import {SpecularPhongMethod} from "../../methods/SpecularPhongMethod";
+import {ShadowDitheredMethod} from "../methods/ShadowDitheredMethod";
+import {ShadowFilteredMethod} from "../methods/ShadowFilteredMethod";
+import {ShadowHardMethod} from "../methods/ShadowHardMethod";
+import {ShadowSoftMethod} from "../methods/ShadowSoftMethod";
 
-import {ShadingMethodBase} from "../../methods/ShadingMethodBase";
+import {SpecularAnisotropicMethod} from "../methods/SpecularAnisotropicMethod";
+import {SpecularBasicMethod} from "../methods/SpecularBasicMethod";
+import {SpecularCelMethod} from "../methods/SpecularCelMethod";
+import {SpecularFresnelMethod} from "../methods/SpecularFresnelMethod";
+import {SpecularPhongMethod} from "../methods/SpecularPhongMethod";
 
-import {MethodMaterial} from "../../MethodMaterial";
+import {ShadingMethodBase} from "../methods/ShadingMethodBase";
+
+import {MethodMaterial} from "../MethodMaterial";
 
 import {GL_MethodMaterial} from "../GL_MethodMaterial";
 
@@ -120,12 +121,10 @@ ShaderBase.registerAbstraction(NormalBasicChunk, NormalBasicMethod);
 ShaderBase.registerAbstraction(NormalHeightMapChunk, NormalHeightMapMethod);
 ShaderBase.registerAbstraction(NormalSimpleWaterChunk, NormalSimpleWaterMethod);
 
-ShaderBase.registerAbstraction(ShadowCascadeChunk, ShadowCascadeMethod);
 ShaderBase.registerAbstraction(ShadowDitheredChunk, ShadowDitheredMethod);
 ShaderBase.registerAbstraction(ShadowFilteredChunk, ShadowFilteredMethod);
-ShaderBase.registerAbstraction(ShadowHardChunk, ShadowHardMethod);
-ShaderBase.registerAbstraction(ShadowNearChunk, ShadowNearMethod);
 ShaderBase.registerAbstraction(ShadowSoftChunk, ShadowSoftMethod);
+ShaderBase.registerAbstraction(ShadowHardChunk, ShadowHardMethod);
 
 ShaderBase.registerAbstraction(SpecularAnisotropicChunk, SpecularAnisotropicMethod);
 ShaderBase.registerAbstraction(SpecularBasicChunk, SpecularBasicMethod);
@@ -245,7 +244,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 */
 	public get enableLightFallOff():boolean
 	{
-		return (<GL_MethodMaterial>  this._material).enableLightFallOff;
+		return (<GL_MethodMaterial>  this._materialState).enableLightFallOff;
 	}
 
 	/**
@@ -256,7 +255,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 */
 	public get diffuseLightSources():number
 	{
-		return (<GL_MethodMaterial>  this._material).diffuseLightSources;
+		return (<GL_MethodMaterial>  this._materialState).diffuseLightSources;
 	}
 
 	/**
@@ -267,7 +266,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 */
 	public get specularLightSources():number
 	{
-		return (<GL_MethodMaterial>  this._material).specularLightSources;
+		return (<GL_MethodMaterial>  this._materialState).specularLightSources;
 	}
 
 	/**
@@ -275,9 +274,9 @@ export class MethodPass extends PassBase implements ILightingPass
 	 *
 	 * @param material The material to which this pass belongs.
 	 */
-	constructor(mode:number, material:GL_MethodMaterial, materialPool:MaterialPool)
+	constructor(mode:number, material:GL_MethodMaterial, materialStatePool:MaterialStatePool)
 	{
-		super(material, materialPool);
+		super(material, materialStatePool);
 
 		this._mode = mode;
 
@@ -299,24 +298,22 @@ export class MethodPass extends PassBase implements ILightingPass
 				this._shader = null;
 			}
 
-			this._shader = new LightingShader(this._elementsClass, this, this._stage);
+			this._shader = new LightingShader(this._materialStatePool, this._materialState, this, this._stage);
 		} else if (this._shader == null) { // !(_shader instanceof ShaderBase) because there are only two shader types atm
 			if (this._shader != null) {
 				this._shader.dispose();
 				this._shader = null;
 			}
 
-			this._shader = new ShaderBase(this._elementsClass, this, this._stage);
+			this._shader = new ShaderBase(this._materialStatePool, this._materialState, this, this._stage);
 		}
 	}
 
 	/**
 	 * Initializes the unchanging constant data for this material.
 	 */
-	public _initConstantData(shader:ShaderBase):void
+	public _initConstantData():void
 	{
-		super._initConstantData(shader);
-
 		//Updates method constants if they have changed.
 		var len:number = this._chunks.length;
 		for (var i:number = 0; i < len; ++i)
@@ -661,16 +658,16 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * @param stage
 	 * @param camera
 	 */
-	public _setRenderState(renderable:GL_RenderableBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
 	{
-		super._setRenderState(renderable, projection);
+		super._setRenderState(renderState, projection);
 
 		var chunk:IShaderChunk;
 		var len:number = this._chunks.length;
 		for (var i:number = 0; i < len; ++i) {
 			chunk = this._chunks[i];
 			if (chunk.chunkVO.useChunk)
-				chunk._setRenderState(renderable, projection);
+				chunk._setRenderState(renderState, projection);
 		}
 	}
 
@@ -916,7 +913,7 @@ export class MethodPass extends PassBase implements ILightingPass
 				registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
 		}
 
-		if (this._shadowChunk)
+		if (this._shadowChunk && !this._shader.normalDependencies)
 			registerCache.removeFragmentTempUsage(sharedRegisters.shadowTarget);
 
 		///////////////end lighting shading
@@ -1049,10 +1046,10 @@ export class MethodPass extends PassBase implements ILightingPass
 	{
 		var numChannels:number = 0;
 
-		if (((<GL_MethodMaterial> this._material).specularLightSources & LightSources.PROBES) != 0)
+		if (((<GL_MethodMaterial> this._materialState).specularLightSources & LightSources.PROBES) != 0)
 			++numChannels;
 
-		if (((<GL_MethodMaterial> this._material).diffuseLightSources & LightSources.PROBES) != 0)
+		if (((<GL_MethodMaterial> this._materialState).diffuseLightSources & LightSources.PROBES) != 0)
 			++numChannels;
 
 		// 4 channels available

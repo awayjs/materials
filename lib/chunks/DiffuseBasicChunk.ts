@@ -1,12 +1,11 @@
 import {AssetEvent, ProjectionBase} from "@awayjs/core";
 
-import {MappingMode} from "@awayjs/graphics";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {GL_RenderableBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, GL_TextureBase} from "@awayjs/stage";
+import {RenderStateBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
 
-import {LightingShader} from "@awayjs/renderer";
-
-import {ChunkVO} from "../data/ChunkVO";
+import {LightingShader} from "../shaders/LightingShader";
+import {TextureCube} from "../textures/TextureCube";
 import {DiffuseBasicMethod} from "../methods/DiffuseBasicMethod";
 
 import {ILightingChunk} from "./ILightingChunk";
@@ -20,7 +19,7 @@ export class DiffuseBasicChunk extends ShaderChunkBase implements ILightingChunk
 	protected _method:DiffuseBasicMethod;
 	protected _shader:LightingShader;
 
-	protected _texture:GL_TextureBase;
+	protected _texture:TextureStateBase;
 
 	private _ambientColor:number;
 	private _ambientColorR:number = 1;
@@ -69,9 +68,11 @@ export class DiffuseBasicChunk extends ShaderChunkBase implements ILightingChunk
 	public _initVO(chunkVO:ChunkVO):void
 	{
 		if (this._method.texture) {
-			this._texture = <GL_TextureBase> this._shader.getAbstraction(this._method.texture);
+			this._texture = <TextureStateBase> this._shader.getAbstraction(this._method.texture);
 
-			if (this._method.texture.mappingMode == MappingMode.CUBE)
+            this._texture._initVO(chunkVO);
+
+			if (this._method.texture instanceof TextureCube)
 				chunkVO.needsNormals = true;
 			else
 				this._shader.uvDependencies++;
@@ -91,6 +92,9 @@ export class DiffuseBasicChunk extends ShaderChunkBase implements ILightingChunk
 	 */
 	public _initConstants():void
 	{
+        if (this._texture)
+            this._texture._initConstants();
+
 		this._updateProperties();
 	}
 
@@ -207,7 +211,7 @@ export class DiffuseBasicChunk extends ShaderChunkBase implements ILightingChunk
 		this._ambientColorRegister = ambientColorRegister.index*4;
 
 		if (this._texture) {
-			code += this._texture._getFragmentCode(diffuseColor, registerCache, sharedRegisters, (this._method.texture.mappingMode == MappingMode.CUBE)? sharedRegisters.normalFragment : sharedRegisters.uvVarying);
+			code += this._texture._getFragmentCode(diffuseColor, registerCache, sharedRegisters, (this._method.texture instanceof TextureCube)? sharedRegisters.normalFragment : sharedRegisters.uvVarying);
 		} else {
 			var diffuseColorRegister:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 			this._diffuseColorRegister = diffuseColorRegister.index*4;
@@ -278,7 +282,7 @@ export class DiffuseBasicChunk extends ShaderChunkBase implements ILightingChunk
 	 */
 	private _updateProperties():void
 	{
-		this._ambientColor = this._shader.pass.style.color;
+		this._ambientColor = this._shader.materialState.style.color;
 		this._ambientColorR = ((this._ambientColor >> 16) & 0xff)/0xff;
 		this._ambientColorG = ((this._ambientColor >> 8) & 0xff)/0xff;
 		this._ambientColorB = (this._ambientColor & 0xff)/0xff;
@@ -292,10 +296,10 @@ export class DiffuseBasicChunk extends ShaderChunkBase implements ILightingChunk
 	/**
 	 * @inheritDoc
 	 */
-	public _setRenderState(renderable:GL_RenderableBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
 	{
 		if (this._texture)
-			this._texture._setRenderState(renderable);
+			this._texture._setRenderState(renderState);
 
 		//TODO move this to Activate (ambientR/G/B currently calc'd in render state)
 		var index:number = this._ambientColorRegister;

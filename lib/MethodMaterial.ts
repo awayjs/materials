@@ -1,8 +1,7 @@
 ﻿import {AssetEvent} from "@awayjs/core";
 
-import {Image2D, MaterialBase, Single2DTexture, TextureBase, LightPickerBase} from "@awayjs/graphics";
 
-import {ContextGLCompareMode} from "@awayjs/stage";
+import {ContextGLCompareMode, ImageBase} from "@awayjs/stage";
 
 import {AmbientBasicMethod} from "./methods/AmbientBasicMethod";
 import {DiffuseBasicMethod} from "./methods/DiffuseBasicMethod";
@@ -10,9 +9,13 @@ import {DiffuseCompositeMethod} from "./methods/DiffuseCompositeMethod";
 import {ShadingMethodBase} from "./methods/ShadingMethodBase";
 import {NormalBasicMethod} from "./methods/NormalBasicMethod";
 import {ShadowMethodBase} from "./methods/ShadowMethodBase";
-import {ShadowCompositeMethod} from "./methods/ShadowCompositeMethod";
 import {SpecularBasicMethod} from "./methods/SpecularBasicMethod";
 import {SpecularCompositeMethod} from "./methods/SpecularCompositeMethod";
+import {ImageTexture2D} from "./textures/ImageTexture2D";
+import {TextureBase} from "./textures/TextureBase";
+import {LightPickerBase} from "./lightpickers/LightPickerBase";
+
+import {MaterialBase} from "./MaterialBase";
 import {MethodMaterialMode} from "./MethodMaterialMode";
 
 /**
@@ -31,7 +34,7 @@ export class MethodMaterial extends MaterialBase
 	private _diffuseLightSources:number = 0x03;
 	
 	private _ambientMethod:AmbientBasicMethod = new AmbientBasicMethod();
-	private _shadowMethod:ShadowMethodBase | ShadowCompositeMethod;
+	private _shadowMethod:ShadowMethodBase;
 	private _diffuseMethod:DiffuseBasicMethod | DiffuseCompositeMethod = new DiffuseBasicMethod();
 	private _normalMethod:NormalBasicMethod = new NormalBasicMethod();
 	private _specularMethod:SpecularBasicMethod | SpecularCompositeMethod = new SpecularBasicMethod();
@@ -57,7 +60,7 @@ export class MethodMaterial extends MaterialBase
 	 * @param repeat Indicates whether the texture should be tiled when sampled. Defaults to false.
 	 * @param mipmap Indicates whether or not any used textures should use mipmapping. Defaults to false.
 	 */
-	constructor(image?:Image2D, alpha?:number);
+	constructor(image?:ImageBase, alpha?:number);
 	constructor(color?:number, alpha?:number);
 	constructor(imageColor:any = 0xFFFFFF, alpha:number = 1)
 	{
@@ -74,8 +77,8 @@ export class MethodMaterial extends MaterialBase
 		this._onLightChangeDelegate = (event:AssetEvent) => this.onLightsChange(event);
 		
 		//set a texture if an image is present
-		if (imageColor instanceof Image2D)
-			this._ambientMethod.texture = new Single2DTexture();
+		if (imageColor instanceof ImageBase)
+			this._ambientMethod.texture = new ImageTexture2D();
 	}
 
 
@@ -231,12 +234,12 @@ export class MethodMaterial extends MaterialBase
 	/**
 	 * The method used to render shadows cast on this surface, or null if no shadows are to be rendered. Defaults to null.
 	 */
-	public get shadowMethod():ShadowMethodBase | ShadowCompositeMethod
+	public get shadowMethod():ShadowMethodBase
 	{
 		return this._shadowMethod;
 	}
 
-	public set shadowMethod(value:ShadowMethodBase | ShadowCompositeMethod)
+	public set shadowMethod(value:ShadowMethodBase)
 	{
 		if (this._shadowMethod == value)
 			return;
@@ -388,3 +391,13 @@ export class MethodMaterial extends MaterialBase
 		this.invalidate();
 	}
 }
+
+import {DefaultRenderer, DepthRenderer, DistanceRenderer} from "@awayjs/renderer";
+
+import {GL_MethodMaterial} from "./GL_MethodMaterial";
+import {GL_DepthMaterial} from "./GL_DepthMaterial";
+import {GL_DistanceMaterial} from "./GL_DistanceMaterial";
+
+DefaultRenderer.registerMaterial(GL_MethodMaterial, MethodMaterial);
+DepthRenderer.registerMaterial(GL_DepthMaterial, MethodMaterial);
+DistanceRenderer.registerMaterial(GL_DistanceMaterial, MethodMaterial);

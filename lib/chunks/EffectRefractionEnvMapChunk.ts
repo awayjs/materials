@@ -1,8 +1,7 @@
-import {ProjectionBase} from "@awayjs/core";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {ChunkVO} from "@awayjs/renderer";
 
-import {ChunkVO} from "../data/ChunkVO";
 import {EffectRefractionEnvMapMethod} from "../methods/EffectRefractionEnvMapMethod";
 
 import {EffectEnvMapChunk} from "./EffectEnvMapChunk";

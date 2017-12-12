@@ -1,8 +1,9 @@
-import {Single2DTexture} from "@awayjs/graphics";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, Image2D} from "@awayjs/stage";
 
-import {ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {ShaderBase} from "@awayjs/renderer";
 
 import {NormalHeightMapMethod} from "../methods/NormalHeightMapMethod";
+import {ImageTexture2D} from "../textures/ImageTexture2D";
 
 import {NormalBasicChunk} from "./NormalBasicChunk";
 
@@ -26,10 +27,14 @@ export class NormalHeightMapChunk extends NormalBasicChunk
 	 */
 	public _initConstants():void
 	{
+		super._initConstants();
+
 		var index:number = this._fragmentConstantsIndex;
 		var data:Float32Array = this._shader.fragmentConstantData;
-		data[index] = 1/(<Single2DTexture> this._method.texture).image2D.width;
-		data[index + 1] = 1/(<Single2DTexture> this._method.texture).image2D.height;
+		var image:Image2D = <Image2D> (<ImageTexture2D> this._method.texture).image;
+
+		data[index] = 1/image.width;
+		data[index + 1] = 1/image.height;
 		data[index + 2] = 0;
 		data[index + 3] = 1;
 		data[index + 4] = (<NormalHeightMapMethod> this._method).worldXYRatio;

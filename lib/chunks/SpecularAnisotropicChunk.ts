@@ -1,8 +1,8 @@
-import {Stage, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {LightingShader} from "@awayjs/renderer";
+import {ChunkVO} from "@awayjs/renderer";
 
-import {ChunkVO} from "../data/ChunkVO";
+import {LightingShader} from "../shaders/LightingShader";
 import {SpecularAnisotropicMethod} from "../methods/SpecularAnisotropicMethod";
 
 import {SpecularBasicChunk} from "./SpecularBasicChunk";

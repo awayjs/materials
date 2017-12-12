@@ -1,6 +1,5 @@
-import {ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
-
-import {LightBase, ShadowMapperBase} from "@awayjs/graphics";
+import {LightBase} from "../lights/LightBase";
+import {ShadowMapperBase} from "../mappers/ShadowMapperBase";
 
 import {AmbientBasicMethod} from "./AmbientBasicMethod";
 

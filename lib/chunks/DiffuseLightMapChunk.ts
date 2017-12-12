@@ -1,12 +1,11 @@
 import {ProjectionBase} from "@awayjs/core";
 
-import {DefaultMaterialManager} from "@awayjs/graphics";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {GL_RenderableBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, GL_TextureBase} from "@awayjs/stage";
+import {RenderStateBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
 
-import {LightingShader} from "@awayjs/renderer";
-
-import {ChunkVO} from "../data/ChunkVO";
+import {LightingShader} from "../shaders/LightingShader";
+import {ImageTexture2D} from "../textures/ImageTexture2D";
 import {DiffuseLightMapMethod} from "../methods/DiffuseLightMapMethod";
 
 import {LightingCompositeChunk} from "./LightingCompositeChunk";
@@ -18,7 +17,7 @@ import {LightingCompositeChunk} from "./LightingCompositeChunk";
  */
 export class DiffuseLightMapChunk extends LightingCompositeChunk
 {
-	private _lightMap:GL_TextureBase;
+	private _lightMap:TextureStateBase;
 
 	private _method:DiffuseLightMapMethod;
 	private _shader:LightingShader;
@@ -40,13 +39,23 @@ export class DiffuseLightMapChunk extends LightingCompositeChunk
 	 */
 	public _initVO(chunkVO:ChunkVO):void
 	{
-		this._lightMap = <GL_TextureBase> this._shader.getAbstraction(this._method.lightMap || DefaultMaterialManager.getDefaultTexture());
+		this._lightMap = <TextureStateBase> this._shader.getAbstraction(this._method.lightMap || new ImageTexture2D());
+
+        this._lightMap._initVO(chunkVO);
 
 		if (this._method.useSecondaryUV)
 			this._shader.secondaryUVDependencies++;
 		else
 			this._shader.uvDependencies++;
 	}
+
+    /**
+     * @inheritDoc
+     */
+    public _initConstants():void
+    {
+        this._lightMap._initConstants();
+    }
 
 	/**
 	 * @inheritDoc
@@ -85,10 +94,10 @@ export class DiffuseLightMapChunk extends LightingCompositeChunk
 	/**
 	 * @inheritDoc
 	 */
-	public _setRenderState(renderable:GL_RenderableBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
 	{
-		super._setRenderState(renderable, projection);
+		super._setRenderState(renderState, projection);
 
-		this._lightMap._setRenderState(renderable);
+		this._lightMap._setRenderState(renderState);
 	}
 }

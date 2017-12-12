@@ -1,7 +1,6 @@
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {LightingShader} from "@awayjs/renderer";
-
+import {LightingShader} from "../shaders/LightingShader";
 import {DiffuseWrapMethod} from "../methods/DiffuseWrapMethod";
 
 import {DiffuseBasicChunk} from "./DiffuseBasicChunk";

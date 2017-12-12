@@ -1,16 +1,18 @@
 import {AssetEvent} from "@awayjs/core";
 
-import {BlendMode, StaticLightPicker, LightPickerBase} from "@awayjs/graphics";
+import {ContextGLCompareMode, BlendMode} from "@awayjs/stage";
 
-import {ContextGLCompareMode, IElementsClassGL, GL_MaterialBase, MaterialPool} from "@awayjs/stage";
+import {MaterialStatePool} from "@awayjs/renderer";
 
-import {MethodPassMode} from "../surfaces/passes/MethodPassMode";
-import {MethodPass} from "../surfaces/passes/MethodPass";
-import {ShadingMethodBase} from "../methods/ShadingMethodBase";
+import {StaticLightPicker} from "./lightpickers/StaticLightPicker";
+import {LightPickerBase} from "./lightpickers/LightPickerBase";
+import {MethodPassMode} from "./passes/MethodPassMode";
+import {MethodPass} from "./passes/MethodPass";
+import {ShadingMethodBase} from "./methods/ShadingMethodBase";
 
-import {MethodMaterial} from "../MethodMaterial";
-import {MethodMaterialMode} from "../MethodMaterialMode";
-
+import {MethodMaterial} from "./MethodMaterial";
+import {MethodMaterialMode} from "./MethodMaterialMode";
+import {GL_MaterialBase} from "./GL_MaterialBase";
 
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
@@ -19,7 +21,6 @@ import {MethodMaterialMode} from "../MethodMaterialMode";
 export class GL_MethodMaterial extends GL_MaterialBase
 {
 	private _methodMaterial:MethodMaterial;
-	private _materialPool:MaterialPool;
 	private _pass:MethodPass;
 	private _casterLightPass:MethodPass;
 	private _nonCasterLightPasses:Array<MethodPass>;
@@ -81,12 +82,12 @@ export class GL_MethodMaterial extends GL_MaterialBase
 	 *
 	 * @param material The material to which this pass belongs.
 	 */
-	constructor(material:MethodMaterial, materialPool:MaterialPool)
+	constructor(material:MethodMaterial, materialStatePool:MaterialStatePool)
 	{
-		super(material, materialPool);
+		super(material, materialStatePool);
 
 		this._methodMaterial = material;
-		this._materialPool = materialPool;
+		this._materialStatePool = materialStatePool;
 	}
 
 	/**
@@ -176,7 +177,7 @@ export class GL_MethodMaterial extends GL_MaterialBase
 
 		if (this._casterLightPass || this._nonCasterLightPasses) {
 			//cannot be blended by blendmode property if multipass enabled
-			this._pRequiresBlending = false;
+			this.requiresBlending = false;
 
 			// there are light passes, so this should be blended in
 			if (this._pass) {
@@ -187,13 +188,13 @@ export class GL_MethodMaterial extends GL_MaterialBase
 			}
 
 		} else if (this._pass) {
-			this._pRequiresBlending = (this._methodMaterial.blendMode != BlendMode.NORMAL || this._methodMaterial.alphaBlending || (this._methodMaterial.colorTransform && this._methodMaterial.colorTransform.alphaMultiplier < 1));
+			this.requiresBlending = (this._methodMaterial.blendMode != BlendMode.NORMAL || this._methodMaterial.alphaBlending || (this._methodMaterial.colorTransform && this._methodMaterial.colorTransform.alphaMultiplier < 1));
 			// effects pass is the only pass, so it should just blend normally
 			this._pass.mode = MethodPassMode.SUPER_SHADER;
-			this._pass.preserveAlpha = this._pRequiresBlending;
+			this._pass.preserveAlpha = this.requiresBlending;
 			this._pass.forceSeparateMVP = false;
 			this._pass.colorTransform = this._methodMaterial.colorTransform;
-			this._pass.shader.setBlendMode((this._methodMaterial.blendMode == BlendMode.NORMAL && this._pRequiresBlending)? BlendMode.LAYER : this._methodMaterial.blendMode);
+			this._pass.shader.setBlendMode((this._methodMaterial.blendMode == BlendMode.NORMAL && this.requiresBlending)? BlendMode.LAYER : this._methodMaterial.blendMode);
 			this._pass.shader.depthCompareMode = this._methodMaterial.depthCompareMode;
 		}
 	}
@@ -202,7 +203,7 @@ export class GL_MethodMaterial extends GL_MaterialBase
 	{
 
 		if (this._casterLightPass == null)
-			this._casterLightPass = new MethodPass(MethodPassMode.LIGHTING, this, this._materialPool);
+			this._casterLightPass = new MethodPass(MethodPassMode.LIGHTING, this, this._materialStatePool);
 
 		this._casterLightPass.lightPicker = new StaticLightPicker([this._methodMaterial.shadowMethod.castingLight]);
 		this._casterLightPass.shadowMethod = this._methodMaterial.shadowMethod;
@@ -238,7 +239,7 @@ export class GL_MethodMaterial extends GL_MaterialBase
 		this._nonCasterLightPasses = new Array<MethodPass>();
 
 		while (dirLightOffset < numDirLights || pointLightOffset < numPointLights || probeOffset < numLightProbes) {
-			pass = new MethodPass(MethodPassMode.LIGHTING, this, this._materialPool);
+			pass = new MethodPass(MethodPassMode.LIGHTING, this, this._materialStatePool);
 			pass.includeCasters = this._methodMaterial.shadowMethod == null;
 			pass.directionalLightsOffset = dirLightOffset;
 			pass.pointLightsOffset = pointLightOffset;
@@ -288,7 +289,7 @@ export class GL_MethodMaterial extends GL_MaterialBase
 	private initEffectPass():void
 	{
 		if (this._pass == null)
-			this._pass = new MethodPass(MethodPassMode.SUPER_SHADER, this, this._materialPool);
+			this._pass = new MethodPass(MethodPassMode.SUPER_SHADER, this, this._materialStatePool);
 
 		if (this._methodMaterial.mode == MethodMaterialMode.SINGLE_PASS) {
 			this._pass.ambientMethod = this._methodMaterial.ambientMethod;

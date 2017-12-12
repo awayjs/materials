@@ -1,6 +1,8 @@
 import {ColorTransform} from "@awayjs/core";
 
-import {ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+
+import {ShaderBase} from "@awayjs/renderer";
 
 import {EffectColorTransformMethod} from "../methods/EffectColorTransformMethod";
 

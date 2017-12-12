@@ -1,4 +1,7 @@
-import {BitmapImage2D, Single2DTexture, DirectionalLight} from "@awayjs/graphics";
+import {BitmapImage2D} from "@awayjs/stage";
+
+import {ImageTexture2D} from "../textures/ImageTexture2D";
+import {DirectionalLight} from "../lights/DirectionalLight";
 
 import {ShadowMethodBase} from "./ShadowMethodBase";
 
@@ -7,7 +10,7 @@ import {ShadowMethodBase} from "./ShadowMethodBase";
  */
 export class ShadowDitheredMethod extends ShadowMethodBase
 {
-	public static _grainTexture:Single2DTexture;
+	public static _grainTexture:ImageTexture2D;
 	private static _grainUsages:number;
 	private static _grainBitmapImage2D:BitmapImage2D;
 	private _depthMapSize:number;
@@ -111,7 +114,7 @@ export class ShadowDitheredMethod extends ShadowMethodBase
 		}
 
 		ShadowDitheredMethod._grainBitmapImage2D.setArray(ShadowDitheredMethod._grainBitmapImage2D.rect, vec);
-		ShadowDitheredMethod._grainTexture = new Single2DTexture(ShadowDitheredMethod._grainBitmapImage2D);
+		ShadowDitheredMethod._grainTexture = new ImageTexture2D(ShadowDitheredMethod._grainBitmapImage2D);
 	}
 
 	/**

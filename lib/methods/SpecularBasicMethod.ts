@@ -1,6 +1,6 @@
 import {AssetEvent} from "@awayjs/core";
 
-import {TextureBase} from "@awayjs/graphics";
+import {TextureBase} from "../textures/TextureBase";
 
 import {ShadingMethodBase} from "./ShadingMethodBase";
 

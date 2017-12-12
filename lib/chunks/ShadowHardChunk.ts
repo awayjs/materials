@@ -1,10 +1,9 @@
-import {LightBase} from "@awayjs/graphics";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {Stage, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
-
-import {LightingShader} from "@awayjs/renderer";
-
+import {LightBase} from "../lights/LightBase";
+import {LightingShader} from "../shaders/LightingShader";
 import {ShadowHardMethod} from "../methods/ShadowHardMethod";
+import {GL_ShadowMapperBase} from "../mappers/GL_ShadowMapperBase";
 
 import {ShadowChunkBase} from "./ShadowChunkBase";
 
@@ -21,75 +20,18 @@ export class ShadowHardChunk extends ShadowChunkBase
 		super(method, shader);
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	protected _getPlanarFragmentCode(targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string = "";
-		var decReg:ShaderRegisterElement = regCache.getFreeFragmentConstant();
-		regCache.getFreeFragmentConstant();
 
-		var depthCol:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
+    /**
+     * @inheritDoc
+     */
+    public _getFragmentCode(targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+    {
+        var code:string = this._baseTexture._getFragmentCode(targetReg, registerCache, sharedRegisters, (<GL_ShadowMapperBase> this._baseChunk).depthMapCoordReg);
 
-		this._fragmentConstantsIndex = decReg.index*4;
+		code += super._getFragmentCode(targetReg, registerCache, sharedRegisters);
 
-		code += this._depthMap._getFragmentCode(depthCol, regCache, sharedRegisters, this._depthMapCoordReg) +
-			"dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" +
-			"slt " + targetReg + ".w, " + this._depthMapCoordReg + ".z, " + depthCol + ".z\n"; // 0 if in shadow
+        return code;
+    }
 
-		return code;
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	protected _getPointFragmentCode(targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string = "";
-		var decReg:ShaderRegisterElement = regCache.getFreeFragmentConstant();
-		var epsReg:ShaderRegisterElement = regCache.getFreeFragmentConstant();
-		var posReg:ShaderRegisterElement = regCache.getFreeFragmentConstant();
-		var depthSampleCol:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
-		regCache.addFragmentTempUsages(depthSampleCol, 1);
-		var lightDir:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
-		regCache.addFragmentTempUsages(lightDir, 1);
-
-		this._fragmentConstantsIndex = decReg.index*4;
-
-		code += "sub " + lightDir + ", " + sharedRegisters.globalPositionVarying + ", " + posReg + "\n" +
-			"dp3 " + lightDir + ".w, " + lightDir + ".xyz, " + lightDir + ".xyz\n" +
-			"mul " + lightDir + ".w, " + lightDir + ".w, " + posReg + ".w\n" +
-			"nrm " + lightDir + ".xyz, " + lightDir + ".xyz\n" +
-
-			this._depthMap._getFragmentCode(depthSampleCol, regCache, sharedRegisters, lightDir) +
-			"dp4 " + depthSampleCol + ".z, " + depthSampleCol + ", " + decReg + "\n" +
-			"add " + targetReg + ".w, " + lightDir + ".w, " + epsReg + ".x\n" +    // offset by epsilon
-
-			"slt " + targetReg + ".w, " + targetReg + ".w, " + depthSampleCol + ".z\n"; // 0 if in shadow
-
-		regCache.removeFragmentTempUsage(lightDir);
-		regCache.removeFragmentTempUsage(depthSampleCol);
-
-		return code;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public _getCascadeFragmentCode(decodeRegister:ShaderRegisterElement, depthProjection:ShaderRegisterElement, targetRegister:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
-
-		return this._depthMap._getFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
-			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
-			"slt " + targetRegister + ".w, " + depthProjection + ".z, " + temp + ".z\n"; // 0 if in shadow
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public _activateForCascade():void
-	{
-	}
 }

@@ -1,14 +1,11 @@
-import {AssetEvent} from "@awayjs/core";
+import {AssetEvent, ProjectionBase} from "@awayjs/core";
 
-import {TextureBase} from "@awayjs/graphics";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {ProjectionBase} from "@awayjs/core";
+import {RenderStateBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
 
-import {GL_TextureBase, GL_RenderableBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
-
-import {LightingShader} from "@awayjs/renderer";
-
-import {ChunkVO} from "../data/ChunkVO";
+import {LightingShader} from "../shaders/LightingShader";
+import {TextureBase} from "../textures/TextureBase";
 import {SpecularBasicMethod} from "../methods/SpecularBasicMethod";
 
 import {ILightingChunk} from "./ILightingChunk";
@@ -29,7 +26,7 @@ export class SpecularBasicChunk extends ShaderChunkBase implements ILightingChun
 	protected _method:SpecularBasicMethod;
 	protected _shader:LightingShader;
 
-	protected _texture:GL_TextureBase;
+	protected _texture:TextureStateBase;
 
 	public _pIsFirstLight:boolean;
 
@@ -63,12 +60,22 @@ export class SpecularBasicChunk extends ShaderChunkBase implements ILightingChun
 		chunkVO.needsView = this._shader.numLights > 0;
 
 		if (this._method.texture) {
-			this._texture = <GL_TextureBase> this._shader.getAbstraction(this._method.texture);
+			this._texture = <TextureStateBase> this._shader.getAbstraction(this._method.texture);
+            this._texture._initVO(chunkVO);
 			this._shader.uvDependencies++;
 		} else if (this._texture) {
 			this._texture = null;
 		}
 	}
+
+    /**
+     * @inheritDoc
+     */
+    public _initConstants():void
+    {
+        if (this._method.texture)
+            this._texture._initConstants();
+    }
 
 	/**
 	 * @inheritDoc
@@ -241,9 +248,9 @@ export class SpecularBasicChunk extends ShaderChunkBase implements ILightingChun
 		}
 	}
 
-	public iSetRenderState(renderable:GL_RenderableBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
 	{
 		if (this._texture)
-			this._texture._setRenderState(renderable);
+			this._texture._setRenderState(renderState);
 	}
 }

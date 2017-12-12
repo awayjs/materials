@@ -1,10 +1,10 @@
 import {ProjectionBase, IEventDispatcher} from "@awayjs/core";
 
-import {GL_RenderableBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {ShadingMethodEvent} from "@awayjs/renderer";
+import {RenderStateBase, ChunkVO, ShaderBase} from "@awayjs/renderer";
 
-import {ChunkVO} from "../data/ChunkVO";
+import {ShadingMethodEvent} from "../events/ShadingMethodEvent";
 import {ShadingMethodBase} from "../methods/ShadingMethodBase";
 
 
@@ -85,7 +85,7 @@ export interface IShaderChunk extends IEventDispatcher
 	 *
 	 * @internal
 	 */
-	_setRenderState(renderable:GL_RenderableBase, projection:ProjectionBase):void;
+	_setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void;
 
 	/**
 	 * Clears the render state for this method.

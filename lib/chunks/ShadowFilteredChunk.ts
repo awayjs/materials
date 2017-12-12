@@ -1,8 +1,8 @@
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {LightingShader} from "@awayjs/renderer";
-
+import {LightingShader} from "../shaders/LightingShader";
 import {ShadowFilteredMethod} from "../methods/ShadowFilteredMethod";
+import {GL_ShadowMapperBase} from "../mappers/GL_ShadowMapperBase";
 
 import {ShadowChunkBase} from "./ShadowChunkBase";
 
@@ -12,7 +12,7 @@ import {ShadowChunkBase} from "./ShadowChunkBase";
  */
 export class ShadowFilteredChunk extends ShadowChunkBase
 {
-	private _cascadeFragmentConstantsIndex:number;
+    private _fragmentConstantsIndex:number;
 
 	/**
 	 * Creates a new ShadowFilteredChunk.
@@ -31,135 +31,67 @@ export class ShadowFilteredChunk extends ShadowChunkBase
 
 		var fragmentData:Float32Array = this._shader.fragmentConstantData;
 		var index:number = this._fragmentConstantsIndex;
-		fragmentData[index + 8] = .5;
+		fragmentData[index] = .5;
 		var size:number = this._method.castingLight.shadowMapper.size;
-		fragmentData[index + 9] = size;
-		fragmentData[index + 10] = 1/size;
+		fragmentData[index + 1] = size;
+		fragmentData[index + 2] = 1/size;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public _getPlanarFragmentCode(targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string = "";
-		var decReg:ShaderRegisterElement = regCache.getFreeFragmentConstant();
-		regCache.getFreeFragmentConstant();
-		var customDataReg:ShaderRegisterElement = regCache.getFreeFragmentConstant();
+    /**
+     * @inheritDoc
+     */
+    public _getFragmentCode(targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+    {
+        var dataReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 
-		this._fragmentConstantsIndex = decReg.index*4;
+        this._fragmentConstantsIndex = dataReg.index*4;
 
-		var depthCol:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
-		regCache.addFragmentTempUsages(depthCol, 1);
-		var uvReg:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
-		regCache.addFragmentTempUsages(uvReg, 1);
+        var code:string = "";
+		var uvReg:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
+        registerCache.addFragmentTempUsages(uvReg, 1);
+        var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
+        registerCache.addFragmentTempUsages(temp, 1);
 
-		code += "mov " + uvReg + ", " + this._depthMapCoordReg + "\n" +
+		code += "mov " + uvReg + ", " + (<GL_ShadowMapperBase> this._baseChunk).depthMapCoordReg + "\n" +
 
-			this._depthMap._getFragmentCode(depthCol, regCache, sharedRegisters, this._depthMapCoordReg) +
-			"dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" +
-			"slt " + uvReg + ".z, " + this._depthMapCoordReg + ".z, " + depthCol + ".z\n" +   // 0 if in shadow
+            this._baseTexture._getFragmentCode(temp, registerCache, sharedRegisters, uvReg) +
+            "mov " + uvReg + ".w, " + temp + ".w\n" +
 
-			"add " + uvReg + ".x, " + this._depthMapCoordReg + ".x, " + customDataReg + ".z\n" + 	// (1, 0)
-			this._depthMap._getFragmentCode(depthCol, regCache, sharedRegisters, uvReg) +
-			"dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" +
-			"slt " + uvReg + ".w, " + this._depthMapCoordReg + ".z, " + depthCol + ".z\n" +   // 0 if in shadow
+			"add " + uvReg + ".x, " + (<GL_ShadowMapperBase> this._baseChunk).depthMapCoordReg + ".x, " + dataReg + ".z\n" + 	// (1, 0)
+            this._baseTexture._getFragmentCode(temp, registerCache, sharedRegisters, uvReg) +
 
-			"mul " + depthCol + ".x, " + this._depthMapCoordReg + ".x, " + customDataReg + ".y\n" +
-			"frc " + depthCol + ".x, " + depthCol + ".x\n" +
-			"sub " + uvReg + ".w, " + uvReg + ".w, " + uvReg + ".z\n" +
-			"mul " + uvReg + ".w, " + uvReg + ".w, " + depthCol + ".x\n" +
-			"add " + targetReg + ".w, " + uvReg + ".z, " + uvReg + ".w\n" +
+			"mul " + temp + ".x, " + (<GL_ShadowMapperBase> this._baseChunk).depthMapCoordReg + ".x, " + dataReg + ".y\n" +
+			"frc " + temp + ".x, " + temp + ".x\n" +
+			"sub " + temp + ".w, " + temp + ".w, " + uvReg + ".w\n" +
+			"mul " + temp + ".w, " + temp + ".w, " + temp + ".x\n" +
+			"add " + targetReg + ".w, " + uvReg + ".w, " + temp + ".w\n" +
 
-			"mov " + uvReg + ".x, " + this._depthMapCoordReg + ".x\n" +
-			"add " + uvReg + ".y, " + this._depthMapCoordReg + ".y, " + customDataReg + ".z\n" +	// (0, 1)
-			this._depthMap._getFragmentCode(depthCol, regCache, sharedRegisters, uvReg) +
-			"dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" +
-			"slt " + uvReg + ".z, " + this._depthMapCoordReg + ".z, " + depthCol + ".z\n" +   // 0 if in shadow
+			"mov " + uvReg + ".x, " + (<GL_ShadowMapperBase> this._baseChunk).depthMapCoordReg + ".x\n" +
+			"add " + uvReg + ".y, " + (<GL_ShadowMapperBase> this._baseChunk).depthMapCoordReg + ".y, " + dataReg + ".z\n" +	// (0, 1)
+            this._baseTexture._getFragmentCode(temp, registerCache, sharedRegisters, uvReg) +
+            "mov " + uvReg + ".w, " + temp + ".w\n" +
 
-			"add " + uvReg + ".x, " + this._depthMapCoordReg + ".x, " + customDataReg + ".z\n" +	// (1, 1)
-			this._depthMap._getFragmentCode(depthCol, regCache, sharedRegisters, uvReg) +
-			"dp4 " + depthCol + ".z, " + depthCol + ", " + decReg + "\n" +
-			"slt " + uvReg + ".w, " + this._depthMapCoordReg + ".z, " + depthCol + ".z\n" +   // 0 if in shadow
+			"add " + uvReg + ".x, " + (<GL_ShadowMapperBase> this._baseChunk).depthMapCoordReg + ".x, " + dataReg + ".z\n" +	// (1, 1)
+            this._baseTexture._getFragmentCode(temp, registerCache, sharedRegisters, uvReg) +
 
 			// recalculate fraction, since we ran out of registers :(
-			"mul " + depthCol + ".x, " + this._depthMapCoordReg + ".x, " + customDataReg + ".y\n" +
-			"frc " + depthCol + ".x, " + depthCol + ".x\n" + "sub " + uvReg + ".w, " + uvReg + ".w, " + uvReg + ".z\n" +
-			"mul " + uvReg + ".w, " + uvReg + ".w, " + depthCol + ".x\n" +
-			"add " + uvReg + ".w, " + uvReg + ".z, " + uvReg + ".w\n" +
+			"mul " + temp + ".x, " + (<GL_ShadowMapperBase> this._baseChunk).depthMapCoordReg + ".x, " + dataReg + ".y\n" +
+			"frc " + temp + ".x, " + temp + ".x\n" +
+			"sub " + temp + ".w, " + temp + ".w, " + uvReg + ".w\n" +
+			"mul " + temp + ".w, " + temp + ".w, " + temp + ".x\n" +
+			"add " + uvReg + ".w, " + uvReg + ".w, " + temp + ".w\n" +
 
-			"mul " + depthCol + ".x, " + this._depthMapCoordReg + ".y, " + customDataReg + ".y\n" +
-			"frc " + depthCol + ".x, " + depthCol + ".x\n" +
+			"mul " + temp + ".x, " + (<GL_ShadowMapperBase> this._baseChunk).depthMapCoordReg + ".y, " + dataReg + ".y\n" +
+			"frc " + temp + ".x, " + temp + ".x\n" +
 			"sub " + uvReg + ".w, " + uvReg + ".w, " + targetReg + ".w\n" +
-			"mul " + uvReg + ".w, " + uvReg + ".w, " + depthCol + ".x\n" +
+			"mul " + uvReg + ".w, " + uvReg + ".w, " + temp + ".x\n" +
 			"add " + targetReg + ".w, " + targetReg + ".w, " + uvReg + ".w\n";
 
-		regCache.removeFragmentTempUsage(depthCol);
-		regCache.removeFragmentTempUsage(uvReg);
+        registerCache.removeFragmentTempUsage(temp);
+        registerCache.removeFragmentTempUsage(uvReg);
 
-		return code;
-	}
+        super._getFragmentCode(targetReg, registerCache, sharedRegisters);
 
-	/**
-	 * @inheritDoc
-	 */
-	public _activateForCascade():void
-	{
-		var size:number = this._method.castingLight.shadowMapper.size;
-		var index:number = this._cascadeFragmentConstantsIndex;
-		var data:Float32Array = this._shader.fragmentConstantData;
-		data[index] = size;
-		data[index + 1] = 1/size;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public _getCascadeFragmentCode(decodeRegister:ShaderRegisterElement, depthProjection:ShaderRegisterElement, targetRegister:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string;
-		var dataReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
-		this._cascadeFragmentConstantsIndex = dataReg.index*4;
-
-		var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
-		registerCache.addFragmentTempUsages(temp, 1);
-		var predicate:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
-		registerCache.addFragmentTempUsages(predicate, 1);
-
-		code = this._depthMap._getFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
-			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
-			"slt " + predicate + ".x, " + depthProjection + ".z, " + temp + ".z\n" +
-
-			"add " + depthProjection + ".x, " + depthProjection + ".x, " + dataReg + ".y\n" +
-			this._depthMap._getFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
-			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
-			"slt " + predicate + ".z, " + depthProjection + ".z, " + temp + ".z\n" +
-
-			"add " + depthProjection + ".y, " + depthProjection + ".y, " + dataReg + ".y\n" +
-			this._depthMap._getFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
-			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
-			"slt " + predicate + ".w, " + depthProjection + ".z, " + temp + ".z\n" +
-
-			"sub " + depthProjection + ".x, " + depthProjection + ".x, " + dataReg + ".y\n" +
-			this._depthMap._getFragmentCode(temp, registerCache, sharedRegisters, depthProjection) +
-			"dp4 " + temp + ".z, " + temp + ", " + decodeRegister + "\n" +
-			"slt " + predicate + ".y, " + depthProjection + ".z, " + temp + ".z\n" +
-
-			"mul " + temp + ".xy, " + depthProjection + ".xy, " + dataReg + ".x\n" +
-			"frc " + temp + ".xy, " + temp + ".xy\n" +
-
-			// some strange register juggling to prevent agal bugging out
-			"sub " + depthProjection + ", " + predicate + ".xyzw, " + predicate + ".zwxy\n" +
-			"mul " + depthProjection + ", " + depthProjection + ", " + temp + ".x\n" +
-
-			"add " + predicate + ".xy, " + predicate + ".xy, " + depthProjection + ".zw\n" +
-
-			"sub " + predicate + ".y, " + predicate + ".y, " + predicate + ".x\n" +
-			"mul " + predicate + ".y, " + predicate + ".y, " + temp + ".y\n" +
-			"add " + targetRegister + ".w, " + predicate + ".x, " + predicate + ".y\n";
-
-		registerCache.removeFragmentTempUsage(temp);
-		registerCache.removeFragmentTempUsage(predicate);
 		return code;
 	}
 }

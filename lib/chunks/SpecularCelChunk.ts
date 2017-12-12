@@ -1,7 +1,6 @@
-import {Stage, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {LightingShader} from "@awayjs/renderer";
-
+import {LightingShader} from "../shaders/LightingShader";
 import {SpecularCelMethod} from "../methods/SpecularCelMethod";
 
 import {ILightingChunk} from "./ILightingChunk";

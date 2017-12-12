@@ -1,8 +1,9 @@
 import {AbstractMethodError} from "@awayjs/core";
 
-import {TextureBase, IMaterial} from "@awayjs/graphics";
+import {ShadingMethodEvent} from "../events/ShadingMethodEvent";
+import {TextureBase} from "../textures/TextureBase";
 
-import {ShadingMethodEvent} from "@awayjs/renderer";
+import {MaterialBase} from "../MaterialBase";
 
 import {ShadingMethodBase} from "./ShadingMethodBase";
 
@@ -58,14 +59,14 @@ export class CompositeMethodBase extends ShadingMethodBase
 		throw new AbstractMethodError();
 	}
 
-	public iAddOwner(owner:IMaterial):void
+	public iAddOwner(owner:MaterialBase):void
 	{
 		super.iAddOwner(owner);
 
 		this._baseMethod.iAddOwner(owner);
 	}
 
-	public iRemoveOwner(owner:IMaterial):void
+	public iRemoveOwner(owner:MaterialBase):void
 	{
 		super.iRemoveOwner(owner);
 

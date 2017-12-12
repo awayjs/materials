@@ -1,8 +1,8 @@
 import {AssetBase} from "@awayjs/core";
 
-import {IMaterial, TextureBase} from "@awayjs/graphics";
-
-import {ShadingMethodEvent} from "@awayjs/renderer";
+import {TextureBase} from "../textures/TextureBase";
+import {ShadingMethodEvent} from "../events/ShadingMethodEvent";
+import {MaterialBase} from "../MaterialBase";
 
 
 /**
@@ -13,7 +13,7 @@ export class ShadingMethodBase extends AssetBase
 {
 	public _textures:Array<TextureBase> = new Array<TextureBase>();
 
-	public _owners:Array<IMaterial> = new Array<IMaterial>();
+	public _owners:Array<MaterialBase> = new Array<MaterialBase>();
 	public _counts:Array<number> = new Array<number>();
 
 	/**
@@ -33,7 +33,7 @@ export class ShadingMethodBase extends AssetBase
 	}
 
 
-	public iAddOwner(owner:IMaterial):void
+	public iAddOwner(owner:MaterialBase):void
 	{
 		//a method can be used more than once in the same material, so we check for this
 		var index:number = this._owners.indexOf(owner);
@@ -51,7 +51,7 @@ export class ShadingMethodBase extends AssetBase
 		}
 	}
 
-	public iRemoveOwner(owner:IMaterial):void
+	public iRemoveOwner(owner:MaterialBase):void
 	{
 		var index:number = this._owners.indexOf(owner);
 

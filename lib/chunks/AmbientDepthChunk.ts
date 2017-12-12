@@ -1,4 +1,6 @@
-import {ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, GL_TextureBase} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+
+import {ShaderBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
 
 import {AmbientDepthMethod} from "../methods/AmbientDepthMethod";
 
@@ -10,7 +12,7 @@ import {AmbientBasicChunk} from "./AmbientBasicChunk";
 export class AmbientDepthChunk extends AmbientBasicChunk
 {
 	private _decRegIndex:number;
-	private _shadowTexture:GL_TextureBase
+	private _shadowTexture:TextureStateBase
 
 	/**
 	 * Creates a new AmbientBasicChunk object.
@@ -19,14 +21,24 @@ export class AmbientDepthChunk extends AmbientBasicChunk
 	{
 		super(method, shader);
 
-		this._shadowTexture = <GL_TextureBase> shader.getAbstraction(method.castingLight.shadowMapper.textureMap);
+		this._shadowTexture = <TextureStateBase> shader.getAbstraction(method.castingLight.shadowMapper.textureMap);
 	}
+
+    /**
+     * @inheritDoc
+     */
+    public _initVO(chunkVO:ChunkVO):void
+    {
+        this._shadowTexture._initVO(chunkVO);
+    }
 
 	/**
 	 * @inheritDoc
 	 */
 	public _initConstants():void
 	{
+        this._shadowTexture._initConstants();
+
 		var data:Float32Array = this._shader.fragmentConstantData;
 		var index:number = this._decRegIndex;
 		data[index] = 1.0;

@@ -1,15 +1,14 @@
 import {ProjectionBase} from "@awayjs/core";
 
-import {NearDirectionalShadowMapper} from "@awayjs/graphics";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {Stage, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {RenderStateBase, ChunkVO} from "@awayjs/renderer";
 
-import {ShadingMethodEvent, LightingShader} from "@awayjs/renderer";
+import {LightingShader} from "../shaders/LightingShader";
+import {ShadingMethodEvent} from "../events/ShadingMethodEvent";
 
-import {ChunkVO} from "../data/ChunkVO";
-import {ShadowNearMethod} from "../methods/ShadowNearMethod";
-
-import {CompositeChunkBase} from "./CompositeChunkBase";
+import {NearDirectionalShadowMapper} from "./NearDirectionalShadowMapper";
+import {GL_DirectionalShadowMapper} from "./GL_DirectionalShadowMapper";
 
 // TODO: shadow mappers references in materials should be an interface so that this class should NOT extend ShadowMapMethodBase just for some delegation work
 /**
@@ -18,21 +17,9 @@ import {CompositeChunkBase} from "./CompositeChunkBase";
  *
  * @see away.lights.NearDirectionalShadowMapper
  */
-export class ShadowNearChunk extends CompositeChunkBase
+export class GL_NearDirectionalShadowMapper extends GL_DirectionalShadowMapper
 {
-	protected _method:ShadowNearMethod;
-	protected _shader:LightingShader;
-	private _fragmentConstantsIndex:number;
-	/**
-	 * Creates a new ShadowNearChunk.
-	 */
-	constructor(method:ShadowNearMethod, shader:LightingShader)
-	{
-		super(method, shader);
-
-		this._method = method;
-		this._shader = shader;
-	}
+	private _fragmentDistanceIndex:number;
 
 	/**
 	 * @inheritDoc
@@ -42,7 +29,7 @@ export class ShadowNearChunk extends CompositeChunkBase
 		super._initConstants();
 
 		var fragmentData:Float32Array = this._shader.fragmentConstantData;
-		var index:number = this._fragmentConstantsIndex;
+		var index:number = this._fragmentDistanceIndex;
 		fragmentData[index + 2] = 0;
 		fragmentData[index + 3] = 1;
 	}
@@ -66,7 +53,7 @@ export class ShadowNearChunk extends CompositeChunkBase
 
 		var dataReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
 		var temp:ShaderRegisterElement = registerCache.getFreeFragmentSingleTemp();
-		this._fragmentConstantsIndex = dataReg.index*4;
+		this._fragmentDistanceIndex = dataReg.index*4;
 
 		code += "abs " + temp + ", " + sharedRegisters.projectionFragment + ".w\n" +
 			"sub " + temp + ", " + temp + ", " + dataReg + ".x\n" +
@@ -83,22 +70,22 @@ export class ShadowNearChunk extends CompositeChunkBase
 	/**
 	 * @inheritDoc
 	 */
-	public _setRenderState(renderable:GL_RenderableBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
 	{
 		// todo: move this to activate (needs camera)
 		var near:number = projection.near;
 		var d:number = projection.far - near;
-		var maxDistance:number = (<NearDirectionalShadowMapper> this._method.castingLight.shadowMapper).coverageRatio;
-		var minDistance:number = maxDistance*(1 - this._method.fadeRatio);
+		var maxDistance:number = (<NearDirectionalShadowMapper> this._mapper).coverageRatio;
+		var minDistance:number = maxDistance*(1 - (<NearDirectionalShadowMapper> this._mapper).fadeRatio);
 
 		maxDistance = near + maxDistance*d;
 		minDistance = near + minDistance*d;
 
 		var fragmentData:Float32Array = this._shader.fragmentConstantData;
-		var index:number = this._fragmentConstantsIndex;
+		var index:number = this._fragmentDistanceIndex;
 		fragmentData[index] = minDistance;
 		fragmentData[index + 1] = 1/(maxDistance - minDistance);
 
-		super._setRenderState(renderable, projection);
+		super._setRenderState(renderState, projection);
 	}
 }

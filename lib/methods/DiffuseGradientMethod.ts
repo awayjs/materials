@@ -1,4 +1,4 @@
-import {TextureBase} from "@awayjs/graphics";
+import {TextureBase} from "../textures/TextureBase";
 
 import {DiffuseBasicMethod} from "./DiffuseBasicMethod";
 

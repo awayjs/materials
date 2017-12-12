@@ -1,8 +1,9 @@
 import {ErrorBase, Matrix3D, ProjectionBase} from "@awayjs/core";
 
-import {GL_TextureBase, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {ChunkVO} from "../data/ChunkVO";
+import {RenderStateBase, ShaderBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
+
 import {EffectProjectiveTextureMethod} from "../methods/EffectProjectiveTextureMethod";
 
 import {ShaderChunkBase} from "./ShaderChunkBase";
@@ -17,7 +18,7 @@ export class EffectProjectiveTextureChunk extends ShaderChunkBase
 	private _method:EffectProjectiveTextureMethod;
 	private _shader:ShaderBase;
 
-	private _texture:GL_TextureBase;
+	private _texture:TextureStateBase;
 	private _uvVarying:ShaderRegisterElement;
 	private _projectionIndex:number;
 	private _exposureIndex:number;
@@ -36,7 +37,9 @@ export class EffectProjectiveTextureChunk extends ShaderChunkBase
 
 	public _initVO(chunkVO:ChunkVO):void
 	{
-		this._texture = <GL_TextureBase> this._shader.getAbstraction(this._method.projector.texture);
+		this._texture = <TextureStateBase> this._shader.getAbstraction(this._method.projector.texture);
+
+        this._texture._initVO(chunkVO);
 	}
 
 	/**
@@ -44,6 +47,8 @@ export class EffectProjectiveTextureChunk extends ShaderChunkBase
 	 */
 	public _initConstants():void
 	{
+        this._texture._initConstants();
+
 		var index:number = this._exposureIndex;
 		var data:Float32Array = this._shader.fragmentConstantData;
 		data[index] = this._method.exposure;
@@ -134,14 +139,14 @@ export class EffectProjectiveTextureChunk extends ShaderChunkBase
 	/**
 	 * @inheritDoc
 	 */
-	public _setRenderState(renderable:GL_RenderableBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
 	{
 		var matrix3D:Matrix3D = Matrix3D.CALCULATION_MATRIX;
 		matrix3D.copyFrom(this._method.projector.projection.viewMatrix3D);
-		matrix3D.prepend(renderable.renderSceneTransform);
+		matrix3D.prepend(renderState.renderSceneTransform);
 		this._projectionMatrix.copyFrom(matrix3D, true);
 
-		this._texture._setRenderState(renderable);
+		this._texture._setRenderState(renderState);
 	}
 	
 	/**

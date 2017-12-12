@@ -1,13 +1,12 @@
 import {ProjectionBase} from "@awayjs/core";
 
-import {DefaultMaterialManager} from "@awayjs/graphics";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, GL_TextureBase} from "@awayjs/stage";
+import {RenderStateBase, ShaderBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
 
+import {LightingShader} from "../shaders/LightingShader";
+import {ImageTexture2D} from "../textures/ImageTexture2D";
 
-import {LightingShader} from "@awayjs/renderer";
-
-import {ChunkVO} from "../data/ChunkVO";
 import {EffectAlphaMaskMethod} from "../methods/EffectAlphaMaskMethod";
 
 import {ShaderChunkBase} from "./ShaderChunkBase";
@@ -22,7 +21,7 @@ export class EffectAlphaMaskChunk extends ShaderChunkBase
 	private _method:EffectAlphaMaskMethod;
 	private _shader:ShaderBase;
 
-	private _alphaMask:GL_TextureBase;
+	private _alphaMask:TextureStateBase;
 
 	/**
 	 * Creates a new EffectAlphaMaskChunk object.
@@ -40,13 +39,23 @@ export class EffectAlphaMaskChunk extends ShaderChunkBase
 	 */
 	public _initVO(chunkVO:ChunkVO):void
 	{
-		this._alphaMask = <GL_TextureBase> this._shader.getAbstraction(this._method.texture || DefaultMaterialManager.getDefaultTexture());
+		this._alphaMask = <TextureStateBase> this._shader.getAbstraction(this._method.texture || new ImageTexture2D());
+
+        this._alphaMask._initVO(chunkVO);
 
 		if (this._method.useSecondaryUV)
 			this._shader.secondaryUVDependencies++;
 		else
 			this._shader.uvDependencies++;
 	}
+
+    /**
+     * @inheritDoc
+     */
+    public _initConstants():void
+    {
+        this._alphaMask._initConstants();
+    }
 
 	/**
 	 * @inheritDoc
@@ -70,8 +79,8 @@ export class EffectAlphaMaskChunk extends ShaderChunkBase
 		this._alphaMask.activate();
 	}
 
-	public _setRenderState(renderable:GL_RenderableBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
 	{
-		this._alphaMask._setRenderState(renderable);
+		this._alphaMask._setRenderState(renderState);
 	}
 }

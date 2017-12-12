@@ -1,12 +1,12 @@
 import {ProjectionBase, AbstractionBase} from "@awayjs/core";
 
-import {TextureBase, IMaterial} from "@awayjs/graphics";
+import {Stage, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {Stage, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {RenderStateBase, ShaderBase, ChunkVO} from "@awayjs/renderer";
 
-import {LightingShader, ShadingMethodEvent} from "@awayjs/renderer";
-
-import {ChunkVO} from "../data/ChunkVO";
+import {LightingShader} from "../shaders/LightingShader";
+import {ShadingMethodEvent} from "../events/ShadingMethodEvent";
+import {TextureBase} from "../textures/TextureBase";
 import {CompositeMethodBase} from "../methods/CompositeMethodBase";
 
 import {ShaderChunkBase} from "./ShaderChunkBase";
@@ -72,9 +72,9 @@ export class CompositeChunkBase extends AbstractionBase implements IShaderChunk
 	/**
 	 * @inheritDoc
 	 */
-	public _setRenderState(renderable:GL_RenderableBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
 	{
-		this._baseChunk._setRenderState(renderable, projection);
+		this._baseChunk._setRenderState(renderState, projection);
 	}
 
 	/**

@@ -1,12 +1,11 @@
 import {Matrix3D, AssetEvent, AssetBase, AbstractionBase, ProjectionBase} from "@awayjs/core";
 
-import {IMaterial, TextureBase} from "@awayjs/graphics";
+import {Stage, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {Stage, GL_RenderableBase, ShaderBase, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {RenderStateBase, ShaderBase, ChunkVO} from "@awayjs/renderer";
 
-import {ShadingMethodEvent} from "@awayjs/renderer";
-
-import {ChunkVO} from "../data/ChunkVO";
+import {ShadingMethodEvent} from "../events/ShadingMethodEvent";
+import {TextureBase} from "../textures/TextureBase";
 import {ShadingMethodBase} from "../methods/ShadingMethodBase";
 
 import {IShaderChunk} from "./IShaderChunk";
@@ -19,26 +18,12 @@ export class ShaderChunkBase extends AbstractionBase implements IShaderChunk
 {
 	public chunkVO:ChunkVO = new ChunkVO();
 
-	protected _stage:Stage;
-
 	/**
 	 * Create a new ShaderChunkBase object.
 	 */
 	constructor(method:ShadingMethodBase, shader:ShaderBase)
 	{
 		super(method, shader);
-
-		this._stage = shader._stage;
-	}
-
-	/**
-	 *
-	 */
-	public onClear(event:AssetEvent):void
-	{
-		super.onClear(event);
-
-		this._stage = null;
 	}
 
 	public _isUsed():boolean
@@ -149,7 +134,7 @@ export class ShaderChunkBase extends AbstractionBase implements IShaderChunk
 	 *
 	 * @internal
 	 */
-	public _setRenderState(renderable:GL_RenderableBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
 	{
 
 	}
