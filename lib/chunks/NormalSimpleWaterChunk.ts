@@ -2,7 +2,7 @@ import {AssetEvent, ProjectionBase} from "@awayjs/core";
 
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {RenderStateBase, ShaderBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
+import {_Render_RenderableBase, ShaderBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
 import {NormalSimpleWaterMethod} from "../methods/NormalSimpleWaterMethod";
 
@@ -13,7 +13,7 @@ import {NormalBasicChunk} from "./NormalBasicChunk";
  */
 export class NormalSimpleWaterChunk extends NormalBasicChunk
 {
-	private _secondaryNormalMap:TextureStateBase;
+	private _secondaryNormalMap:_Shader_TextureBase;
 	private _fragmentConstantsIndex:number;
 	
 	/**
@@ -47,7 +47,7 @@ export class NormalSimpleWaterChunk extends NormalBasicChunk
 		super._initVO(chunkVO);
 		
 		if ((<NormalSimpleWaterMethod> this._method).secondaryNormalMap) {
-			this._secondaryNormalMap = <TextureStateBase> this._shader.getAbstraction((<NormalSimpleWaterMethod> this._method).secondaryNormalMap);
+			this._secondaryNormalMap = <_Shader_TextureBase> this._shader.getAbstraction((<NormalSimpleWaterMethod> this._method).secondaryNormalMap);
 			this._shader.uvDependencies++;
 		}
 	}
@@ -86,7 +86,7 @@ export class NormalSimpleWaterChunk extends NormalBasicChunk
 	/**
 	 * @inheritDoc
 	 */
-	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 		super._setRenderState(renderState, projection);
 

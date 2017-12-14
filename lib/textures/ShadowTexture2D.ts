@@ -23,6 +23,24 @@ export class ShadowTexture2D extends ImageTexture2D
 
 import {ShaderBase} from "@awayjs/renderer";
 
-import {GL_ShadowTexture2D} from "./GL_ShadowTexture2D";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-ShaderBase.registerAbstraction(GL_ShadowTexture2D, ShadowTexture2D);
+import {_Shader_DepthTexture} from "./DepthTextureCube";
+
+/**
+ *
+ * @class away.pool._Shader_DepthTexture
+ */
+export class _Shader_ShadowTexture2D extends _Shader_DepthTexture
+{
+    /**
+     * @inheritDoc
+     */
+    public _getFragmentCode(targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData, inputReg:ShaderRegisterElement):string
+    {
+        return super._getFragmentCode(targetReg, regCache, sharedRegisters, inputReg) +
+            "slt " + targetReg + ".w, " + inputReg + ".z, " + targetReg + ".w\n";// 0 if in shadow, 1 if out of shadow
+    }
+}
+
+ShaderBase.registerAbstraction(_Shader_ShadowTexture2D, ShadowTexture2D);

@@ -2,7 +2,7 @@ import {AssetEvent, ProjectionBase} from "@awayjs/core";
 
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {RenderStateBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
+import {_Render_RenderableBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
 import {LightingShader} from "../shaders/LightingShader";
 import {TextureBase} from "../textures/TextureBase";
@@ -26,7 +26,7 @@ export class SpecularBasicChunk extends ShaderChunkBase implements ILightingChun
 	protected _method:SpecularBasicMethod;
 	protected _shader:LightingShader;
 
-	protected _texture:TextureStateBase;
+	protected _texture:_Shader_TextureBase;
 
 	public _pIsFirstLight:boolean;
 
@@ -60,7 +60,7 @@ export class SpecularBasicChunk extends ShaderChunkBase implements ILightingChun
 		chunkVO.needsView = this._shader.numLights > 0;
 
 		if (this._method.texture) {
-			this._texture = <TextureStateBase> this._shader.getAbstraction(this._method.texture);
+			this._texture = <_Shader_TextureBase> this._shader.getAbstraction(this._method.texture);
             this._texture._initVO(chunkVO);
 			this._shader.uvDependencies++;
 		} else if (this._texture) {
@@ -248,7 +248,7 @@ export class SpecularBasicChunk extends ShaderChunkBase implements ILightingChun
 		}
 	}
 
-	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 		if (this._texture)
 			this._texture._setRenderState(renderState);

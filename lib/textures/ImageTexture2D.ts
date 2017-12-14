@@ -66,8 +66,109 @@ export class ImageTexture2D extends Texture2D
 	}
 }
 
-import {ShaderBase} from "@awayjs/renderer";
+import {AssetEvent} from "@awayjs/core";
 
-import {GL_ImageTexture2D} from "./GL_ImageTexture2D";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-ShaderBase.registerAbstraction(GL_ImageTexture2D, ImageTexture2D);
+import {ShaderBase, _Render_RenderableBase} from "@awayjs/renderer";
+
+import {_Shader_ImageTexture} from "./ImageTextureCube";
+
+/**
+ *
+ * @class away.pool.GL_SingleImageTexture
+ */
+export class _Shader_ImageTexture2D extends _Shader_ImageTexture
+{
+    /**
+     *
+     * @param shader
+     * @param regCache
+     * @param targetReg The register in which to store the sampled colour.
+     * @param uvReg The uv coordinate vector with which to sample the texture map.
+     * @returns {string}
+     * @private
+     */
+    public _getFragmentCode(targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedReg:ShaderRegisterData, inputReg:ShaderRegisterElement):string
+    {
+        var code:string = "";
+
+        var temp:ShaderRegisterElement;
+
+        //modify depending on mapping mode
+        if ((<Texture2D> this._texture).mappingMode == MappingMode.RADIAL) {
+            temp = regCache.getFreeFragmentVectorTemp();
+            code += "mul " + temp + ".xy, " + inputReg + ", " + inputReg + "\n";
+            code += "add " + temp + ".x, " + temp + ".x, " + temp + ".y\n";
+            code += "sub " + temp + ".y, " + temp + ".y, " + temp + ".y\n";
+            code += "sqt " + temp + ".x, " + temp + ".x, " + temp + ".x\n";
+            inputReg = temp;
+        }
+
+        //handles texture atlasing
+        if (this._shader.useImageRect) {
+            var samplerReg:ShaderRegisterElement = regCache.getFreeFragmentConstant();
+            this._samplerIndex = samplerReg.index*4;
+            temp = regCache.getFreeFragmentVectorTemp();
+
+            code += "mul " + temp + ", " + inputReg + ", " + samplerReg + ".xy\n";
+            code += "add " + temp + ", " + temp + ", " + samplerReg + ".zw\n";
+            inputReg = temp;
+        }
+
+        code += super._getFragmentCode(targetReg, regCache, sharedReg, inputReg);
+
+        return code;
+    }
+
+    public activate():void
+    {
+        super.activate();
+
+        var sampler:ImageSampler = <ImageSampler> this._shader.renderMaterial.samplers[this._imageIndex];
+
+        if (this._shader.useImageRect) {
+            var index:number = this._samplerIndex;
+            var data:Float32Array = this._shader.fragmentConstantData;
+            if (!sampler.imageRect) {
+                data[index] = 1;
+                data[index + 1] = 1;
+                data[index + 2] = 0;
+                data[index + 3] = 0;
+            } else {
+                data[index] = sampler.imageRect.width;
+                data[index + 1] = sampler.imageRect.height;
+                data[index + 2] = sampler.imageRect.x;
+                data[index + 3] = sampler.imageRect.y;
+
+            }
+        }
+    }
+
+
+    public _setRenderState(renderState:_Render_RenderableBase):void
+    {
+        super._setRenderState(renderState);
+
+        var sampler:ImageSampler = renderState.samplers[this._imageIndex];
+
+        if (this._shader.useImageRect && sampler) {
+            var index:number = this._samplerIndex;
+            var data:Float32Array = this._shader.fragmentConstantData;
+            if (!sampler.imageRect) {
+                data[index] = 1;
+                data[index + 1] = 1;
+                data[index + 2] = 0;
+                data[index + 3] = 0;
+            } else {
+                data[index] = sampler.imageRect.width;
+                data[index + 1] = sampler.imageRect.height;
+                data[index + 2] = sampler.imageRect.x;
+                data[index + 3] = sampler.imageRect.y;
+
+            }
+        }
+    }
+}
+
+ShaderBase.registerAbstraction(_Shader_ImageTexture2D, ImageTexture2D);

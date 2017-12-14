@@ -2,7 +2,7 @@ import {ErrorBase, Matrix3D, ProjectionBase} from "@awayjs/core";
 
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {RenderStateBase, ShaderBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
+import {_Render_RenderableBase, ShaderBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
 import {EffectProjectiveTextureMethod} from "../methods/EffectProjectiveTextureMethod";
 
@@ -18,7 +18,7 @@ export class EffectProjectiveTextureChunk extends ShaderChunkBase
 	private _method:EffectProjectiveTextureMethod;
 	private _shader:ShaderBase;
 
-	private _texture:TextureStateBase;
+	private _texture:_Shader_TextureBase;
 	private _uvVarying:ShaderRegisterElement;
 	private _projectionIndex:number;
 	private _exposureIndex:number;
@@ -37,7 +37,7 @@ export class EffectProjectiveTextureChunk extends ShaderChunkBase
 
 	public _initVO(chunkVO:ChunkVO):void
 	{
-		this._texture = <TextureStateBase> this._shader.getAbstraction(this._method.projector.texture);
+		this._texture = <_Shader_TextureBase> this._shader.getAbstraction(this._method.projector.texture);
 
         this._texture._initVO(chunkVO);
 	}
@@ -139,7 +139,7 @@ export class EffectProjectiveTextureChunk extends ShaderChunkBase
 	/**
 	 * @inheritDoc
 	 */
-	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 		var matrix3D:Matrix3D = Matrix3D.CALCULATION_MATRIX;
 		matrix3D.copyFrom(this._method.projector.projection.viewMatrix3D);

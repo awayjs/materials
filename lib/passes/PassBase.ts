@@ -1,10 +1,9 @@
 import {Matrix3D, EventDispatcher, ProjectionBase} from "@awayjs/core";
 
-import {Stage, GL_ImageBase, ShaderRegisterCache, ShaderRegisterData} from "@awayjs/stage";
+import {Stage, _Stage_ImageBase, ShaderRegisterCache, ShaderRegisterData} from "@awayjs/stage";
 
-import {RenderStateBase, MaterialStatePool, PassEvent, IRenderable, Style, IAnimationSet, IPass, ShaderBase} from "@awayjs/renderer";
+import {_Render_RenderableBase, _Render_ElementsBase, _Render_MaterialBase, PassEvent, IRenderable, Style, IAnimationSet, IPass, ShaderBase} from "@awayjs/renderer";
 
-import {GL_MaterialBase} from "../GL_MaterialBase";
 import {MaterialBase} from "../MaterialBase";
 
 /**
@@ -13,11 +12,11 @@ import {MaterialBase} from "../MaterialBase";
  */
 export class PassBase extends EventDispatcher implements IPass
 {
-	public _materialState:GL_MaterialBase;
-	public _materialStatePool:MaterialStatePool;
-	public _stage:Stage;
-	
-	public _shader:ShaderBase;
+	protected _renderMaterial:_Render_MaterialBase;
+    protected _renderElements:_Render_ElementsBase;
+    protected _stage:Stage;
+
+    protected _shader:ShaderBase;
 
 	private _preserveAlpha:boolean = true;
 	private _forceSeparateMVP:boolean = false;
@@ -27,19 +26,9 @@ export class PassBase extends EventDispatcher implements IPass
 		return this._shader;
 	}
 
-	public get numUsedStreams():number
-	{
-		return this._shader.numUsedStreams;
-	}
-
-    public get numUsedTextures():number
-    {
-        return this._shader.numUsedTextures;
-    }
-
 	public get animationSet():IAnimationSet
 	{
-		return <IAnimationSet> (<MaterialBase> this._materialState.material).animationSet;
+		return <IAnimationSet> (<MaterialBase> this._renderMaterial.material).animationSet;
 	}
 
 	/**
@@ -83,13 +72,13 @@ export class PassBase extends EventDispatcher implements IPass
 	/**
 	 * Creates a new PassBase object.
 	 */
-	constructor(materialState:GL_MaterialBase, materialStatePool:MaterialStatePool)
+	constructor(renderMaterial:_Render_MaterialBase, renderElements:_Render_ElementsBase)
 	{
 		super();
 
-		this._materialState = materialState;
-		this._materialStatePool = materialStatePool;
-		this._stage = materialStatePool.stage;
+		this._renderMaterial = renderMaterial;
+		this._renderElements = renderElements;
+		this._stage = renderElements.stage;
 	}
 
 	/**
@@ -108,8 +97,8 @@ export class PassBase extends EventDispatcher implements IPass
 	 */
 	public dispose():void
 	{
-		this._materialState = null;
-		this._materialStatePool = null;
+		this._renderMaterial = null;
+		this._renderElements = null;
 		this._stage = null;
 
 		if (this._shader) {
@@ -129,7 +118,7 @@ export class PassBase extends EventDispatcher implements IPass
 	 *
 	 * @internal
 	 */
-	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 		this._shader._setRenderState(renderState, projection);
 	}
@@ -159,7 +148,13 @@ export class PassBase extends EventDispatcher implements IPass
 
 	public _includeDependencies(shader:ShaderBase):void
 	{
-		this._materialState._includeDependencies(shader);
+        shader.alphaThreshold = (<MaterialBase> this._renderMaterial.material).alphaThreshold;
+        shader.useImageRect = (<MaterialBase> this._renderMaterial.material).imageRect;
+        shader.usesCurves = (<MaterialBase> this._renderMaterial.material).curves;
+        shader.useAlphaPremultiplied = (<MaterialBase> this._renderMaterial.material).alphaPremultiplied;
+        shader.useBothSides = (<MaterialBase> this._renderMaterial.material).bothSides;
+        shader.usesUVTransform = (<MaterialBase> this._renderMaterial.material).animateUVs;
+        shader.usesColorTransform = (<MaterialBase> this._renderMaterial.material).useColorTransform;
 		
 		if (this._forceSeparateMVP)
 			this._shader.globalPosDependencies++;

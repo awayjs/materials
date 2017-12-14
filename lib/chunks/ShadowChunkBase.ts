@@ -1,6 +1,6 @@
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {TextureStateBase, ChunkVO} from "@awayjs/renderer";
+import {_Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
 import {LightBase} from "../lights/LightBase";
 import {LightingShader} from "../shaders/LightingShader";
@@ -16,7 +16,7 @@ export class ShadowChunkBase extends CompositeChunkBase
 {
     protected _method:ShadowMethodBase;
     protected _shader:LightingShader;
-	protected _baseTexture:TextureStateBase
+	protected _baseTexture:_Shader_TextureBase
 
 	/**
 	 * Creates a new ShadowHardChunk.

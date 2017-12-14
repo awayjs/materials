@@ -2,7 +2,7 @@ import {ProjectionBase} from "@awayjs/core";
 
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {RenderStateBase, ChunkVO} from "@awayjs/renderer";
+import {_Render_RenderableBase, ChunkVO} from "@awayjs/renderer";
 
 import {LightingShader} from "../shaders/LightingShader";
 import {ShadingMethodEvent} from "../events/ShadingMethodEvent";
@@ -70,7 +70,7 @@ export class GL_NearDirectionalShadowMapper extends GL_DirectionalShadowMapper
 	/**
 	 * @inheritDoc
 	 */
-	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 		// todo: move this to activate (needs camera)
 		var near:number = projection.near;

@@ -2,7 +2,7 @@ import {ProjectionBase, AbstractionBase} from "@awayjs/core";
 
 import {Stage, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {RenderStateBase, ShaderBase, ChunkVO} from "@awayjs/renderer";
+import {_Render_RenderableBase, ShaderBase, ChunkVO} from "@awayjs/renderer";
 
 import {LightingShader} from "../shaders/LightingShader";
 import {ShadingMethodEvent} from "../events/ShadingMethodEvent";
@@ -72,7 +72,7 @@ export class CompositeChunkBase extends AbstractionBase implements IShaderChunk
 	/**
 	 * @inheritDoc
 	 */
-	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 		this._baseChunk._setRenderState(renderState, projection);
 	}

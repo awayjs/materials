@@ -2,7 +2,7 @@ import {Vector3D, Matrix3D, AbstractMethodError, ProjectionBase, AssetEvent} fro
 
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {RenderStateBase, ShaderBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
+import {_Render_RenderableBase, ShaderBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
 import {LightBase} from "../lights/LightBase";
 import {PointLight} from "../lights/PointLight";

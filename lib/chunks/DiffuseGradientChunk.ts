@@ -2,7 +2,7 @@ import {ProjectionBase} from "@awayjs/core";
 
 import {Stage, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {RenderStateBase, TextureStateBase, MaterialUtils, ChunkVO} from "@awayjs/renderer";
+import {_Render_RenderableBase, _Shader_TextureBase, MaterialUtils, ChunkVO} from "@awayjs/renderer";
 
 import {LightingShader} from "../shaders/LightingShader";
 import {DiffuseGradientMethod} from "../methods/DiffuseGradientMethod";
@@ -18,7 +18,7 @@ import {DiffuseBasicChunk} from "./DiffuseBasicChunk";
  */
 export class DiffuseGradientChunk extends DiffuseBasicChunk
 {
-	private _gradient:TextureStateBase;
+	private _gradient:_Shader_TextureBase;
 
 	/**
 	 * Creates a new DiffuseGradientChunk object.
@@ -34,7 +34,7 @@ export class DiffuseGradientChunk extends DiffuseBasicChunk
 	{
 		super._initVO(chunkVO);
 
-		this._gradient = <TextureStateBase> this._shader.getAbstraction((<DiffuseGradientMethod> this._method).gradient || new ImageTexture2D());
+		this._gradient = <_Shader_TextureBase> this._shader.getAbstraction((<DiffuseGradientMethod> this._method).gradient || new ImageTexture2D());
 
         this._gradient._initVO(chunkVO);
 	}
@@ -111,7 +111,7 @@ export class DiffuseGradientChunk extends DiffuseBasicChunk
 	/**
 	 * @inheritDoc
 	 */
-	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 		super._setRenderState(renderState, projection);
 

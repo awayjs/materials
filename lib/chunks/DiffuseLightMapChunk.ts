@@ -2,7 +2,7 @@ import {ProjectionBase} from "@awayjs/core";
 
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {RenderStateBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
+import {_Render_RenderableBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
 import {LightingShader} from "../shaders/LightingShader";
 import {ImageTexture2D} from "../textures/ImageTexture2D";
@@ -17,7 +17,7 @@ import {LightingCompositeChunk} from "./LightingCompositeChunk";
  */
 export class DiffuseLightMapChunk extends LightingCompositeChunk
 {
-	private _lightMap:TextureStateBase;
+	private _lightMap:_Shader_TextureBase;
 
 	private _method:DiffuseLightMapMethod;
 	private _shader:LightingShader;
@@ -39,7 +39,7 @@ export class DiffuseLightMapChunk extends LightingCompositeChunk
 	 */
 	public _initVO(chunkVO:ChunkVO):void
 	{
-		this._lightMap = <TextureStateBase> this._shader.getAbstraction(this._method.lightMap || new ImageTexture2D());
+		this._lightMap = <_Shader_TextureBase> this._shader.getAbstraction(this._method.lightMap || new ImageTexture2D());
 
         this._lightMap._initVO(chunkVO);
 
@@ -94,7 +94,7 @@ export class DiffuseLightMapChunk extends LightingCompositeChunk
 	/**
 	 * @inheritDoc
 	 */
-	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 		super._setRenderState(renderState, projection);
 

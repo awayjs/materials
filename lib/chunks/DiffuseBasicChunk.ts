@@ -2,7 +2,7 @@ import {AssetEvent, ProjectionBase} from "@awayjs/core";
 
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {RenderStateBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
+import {_Render_RenderableBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
 import {LightingShader} from "../shaders/LightingShader";
 import {TextureCube} from "../textures/TextureCube";
@@ -19,7 +19,7 @@ export class DiffuseBasicChunk extends ShaderChunkBase implements ILightingChunk
 	protected _method:DiffuseBasicMethod;
 	protected _shader:LightingShader;
 
-	protected _texture:TextureStateBase;
+	protected _texture:_Shader_TextureBase;
 
 	private _ambientColor:number;
 	private _ambientColorR:number = 1;
@@ -68,7 +68,7 @@ export class DiffuseBasicChunk extends ShaderChunkBase implements ILightingChunk
 	public _initVO(chunkVO:ChunkVO):void
 	{
 		if (this._method.texture) {
-			this._texture = <TextureStateBase> this._shader.getAbstraction(this._method.texture);
+			this._texture = <_Shader_TextureBase> this._shader.getAbstraction(this._method.texture);
 
             this._texture._initVO(chunkVO);
 
@@ -282,7 +282,7 @@ export class DiffuseBasicChunk extends ShaderChunkBase implements ILightingChunk
 	 */
 	private _updateProperties():void
 	{
-		this._ambientColor = this._shader.materialState.style.color;
+		this._ambientColor = this._shader.renderMaterial.style.color;
 		this._ambientColorR = ((this._ambientColor >> 16) & 0xff)/0xff;
 		this._ambientColorG = ((this._ambientColor >> 8) & 0xff)/0xff;
 		this._ambientColorB = (this._ambientColor & 0xff)/0xff;
@@ -296,7 +296,7 @@ export class DiffuseBasicChunk extends ShaderChunkBase implements ILightingChunk
 	/**
 	 * @inheritDoc
 	 */
-	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 		if (this._texture)
 			this._texture._setRenderState(renderState);

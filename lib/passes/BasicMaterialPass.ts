@@ -2,11 +2,10 @@ import {AssetEvent, Matrix3D, ProjectionBase} from "@awayjs/core";
 
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {IRenderable, RenderStateBase, MaterialStatePool, ShaderBase, TextureStateBase} from "@awayjs/renderer";
+import {IRenderable, _Render_RenderableBase, _Render_MaterialBase, _Render_ElementsBase, ShaderBase, _Shader_TextureBase} from "@awayjs/renderer";
 
 
 import {MaterialBase} from "../MaterialBase";
-import {GL_MaterialBase} from "../GL_MaterialBase";
 
 import {PassBase} from "./PassBase";
 
@@ -16,7 +15,7 @@ import {PassBase} from "./PassBase";
  */
 export class BasicMaterialPass extends PassBase
 {
-	private _textureVO:TextureStateBase;
+	private _shaderTexture:_Shader_TextureBase;
 	private _diffuseR:number = 1;
 	private _diffuseG:number = 1;
 	private _diffuseB:number = 1;
@@ -24,11 +23,11 @@ export class BasicMaterialPass extends PassBase
 
 	private _fragmentConstantsIndex:number;
 
-	constructor(materialState:GL_MaterialBase, materialStatePool:MaterialStatePool)
+	constructor(renderMaterial:_Render_MaterialBase, renderElements:_Render_ElementsBase)
 	{
-		super(materialState, materialStatePool);
+		super(renderMaterial, renderElements);
 
-		this._shader = new ShaderBase(materialStatePool, materialState, this, this._stage);
+		this._shader = new ShaderBase(renderElements, renderMaterial, this, this._stage);
 
 		this.invalidate();
 	}
@@ -37,7 +36,7 @@ export class BasicMaterialPass extends PassBase
 	{
 		super._includeDependencies(shader);
 
-		if (this._textureVO != null)
+		if (this._shaderTexture != null)
 			shader.uvDependencies++;
     }
 
@@ -45,14 +44,14 @@ export class BasicMaterialPass extends PassBase
 	{
 		super.invalidate();
 
-		this._textureVO = (<MaterialBase> this._materialState.material).getTextureAt(0)? <TextureStateBase> this._shader.getAbstraction((<MaterialBase> this._materialState.material).getTextureAt(0)) : null;
+		this._shaderTexture = (<MaterialBase> this._renderMaterial.material).getTextureAt(0)? <_Shader_TextureBase> this._shader.getAbstraction((<MaterialBase> this._renderMaterial.material).getTextureAt(0)) : null;
 	}
 
 	public dispose():void
 	{
-		if (this._textureVO) {
-			this._textureVO.onClear(new AssetEvent(AssetEvent.CLEAR, (<MaterialBase> this._materialState.material).getTextureAt(0)));
-			this._textureVO = null;
+		if (this._shaderTexture) {
+			this._shaderTexture.onClear(new AssetEvent(AssetEvent.CLEAR, (<MaterialBase> this._renderMaterial.material).getTextureAt(0)));
+			this._shaderTexture = null;
 		}
 
 		super.dispose();
@@ -75,9 +74,9 @@ export class BasicMaterialPass extends PassBase
 
 		var targetReg:ShaderRegisterElement = sharedReg.shadedTarget;
 
-		if (this._textureVO != null) {
+		if (this._shaderTexture != null) {
 
-			code += this._textureVO._getFragmentCode(targetReg, regCache, sharedReg, sharedReg.uvVarying);
+			code += this._shaderTexture._getFragmentCode(targetReg, regCache, sharedReg, sharedReg.uvVarying);
 
 			if (this._shader.alphaThreshold > 0) {
 				var cutOffReg:ShaderRegisterElement = regCache.getFreeFragmentConstant();
@@ -104,12 +103,12 @@ export class BasicMaterialPass extends PassBase
 		return code;
 	}
 
-	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 		super._setRenderState(renderState, projection);
 
-		if (this._textureVO != null)
-			this._textureVO._setRenderState(renderState);
+		if (this._shaderTexture != null)
+			this._shaderTexture._setRenderState(renderState);
 	}
 	/**
 	 * @inheritDoc
@@ -118,8 +117,8 @@ export class BasicMaterialPass extends PassBase
 	{
 		super._activate(projection);
 
-		if (this._textureVO != null) {
-			this._textureVO.activate();
+		if (this._shaderTexture != null) {
+			this._shaderTexture.activate();
 
 			if (this._shader.alphaThreshold > 0)
 				this._shader.fragmentConstantData[this._fragmentConstantsIndex] = this._shader.alphaThreshold;

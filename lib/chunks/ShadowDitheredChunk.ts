@@ -2,7 +2,7 @@ import {ProjectionBase} from "@awayjs/core";
 
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {RenderStateBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
+import {_Render_RenderableBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
 import {DirectionalLight} from "../lights/DirectionalLight";
 import {LightingShader} from "../shaders/LightingShader";
@@ -17,7 +17,7 @@ import {ShadowChunkBase} from "./ShadowChunkBase";
  */
 export class ShadowDitheredChunk extends ShadowChunkBase
 {
-	private _grainMap:TextureStateBase;
+	private _grainMap:_Shader_TextureBase;
     private _fragmentConstantsIndex:number;
 
 	/**
@@ -37,7 +37,7 @@ export class ShadowDitheredChunk extends ShadowChunkBase
 
 		chunkVO.needsProjection = true;
 
-		this._grainMap = <TextureStateBase> this._shader.getAbstraction(ShadowDitheredMethod._grainTexture);
+		this._grainMap = <_Shader_TextureBase> this._shader.getAbstraction(ShadowDitheredMethod._grainTexture);
 	}
 
 	/**
@@ -61,8 +61,8 @@ export class ShadowDitheredChunk extends ShadowChunkBase
 
 		var data:Float32Array = this._shader.fragmentConstantData;
 		var index:number = this._fragmentConstantsIndex;
-		data[index + 1] = (this._shader.materialState.renderGroup.renderer.width - 1)/63;
-		data[index + 2] = (this._shader.materialState.renderGroup.renderer.height - 1)/63;
+		data[index + 1] = (this._shader.renderMaterial.renderGroup.renderer.width - 1)/63;
+		data[index + 2] = (this._shader.renderMaterial.renderGroup.renderer.height - 1)/63;
 		data[index + 3] = 2*(<ShadowDitheredMethod> this._method).range/this._method.castingLight.shadowMapper.size;
 
 		this._grainMap.activate();
@@ -155,7 +155,7 @@ export class ShadowDitheredChunk extends ShadowChunkBase
 	/**
 	 * @inheritDoc
 	 */
-	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 		super._setRenderState(renderState, projection);
 

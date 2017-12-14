@@ -2,7 +2,7 @@ import {Vector3D, Matrix3D, AbstractMethodError, ProjectionBase, AssetEvent} fro
 
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {RenderStateBase, ShaderBase, TextureStateBase, ChunkVO, IRenderer, IView, IMapper} from "@awayjs/renderer";
+import {_Render_RenderableBase, ShaderBase, _Shader_TextureBase, ChunkVO, IRenderer, IView, IMapper} from "@awayjs/renderer";
 
 import {LightBase} from "../lights/LightBase";
 import {PointLight} from "../lights/PointLight";
@@ -24,7 +24,7 @@ export class GL_ShadowMapperBase extends ShaderChunkBase
 	protected _mapper:ShadowMapperBase;
 	protected _shader:ShaderBase;
 
-	protected _texture:TextureStateBase;
+	protected _texture:_Shader_TextureBase;
 
 	public autoUpdate:boolean = true;
 
@@ -38,7 +38,7 @@ export class GL_ShadowMapperBase extends ShaderChunkBase
         this._depthMapCoordReg = null;
     }
 
-    public get texture():TextureStateBase
+    public get texture():_Shader_TextureBase
     {
         return this._texture;
     }
@@ -60,7 +60,7 @@ export class GL_ShadowMapperBase extends ShaderChunkBase
 		this._mapper = mapper;
 		this._shader = shader;
 
-        this._shader.materialState.renderGroup.renderer._addMapper(this._mapper);
+        this._shader.renderMaterial.renderGroup.renderer._addMapper(this._mapper);
 	}
 
     /**
@@ -70,7 +70,7 @@ export class GL_ShadowMapperBase extends ShaderChunkBase
     {
         super.onClear(event);
 
-        this._shader.materialState.renderGroup.renderer._removeMapper(this._mapper);
+        this._shader.renderMaterial.renderGroup.renderer._removeMapper(this._mapper);
     }
 
 
@@ -79,7 +79,7 @@ export class GL_ShadowMapperBase extends ShaderChunkBase
      */
     public _initVO(chunkVO:ChunkVO):void
     {
-        this._texture = <TextureStateBase> this._shader.getAbstraction(this._mapper.textureMap);
+        this._texture = <_Shader_TextureBase> this._shader.getAbstraction(this._mapper.textureMap);
 
         this._texture._initVO(chunkVO);
     }
@@ -118,7 +118,7 @@ export class GL_ShadowMapperBase extends ShaderChunkBase
     /**
      * @inheritDoc
      */
-    public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+    public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
     {
         this._texture._setRenderState(renderState);
     }

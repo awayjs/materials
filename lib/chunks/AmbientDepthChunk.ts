@@ -1,6 +1,6 @@
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {ShaderBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
+import {ShaderBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
 import {AmbientDepthMethod} from "../methods/AmbientDepthMethod";
 
@@ -12,7 +12,7 @@ import {AmbientBasicChunk} from "./AmbientBasicChunk";
 export class AmbientDepthChunk extends AmbientBasicChunk
 {
 	private _decRegIndex:number;
-	private _shadowTexture:TextureStateBase
+	private _shadowTexture:_Shader_TextureBase
 
 	/**
 	 * Creates a new AmbientBasicChunk object.
@@ -21,7 +21,7 @@ export class AmbientDepthChunk extends AmbientBasicChunk
 	{
 		super(method, shader);
 
-		this._shadowTexture = <TextureStateBase> shader.getAbstraction(method.castingLight.shadowMapper.textureMap);
+		this._shadowTexture = <_Shader_TextureBase> shader.getAbstraction(method.castingLight.shadowMapper.textureMap);
 	}
 
     /**

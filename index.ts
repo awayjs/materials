@@ -1,6 +1,3 @@
-export {MethodMaterial} from "./lib/MethodMaterial";
-export {MethodMaterialMode} from "./lib/MethodMaterialMode";
-
 export {ILightingChunk} from "./lib/chunks/ILightingChunk";
 export {IShaderChunk} from "./lib/chunks/IShaderChunk";
 export {LightingCompositeChunk} from "./lib/chunks/LightingCompositeChunk";
@@ -56,10 +53,6 @@ export {MethodPass} from "./lib/passes/MethodPass";
 export {MethodPassMode} from "./lib/passes/MethodPassMode";
 export {BasicMaterialPass} from "./lib/passes/BasicMaterialPass";
 export {PassBase} from "./lib/passes/PassBase";
-export {GL_MaterialPassBase} from "./lib/passes/GL_MaterialPassBase";
-
-export {GL_BasicMaterial} from "./lib/GL_BasicMaterial";
-export {GL_MaterialBase} from "./lib/GL_MaterialBase";
 
 export {LightPickerBase} from "./lib/lightpickers/LightPickerBase";
 export {LightSources} from "./lib/lightpickers/LightSources";
@@ -79,23 +72,17 @@ export {ShadowMapperBase} from "./lib/mappers/ShadowMapperBase";
 export {LightingShader} from "./lib/shaders/LightingShader";
 
 export {DepthTexture2D} from "./lib/textures/DepthTexture2D";
-export {DepthTextureCube} from "./lib/textures/DepthTextureCube";
-export {GL_DepthTexture} from "./lib/textures/GL_DepthTexture";
-export {GL_ImageTexture} from "./lib/textures/GL_ImageTexture";
-export {GL_ImageTexture2D} from "./lib/textures/GL_ImageTexture2D";
-export {GL_ShadowTexture2D} from "./lib/textures/GL_ShadowTexture2D";
-export {GL_ShadowTextureCube} from "./lib/textures/GL_ShadowTextureCube";
-export {ImageTexture2D} from "./lib/textures/ImageTexture2D";
-export {ImageTextureCube} from "./lib/textures/ImageTextureCube";
-export {ShadowTexture2D} from "./lib/textures/ShadowTexture2D";
-export {ShadowTextureCube} from "./lib/textures/ShadowTextureCube";
+export {DepthTextureCube, _Shader_DepthTexture} from "./lib/textures/DepthTextureCube";
+export {ImageTexture2D, _Shader_ImageTexture2D} from "./lib/textures/ImageTexture2D";
+export {ImageTextureCube, _Shader_ImageTexture} from "./lib/textures/ImageTextureCube";
+export {ShadowTexture2D, _Shader_ShadowTexture2D} from "./lib/textures/ShadowTexture2D";
+export {ShadowTextureCube, _Shader_ShadowTextureCube} from "./lib/textures/ShadowTextureCube";
 export {Texture2D} from "./lib/textures/Texture2D";
 export {TextureBase} from "./lib/textures/TextureBase";
 export {TextureCube} from "./lib/textures/TextureCube";
 export {VideoTexture} from "./lib/textures/VideoTexture";
 
-export {GL_MethodMaterial} from "./lib/GL_MethodMaterial";
-export {BasicMaterial} from "./lib/BasicMaterial";
-export {MaterialBase} from "./lib/MaterialBase";
-export {GL_DepthMaterial}					from "./lib/GL_DepthMaterial";
-export {GL_DistanceMaterial}				from "./lib/GL_DistanceMaterial";
+export {BasicMaterial, _Render_BasicMaterial} from "./lib/BasicMaterial";
+export {MaterialBase, _Render_MaterialPassBase,_Render_DepthMaterial, _Render_DistanceMaterial} from "./lib/MaterialBase";
+export {MethodMaterial, _Render_MethodMaterial} from "./lib/MethodMaterial";
+export {MethodMaterialMode} from "./lib/MethodMaterialMode";

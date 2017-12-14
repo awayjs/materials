@@ -61,8 +61,62 @@ export class ImageTextureCube extends TextureCube
 	}
 }
 
-import {ShaderBase} from "@awayjs/renderer";
+import {AssetEvent} from "@awayjs/core";
 
-import {GL_ImageTexture} from "./GL_ImageTexture";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, _Stage_ImageBase} from "@awayjs/stage";
 
-ShaderBase.registerAbstraction(GL_ImageTexture, ImageTextureCube);
+import {_Shader_TextureBase, ShaderBase, _Render_RenderableBase} from "@awayjs/renderer";
+
+/**
+ *
+ * @class away.pool.GL_SingleImageTexture
+ */
+export class _Shader_ImageTexture extends _Shader_TextureBase
+{
+    protected _textureIndex:number;
+    protected _imageIndex:number;
+    protected _samplerIndex:number;
+
+    /**
+     *
+     * @param shader
+     * @param regCache
+     * @param targetReg The register in which to store the sampled colour.
+     * @param uvReg The uv coordinate vector with which to sample the texture map.
+     * @returns {string}
+     * @private
+     */
+    public _getFragmentCode(targetReg:ShaderRegisterElement, regCache:ShaderRegisterCache, sharedReg:ShaderRegisterData, inputReg:ShaderRegisterElement):string
+    {
+        var wrap:string = "wrap";
+        var format:string = "";
+        var filter:string = "linear,miplinear";
+
+        this._imageIndex = this._shader.renderMaterial.getImageIndex(this._texture, 0);
+
+        var textureReg:ShaderRegisterElement = this.getTextureReg(this._imageIndex, regCache, sharedReg);
+        this._textureIndex = textureReg.index;
+
+        return "tex " + targetReg + ", " + inputReg + ", " + textureReg + " <" + this._shader.renderMaterial.images[this._imageIndex].getType() + "," + filter + "," + format + wrap + ">\n";
+    }
+
+    public activate():void
+    {
+        var sampler:ImageSampler = <ImageSampler> this._shader.renderMaterial.samplers[this._imageIndex];
+        var stageImage:_Stage_ImageBase = <_Stage_ImageBase> this._shader.renderMaterial.images[this._imageIndex];
+
+        stageImage.activate(this._textureIndex, sampler);
+    }
+
+
+    public _setRenderState(renderState:_Render_RenderableBase):void
+    {
+        var sampler:ImageSampler = renderState.samplers[this._imageIndex];
+        var stageImage:_Stage_ImageBase = <_Stage_ImageBase> renderState.images[this._imageIndex];
+
+        if (stageImage && sampler)
+            stageImage.activate(this._textureIndex, sampler);
+    }
+}
+
+ShaderBase.registerAbstraction(_Shader_ImageTexture, ImageTextureCube);

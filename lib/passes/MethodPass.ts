@@ -2,7 +2,7 @@ import {ColorTransform, Matrix3D, AssetEvent, ProjectionBase} from "@awayjs/core
 
 import {Stage, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {IRenderable, RenderStateBase, MaterialStatePool, ShaderBase, ChunkVO} from "@awayjs/renderer";
+import {IRenderable, _Render_RenderableBase, _Render_ElementsBase, ShaderBase, ChunkVO} from "@awayjs/renderer";
 
 import {LightPickerBase} from "../lightpickers/LightPickerBase";
 import {LightSources} from "../lightpickers/LightSources";
@@ -91,9 +91,7 @@ import {SpecularPhongMethod} from "../methods/SpecularPhongMethod";
 
 import {ShadingMethodBase} from "../methods/ShadingMethodBase";
 
-import {MethodMaterial} from "../MethodMaterial";
-
-import {GL_MethodMaterial} from "../GL_MethodMaterial";
+import {MethodMaterial, _Render_MethodMaterial} from "../MethodMaterial";
 
 import {MethodPassMode} from "./MethodPassMode";
 
@@ -244,7 +242,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 */
 	public get enableLightFallOff():boolean
 	{
-		return (<GL_MethodMaterial>  this._materialState).enableLightFallOff;
+		return (<_Render_MethodMaterial>  this._renderMaterial).enableLightFallOff;
 	}
 
 	/**
@@ -255,7 +253,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 */
 	public get diffuseLightSources():number
 	{
-		return (<GL_MethodMaterial>  this._materialState).diffuseLightSources;
+		return (<_Render_MethodMaterial>  this._renderMaterial).diffuseLightSources;
 	}
 
 	/**
@@ -266,7 +264,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 */
 	public get specularLightSources():number
 	{
-		return (<GL_MethodMaterial>  this._materialState).specularLightSources;
+		return (<_Render_MethodMaterial>  this._renderMaterial).specularLightSources;
 	}
 
 	/**
@@ -274,9 +272,9 @@ export class MethodPass extends PassBase implements ILightingPass
 	 *
 	 * @param material The material to which this pass belongs.
 	 */
-	constructor(mode:number, material:GL_MethodMaterial, materialStatePool:MaterialStatePool)
+	constructor(mode:number, renderMaterial:_Render_MethodMaterial, renderElements:_Render_ElementsBase)
 	{
-		super(material, materialStatePool);
+		super(renderMaterial, renderElements);
 
 		this._mode = mode;
 
@@ -284,7 +282,7 @@ export class MethodPass extends PassBase implements ILightingPass
 		
 		this._onMethodInvalidatedDelegate = (event:ShadingMethodEvent) => this.onMethodInvalidated(event);
 
-		this.lightPicker = material.lightPicker;
+		this.lightPicker = renderMaterial.lightPicker;
 
 		if (this._shader == null)
 			this._updateShader();
@@ -298,14 +296,14 @@ export class MethodPass extends PassBase implements ILightingPass
 				this._shader = null;
 			}
 
-			this._shader = new LightingShader(this._materialStatePool, this._materialState, this, this._stage);
+			this._shader = new LightingShader(this._renderElements, this._renderMaterial, this, this._stage);
 		} else if (this._shader == null) { // !(_shader instanceof ShaderBase) because there are only two shader types atm
 			if (this._shader != null) {
 				this._shader.dispose();
 				this._shader = null;
 			}
 
-			this._shader = new ShaderBase(this._materialStatePool, this._materialState, this, this._stage);
+			this._shader = new ShaderBase(this._renderElements, this._renderMaterial, this, this._stage);
 		}
 	}
 
@@ -658,7 +656,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * @param stage
 	 * @param camera
 	 */
-	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 		super._setRenderState(renderState, projection);
 
@@ -1046,10 +1044,10 @@ export class MethodPass extends PassBase implements ILightingPass
 	{
 		var numChannels:number = 0;
 
-		if (((<GL_MethodMaterial> this._materialState).specularLightSources & LightSources.PROBES) != 0)
+		if (((<_Render_MethodMaterial> this._renderMaterial).specularLightSources & LightSources.PROBES) != 0)
 			++numChannels;
 
-		if (((<GL_MethodMaterial> this._materialState).diffuseLightSources & LightSources.PROBES) != 0)
+		if (((<_Render_MethodMaterial> this._renderMaterial).diffuseLightSources & LightSources.PROBES) != 0)
 			++numChannels;
 
 		// 4 channels available

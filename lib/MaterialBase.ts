@@ -492,3 +492,374 @@ export class MaterialBase extends AssetBase implements IMaterial
 		this.invalidatePasses();
 	}
 }
+
+import {ProjectionBase} from "@awayjs/core";
+
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+
+import {_Render_ElementsBase, _Render_RenderableBase, ShaderBase, _Shader_TextureBase, IPass, _Render_MaterialBase, PassEvent} from "@awayjs/renderer";
+
+/**
+ * _Render_MaterialPassBase provides an abstract base class for material shader passes. A material pass constitutes at least
+ * a render call per required renderable.
+ */
+export class _Render_MaterialPassBase extends _Render_MaterialBase implements IPass
+{
+    public _shader:ShaderBase;
+
+    public get shader():ShaderBase
+    {
+        return this._shader;
+    }
+
+    public get numUsedStreams():number
+    {
+        return this._shader.numUsedStreams;
+    }
+
+    public get numUsedTextures():number
+    {
+        return this._shader.numUsedTextures;
+    }
+
+    public _includeDependencies(shader:ShaderBase):void
+    {
+        shader.alphaThreshold = (<MaterialBase> this._material).alphaThreshold;
+        shader.useImageRect = (<MaterialBase> this._material).imageRect;
+        shader.usesCurves = (<MaterialBase> this._material).curves;
+        shader.useAlphaPremultiplied = (<MaterialBase> this._material).alphaPremultiplied;
+        shader.useBothSides = (<MaterialBase> this._material).bothSides;
+        shader.usesUVTransform = (<MaterialBase> this._material).animateUVs;
+        shader.usesColorTransform = (<MaterialBase> this._material).useColorTransform;
+    }
+
+    /**
+     * Marks the shader program as invalid, so it will be recompiled before the next render.
+     */
+    public invalidate():void
+    {
+        this._shader.invalidateProgram();
+
+        this.dispatchEvent(new PassEvent(PassEvent.INVALIDATE, this));
+    }
+
+    public dispose():void
+    {
+        if (this._shader) {
+            this._shader.dispose();
+            this._shader = null;
+        }
+    }
+
+    /**
+     * Renders the current pass. Before calling pass, activatePass needs to be called with the same index.
+     * @param pass The pass used to render the renderable.
+     * @param renderable The IRenderable object to draw.
+     * @param stage The Stage object used for rendering.
+     * @param entityCollector The EntityCollector object that contains the visible scene data.
+     * @param viewProjection The view-projection matrix used to project to the screen. This is not the same as
+     * camera.viewProjection as it includes the scaling factors when rendering to textures.
+     *
+     * @internal
+     */
+    public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
+    {
+        this._shader._setRenderState(renderState, projection);
+    }
+
+    /**
+     * Sets the render state for the pass that is independent of the rendered object. This needs to be called before
+     * calling pass. Before activating a pass, the previously used pass needs to be deactivated.
+     * @param stage The Stage object which is currently used for rendering.
+     * @param camera The camera from which the scene is viewed.
+     * @private
+     */
+    public _activate(projection:ProjectionBase):void
+    {
+        this._shader._activate(projection);
+    }
+
+    /**
+     * Clears the render state for the pass. This needs to be called before activating another pass.
+     * @param stage The Stage used for rendering
+     *
+     * @private
+     */
+    public _deactivate():void
+    {
+        this._shader._deactivate();
+    }
+
+    public _initConstantData():void
+    {
+
+    }
+
+    public _getVertexCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+    {
+        return "";
+    }
+
+    public _getFragmentCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+    {
+        return "";
+    }
+
+    public _getPostAnimationFragmentCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+    {
+        return "";
+    }
+
+    public _getNormalVertexCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+    {
+        return "";
+    }
+
+    public _getNormalFragmentCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+    {
+        return "";
+    }
+}
+
+/**
+ * _Render_DepthMaterial forms an abstract base class for the default shaded materials provided by Stage,
+ * using material methods to define their appearance.
+ */
+export class _Render_DepthMaterial extends _Render_MaterialPassBase
+{
+    private _fragmentConstantsIndex:number;
+    private _shaderTexture:_Shader_TextureBase;
+
+    /**
+     *
+     * @param pool
+     * @param surface
+     * @param elementsClass
+     * @param stage
+     */
+    constructor(material:MaterialBase, renderElements:_Render_ElementsBase)
+    {
+        super(material, renderElements);
+
+        this._shader = new ShaderBase(renderElements, this, this, this._stage);
+
+        this._pAddPass(this);
+
+        this.invalidate();
+    }
+
+    public invalidate():void
+    {
+        super.invalidate();
+
+        this._shaderTexture = (<MaterialBase> this._material).getTextureAt(0)? <_Shader_TextureBase> this._shader.getAbstraction((<MaterialBase> this._material).getTextureAt(0)) : null;
+    }
+
+    public _includeDependencies(shader:ShaderBase):void
+    {
+        super._includeDependencies(shader);
+
+        shader.projectionDependencies++;
+
+        if (shader.alphaThreshold > 0)
+            shader.uvDependencies++;
+    }
+
+
+    public _initConstantData():void
+    {
+        var index:number = this._fragmentConstantsIndex;
+        var data:Float32Array = this._shader.fragmentConstantData;
+        data[index] = 1.0;
+        data[index + 1] = 255.0;
+        data[index + 2] = 65025.0;
+        data[index + 3] = 16581375.0;
+        data[index + 4] = 1.0/255.0;
+        data[index + 5] = 1.0/255.0;
+        data[index + 6] = 1.0/255.0;
+        data[index + 7] = 0.0;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public _getFragmentCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+    {
+        var code:string = "";
+        var targetReg:ShaderRegisterElement = sharedRegisters.shadedTarget;
+        var dataReg1:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
+        var dataReg2:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
+
+        this._fragmentConstantsIndex = dataReg1.index*4;
+
+        var temp1:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
+        registerCache.addFragmentTempUsages(temp1, 1);
+        var temp2:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
+        registerCache.addFragmentTempUsages(temp2, 1);
+
+        code += "div " + temp1 + ", " + sharedRegisters.projectionFragment + ", " + sharedRegisters.projectionFragment + ".w\n" + //"sub ft2.z, fc0.x, ft2.z\n" +    //invert
+            "mul " + temp1 + ", " + dataReg1 + ", " + temp1 + ".z\n" +
+            "frc " + temp1 + ", " + temp1 + "\n" +
+            "mul " + temp2 + ", " + temp1 + ".yzww, " + dataReg2 + "\n";
+
+        //codeF += "mov ft1.w, fc1.w	\n" +
+        //    "mov ft0.w, fc0.x	\n";
+
+        if (this._shaderTexture && this._shader.alphaThreshold > 0) {
+
+            var albedo:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
+            code += this._shaderTexture._getFragmentCode(albedo, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+
+            var cutOffReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
+
+            code += "sub " + albedo + ".w, " + albedo + ".w, " + cutOffReg + ".x\n" +
+                "kil " + albedo + ".w\n";
+        }
+
+        code += "sub " + targetReg + ", " + temp1 + ", " + temp2 + "\n";
+
+        registerCache.removeFragmentTempUsage(temp1);
+        registerCache.removeFragmentTempUsage(temp2);
+
+        return code;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public _activate(projection:ProjectionBase):void
+    {
+        super._activate(projection);
+
+        if (this._shaderTexture && this._shader.alphaThreshold > 0) {
+            this._shaderTexture.activate();
+
+            this._shader.fragmentConstantData[this._fragmentConstantsIndex + 8] = this._shader.alphaThreshold;
+        }
+    }
+}
+
+
+/**
+ * DistanceRender is a pass that writes distance values to a depth map as a 32-bit value exploded over the 4 texture channels.
+ * This is used to render omnidirectional shadow maps.
+ */
+export class _Render_DistanceMaterial extends _Render_MaterialPassBase
+{
+    private _shaderTexture:_Shader_TextureBase;
+    private _fragmentConstantsIndex:number;
+
+    /**
+     * Creates a new DistanceRender object.
+     *
+     * @param material The material to which this pass belongs.
+     */
+    constructor(material:MaterialBase, renderElements:_Render_ElementsBase)
+    {
+        super(material, renderElements);
+
+        this._shader = new ShaderBase(renderElements, this, this, this._stage);
+
+        this._pAddPass(this);
+
+        this.invalidate();
+    }
+
+    public invalidate():void
+    {
+        super.invalidate();
+
+        this._shaderTexture = (<MaterialBase> this._material).getTextureAt(0)? <_Shader_TextureBase> this._shader.getAbstraction((<MaterialBase> this._material).getTextureAt(0)) : null;
+    }
+
+    /**
+     * Initializes the unchanging constant data for this material.
+     */
+    public _initConstantData():void
+    {
+        var index:number = this._fragmentConstantsIndex;
+        var data:Float32Array = this._shader.fragmentConstantData;
+        data[index + 4] = 1.0/255.0;
+        data[index + 5] = 1.0/255.0;
+        data[index + 6] = 1.0/255.0;
+        data[index + 7] = 0.0;
+    }
+
+    public _includeDependencies(shader:ShaderBase):void
+    {
+        super._includeDependencies(shader);
+
+        shader.projectionDependencies++;
+        shader.viewDirDependencies++;
+
+        if (shader.alphaThreshold > 0)
+            shader.uvDependencies++;
+
+        if (shader.viewDirDependencies > 0)
+            shader.globalPosDependencies++;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public _getFragmentCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+    {
+        var code:string;
+        var targetReg:ShaderRegisterElement = sharedRegisters.shadedTarget;
+        var dataReg1:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
+        var dataReg2:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
+
+        this._fragmentConstantsIndex = dataReg1.index*4;
+
+        var temp1:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
+        registerCache.addFragmentTempUsages(temp1, 1);
+        var temp2:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
+        registerCache.addFragmentTempUsages(temp2, 1);
+
+        // squared distance to view
+        code = "dp3 " + temp1 + ".z, " + sharedRegisters.viewDirVarying + ".xyz, " + sharedRegisters.viewDirVarying + ".xyz\n" +
+            "mul " + temp1 + ", " + dataReg1 + ", " + temp1 + ".z\n" +
+            "frc " + temp1 + ", " + temp1 + "\n" +
+            "mul " + temp2 + ", " + temp1 + ".yzww, " + dataReg2 + "\n";
+
+        if (this._shaderTexture && this._shader.alphaThreshold > 0) {
+
+            var albedo:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
+            code += this._shaderTexture._getFragmentCode(albedo, registerCache, sharedRegisters, sharedRegisters.uvVarying);
+
+            var cutOffReg:ShaderRegisterElement = registerCache.getFreeFragmentConstant();
+
+            code += "sub " + albedo + ".w, " + albedo + ".w, " + cutOffReg + ".x\n" +
+                "kil " + albedo + ".w\n";
+        }
+
+        code += "sub " + targetReg + ", " + temp1 + ", " + temp2 + "\n";
+
+        return code;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public _activate(projection:ProjectionBase):void
+    {
+        super._activate(projection);
+
+        var f:number = projection.far;
+
+        f = 1/(2*f*f);
+        // sqrt(f*f+f*f) is largest possible distance for any frustum, so we need to divide by it. Rarely a tight fit, but with 32 bits precision, it's enough.
+        var index:number = this._fragmentConstantsIndex;
+        var data:Float32Array = this._shader.fragmentConstantData;
+        data[index] = 1.0*f;
+        data[index + 1] = 255.0*f;
+        data[index + 2] = 65025.0*f;
+        data[index + 3] = 16581375.0*f;
+
+        if (this._shaderTexture && this._shader.alphaThreshold > 0) {
+            this._shaderTexture.activate();
+
+            data[index + 8] = this._shader.alphaThreshold;
+        }
+    }
+}

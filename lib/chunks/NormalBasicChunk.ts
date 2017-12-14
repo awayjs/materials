@@ -2,7 +2,7 @@ import {ProjectionBase} from "@awayjs/core";
 
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {RenderStateBase, ShaderBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
+import {_Render_RenderableBase, ShaderBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
 import {NormalBasicMethod} from "../methods/NormalBasicMethod";
 
@@ -16,7 +16,7 @@ export class NormalBasicChunk extends ShaderChunkBase
 	protected _method:NormalBasicMethod;
 	protected _shader:ShaderBase;
 
-	protected _texture:TextureStateBase;
+	protected _texture:_Shader_TextureBase;
 
 	/**
 	 * Creates a new EffectEnvMapChunk.
@@ -43,7 +43,7 @@ export class NormalBasicChunk extends ShaderChunkBase
 	public _initVO(chunkVO:ChunkVO):void
 	{
 		if (this._method.texture) {
-			this._texture = <TextureStateBase> this._shader.getAbstraction(this._method.texture);
+			this._texture = <_Shader_TextureBase> this._shader.getAbstraction(this._method.texture);
 
             this._texture._initVO(chunkVO);
 
@@ -77,7 +77,7 @@ export class NormalBasicChunk extends ShaderChunkBase
 			this._texture.activate();
 	}
 
-	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 		if (this._texture)
 			this._texture._setRenderState(renderState);

@@ -2,7 +2,7 @@ import {ProjectionBase} from "@awayjs/core";
 
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {RenderStateBase, ShaderBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
+import {_Render_RenderableBase, ShaderBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
 import {EffectEnvMapMethod} from "../methods/EffectEnvMapMethod";
 
@@ -16,8 +16,8 @@ export class EffectEnvMapChunk extends ShaderChunkBase
 	protected _method:EffectEnvMapMethod;
 	protected _shader:ShaderBase;
 
-	protected _envMap:TextureStateBase;
-	protected _maskMap:TextureStateBase;
+	protected _envMap:_Shader_TextureBase;
+	protected _maskMap:_Shader_TextureBase;
 	protected _fragmentIndex:number;
 
 	/**
@@ -39,12 +39,12 @@ export class EffectEnvMapChunk extends ShaderChunkBase
 		chunkVO.needsNormals = true;
 		chunkVO.needsView = true;
 
-		this._envMap = <TextureStateBase> this._shader.getAbstraction(this._method.envMap);
+		this._envMap = <_Shader_TextureBase> this._shader.getAbstraction(this._method.envMap);
 
         this._envMap._initVO(chunkVO);
 
 		if (this._method.mask) {
-			this._maskMap = <TextureStateBase> this._shader.getAbstraction(this._method.mask);
+			this._maskMap = <_Shader_TextureBase> this._shader.getAbstraction(this._method.mask);
 			this._shader.uvDependencies++;
 		} else if (this._maskMap) {
 			this._maskMap = null;
@@ -82,7 +82,7 @@ export class EffectEnvMapChunk extends ShaderChunkBase
 			this._updateProperties();
 	}
 
-	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 		this._envMap._setRenderState(renderState);
 

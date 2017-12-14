@@ -2,7 +2,7 @@ import {ProjectionBase} from "@awayjs/core";
 
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {RenderStateBase, ShaderBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
+import {_Render_RenderableBase, ShaderBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
 import {EffectLightMapMethod} from "../methods/EffectLightMapMethod";
 
@@ -18,7 +18,7 @@ export class EffectLightMapChunk extends ShaderChunkBase
 	private _method:EffectLightMapMethod;
 	private _shader:ShaderBase;
 
-	private _lightMap:TextureStateBase;
+	private _lightMap:_Shader_TextureBase;
 
 	/**
 	 * Creates a new EffectEnvMapChunk.
@@ -36,7 +36,7 @@ export class EffectLightMapChunk extends ShaderChunkBase
 	 */
 	public _initVO(chunkVO:ChunkVO):void
 	{
-		this._lightMap = <TextureStateBase> this._shader.getAbstraction(this._method.lightMap);
+		this._lightMap = <_Shader_TextureBase> this._shader.getAbstraction(this._method.lightMap);
 
         this._lightMap._initVO(chunkVO);
 
@@ -85,7 +85,7 @@ export class EffectLightMapChunk extends ShaderChunkBase
 	}
 
 
-	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 		this._lightMap._setRenderState(renderState);
 	}

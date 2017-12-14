@@ -2,7 +2,7 @@ import {AssetEvent, ProjectionBase} from "@awayjs/core";
 
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {RenderStateBase, IRenderable, ShaderBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
+import {_Render_RenderableBase, IRenderable, ShaderBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
 import {TextureCube} from "../textures/TextureCube";
 import {AmbientBasicMethod} from "../methods/AmbientBasicMethod";
@@ -17,7 +17,7 @@ export class AmbientBasicChunk extends ShaderChunkBase
 	protected _method:AmbientBasicMethod;
 	protected _shader:ShaderBase;
 
-	protected _texture:TextureStateBase;
+	protected _texture:_Shader_TextureBase;
 
 	private _colorIndex:number;
 
@@ -54,7 +54,7 @@ export class AmbientBasicChunk extends ShaderChunkBase
 	public _initVO(chunkVO:ChunkVO):void
 	{
 		if (this._method.texture) {
-			this._texture = <TextureStateBase> this._shader.getAbstraction(this._method.texture);
+			this._texture = <_Shader_TextureBase> this._shader.getAbstraction(this._method.texture);
 
             this._texture._initVO(chunkVO);
 
@@ -120,7 +120,7 @@ export class AmbientBasicChunk extends ShaderChunkBase
 		} else if (this._invalid) {
 			var index:number = this._colorIndex;
 			var data:Float32Array = this._shader.fragmentConstantData;
-			var color:number = this._shader.numLights? 0xFFFFFF : this._shader.materialState.style.color;
+			var color:number = this._shader.numLights? 0xFFFFFF : this._shader.renderMaterial.style.color;
 
 			data[index] = ((color >> 16) & 0xff)/0xff*this._method.strength;
 			data[index + 1] = ((color >> 8) & 0xff)/0xff*this._method.strength;
@@ -129,7 +129,7 @@ export class AmbientBasicChunk extends ShaderChunkBase
 		}
 	}
 
-	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 		if (this._texture)
 			this._texture._setRenderState(renderState);

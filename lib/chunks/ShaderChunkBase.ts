@@ -2,7 +2,7 @@ import {Matrix3D, AssetEvent, AssetBase, AbstractionBase, ProjectionBase} from "
 
 import {Stage, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {RenderStateBase, ShaderBase, ChunkVO} from "@awayjs/renderer";
+import {_Render_RenderableBase, ShaderBase, ChunkVO} from "@awayjs/renderer";
 
 import {ShadingMethodEvent} from "../events/ShadingMethodEvent";
 import {TextureBase} from "../textures/TextureBase";
@@ -134,7 +134,7 @@ export class ShaderChunkBase extends AbstractionBase implements IShaderChunk
 	 *
 	 * @internal
 	 */
-	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 
 	}

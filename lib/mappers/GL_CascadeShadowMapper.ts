@@ -2,7 +2,7 @@ import {AssetEvent, Matrix3D, ProjectionBase} from "@awayjs/core";
 
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {RenderStateBase, ChunkVO} from "@awayjs/renderer";
+import {_Render_RenderableBase, ChunkVO} from "@awayjs/renderer";
 
 import {DirectionalLight} from "../lights/DirectionalLight";
 import {ShadingMethodEvent} from "../events/ShadingMethodEvent";
@@ -190,7 +190,7 @@ export class GL_CascadeShadowMapper extends GL_DirectionalShadowMapper
 	/**
 	 * @inheritDoc
 	 */
-	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 	}
 }

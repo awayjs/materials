@@ -23,6 +23,6 @@ export class DepthTexture2D extends ImageTexture2D
 
 import {ShaderBase} from "@awayjs/renderer";
 
-import {GL_DepthTexture} from "./GL_DepthTexture";
+import {_Shader_DepthTexture} from "./DepthTextureCube";
 
-ShaderBase.registerAbstraction(GL_DepthTexture, DepthTexture2D);
+ShaderBase.registerAbstraction(_Shader_DepthTexture, DepthTexture2D);

@@ -1,8 +1,8 @@
 import {Matrix3D, Vector3D, ProjectionBase}	 from "@awayjs/core";
 
-import {MaterialStatePool, RenderStateBase, ShaderBase, MaterialStateBase} from "@awayjs/renderer";
+import {_Render_ElementsBase, _Render_RenderableBase, ShaderBase, _Render_MaterialBase} from "@awayjs/renderer";
 
-import {ContextGLProfile, Stage, GL_ImageBase, ShaderRegisterElement} from "@awayjs/stage";
+import {ContextGLProfile, Stage, _Stage_ImageBase, ShaderRegisterElement} from "@awayjs/stage";
 
 import {DirectionalLight} from "../lights/DirectionalLight";
 import {LightProbe} from "../lights/LightProbe";
@@ -97,9 +97,9 @@ export class LightingShader extends ShaderBase
 	/**
 	 * Creates a new MethodCompilerVO object.
 	 */
-    constructor(materialStatePool:MaterialStatePool, materialState:MaterialStateBase, lightingPass:ILightingPass, stage:Stage)
+    constructor(renderElements:_Render_ElementsBase, renderMaterial:_Render_MaterialBase, lightingPass:ILightingPass, stage:Stage)
     {
-		super(materialStatePool, materialState, lightingPass, stage);
+		super(renderElements, renderMaterial, lightingPass, stage);
 
 		this._lightingPass = lightingPass;
 	}
@@ -138,7 +138,7 @@ export class LightingShader extends ShaderBase
 	 * @param stage
 	 * @param camera
 	 */
-	public _setRenderState(renderable:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderable:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 		super._setRenderState(renderable, projection);
 
@@ -601,10 +601,10 @@ export class LightingShader extends ShaderBase
 			probe = lightProbes[ this._lightingPass.lightProbesOffset + i];
 
 			if (addDiff)
-				(<GL_ImageBase> this._stage.getAbstraction(probe.diffuseMap)).activate(this.lightProbeDiffuseIndices[i], probe.diffuseSampler);
+				(<_Stage_ImageBase> this._stage.getAbstraction(probe.diffuseMap)).activate(this.lightProbeDiffuseIndices[i], probe.diffuseSampler);
 
 			if (addSpec)
-				(<GL_ImageBase> this._stage.getAbstraction(probe.specularMap)).activate(this.lightProbeSpecularIndices[i], probe.diffuseSampler);
+				(<_Stage_ImageBase> this._stage.getAbstraction(probe.specularMap)).activate(this.lightProbeSpecularIndices[i], probe.diffuseSampler);
 		}
 
 		for (i = 0; i < len; ++i)

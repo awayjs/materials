@@ -2,7 +2,7 @@ import {ProjectionBase} from "@awayjs/core";
 
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {RenderStateBase, ShaderBase, TextureStateBase, ChunkVO} from "@awayjs/renderer";
+import {_Render_RenderableBase, ShaderBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
 import {LightingShader} from "../shaders/LightingShader";
 import {ImageTexture2D} from "../textures/ImageTexture2D";
@@ -21,7 +21,7 @@ export class EffectAlphaMaskChunk extends ShaderChunkBase
 	private _method:EffectAlphaMaskMethod;
 	private _shader:ShaderBase;
 
-	private _alphaMask:TextureStateBase;
+	private _alphaMask:_Shader_TextureBase;
 
 	/**
 	 * Creates a new EffectAlphaMaskChunk object.
@@ -39,7 +39,7 @@ export class EffectAlphaMaskChunk extends ShaderChunkBase
 	 */
 	public _initVO(chunkVO:ChunkVO):void
 	{
-		this._alphaMask = <TextureStateBase> this._shader.getAbstraction(this._method.texture || new ImageTexture2D());
+		this._alphaMask = <_Shader_TextureBase> this._shader.getAbstraction(this._method.texture || new ImageTexture2D());
 
         this._alphaMask._initVO(chunkVO);
 
@@ -79,7 +79,7 @@ export class EffectAlphaMaskChunk extends ShaderChunkBase
 		this._alphaMask.activate();
 	}
 
-	public _setRenderState(renderState:RenderStateBase, projection:ProjectionBase):void
+	public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
 	{
 		this._alphaMask._setRenderState(renderState);
 	}
