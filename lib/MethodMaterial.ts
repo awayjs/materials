@@ -6,7 +6,7 @@ import {ContextGLCompareMode, ImageBase} from "@awayjs/stage";
 import {AmbientBasicMethod} from "./methods/AmbientBasicMethod";
 import {DiffuseBasicMethod} from "./methods/DiffuseBasicMethod";
 import {DiffuseCompositeMethod} from "./methods/DiffuseCompositeMethod";
-import {ShadingMethodBase} from "./methods/ShadingMethodBase";
+import {MethodBase} from "./methods/MethodBase";
 import {NormalBasicMethod} from "./methods/NormalBasicMethod";
 import {ShadowMethodBase} from "./methods/ShadowMethodBase";
 import {SpecularBasicMethod} from "./methods/SpecularBasicMethod";
@@ -26,7 +26,7 @@ export class MethodMaterial extends MaterialBase
 {
 	public static assetType:string = "[materials MethodMaterial]";
 
-	private _effectMethods:Array<ShadingMethodBase> = new Array<ShadingMethodBase>();
+	private _effectMethods:Array<MethodBase> = new Array<MethodBase>();
 	private _mode:string;
 
 	private _enableLightFallOff:boolean = true;
@@ -337,7 +337,7 @@ export class MethodMaterial extends MaterialBase
 	 * but modulate the shaded colour, used for fog, outlines, etc. The method will be applied to the result of the
 	 * methods added prior.
 	 */
-	public addEffectMethod(method:ShadingMethodBase):void
+	public addEffectMethod(method:MethodBase):void
 	{
 		method.iAddOwner(this);
 
@@ -351,7 +351,7 @@ export class MethodMaterial extends MaterialBase
 	 * @param index The index of the method to retrieve.
 	 * @return The method at the given index.
 	 */
-	public getEffectMethodAt(index:number):ShadingMethodBase
+	public getEffectMethodAt(index:number):MethodBase
 	{
 		return this._effectMethods[index];
 	}
@@ -361,7 +361,7 @@ export class MethodMaterial extends MaterialBase
 	 * methods are those that do not influence the lighting but modulate the shaded colour, used for fog, outlines,
 	 * etc. The method will be applied to the result of the methods with a lower index.
 	 */
-	public addEffectMethodAt(method:ShadingMethodBase, index:number):void
+	public addEffectMethodAt(method:MethodBase, index:number):void
 	{
 		method.iAddOwner(this);
 
@@ -374,7 +374,7 @@ export class MethodMaterial extends MaterialBase
 	 * Removes an effect method from the material.
 	 * @param method The method to be removed.
 	 */
-	public removeEffectMethod(method:ShadingMethodBase):void
+	public removeEffectMethod(method:MethodBase):void
 	{
 		method.iRemoveOwner(this);
 
@@ -697,7 +697,7 @@ export class _Render_MethodMaterial extends _Render_MaterialBase
 
         //update effect methods
         var i:number = 0;
-        var effectMethod:ShadingMethodBase;
+        var effectMethod:MethodBase;
         var len:number = Math.max(this._methodMaterial.numEffectMethods, this._pass.numEffectMethods);
 
         while (i < len) {

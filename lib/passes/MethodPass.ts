@@ -7,128 +7,22 @@ import {IRenderable, _Render_RenderableBase, _Render_ElementsBase, ShaderBase, C
 import {LightPickerBase} from "../lightpickers/LightPickerBase";
 import {LightSources} from "../lightpickers/LightSources";
 
-import {ShadingMethodEvent} from "../events/ShadingMethodEvent";
-import {ILightingPass} from "../passes/ILightingPass";
-
-import {LightingShader} from "../shaders/LightingShader";
-import {PassBase} from "../passes/PassBase";
-
-import {ILightingChunk} from "../chunks/ILightingChunk";
-import {IShaderChunk} from "../chunks/IShaderChunk";
-
-import {AmbientBasicChunk} from "../chunks/AmbientBasicChunk";
-import {AmbientDepthChunk} from "../chunks/AmbientDepthChunk";
-
-import {DiffuseBasicChunk} from "../chunks/DiffuseBasicChunk";
-import {DiffuseCelChunk} from "../chunks/DiffuseCelChunk";
-import {DiffuseGradientChunk} from "../chunks/DiffuseGradientChunk";
-import {DiffuseLightMapChunk} from "../chunks/DiffuseLightMapChunk";
-import {DiffuseWrapChunk} from "../chunks/DiffuseWrapChunk";
-
-import {EffectAlphaMaskChunk} from "../chunks/EffectAlphaMaskChunk";
-import {EffectColorMatrixChunk} from "../chunks/EffectColorMatrixChunk";
-import {EffectColorTransformChunk} from "../chunks/EffectColorTransformChunk";
-import {EffectEnvMapChunk} from "../chunks/EffectEnvMapChunk";
-import {EffectFogChunk} from "../chunks/EffectFogChunk";
-import {EffectFresnelEnvMapChunk} from "../chunks/EffectFresnelEnvMapChunk";
-import {EffectLightMapChunk} from "../chunks/EffectLightMapChunk";
-import {EffectProjectiveTextureChunk} from "../chunks/EffectProjectiveTextureChunk";
-import {EffectRefractionEnvMapChunk} from "../chunks/EffectRefractionEnvMapChunk";
-import {EffectRimLightChunk} from "../chunks/EffectRimLightChunk";
-
-import {NormalBasicChunk} from "../chunks/NormalBasicChunk";
-import {NormalHeightMapChunk} from "../chunks/NormalHeightMapChunk";
-import {NormalSimpleWaterChunk} from "../chunks/NormalSimpleWaterChunk";
-
-import {ShadowDitheredChunk} from "../chunks/ShadowDitheredChunk";
-import {ShadowFilteredChunk} from "../chunks/ShadowFilteredChunk";
-import {ShadowHardChunk} from "../chunks/ShadowHardChunk";
-import {ShadowSoftChunk} from "../chunks/ShadowSoftChunk";
-
-import {SpecularAnisotropicChunk} from "../chunks/SpecularAnisotropicChunk";
-import {SpecularBasicChunk} from "../chunks/SpecularBasicChunk";
-import {SpecularCelChunk} from "../chunks/SpecularCelChunk";
-import {SpecularFresnelChunk} from "../chunks/SpecularFresnelChunk";
-import {SpecularPhongChunk} from "../chunks/SpecularPhongChunk";
-
-import {ShaderChunkBase} from "../chunks/ShaderChunkBase";
-import {LightingCompositeChunk} from "../chunks/LightingCompositeChunk";
-
-import {AmbientBasicMethod} from "../methods/AmbientBasicMethod";
-import {AmbientDepthMethod} from "../methods/AmbientDepthMethod";
-
-import {DiffuseBasicMethod} from "../methods/DiffuseBasicMethod";
-import {DiffuseCelMethod} from "../methods/DiffuseCelMethod";
-import {DiffuseGradientMethod} from "../methods/DiffuseGradientMethod";
-import {DiffuseLightMapMethod} from "../methods/DiffuseLightMapMethod";
-import {DiffuseWrapMethod} from "../methods/DiffuseWrapMethod";
-
-import {EffectAlphaMaskMethod} from "../methods/EffectAlphaMaskMethod";
-import {EffectColorMatrixMethod} from "../methods/EffectColorMatrixMethod";
+import {MethodEvent} from "../events/MethodEvent";
+import {_IShader_LightingMethod} from "../methods/_IShader_LightingMethod";
+import {_IShader_Method} from "../methods/_IShader_Method";
+import {MethodBase, _Shader_MethodBase} from "../methods/MethodBase";
 import {EffectColorTransformMethod} from "../methods/EffectColorTransformMethod";
-import {EffectEnvMapMethod} from "../methods/EffectEnvMapMethod";
-import {EffectFogMethod} from "../methods/EffectFogMethod";
-import {EffectFresnelEnvMapMethod} from "../methods/EffectFresnelEnvMapMethod";
-import {EffectLightMapMethod} from "../methods/EffectLightMapMethod";
-import {EffectProjectiveTextureMethod} from "../methods/EffectProjectiveTextureMethod";
-import {EffectRefractionEnvMapMethod} from "../methods/EffectRefractionEnvMapMethod";
-import {EffectRimLightMethod} from "../methods/EffectRimLightMethod";
-
-import {NormalBasicMethod} from "../methods/NormalBasicMethod";
-import {NormalHeightMapMethod} from "../methods/NormalHeightMapMethod";
-import {NormalSimpleWaterMethod} from "../methods/NormalSimpleWaterMethod";
-
-import {ShadowDitheredMethod} from "../methods/ShadowDitheredMethod";
-import {ShadowFilteredMethod} from "../methods/ShadowFilteredMethod";
-import {ShadowHardMethod} from "../methods/ShadowHardMethod";
-import {ShadowSoftMethod} from "../methods/ShadowSoftMethod";
-
-import {SpecularAnisotropicMethod} from "../methods/SpecularAnisotropicMethod";
-import {SpecularBasicMethod} from "../methods/SpecularBasicMethod";
-import {SpecularCelMethod} from "../methods/SpecularCelMethod";
-import {SpecularFresnelMethod} from "../methods/SpecularFresnelMethod";
-import {SpecularPhongMethod} from "../methods/SpecularPhongMethod";
-
-import {ShadingMethodBase} from "../methods/ShadingMethodBase";
+import {_Shader_LightingCompositeMethod} from "../methods/CompositeMethodBase";
+import {_Shader_DiffuseBasicMethod} from "../methods/DiffuseBasicMethod";
+import {_Shader_SpecularBasicMethod} from "../methods/SpecularBasicMethod";
+import {_Shader_NormalBasicMethod} from "../methods/NormalBasicMethod";
+import {ILightingPass} from "../passes/ILightingPass";
+import {PassBase} from "../passes/PassBase";
+import {LightingShader} from "../shaders/LightingShader";
 
 import {MethodMaterial, _Render_MethodMaterial} from "../MethodMaterial";
 
 import {MethodPassMode} from "./MethodPassMode";
-
-ShaderBase.registerAbstraction(AmbientBasicChunk, AmbientBasicMethod);
-ShaderBase.registerAbstraction(AmbientDepthChunk, AmbientDepthMethod);
-
-ShaderBase.registerAbstraction(DiffuseBasicChunk, DiffuseBasicMethod);
-ShaderBase.registerAbstraction(DiffuseCelChunk, DiffuseCelMethod);
-ShaderBase.registerAbstraction(DiffuseGradientChunk, DiffuseGradientMethod);
-ShaderBase.registerAbstraction(DiffuseLightMapChunk, DiffuseLightMapMethod);
-ShaderBase.registerAbstraction(DiffuseWrapChunk, DiffuseWrapMethod);
-
-ShaderBase.registerAbstraction(EffectAlphaMaskChunk, EffectAlphaMaskMethod);
-ShaderBase.registerAbstraction(EffectColorMatrixChunk, EffectColorMatrixMethod);
-ShaderBase.registerAbstraction(EffectColorTransformChunk, EffectColorTransformMethod);
-ShaderBase.registerAbstraction(EffectEnvMapChunk, EffectEnvMapMethod);
-ShaderBase.registerAbstraction(EffectFogChunk, EffectFogMethod);
-ShaderBase.registerAbstraction(EffectFresnelEnvMapChunk, EffectFresnelEnvMapMethod);
-ShaderBase.registerAbstraction(EffectLightMapChunk, EffectLightMapMethod);
-ShaderBase.registerAbstraction(EffectProjectiveTextureChunk, EffectProjectiveTextureMethod);
-ShaderBase.registerAbstraction(EffectRefractionEnvMapChunk, EffectRefractionEnvMapMethod);
-ShaderBase.registerAbstraction(EffectRimLightChunk, EffectRimLightMethod);
-
-ShaderBase.registerAbstraction(NormalBasicChunk, NormalBasicMethod);
-ShaderBase.registerAbstraction(NormalHeightMapChunk, NormalHeightMapMethod);
-ShaderBase.registerAbstraction(NormalSimpleWaterChunk, NormalSimpleWaterMethod);
-
-ShaderBase.registerAbstraction(ShadowDitheredChunk, ShadowDitheredMethod);
-ShaderBase.registerAbstraction(ShadowFilteredChunk, ShadowFilteredMethod);
-ShaderBase.registerAbstraction(ShadowSoftChunk, ShadowSoftMethod);
-ShaderBase.registerAbstraction(ShadowHardChunk, ShadowHardMethod);
-
-ShaderBase.registerAbstraction(SpecularAnisotropicChunk, SpecularAnisotropicMethod);
-ShaderBase.registerAbstraction(SpecularBasicChunk, SpecularBasicMethod);
-ShaderBase.registerAbstraction(SpecularCelChunk, SpecularCelMethod);
-ShaderBase.registerAbstraction(SpecularFresnelChunk, SpecularFresnelMethod);
-ShaderBase.registerAbstraction(SpecularPhongChunk, SpecularPhongMethod);
 
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
@@ -143,25 +37,25 @@ export class MethodPass extends PassBase implements ILightingPass
 
 	private _includeCasters:boolean = true;
 
-	public _colorTransformChunk:IShaderChunk;
+	public _colorTransformChunk:_IShader_Method;
 	public _colorTransformMethod:EffectColorTransformMethod;
-	public _normalChunk:IShaderChunk;
-	public _normalMethod:ShadingMethodBase;
-	public _ambientChunk:IShaderChunk;
-	public _ambientMethod:ShadingMethodBase;
-	public _shadowChunk:IShaderChunk;
-	public _shadowMethod:ShadingMethodBase;
-	public _diffuseChunk:ILightingChunk;
-	public _diffuseMethod:ShadingMethodBase;
-	public _specularChunk:ILightingChunk;
-	public _specularMethod:ShadingMethodBase;
-	public _chunks:Array<IShaderChunk> = new Array<IShaderChunk>();
-	public _methods:Array<ShadingMethodBase> = new Array<ShadingMethodBase>();
+	public _normalChunk:_IShader_Method;
+	public _normalMethod:MethodBase;
+	public _ambientChunk:_IShader_Method;
+	public _ambientMethod:MethodBase;
+	public _shadowChunk:_IShader_Method;
+	public _shadowMethod:MethodBase;
+	public _diffuseChunk:_IShader_LightingMethod;
+	public _diffuseMethod:MethodBase;
+	public _specularChunk:_IShader_LightingMethod;
+	public _specularMethod:MethodBase;
+	public _chunks:Array<_IShader_Method> = new Array<_IShader_Method>();
+	public _methods:Array<MethodBase> = new Array<MethodBase>();
 
 	public _numEffectDependencies:number = 0;
 
 	private _onLightsChangeDelegate:(event:AssetEvent) => void;
-	private _onMethodInvalidatedDelegate:(event:ShadingMethodEvent) => void;
+	private _onMethodInvalidatedDelegate:(event:MethodEvent) => void;
 
 	public numDirectionalLights:number = 0;
 
@@ -280,7 +174,7 @@ export class MethodPass extends PassBase implements ILightingPass
 
 		this._onLightsChangeDelegate = (event:AssetEvent) => this.onLightsChange(event);
 		
-		this._onMethodInvalidatedDelegate = (event:ShadingMethodEvent) => this.onMethodInvalidated(event);
+		this._onMethodInvalidatedDelegate = (event:MethodEvent) => this.onMethodInvalidated(event);
 
 		this.lightPicker = renderMaterial.lightPicker;
 
@@ -361,12 +255,12 @@ export class MethodPass extends PassBase implements ILightingPass
 		this._colorTransformMethod = value;
 
 		if (value) {
-			this._colorTransformChunk = <ShaderChunkBase> this._shader.getAbstraction(value);
+			this._colorTransformChunk = <_Shader_MethodBase> this._shader.getAbstraction(value);
 			this._addDependency(value);
 		}
 	}
 
-	private _removeDependency(method:ShadingMethodBase, effectsDependency:boolean = false):void
+	private _removeDependency(method:MethodBase, effectsDependency:boolean = false):void
 	{
 		var index:number = this._methods.indexOf(method);
 
@@ -376,7 +270,7 @@ export class MethodPass extends PassBase implements ILightingPass
 		if (!effectsDependency)
 			this._numEffectDependencies--;
 
-		method.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
+		method.removeEventListener(MethodEvent.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
 
 		this._methods.splice(index, 1);
 		this._chunks.splice(index, 1);
@@ -384,11 +278,11 @@ export class MethodPass extends PassBase implements ILightingPass
 		this.invalidate();
 	}
 
-	private _addDependency(method:ShadingMethodBase, effectsDependency:boolean = false, index:number = -1):void
+	private _addDependency(method:MethodBase, effectsDependency:boolean = false, index:number = -1):void
 	{
-		method.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
+		method.addEventListener(MethodEvent.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
 
-		var chunk:IShaderChunk = <ShaderChunkBase> this._shader.getAbstraction(method);
+		var chunk:_IShader_Method = <_Shader_MethodBase> this._shader.getAbstraction(method);
 
 		if (effectsDependency) {
 			if (index != -1) {
@@ -412,7 +306,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * but modulate the shaded colour, used for fog, outlines, etc. The method will be applied to the result of the
 	 * methods added prior.
 	 */
-	public addEffectMethod(method:ShadingMethodBase):void
+	public addEffectMethod(method:MethodBase):void
 	{
 		this._addDependency(method, true);
 	}
@@ -431,7 +325,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * @param method The method to be queried.
 	 * @return true if the method was added to the material, false otherwise.
 	 */
-	public hasEffectMethod(method:ShadingMethodBase):boolean
+	public hasEffectMethod(method:MethodBase):boolean
 	{
 		return this._methods.indexOf(method) != -1;
 	}
@@ -441,7 +335,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * @param index The index of the method to retrieve.
 	 * @return The method at the given index.
 	 */
-	public getEffectMethodAt(index:number):ShadingMethodBase
+	public getEffectMethodAt(index:number):MethodBase
 	{
 		if (index < 0 || index > this._numEffectDependencies - 1)
 			return null;
@@ -454,7 +348,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * methods are those that do not influence the lighting but modulate the shaded colour, used for fog, outlines,
 	 * etc. The method will be applied to the result of the methods with a lower index.
 	 */
-	public addEffectMethodAt(method:ShadingMethodBase, index:number):void
+	public addEffectMethodAt(method:MethodBase, index:number):void
 	{
 		this._addDependency(method, true, index);
 	}
@@ -463,7 +357,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * Removes an effect method from the material.
 	 * @param method The method to be removed.
 	 */
-	public removeEffectMethod(method:ShadingMethodBase):void
+	public removeEffectMethod(method:MethodBase):void
 	{
 		this._removeDependency(method, true);
 	}
@@ -474,7 +368,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 */
 	public removeEffectMethodAt(index:number):void
 	{
-		var method:ShadingMethodBase = this.getEffectMethodAt(index);
+		var method:MethodBase = this.getEffectMethodAt(index);
 
 		if (method != null)
 			this._removeDependency(method, true);
@@ -483,12 +377,12 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * The method used to generate the per-pixel normals. Defaults to NormalBasicMethod.
 	 */
-	public get normalMethod():ShadingMethodBase
+	public get normalMethod():MethodBase
 	{
 		return this._normalMethod;
 	}
 
-	public set normalMethod(value:ShadingMethodBase)
+	public set normalMethod(value:MethodBase)
 	{
 		if (this._normalMethod == value)
 			return;
@@ -501,7 +395,7 @@ export class MethodPass extends PassBase implements ILightingPass
 		this._normalMethod = value;
 
 		if (value) {
-			this._normalChunk = <ShaderChunkBase> this._shader.getAbstraction(value);
+			this._normalChunk = <_Shader_MethodBase> this._shader.getAbstraction(value);
 			this._addDependency(value);
 		}
 	}
@@ -509,12 +403,12 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * The method that provides the ambient lighting contribution. Defaults to AmbientBasicMethod.
 	 */
-	public get ambientMethod():ShadingMethodBase
+	public get ambientMethod():MethodBase
 	{
 		return this._ambientMethod;
 	}
 
-	public set ambientMethod(value:ShadingMethodBase)
+	public set ambientMethod(value:MethodBase)
 	{
 		if (this._ambientMethod == value)
 			return;
@@ -527,7 +421,7 @@ export class MethodPass extends PassBase implements ILightingPass
 		this._ambientMethod = value;
 
 		if (value) {
-			this._ambientChunk = <ShaderChunkBase> this._shader.getAbstraction(value);
+			this._ambientChunk = <_Shader_MethodBase> this._shader.getAbstraction(value);
 			this._addDependency(value);
 		}
 	}
@@ -535,12 +429,12 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * The method used to render shadows cast on this surface, or null if no shadows are to be rendered. Defaults to null.
 	 */
-	public get shadowMethod():ShadingMethodBase
+	public get shadowMethod():MethodBase
 	{
 		return this._shadowMethod;
 	}
 
-	public set shadowMethod(value:ShadingMethodBase)
+	public set shadowMethod(value:MethodBase)
 	{
 		if (this._shadowMethod == value)
 			return;
@@ -553,7 +447,7 @@ export class MethodPass extends PassBase implements ILightingPass
 		this._shadowMethod = value;
 
 		if (value) {
-			this._shadowChunk = <ShaderChunkBase> this._shader.getAbstraction(value);
+			this._shadowChunk = <_Shader_MethodBase> this._shader.getAbstraction(value);
 			this._addDependency(value);
 		}
 	}
@@ -561,12 +455,12 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * The method that provides the diffuse lighting contribution. Defaults to DiffuseBasicMethod.
 	 */
-	public get diffuseMethod():ShadingMethodBase
+	public get diffuseMethod():MethodBase
 	{
 		return this._diffuseMethod;
 	}
 
-	public set diffuseMethod(value:ShadingMethodBase)
+	public set diffuseMethod(value:MethodBase)
 	{
 		if (this._diffuseMethod == value)
 			return;
@@ -577,7 +471,7 @@ export class MethodPass extends PassBase implements ILightingPass
 		}
 
 		if (value) {
-			this._diffuseChunk = <LightingCompositeChunk | DiffuseBasicChunk> this._shader.getAbstraction(value);
+			this._diffuseChunk = <_Shader_LightingCompositeMethod | _Shader_DiffuseBasicMethod> this._shader.getAbstraction(value);
 			this._addDependency(value);
 		}
 	}
@@ -585,12 +479,12 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * The method that provides the specular lighting contribution. Defaults to SpecularBasicMethod.
 	 */
-	public get specularMethod():ShadingMethodBase
+	public get specularMethod():MethodBase
 	{
 		return this._specularMethod;
 	}
 
-	public set specularMethod(value:ShadingMethodBase)
+	public set specularMethod(value:MethodBase)
 	{
 		if (this._specularMethod == value)
 			return;
@@ -601,7 +495,7 @@ export class MethodPass extends PassBase implements ILightingPass
 		}
 
 		if (value) {
-			this._specularChunk = <LightingCompositeChunk | SpecularBasicChunk> this._shader.getAbstraction(value);
+			this._specularChunk = <_Shader_LightingCompositeMethod | _Shader_SpecularBasicMethod> this._shader.getAbstraction(value);
 			this._addDependency(value);
 		}
 	}
@@ -626,7 +520,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * Called when any method's shader code is invalidated.
 	 */
-	private onMethodInvalidated(event:ShadingMethodEvent):void
+	private onMethodInvalidated(event:MethodEvent):void
 	{
 		this.invalidate();
 	}
@@ -640,7 +534,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	{
 		super._activate(projection);
 
-		var chunk:IShaderChunk;
+		var chunk:_IShader_Method;
 		var len:number = this._chunks.length;
 		for (var i:number = 0; i < len; ++i) {
 			chunk = this._chunks[i];
@@ -660,7 +554,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	{
 		super._setRenderState(renderState, projection);
 
-		var chunk:IShaderChunk;
+		var chunk:_IShader_Method;
 		var len:number = this._chunks.length;
 		for (var i:number = 0; i < len; ++i) {
 			chunk = this._chunks[i];
@@ -676,7 +570,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	{
 		super._deactivate();
 
-		var chunk:IShaderChunk;
+		var chunk:_IShader_Method;
 		var len:number = this._chunks.length;
 		for (var i:number = 0; i < len; ++i) {
 			chunk = this._chunks[i];
@@ -702,7 +596,7 @@ export class MethodPass extends PassBase implements ILightingPass
 
 		var usesTangentSpace:boolean = true;
 
-		var chunk:IShaderChunk;
+		var chunk:_IShader_Method;
 		for (i = 0; i < len; ++i) {
 			chunk = this._chunks[i];
 			if ((chunk.chunkVO.useChunk = chunk._isUsed()) && !chunk._usesTangentSpace())
@@ -710,7 +604,7 @@ export class MethodPass extends PassBase implements ILightingPass
 		}
 
 		shader.outputsNormals = this._normalChunk && this._normalChunk.chunkVO.useChunk;
-		shader.outputsTangentNormals = shader.outputsNormals && (<NormalBasicChunk> this._normalChunk)._outputsTangentNormals();
+		shader.outputsTangentNormals = shader.outputsNormals && (<_Shader_NormalBasicMethod> this._normalChunk)._outputsTangentNormals();
 		shader.usesTangentSpace = shader.outputsTangentNormals && !shader.usesProbes && usesTangentSpace;
 
 		if (!shader.usesTangentSpace) {
@@ -730,7 +624,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * @param method The method to count the dependencies for.
 	 * @param chunk The method's data for this material.
 	 */
-	private setupAndCountDependencies(shader:ShaderBase, chunk:IShaderChunk):void
+	private setupAndCountDependencies(shader:ShaderBase, chunk:_IShader_Method):void
 	{
 		var chunkVO:ChunkVO = chunk.chunkVO;
 		chunk._reset(chunkVO);
@@ -837,7 +731,7 @@ export class MethodPass extends PassBase implements ILightingPass
 		if (this._specularChunk && this._specularChunk.chunkVO.useChunk)
 			code += this._specularChunk._getVertexCode(registerCache, sharedRegisters);
 
-		var chunk:IShaderChunk;
+		var chunk:_IShader_Method;
 		var len:number = this._chunks.length;
 		for (var i:number = len - this._numEffectDependencies; i < len; i++) {
 			chunk = this._chunks[i];
@@ -926,7 +820,7 @@ export class MethodPass extends PassBase implements ILightingPass
 		}
 
 		//perform effects shading
-		var chunk:IShaderChunk;
+		var chunk:_IShader_Method;
 		var len:number = this._chunks.length;
 		for (var i:number = len - this._numEffectDependencies; i < len; i++) {
 			chunk = this._chunks[i];

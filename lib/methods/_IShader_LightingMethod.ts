@@ -1,12 +1,12 @@
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {IShaderChunk} from "./IShaderChunk";
+import {_IShader_Method} from "./_IShader_Method";
 
 /**
  * LightingChunkBase provides an abstract base method for shading methods that uses lights.
  * Used for diffuse and specular shaders only.
  */
-export interface ILightingChunk extends IShaderChunk
+export interface _IShader_LightingMethod extends _IShader_Method
 {
 	_totalLightColorReg:ShaderRegisterElement;
 	

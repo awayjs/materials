@@ -7,7 +7,7 @@ import {IRenderer, IView, DefaultRenderer} from "@awayjs/renderer";
 import {ShadowTextureCube} from "../textures/ShadowTextureCube"
 import {PointLight} from "../lights/PointLight";
 
-import {ShadowMapperBase} from "./ShadowMapperBase";
+import {ShadowMapperBase, _Shader_ShadowMapperBase} from "./ShadowMapperBase";
 
 export class PointShadowMapper extends ShadowMapperBase
 {
@@ -111,8 +111,40 @@ export class PointShadowMapper extends ShadowMapperBase
 	}
 }
 
-import {ShaderBase} from "@awayjs/renderer";
+import {Matrix3D, AbstractMethodError, AssetEvent} from "@awayjs/core";
 
-import {GL_PointShadowMapper} from "./GL_PointShadowMapper";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-ShaderBase.registerAbstraction(GL_PointShadowMapper, PointShadowMapper);
+import {ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO, IMapper} from "@awayjs/renderer";
+
+import {LightBase} from "../lights/LightBase";
+import {DirectionalShadowMapper} from "./DirectionalShadowMapper";
+import {LightingShader} from "../shaders/LightingShader";
+
+/**
+ * _Shader_PointShadowMapper provides an abstract method for simple (non-wrapping) shadow map methods.
+ */
+export class _Shader_PointShadowMapper extends _Shader_ShadowMapperBase
+{
+    /**
+     * @inheritDoc
+     */
+    public _initVO(chunkVO:ChunkVO):void
+    {
+        super._initVO(chunkVO);
+
+        chunkVO.needsGlobalFragmentPos = true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public _getVertexCode(regCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
+    {
+        this._depthMapCoordReg = sharedRegisters.globalPositionVarying;
+
+        return "";
+    }
+}
+
+ShaderBase.registerAbstraction(_Shader_PointShadowMapper, PointShadowMapper);

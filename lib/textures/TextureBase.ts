@@ -4,7 +4,7 @@ import {ImageBase, ImageSampler} from "@awayjs/stage";
 
 import {ITexture, MappingMode} from "@awayjs/renderer";
 
-import {ShadingMethodEvent} from "../events/ShadingMethodEvent";
+import {MethodEvent} from "../events/MethodEvent";
 
 /**
  *
@@ -91,6 +91,6 @@ export class TextureBase extends AssetBase implements ITexture
     {
         this.invalidate();
 
-        this.dispatchEvent(new ShadingMethodEvent(ShadingMethodEvent.SHADER_INVALIDATED));
+        this.dispatchEvent(new MethodEvent(MethodEvent.SHADER_INVALIDATED));
     }
 }
