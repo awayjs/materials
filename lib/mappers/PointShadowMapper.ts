@@ -1,4 +1,4 @@
-import {Vector3D, PerspectiveProjection, ProjectionBase} from "@awayjs/core";
+import {Vector3D, PerspectiveProjection, ProjectionBase, Transform} from "@awayjs/core";
 
 import {ImageCube} from "@awayjs/stage";
 
@@ -65,6 +65,7 @@ export class PointShadowMapper extends ShadowMapperBase
 	private addProjection(rotationX:number, rotationY:number, rotationZ:number):void
 	{
 		var projection:PerspectiveProjection = new PerspectiveProjection();
+		projection.transform = new Transform();
 		projection.transform.rotateTo(rotationX, rotationY, rotationZ);
 		projection.near = .01;
 		projection.fieldOfView = 90;
