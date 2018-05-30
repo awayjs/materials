@@ -1,3 +1,6 @@
+
+console.log("AwayJS - Materials - 0.4.91");
+
 export {LightEvent} from "./lib/events/LightEvent";
 export {TextureProjectorEvent} from "./lib/events/TextureProjectorEvent";
 export {MethodEvent} from "./lib/events/MethodEvent";
