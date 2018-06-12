@@ -95,7 +95,7 @@ export class DirectionalLight extends LightBase
             this._pAabbPoints = [];
         
         //update points
-		var box:Box = entity.getBox();
+		var box:Box = entity.getBoxBounds();
         var minX:number = box.x;
         var minY:number = box.y - box.height;
         var minZ:number = box.z;
