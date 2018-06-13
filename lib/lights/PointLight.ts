@@ -201,7 +201,11 @@ export class PointLight extends LightBase
 		m.copyFrom(entity.getRenderSceneTransform(cameraTransform));
         m.append(pointAtMatrix);
 
-		var box:Box = entity.getBoxBounds();
+        var box:Box = entity.getBoxBounds();
+
+        if (box == null)
+            box = new Box();
+            
 		var v1:Vector3D = m.deltaTransformVector(new Vector3D(box.left, box.bottom, box.front));
 		var v2:Vector3D = m.deltaTransformVector(new Vector3D(box.right, box.top, box.back));
 		var d1:number = v1.x*v1.x + v1.y*v1.y + v1.z*v1.z;
