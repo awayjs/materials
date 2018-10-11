@@ -145,7 +145,7 @@ export class SpecularBasicMethod extends MethodBase
 
 import {ProjectionBase} from "@awayjs/core";
 
-import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, Viewport} from "@awayjs/stage";
 
 import {ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
@@ -390,7 +390,7 @@ export class _Shader_SpecularBasicMethod extends _Shader_MethodBase implements _
         }
     }
 
-    public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
+    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
     {
         if (this._texture)
             this._texture._setRenderState(renderState);

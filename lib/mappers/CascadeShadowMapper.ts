@@ -1,6 +1,6 @@
 import {Matrix3D, Rectangle, AssetEvent, PerspectiveProjection, ProjectionBase} from "@awayjs/core";
 
-import {Image2D} from "@awayjs/stage";
+import {Image2D, Viewport} from "@awayjs/stage";
 
 import {DefaultRenderer, IView} from "@awayjs/renderer";
 
@@ -122,13 +122,13 @@ export class CascadeShadowMapper extends DirectionalShadowMapper
 		this.dispatchEvent(new AssetEvent(AssetEvent.INVALIDATE, this));
 	}
 
-	protected _renderMap(view:IView, rootRenderer:DefaultRenderer):void
+	protected _renderMap(rootRenderer:DefaultRenderer):void
 	{
 		if (this._scissorRectsInvalid)
 			this.updateScissorRects();
 
         rootRenderer.getDepthRenderer().cullPlanes = this._cullPlanes;
-        rootRenderer.getDepthRenderer()._iRenderCascades(this._overallDepthProjection, view, this._image2D, this._numCascades, this._pScissorRects, this._depthProjections);
+        //rootRenderer.getDepthRenderer()._iRenderCascades(this._overallDepthProjection, view, this._image2D, this._numCascades, this._pScissorRects, this._depthProjections);
 	}
 
 	private updateScissorRects():void
@@ -149,7 +149,7 @@ export class CascadeShadowMapper extends DirectionalShadowMapper
 		var projectionNear:number = projection.near;
 		var projectionRange:number = projection.far - projectionNear;
 
-		this._updateProjectionFromFrustumCorners(projection, projection.frustumCorners, this._matrix);
+		this._updateProjectionFromFrustumCorners(projection, projection.viewFrustumCorners, this._matrix);
 		this._matrix.appendScale(.96, .96, 1);
 		this._overallDepthProjection.frustumMatrix3D = this._matrix;
 		this._updateCullPlanes(projection);
@@ -435,7 +435,7 @@ export class _Shader_CascadeShadowMapper extends _Shader_DirectionalShadowMapper
     /**
      * @inheritDoc
      */
-    public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
+    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
     {
     }
 }

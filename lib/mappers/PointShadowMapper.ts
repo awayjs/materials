@@ -2,7 +2,7 @@ import {Vector3D, PerspectiveProjection, ProjectionBase, Transform} from "@awayj
 
 import {ImageCube} from "@awayjs/stage";
 
-import {IRenderer, IView, DefaultRenderer} from "@awayjs/renderer";
+import {IRenderer, IView, DefaultRenderer, PartitionBase} from "@awayjs/renderer";
 
 import {ShadowTextureCube} from "../textures/ShadowTextureCube"
 import {PointLight} from "../lights/PointLight";
@@ -104,11 +104,15 @@ export class PointShadowMapper extends ShadowMapperBase
 	 * @param renderer
 	 * @private
 	 */
-	protected _renderMap(view:IView, rootRenderer:DefaultRenderer):void
+	protected _renderMap(rootRenderer:DefaultRenderer):void
 	{
-		for (var i:number = 0; i < 6; ++i)
-			if (this._needsRender[i])
-                rootRenderer.getDistanceRenderer()._iRender(this._depthProjections[i], view, this._imageCube, null, i)
+		for (var i:number = 0; i < 6; ++i) {
+			if (this._needsRender[i]) {
+				rootRenderer.getDistanceRenderer().viewport.target = this._imageCube;
+				rootRenderer.getDistanceRenderer().viewport.projection = this._depthProjections[i];
+				rootRenderer.getDistanceRenderer().render(null, i);
+			}
+		}
 	}
 }
 

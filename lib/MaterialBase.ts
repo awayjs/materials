@@ -1,6 +1,6 @@
 import {ColorTransform, AssetEvent, AssetBase} from "@awayjs/core";
 
-import {BlendMode, ImageBase} from "@awayjs/stage";
+import {BlendMode, ImageBase, Viewport} from "@awayjs/stage";
 
 import {IMaterial, IEntity, IAnimator, IAnimationSet, MaterialEvent, Style, StyleEvent} from "@awayjs/renderer";
 
@@ -562,9 +562,9 @@ export class _Render_MaterialPassBase extends _Render_MaterialBase implements IP
      *
      * @internal
      */
-    public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
+    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
     {
-        this._shader._setRenderState(renderState, projection);
+        this._shader._setRenderState(renderState, viewport.projection);
     }
 
     /**
@@ -574,9 +574,9 @@ export class _Render_MaterialPassBase extends _Render_MaterialBase implements IP
      * @param camera The camera from which the scene is viewed.
      * @private
      */
-    public _activate(projection:ProjectionBase):void
+    public _activate(viewport:Viewport):void
     {
-        this._shader._activate(projection);
+        this._shader._activate(viewport.projection);
     }
 
     /**
@@ -717,6 +717,9 @@ export class _Render_DepthMaterial extends _Render_MaterialPassBase
         }
 
         code += "sub " + targetReg + ", " + temp1 + ", " + temp2 + "\n";
+		//DEBUG OPTION: MAKE DEPTHTEXTURES VISIBLE
+		//code += "sub " + targetReg + ".xyz, " + temp1 + ".xyz, " + temp2 + ".xyz\n";
+		//code += "mov " + targetReg + ".w, " + dataReg1 + ".x\n";
 
         registerCache.removeFragmentTempUsage(temp1);
         registerCache.removeFragmentTempUsage(temp2);
@@ -727,9 +730,9 @@ export class _Render_DepthMaterial extends _Render_MaterialPassBase
     /**
      * @inheritDoc
      */
-    public _activate(projection:ProjectionBase):void
+    public _activate(viewport:Viewport):void
     {
-        super._activate(projection);
+        super._activate(viewport);
 
         if (this._shaderTexture && this._shader.alphaThreshold > 0) {
             this._shaderTexture.activate();
@@ -841,11 +844,11 @@ export class _Render_DistanceMaterial extends _Render_MaterialPassBase
     /**
      * @inheritDoc
      */
-    public _activate(projection:ProjectionBase):void
+    public _activate(viewport:Viewport):void
     {
-        super._activate(projection);
+        super._activate(viewport);
 
-        var f:number = projection.far;
+        var f:number = viewport.projection.far;
 
         f = 1/(2*f*f);
         // sqrt(f*f+f*f) is largest possible distance for any frustum, so we need to divide by it. Rarely a tight fit, but with 32 bits precision, it's enough.

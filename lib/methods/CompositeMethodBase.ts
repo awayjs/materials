@@ -91,7 +91,7 @@ export class CompositeMethodBase extends MethodBase
 
 import {ProjectionBase, AbstractionBase} from "@awayjs/core";
 
-import {Stage, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {Stage, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, Viewport} from "@awayjs/stage";
 
 import {_Render_RenderableBase, ShaderBase, ChunkVO} from "@awayjs/renderer";
 
@@ -160,9 +160,9 @@ export class _Shader_CompositeMethodBase extends AbstractionBase implements _ISh
     /**
      * @inheritDoc
      */
-    public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
+    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
     {
-        this._baseChunk._setRenderState(renderState, projection);
+        this._baseChunk._setRenderState(renderState, viewport);
     }
 
     /**

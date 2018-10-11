@@ -1,8 +1,8 @@
-import {Matrix3D, Plane3D, Vector3D, PerspectiveProjection, ProjectionBase, Transform} from "@awayjs/core";
+import {Matrix3D, Plane3D, Vector3D, PerspectiveProjection, ProjectionBase, Transform, OrthographicProjection} from "@awayjs/core";
 
 import {Image2D} from "@awayjs/stage";
 
-import {DefaultRenderer, IView} from "@awayjs/renderer";
+import {DefaultRenderer, IView, DepthRenderer, PartitionBase, IRenderer} from "@awayjs/renderer";
 
 import {ShadowTexture2D} from "../textures/ShadowTexture2D";
 import {DirectionalLight} from "../lights/DirectionalLight";
@@ -16,7 +16,7 @@ export class DirectionalShadowMapper extends ShadowMapperBase
 
 	protected _lightOffset:number = 10000;
 	protected _matrix:Matrix3D;
-	protected _overallDepthProjection:PerspectiveProjection;
+	protected _overallDepthProjection:OrthographicProjection;
 	protected _snap:number = 64;
 
 	protected _cullPlanes:Array<Plane3D>;
@@ -46,7 +46,7 @@ export class DirectionalShadowMapper extends ShadowMapperBase
         this.iAddTexture(this._textureMap);
 
 		this._cullPlanes = [];
-		this._overallDepthProjection = new PerspectiveProjection();
+		this._overallDepthProjection = new OrthographicProjection();
 		this._overallDepthProjection.transform = new Transform();
 		this._localFrustum = [];
 		this._matrix = new Matrix3D();
@@ -105,16 +105,19 @@ export class DirectionalShadowMapper extends ShadowMapperBase
      */
     protected _updateProjection(projection:ProjectionBase):void
     {
-        this._updateProjectionFromFrustumCorners(projection, projection.frustumCorners, this._matrix);
+        this._updateProjectionFromFrustumCorners(projection, projection.viewFrustumCorners, this._matrix);
         this._overallDepthProjection.frustumMatrix3D = this._matrix;
         this._updateCullPlanes(projection);
     }
 
 	//@override
-	protected _renderMap(view:IView, rootRenderer:DefaultRenderer):void
+	protected _renderMap(rootRenderer:DefaultRenderer):void
 	{
-        rootRenderer.getDepthRenderer().cullPlanes = this._cullPlanes;
-        rootRenderer.getDepthRenderer()._iRender(this._overallDepthProjection, view, this._image2D);
+		rootRenderer.getDepthRenderer().cullPlanes = this._cullPlanes;
+		rootRenderer.getDepthRenderer().viewport.preservePixelRatio = false;
+		rootRenderer.getDepthRenderer().viewport.target = this._image2D;
+		rootRenderer.getDepthRenderer().viewport.projection = this._overallDepthProjection;
+        rootRenderer.getDepthRenderer().render();
 	}
 
 	/**
@@ -124,8 +127,8 @@ export class DirectionalShadowMapper extends ShadowMapperBase
 	 */
 	protected _updateCullPlanes(projection:ProjectionBase):void
 	{
-		var lightFrustumPlanes:Array<Plane3D> = this._overallDepthProjection.frustumPlanes;
-		var viewFrustumPlanes:Array<Plane3D> = projection.frustumPlanes;
+		var lightFrustumPlanes:Array<Plane3D> = this._overallDepthProjection.viewFrustumPlanes;
+		var viewFrustumPlanes:Array<Plane3D> = projection.viewFrustumPlanes;
 		this._cullPlanes.length = 4;
 
 		this._cullPlanes[0] = lightFrustumPlanes[0];
@@ -166,9 +169,7 @@ export class DirectionalShadowMapper extends ShadowMapperBase
 		z = Math.floor((pos.z - dir.z*this._lightOffset)/this._snap)*this._snap;
 		this._overallDepthProjection.transform.moveTo(x, y, z);
 
-		this._matrix.copyFrom(this._overallDepthProjection.transform.inverseConcatenatedMatrix3D);
-		this._matrix.prepend(projection.transform.concatenatedMatrix3D);
-		this._matrix.transformVectors(corners, this._localFrustum);
+		this._overallDepthProjection.transform.inverseConcatenatedMatrix3D.transformVectors(corners, this._localFrustum);
 
 		minX = maxX = this._localFrustum[0];
 		minY = maxY = this._localFrustum[1];

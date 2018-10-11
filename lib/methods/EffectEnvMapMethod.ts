@@ -109,7 +109,7 @@ export class EffectEnvMapMethod extends MethodBase
 
 import {ProjectionBase} from "@awayjs/core";
 
-import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, Viewport} from "@awayjs/stage";
 
 import {ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
@@ -187,7 +187,7 @@ export class _Shader_EffectEnvMapMethod extends _Shader_MethodBase
             this._updateProperties();
     }
 
-    public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
+    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
     {
         this._envMap._setRenderState(renderState);
 

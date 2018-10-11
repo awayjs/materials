@@ -1,6 +1,6 @@
 import {AbstractMethodError, ProjectionBase} from "@awayjs/core";
 
-import {IRenderer, IView, IMapper} from "@awayjs/renderer";
+import {IRenderer, IView, IMapper, PartitionBase} from "@awayjs/renderer";
 
 import {TextureBase} from "../textures/TextureBase";
 import {LightBase} from "../lights/LightBase";
@@ -78,11 +78,11 @@ export class ShadowMapperBase extends MethodBase implements IMapper
         this._updateSize();
     }
 
-    public update(projection:ProjectionBase, view:IView, rootRenderer:IRenderer):void
+    public update(projection:ProjectionBase, rootRenderer:IRenderer):void
     {
         this._updateProjection(projection);
 
-        this._renderMap(view, rootRenderer);
+        this._renderMap( rootRenderer);
     }
 
     protected _updateProjection(projection:ProjectionBase):void
@@ -90,7 +90,7 @@ export class ShadowMapperBase extends MethodBase implements IMapper
         throw new AbstractMethodError();
     }
 
-    protected _renderMap(view:IView, rootRenderer:IRenderer):void
+    protected _renderMap(rootRenderer:IRenderer):void
     {
         throw new AbstractMethodError();
     }
@@ -108,7 +108,7 @@ export class ShadowMapperBase extends MethodBase implements IMapper
 
 import {Vector3D, Matrix3D, AssetEvent} from "@awayjs/core";
 
-import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, Viewport} from "@awayjs/stage";
 
 import {_Render_RenderableBase, ShaderBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
@@ -222,7 +222,7 @@ export class _Shader_ShadowMapperBase extends _Shader_MethodBase
     /**
      * @inheritDoc
      */
-    public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
+    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
     {
         this._texture._setRenderState(renderState);
     }

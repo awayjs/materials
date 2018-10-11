@@ -106,7 +106,7 @@ export class AmbientBasicMethod extends MethodBase
 
 import {ProjectionBase} from "@awayjs/core";
 
-import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, Viewport} from "@awayjs/stage";
 
 import {_Render_RenderableBase, IRenderable, ShaderBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
@@ -232,10 +232,10 @@ export class _Shader_AmbientBasicMethod extends _Shader_MethodBase
         }
     }
 
-    public _setRenderState(renderRenderable:_Render_RenderableBase, projection:ProjectionBase):void
+    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
     {
         if (this._texture)
-            this._texture._setRenderState(renderRenderable);
+            this._texture._setRenderState(renderState);
     }
 }
 

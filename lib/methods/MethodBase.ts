@@ -115,7 +115,7 @@ export class MethodBase extends AssetBase
 
 import {Matrix3D, AssetEvent, AbstractionBase, ProjectionBase} from "@awayjs/core";
 
-import {Stage, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {Stage, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, Viewport} from "@awayjs/stage";
 
 import {_Render_RenderableBase, ShaderBase, ChunkVO} from "@awayjs/renderer";
 
@@ -245,7 +245,7 @@ export class _Shader_MethodBase extends AbstractionBase implements _IShader_Meth
      *
      * @internal
      */
-    public _setRenderState(renderState:_Render_RenderableBase, projection:ProjectionBase):void
+    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
     {
 
     }
