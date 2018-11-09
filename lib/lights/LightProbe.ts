@@ -33,8 +33,8 @@ export class LightProbe extends LightBase
 	}
 
 	//@override
-	public _getEntityProjectionMatrix(entity:IEntity, cameraTransform:Matrix3D, target:Matrix3D = null):Matrix3D
-	{
-		throw new ErrorBase("Object projection matrices are not supported for LightProbe objects!");
-	}
+	// public _getEntityProjectionMatrix(entity:IEntity, cameraTransform:Matrix3D, target:Matrix3D = null):Matrix3D
+	// {
+	// 	throw new ErrorBase("Object projection matrices are not supported for LightProbe objects!");
+	// }
 }

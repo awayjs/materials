@@ -189,45 +189,45 @@ export class PointLight extends LightBase
 	// 	this._pSphereBounds.radius = this._fallOff;
 	// }
     
-	public _getEntityProjectionMatrix(entity:IEntity, cameraTransform:Matrix3D, target:Matrix3D = null):Matrix3D
-	{
-		if (!target)
-			target = new Matrix3D();
+	// public _getEntityProjectionMatrix(entity:IEntity, cameraTransform:Matrix3D, target:Matrix3D = null):Matrix3D
+	// {
+	// 	if (!target)
+	// 		target = new Matrix3D();
 
-        var m:Matrix3D = Matrix3D.CALCULATION_MATRIX;
-        var pointAtMatrix:Matrix3D = Matrix3D.getPointAtMatrix(new Vector3D(), entity.getRenderSceneTransform(cameraTransform).position.subtract(this.transform.concatenatedMatrix3D.position), Vector3D.Y_AXIS);
-        pointAtMatrix.invert();
+    //     var m:Matrix3D = Matrix3D.CALCULATION_MATRIX;
+    //     var pointAtMatrix:Matrix3D = Matrix3D.getPointAtMatrix(new Vector3D(), entity.getRenderSceneTransform(cameraTransform).position.subtract(this.transform.concatenatedMatrix3D.position), Vector3D.Y_AXIS);
+    //     pointAtMatrix.invert();
 
-		m.copyFrom(entity.getRenderSceneTransform(cameraTransform));
-        m.append(pointAtMatrix);
+	// 	m.copyFrom(entity.getRenderSceneTransform(cameraTransform));
+    //     m.append(pointAtMatrix);
 
-        var box:Box = entity.getBoxBounds();
+    //     var box:Box = entity.getBoxBounds();
 
-        if (box == null)
-            box = new Box();
+    //     if (box == null)
+    //         box = new Box();
             
-		var v1:Vector3D = m.deltaTransformVector(new Vector3D(box.left, box.bottom, box.front));
-		var v2:Vector3D = m.deltaTransformVector(new Vector3D(box.right, box.top, box.back));
-		var d1:number = v1.x*v1.x + v1.y*v1.y + v1.z*v1.z;
-		var d2:number = v2.x*v2.x + v2.y*v2.y + v2.z*v2.z;
-		var d:number = Math.sqrt(d1 > d2? d1 : d2);
-		var zMin:number;
-		var zMax:number;
+	// 	var v1:Vector3D = m.deltaTransformVector(new Vector3D(box.left, box.bottom, box.front));
+	// 	var v2:Vector3D = m.deltaTransformVector(new Vector3D(box.right, box.top, box.back));
+	// 	var d1:number = v1.x*v1.x + v1.y*v1.y + v1.z*v1.z;
+	// 	var d2:number = v2.x*v2.x + v2.y*v2.y + v2.z*v2.z;
+	// 	var d:number = Math.sqrt(d1 > d2? d1 : d2);
+	// 	var zMin:number;
+	// 	var zMax:number;
 
-		var z:number = m._rawData[14];
-		zMin = z - d;
-		zMax = z + d;
+	// 	var z:number = m._rawData[14];
+	// 	zMin = z - d;
+	// 	zMax = z + d;
 
-		var targetData:Float32Array = target._rawData;
+	// 	var targetData:Float32Array = target._rawData;
 
-		targetData[5] = targetData[0] = zMin/d;
-		targetData[10] = zMax/(zMax - zMin);
-		targetData[11] = 1;
-		targetData[1] = targetData[2] = targetData[3] = targetData[4] = targetData[6] = targetData[7] = targetData[8] = targetData[9] = targetData[12] = targetData[13] = targetData[15] = 0;
-		targetData[14] = -zMin*targetData[10];
+	// 	targetData[5] = targetData[0] = zMin/d;
+	// 	targetData[10] = zMax/(zMax - zMin);
+	// 	targetData[11] = 1;
+	// 	targetData[1] = targetData[2] = targetData[3] = targetData[4] = targetData[6] = targetData[7] = targetData[8] = targetData[9] = targetData[12] = targetData[13] = targetData[15] = 0;
+	// 	targetData[14] = -zMin*targetData[10];
 		
-		target.prepend(m);
+	// 	target.prepend(m);
 
-		return target;
-	}
+	// 	return target;
+	// }
 }

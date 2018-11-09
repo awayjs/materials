@@ -2,7 +2,7 @@ import {Matrix3D, Rectangle, AssetEvent, PerspectiveProjection, ProjectionBase} 
 
 import {Image2D, Viewport} from "@awayjs/stage";
 
-import {DefaultRenderer, IView} from "@awayjs/renderer";
+import {DefaultRenderer} from "@awayjs/renderer";
 
 import {DirectionalShadowMapper, _Shader_DirectionalShadowMapper} from "./DirectionalShadowMapper";
 

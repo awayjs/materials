@@ -1,8 +1,8 @@
-import {Matrix3D, Plane3D, Vector3D, PerspectiveProjection, ProjectionBase, Transform, OrthographicProjection} from "@awayjs/core";
+import {Matrix3D, Plane3D, Vector3D, ProjectionBase, Transform, OrthographicProjection} from "@awayjs/core";
 
 import {Image2D} from "@awayjs/stage";
 
-import {DefaultRenderer, IView, DepthRenderer, PartitionBase, IRenderer} from "@awayjs/renderer";
+import {DefaultRenderer} from "@awayjs/renderer";
 
 import {ShadowTexture2D} from "../textures/ShadowTexture2D";
 import {DirectionalLight} from "../lights/DirectionalLight";

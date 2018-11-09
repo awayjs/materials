@@ -182,10 +182,10 @@ export class LightBase extends AssetBase
         this.transform = transform || new Transform();
     }
 
-	public _getEntityProjectionMatrix(entity:IEntity, cameraTransform:Matrix3D, target:Matrix3D = null):Matrix3D
-	{
-		throw new AbstractMethodError();
-	}
+	// public _getEntityProjectionMatrix(entity:IEntity, cameraTransform:Matrix3D, target:Matrix3D = null):Matrix3D
+	// {
+	// 	throw new AbstractMethodError();
+	// }
 	
     protected _createShadowMapper():ShadowMapperBase
     {

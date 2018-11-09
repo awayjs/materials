@@ -2,7 +2,7 @@ import {Vector3D, PerspectiveProjection, ProjectionBase, Transform} from "@awayj
 
 import {ImageCube} from "@awayjs/stage";
 
-import {IRenderer, IView, DefaultRenderer, PartitionBase} from "@awayjs/renderer";
+import {DefaultRenderer} from "@awayjs/renderer";
 
 import {ShadowTextureCube} from "../textures/ShadowTextureCube"
 import {PointLight} from "../lights/PointLight";
