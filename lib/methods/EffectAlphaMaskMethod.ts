@@ -84,13 +84,12 @@ export class EffectAlphaMaskMethod extends MethodBase
 	}
 }
 
-import {ProjectionBase} from "@awayjs/core";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, Viewport} from "@awayjs/stage";
+import {View} from "@awayjs/view";
 
 import {ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
-import {LightingShader} from "../shaders/LightingShader";
 import {ImageTexture2D} from "../textures/ImageTexture2D";
 
 /**
@@ -161,7 +160,7 @@ export class _Shader_EffectAlphaMaskMethod extends _Shader_MethodBase
         this._alphaMask.activate();
     }
 
-    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
+    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
     {
         this._alphaMask._setRenderState(renderState);
     }

@@ -1,8 +1,10 @@
-import {AssetEvent, Matrix3D, ProjectionBase} from "@awayjs/core";
+import {AssetEvent} from "@awayjs/core";
 
-import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, Viewport} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {IRenderable, _Render_RenderableBase, _Render_MaterialBase, _Render_ElementsBase, ShaderBase, _Shader_TextureBase} from "@awayjs/renderer";
+import {View} from "@awayjs/view";
+
+import {_Render_RenderableBase, _Render_MaterialBase, _Render_ElementsBase, ShaderBase, _Shader_TextureBase} from "@awayjs/renderer";
 
 
 import {MaterialBase} from "../MaterialBase";
@@ -103,9 +105,9 @@ export class BasicMaterialPass extends PassBase
 		return code;
 	}
 
-	public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
+	public _setRenderState(renderState:_Render_RenderableBase, view:View):void
 	{
-		super._setRenderState(renderState, viewport);
+		super._setRenderState(renderState, view);
 
 		if (this._shaderTexture != null)
 			this._shaderTexture._setRenderState(renderState);
@@ -113,9 +115,9 @@ export class BasicMaterialPass extends PassBase
 	/**
 	 * @inheritDoc
 	 */
-	public _activate(viewport:Viewport):void
+	public _activate(view:View):void
 	{
-		super._activate(viewport);
+		super._activate(view);
 
 		if (this._shaderTexture != null) {
 			this._shaderTexture.activate();

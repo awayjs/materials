@@ -1,8 +1,4 @@
-import {Matrix3D, ErrorBase} from "@awayjs/core";
-
 import {ImageCube, ImageSampler} from "@awayjs/stage";
-
-import {IEntity} from "@awayjs/renderer";
 
 import {LightBase} from "./LightBase";
 

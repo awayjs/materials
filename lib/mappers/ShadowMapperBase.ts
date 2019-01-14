@@ -1,6 +1,6 @@
 import {AbstractMethodError, ProjectionBase} from "@awayjs/core";
 
-import {IMapper, DefaultRenderer, RendererBase} from "@awayjs/renderer";
+import {IMapper, RendererBase} from "@awayjs/renderer";
 
 import {TextureBase} from "../textures/TextureBase";
 import {LightBase} from "../lights/LightBase";
@@ -108,13 +108,11 @@ export class ShadowMapperBase extends MethodBase implements IMapper
 
 import {AssetEvent} from "@awayjs/core";
 
-import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, Viewport} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+
+import {View} from "@awayjs/view";
 
 import {_Render_RenderableBase, ShaderBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
-
-import {PointLight} from "../lights/PointLight";
-import {DirectionalShadowMapper} from "./DirectionalShadowMapper";
-import {LightingShader} from "../shaders/LightingShader";
 
 /**
  * _Shader_ShadowMapperBase provides an abstract method for simple (non-wrapping) shadow map methods.
@@ -222,7 +220,7 @@ export class _Shader_ShadowMapperBase extends _Shader_MethodBase
     /**
      * @inheritDoc
      */
-    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
+    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
     {
         this._texture._setRenderState(renderState);
     }

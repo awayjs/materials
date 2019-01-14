@@ -1,6 +1,4 @@
-import {Matrix3D, Vector3D, Transform, TransformEvent, Box} from "@awayjs/core";
-
-import {IEntity} from "@awayjs/renderer";
+import {Vector3D, Transform, TransformEvent} from "@awayjs/core";
 
 import {DirectionalShadowMapper} from "../mappers/DirectionalShadowMapper";
 

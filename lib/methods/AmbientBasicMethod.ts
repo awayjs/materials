@@ -104,11 +104,11 @@ export class AmbientBasicMethod extends MethodBase
 	}
 }
 
-import {ProjectionBase} from "@awayjs/core";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, Viewport} from "@awayjs/stage";
+import {View} from "@awayjs/view";
 
-import {_Render_RenderableBase, IRenderable, ShaderBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
+import {_Render_RenderableBase, ShaderBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
 import {TextureCube} from "../textures/TextureCube";
 
@@ -232,7 +232,7 @@ export class _Shader_AmbientBasicMethod extends _Shader_MethodBase
         }
     }
 
-    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
+    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
     {
         if (this._texture)
             this._texture._setRenderState(renderState);

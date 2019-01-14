@@ -114,9 +114,9 @@ export class DirectionalShadowMapper extends ShadowMapperBase
 	protected _renderMap(rootRenderer:DefaultRenderer):void
 	{
 		rootRenderer.getDepthRenderer().cullPlanes = this._cullPlanes;
-		rootRenderer.getDepthRenderer().viewport.preservePixelRatio = false;
-		rootRenderer.getDepthRenderer().viewport.target = this._image2D;
-		rootRenderer.getDepthRenderer().viewport.projection = this._overallDepthProjection;
+		rootRenderer.getDepthRenderer().view.preservePixelRatio = false;
+		rootRenderer.getDepthRenderer().view.target = this._image2D;
+		rootRenderer.getDepthRenderer().view.projection = this._overallDepthProjection;
         rootRenderer.getDepthRenderer().render();
 	}
 
@@ -236,11 +236,6 @@ export class DirectionalShadowMapper extends ShadowMapperBase
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
 import {ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
-
-import {LightBase} from "../lights/LightBase";
-import {PointLight} from "../lights/PointLight";
-import {LightingShader} from "../shaders/LightingShader";
-import {ShadowMethodBase} from "../methods/ShadowMethodBase";
 
 /**
  * ShadowChunkBase provides an abstract method for simple (non-wrapping) shadow map methods.

@@ -133,9 +133,11 @@ export class NormalSimpleWaterMethod extends NormalBasicMethod
 	}
 }
 
-import {AssetEvent, ProjectionBase} from "@awayjs/core";
+import {AssetEvent} from "@awayjs/core";
 
-import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, Viewport} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+
+import {View} from "@awayjs/view";
 
 import {_Render_RenderableBase, ShaderBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
@@ -217,9 +219,9 @@ export class _Shader_NormalSimpleWaterMethod extends _Shader_NormalBasicMethod
     /**
      * @inheritDoc
      */
-    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
+    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
     {
-        super._setRenderState(renderState, viewport);
+        super._setRenderState(renderState, view);
 
         if (this._secondaryNormalMap)
             this._secondaryNormalMap._setRenderState(renderState);

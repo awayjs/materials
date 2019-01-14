@@ -1,6 +1,8 @@
 import {Matrix3D, Rectangle, AssetEvent, PerspectiveProjection, ProjectionBase} from "@awayjs/core";
 
-import {Image2D, Viewport} from "@awayjs/stage";
+import {Image2D} from "@awayjs/stage";
+
+import {View} from "@awayjs/view";
 
 import {DefaultRenderer} from "@awayjs/renderer";
 
@@ -435,7 +437,7 @@ export class _Shader_CascadeShadowMapper extends _Shader_DirectionalShadowMapper
     /**
      * @inheritDoc
      */
-    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
+    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
     {
     }
 }

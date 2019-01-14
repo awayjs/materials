@@ -1,6 +1,4 @@
-import {Matrix3D, AbstractMethodError, AssetBase, Transform, TransformEvent} from "@awayjs/core";
-
-import {IEntity} from "@awayjs/renderer";
+import {AbstractMethodError, AssetBase, Transform, TransformEvent} from "@awayjs/core";
 
 import {LightEvent} from "../events/LightEvent";
 import {ShadowMapperBase} from "../mappers/ShadowMapperBase";

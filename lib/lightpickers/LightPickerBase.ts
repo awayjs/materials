@@ -1,6 +1,6 @@
 import {Vector3D, AssetBase} from "@awayjs/core";
 
-import {IEntity} from "@awayjs/renderer";
+import {IRenderEntity} from "@awayjs/renderer";
 
 import {LightBase} from "../lights/LightBase";
 import {DirectionalLight} from "../lights/DirectionalLight";
@@ -154,7 +154,7 @@ export class LightPickerBase extends AssetBase
 	/**
 	 * Updates set of lights for a given renderable and EntityCollector. Always call super.collectLights() after custom overridden code.
 	 */
-	public collectLights(entity:IEntity):void
+	public collectLights(entity:IRenderEntity):void
 	{
 		this.updateProbeWeights(entity);
 	}
@@ -163,7 +163,7 @@ export class LightPickerBase extends AssetBase
 	 * Updates the weights for the light probes, based on the renderable's position relative to them.
 	 * @param renderable The renderble for which to calculate the light probes' influence.
 	 */
-	private updateProbeWeights(entity:IEntity):void
+	private updateProbeWeights(entity:IRenderEntity):void
 	{
 		// todo: this will cause the same calculations to occur per TriangleGraphic. See if this can be improved.
 		var objectPos:Vector3D = entity.scenePosition;

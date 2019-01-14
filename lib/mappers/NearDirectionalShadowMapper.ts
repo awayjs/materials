@@ -1,6 +1,8 @@
 import {ProjectionBase} from "@awayjs/core";
 
-import {Image2D, Viewport} from "@awayjs/stage";
+import {Image2D} from "@awayjs/stage";
+
+import {View} from "@awayjs/view";
 
 import {DirectionalShadowMapper, _Shader_DirectionalShadowMapper} from "./DirectionalShadowMapper";
 
@@ -141,11 +143,11 @@ export class _Shader_NearDirectionalShadowMapper extends _Shader_DirectionalShad
     /**
      * @inheritDoc
      */
-    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
+    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
     {
         // todo: move this to activate (needs camera)
-        var near:number = viewport.projection.near;
-        var d:number = viewport.projection.far - near;
+        var near:number = view.projection.near;
+        var d:number = view.projection.far - near;
         var maxDistance:number = (<NearDirectionalShadowMapper> this._mapper).coverageRatio;
         var minDistance:number = maxDistance*(1 - (<NearDirectionalShadowMapper> this._mapper).fadeRatio);
 
@@ -157,7 +159,7 @@ export class _Shader_NearDirectionalShadowMapper extends _Shader_DirectionalShad
         fragmentData[index] = minDistance;
         fragmentData[index + 1] = 1/(maxDistance - minDistance);
 
-        super._setRenderState(renderState, viewport);
+        super._setRenderState(renderState, view);
     }
 }
 

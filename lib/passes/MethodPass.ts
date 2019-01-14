@@ -1,8 +1,10 @@
-import {ColorTransform, Matrix3D, AssetEvent, ProjectionBase} from "@awayjs/core";
+import {ColorTransform, AssetEvent} from "@awayjs/core";
 
-import {Stage, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, Viewport} from "@awayjs/stage";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
 
-import {IRenderable, _Render_RenderableBase, _Render_ElementsBase, ShaderBase, ChunkVO} from "@awayjs/renderer";
+import {View} from "@awayjs/view";
+
+import {_Render_RenderableBase, _Render_ElementsBase, ShaderBase, ChunkVO} from "@awayjs/renderer";
 
 import {LightPickerBase} from "../lightpickers/LightPickerBase";
 import {LightSources} from "../lightpickers/LightSources";
@@ -530,9 +532,9 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * @inheritDoc
 	 */
-	public _activate(viewport:Viewport):void
+	public _activate(view:View):void
 	{
-		super._activate(viewport);
+		super._activate(view);
 
 		var chunk:_IShader_Method;
 		var len:number = this._chunks.length;
@@ -550,16 +552,16 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * @param stage
 	 * @param camera
 	 */
-	public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
+	public _setRenderState(renderState:_Render_RenderableBase, view:View):void
 	{
-		super._setRenderState(renderState, viewport);
+		super._setRenderState(renderState, view);
 
 		var chunk:_IShader_Method;
 		var len:number = this._chunks.length;
 		for (var i:number = 0; i < len; ++i) {
 			chunk = this._chunks[i];
 			if (chunk.chunkVO.useChunk)
-				chunk._setRenderState(renderState, viewport);
+				chunk._setRenderState(renderState, view);
 		}
 	}
 
