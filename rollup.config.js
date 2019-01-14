@@ -10,6 +10,7 @@ module.exports = {
 		'@awayjs/graphics',
 		'@awayjs/scene',
 		'@awayjs/stage',
+		'@awayjs/view',
 		'@awayjs/renderer'
 	],
 	globals: {
@@ -17,6 +18,7 @@ module.exports = {
 		'@awayjs/graphics': 'AwayjsGraphics',
 		'@awayjs/scene': 'AwayjsScene',
 		'@awayjs/stage': 'AwayjsStage',
+		'@awayjs/view': 'AwayjsView',
 		'@awayjs/renderer': 'AwayjsRenderer'
 	},
 	targets: [
