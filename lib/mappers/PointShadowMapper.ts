@@ -108,8 +108,8 @@ export class PointShadowMapper extends ShadowMapperBase
 	{
 		for (var i:number = 0; i < 6; ++i) {
 			if (this._needsRender[i]) {
-				rootRenderer.getDistanceRenderer().view.target = this._imageCube;
-				rootRenderer.getDistanceRenderer().view.projection = this._depthProjections[i];
+				rootRenderer.getDistanceRenderer().viewport.target = this._imageCube;
+				rootRenderer.getDistanceRenderer().viewport.projection = this._depthProjections[i];
 				rootRenderer.getDistanceRenderer().render(null, i);
 			}
 		}

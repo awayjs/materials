@@ -1,8 +1,6 @@
 import {IEventDispatcher} from "@awayjs/core";
 
-import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
-
-import {View} from "@awayjs/view";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, Viewport} from "@awayjs/stage";
 
 import {_Render_RenderableBase, ChunkVO} from "@awayjs/renderer";
 
@@ -83,7 +81,7 @@ export interface _IShader_Method extends IEventDispatcher
 	 *
 	 * @internal
 	 */
-	_setRenderState(renderRenderable:_Render_RenderableBase, view:View):void;
+	_setRenderState(renderRenderable:_Render_RenderableBase, viewport:Viewport):void;
 
 	/**
 	 * Clears the render state for this method.

@@ -62,11 +62,11 @@ export class DiffuseGradientMethod extends DiffuseBasicMethod
 	}
 }
 
-import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {ProjectionBase} from "@awayjs/core";
 
-import {View} from "@awayjs/view";
+import {Stage, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, Viewport} from "@awayjs/stage";
 
-import {ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
+import {ShaderBase, _Render_RenderableBase, _Shader_TextureBase, MaterialUtils, ChunkVO} from "@awayjs/renderer";
 
 import {LightingShader} from "../shaders/LightingShader";
 import {ImageTexture2D} from "../textures/ImageTexture2D";
@@ -172,9 +172,9 @@ export class _Shader_DiffuseGradientMethod extends _Shader_DiffuseBasicMethod
     /**
      * @inheritDoc
      */
-    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
     {
-        super._setRenderState(renderState, view);
+        super._setRenderState(renderState, viewport);
 
         this._gradient._setRenderState(renderState);
     }

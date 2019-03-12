@@ -122,9 +122,9 @@ export class EffectLightMapMethod extends MethodBase
 	}
 }
 
-import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {ProjectionBase} from "@awayjs/core";
 
-import {View} from "@awayjs/view";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, Viewport} from "@awayjs/stage";
 
 import {ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
@@ -205,7 +205,7 @@ export class _Shader_EffectLightMapMethod extends _Shader_MethodBase
     }
 
 
-    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
     {
         this._lightMap._setRenderState(renderState);
     }

@@ -120,11 +120,9 @@ export class DiffuseBasicMethod extends MethodBase
 	}
 }
 
-import {AssetEvent} from "@awayjs/core";
+import {AssetEvent, ProjectionBase} from "@awayjs/core";
 
-import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
-
-import {View} from "@awayjs/view";
+import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, Viewport} from "@awayjs/stage";
 
 import {ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
@@ -418,7 +416,7 @@ export class _Shader_DiffuseBasicMethod extends _Shader_MethodBase implements _I
     /**
      * @inheritDoc
      */
-    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
     {
         if (this._texture)
             this._texture._setRenderState(renderState);

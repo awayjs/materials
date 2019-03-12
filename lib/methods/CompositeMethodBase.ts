@@ -89,13 +89,11 @@ export class CompositeMethodBase extends MethodBase
 	}
 }
 
-import {AbstractionBase} from "@awayjs/core";
+import {ProjectionBase, AbstractionBase} from "@awayjs/core";
 
-import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import {Stage, ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, Viewport} from "@awayjs/stage";
 
-import {View} from "@awayjs/view";
-
-import {_Render_RenderableBase, ChunkVO} from "@awayjs/renderer";
+import {_Render_RenderableBase, ShaderBase, ChunkVO} from "@awayjs/renderer";
 
 import {LightingShader} from "../shaders/LightingShader";
 
@@ -162,9 +160,9 @@ export class _Shader_CompositeMethodBase extends AbstractionBase implements _ISh
     /**
      * @inheritDoc
      */
-    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
     {
-        this._baseChunk._setRenderState(renderState, view);
+        this._baseChunk._setRenderState(renderState, viewport);
     }
 
     /**

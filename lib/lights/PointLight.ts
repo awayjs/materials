@@ -1,4 +1,6 @@
-import {Vector3D, Transform} from "@awayjs/core";
+import {Box, Matrix3D, Vector3D, Transform} from "@awayjs/core";
+
+import {IEntity} from "@awayjs/renderer";
 
 import {PointShadowMapper} from "../mappers/PointShadowMapper";
 

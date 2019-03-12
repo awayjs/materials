@@ -1,10 +1,8 @@
 import {ColorTransform, AssetEvent, AssetBase} from "@awayjs/core";
 
-import {BlendMode, ImageBase} from "@awayjs/stage";
+import {BlendMode, ImageBase, Viewport} from "@awayjs/stage";
 
-import {View} from "@awayjs/view";
-
-import {IMaterial, IRenderEntity, IAnimator, IAnimationSet, MaterialEvent, Style, StyleEvent} from "@awayjs/renderer";
+import {IMaterial, IEntity, IAnimator, IAnimationSet, MaterialEvent, Style, StyleEvent} from "@awayjs/renderer";
 
 import {TextureBase} from "./textures/TextureBase";
 
@@ -54,7 +52,7 @@ export class MaterialBase extends AssetBase implements IMaterial
 	/**
 	 * A list of material owners, renderables or custom Entities.
 	 */
-	private _owners:Array<IRenderEntity> = new Array<IRenderEntity>();
+	private _owners:Array<IEntity> = new Array<IEntity>();
 
 	private _alphaPremultiplied:boolean;
 
@@ -356,7 +354,7 @@ export class MaterialBase extends AssetBase implements IMaterial
 	 *
 	 * @internal
 	 */
-	public iAddOwner(owner:IRenderEntity):void
+	public iAddOwner(owner:IEntity):void
 	{
 		this._owners.push(owner);
 
@@ -386,7 +384,7 @@ export class MaterialBase extends AssetBase implements IMaterial
 	 *
 	 * @internal
 	 */
-	public iRemoveOwner(owner:IRenderEntity):void
+	public iRemoveOwner(owner:IEntity):void
 	{
 		this._owners.splice(this._owners.indexOf(owner), 1);
 
@@ -402,7 +400,7 @@ export class MaterialBase extends AssetBase implements IMaterial
 	 *
 	 * @private
 	 */
-	public get iOwners():Array<IRenderEntity>
+	public get iOwners():Array<IEntity>
 	{
 		return this._owners;
 	}
@@ -564,9 +562,9 @@ export class _Render_MaterialPassBase extends _Render_MaterialBase implements IP
      *
      * @internal
      */
-    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
     {
-        this._shader._setRenderState(renderState, view.projection);
+        this._shader._setRenderState(renderState, viewport.projection);
     }
 
     /**
@@ -576,9 +574,9 @@ export class _Render_MaterialPassBase extends _Render_MaterialBase implements IP
      * @param camera The camera from which the scene is viewed.
      * @private
      */
-    public _activate(view:View):void
+    public _activate(viewport:Viewport):void
     {
-        this._shader._activate(view.projection);
+        this._shader._activate(viewport.projection);
     }
 
     /**
@@ -732,9 +730,9 @@ export class _Render_DepthMaterial extends _Render_MaterialPassBase
     /**
      * @inheritDoc
      */
-    public _activate(view:View):void
+    public _activate(viewport:Viewport):void
     {
-        super._activate(view);
+        super._activate(viewport);
 
         if (this._shaderTexture && this._shader.alphaThreshold > 0) {
             this._shaderTexture.activate();
@@ -846,11 +844,11 @@ export class _Render_DistanceMaterial extends _Render_MaterialPassBase
     /**
      * @inheritDoc
      */
-    public _activate(view:View):void
+    public _activate(viewport:Viewport):void
     {
-        super._activate(view);
+        super._activate(viewport);
 
-        var f:number = view.projection.far;
+        var f:number = viewport.projection.far;
 
         f = 1/(2*f*f);
         // sqrt(f*f+f*f) is largest possible distance for any frustum, so we need to divide by it. Rarely a tight fit, but with 32 bits precision, it's enough.

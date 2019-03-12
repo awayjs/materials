@@ -1,6 +1,4 @@
-import {BitmapImage2D} from "@awayjs/stage";
-
-import {View} from "@awayjs/view";
+import {BitmapImage2D, Viewport} from "@awayjs/stage";
 
 import {ImageTexture2D} from "../textures/ImageTexture2D";
 import {DirectionalLight} from "../lights/DirectionalLight";
@@ -191,8 +189,8 @@ export class _Shader_ShadowDitheredMethod extends _Shader_ShadowMethodBase
 
         var data:Float32Array = this._shader.fragmentConstantData;
         var index:number = this._fragmentConstantsIndex;
-        data[index + 1] = (this._shader.renderMaterial.renderGroup.renderer.view.width - 1)/63;
-        data[index + 2] = (this._shader.renderMaterial.renderGroup.renderer.view.height - 1)/63;
+        data[index + 1] = (this._shader.renderMaterial.renderGroup.renderer.viewport.width - 1)/63;
+        data[index + 2] = (this._shader.renderMaterial.renderGroup.renderer.viewport.height - 1)/63;
         data[index + 3] = 2*(<ShadowDitheredMethod> this._method).range/this._method.castingLight.shadowMapper.size;
 
         this._grainMap.activate();
@@ -285,9 +283,9 @@ export class _Shader_ShadowDitheredMethod extends _Shader_ShadowMethodBase
     /**
      * @inheritDoc
      */
-    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+    public _setRenderState(renderState:_Render_RenderableBase, viewport:Viewport):void
     {
-        super._setRenderState(renderState, view);
+        super._setRenderState(renderState, viewport);
 
         this._grainMap._setRenderState(renderState);
     }
