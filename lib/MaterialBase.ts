@@ -18,7 +18,7 @@ import {TextureBase} from "./textures/TextureBase";
  * Away3D provides default materials trough SinglePassMaterialBase and TriangleMaterial, which use modular
  * methods to build the shader code. MaterialBase can be extended to build specific and high-performant custom
  * shaders, or entire new material frameworks.
- */
+*/
 export class MaterialBase extends AssetBase implements IMaterial
 {
 	private _textures:Array<TextureBase> = new Array<TextureBase>();
@@ -49,12 +49,6 @@ export class MaterialBase extends AssetBase implements IMaterial
 	public _iBaseScreenPassIndex:number = 0;
 
 	private _bothSides:boolean = false; // update
-	private _animationSet:IAnimationSet;
-
-	/**
-	 * A list of material owners, renderables or custom Entities.
-	 */
-	private _owners:Array<IRenderEntity> = new Array<IRenderEntity>();
 
 	private _alphaPremultiplied:boolean;
 
@@ -149,14 +143,6 @@ export class MaterialBase extends AssetBase implements IMaterial
 		this._alphaBlending = value;
 
 		this.invalidate();
-	}
-
-	/**
-	 *
-	 */
-	public get animationSet():IAnimationSet
-	{
-		return this._animationSet;
 	}
 
 	/**
@@ -344,69 +330,6 @@ export class MaterialBase extends AssetBase implements IMaterial
 		this.invalidatePasses();
 	}
 
-	//
-	// MATERIAL MANAGEMENT
-	//
-	/**
-	 * Mark an IEntity as owner of this material.
-	 * Assures we're not using the same material across renderables with different animations, since the
-	 * Programs depend on animation. This method needs to be called when a material is assigned.
-	 *
-	 * @param owner The IEntity that had this material assigned
-	 *
-	 * @internal
-	 */
-	public iAddOwner(owner:IRenderEntity):void
-	{
-		this._owners.push(owner);
-
-		var animationSet:IAnimationSet;
-		var animator:IAnimator = <IAnimator> owner.animator;
-
-		if (animator)
-			animationSet = <IAnimationSet> animator.animationSet;
-
-		if (owner.animator) {
-			if (this._animationSet && animationSet != this._animationSet) {
-				throw new Error("A Material instance cannot be shared across material owners with different animation sets");
-			} else {
-				if (this._animationSet != animationSet) {
-
-					this._animationSet = animationSet;
-
-					this.invalidateAnimation();
-				}
-			}
-		}
-	}
-
-	/**
-	 * Removes an IEntity as owner.
-	 * @param owner
-	 *
-	 * @internal
-	 */
-	public iRemoveOwner(owner:IRenderEntity):void
-	{
-		this._owners.splice(this._owners.indexOf(owner), 1);
-
-		if (this._owners.length == 0) {
-			this._animationSet = null;
-
-			this.invalidateAnimation();
-		}
-	}
-
-	/**
-	 * A list of the IEntities that use this material
-	 *
-	 * @private
-	 */
-	public get iOwners():Array<IRenderEntity>
-	{
-		return this._owners;
-	}
-
 	public getNumTextures():number
 	{
 		return this._textures.length;
@@ -427,21 +350,9 @@ export class MaterialBase extends AssetBase implements IMaterial
 		this.dispatchEvent(new MaterialEvent(MaterialEvent.INVALIDATE_PASSES, this));
 	}
 
-	private invalidateAnimation():void
+	public invalidateTextures():void
 	{
-		this.dispatchEvent(new MaterialEvent(MaterialEvent.INVALIDATE_ANIMATION, this));
-	}
-
-	public invalidateMaterials():void
-	{
-		var len:number = this._owners.length;
-		for (var i:number = 0; i < len; i++)
-			this._owners[i].invalidateMaterial();
-	}
-
-	public invalidateTexture():void
-	{
-		this.dispatchEvent(new MaterialEvent(MaterialEvent.INVALIDATE_TEXTURE, this));
+		this.dispatchEvent(new MaterialEvent(MaterialEvent.INVALIDATE_TEXTURES, this));
 	}
 
 	public addTextureAt(texture:TextureBase, index:number):void
@@ -485,8 +396,7 @@ export class MaterialBase extends AssetBase implements IMaterial
 	{
 		this.invalidatePasses();
 
-		//invalidate renderables for number of images getter (in case it has changed)
-		this.invalidateMaterials();
+		this.invalidateTextures();
 	}
 
 	private _onInvalidateProperties(event:StyleEvent):void

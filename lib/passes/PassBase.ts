@@ -28,11 +28,6 @@ export class PassBase extends EventDispatcher implements IPass
 		return this._shader;
 	}
 
-	public get animationSet():IAnimationSet
-	{
-		return <IAnimationSet> (<MaterialBase> this._renderMaterial.material).animationSet;
-	}
-
 	/**
 	 * Indicates whether the output alpha value should remain unchanged compared to the material's original alpha.
 	 */

@@ -80,8 +80,6 @@ export class BasicMaterial extends MaterialBase
 
         if (this._texture)
             this.addTexture(this._texture);
-
-        this.invalidateTexture();
     }
 }
 
