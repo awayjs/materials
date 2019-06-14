@@ -340,6 +340,11 @@ export class MaterialBase extends AssetBase implements IMaterial
 		return this._textures[index];
 	}
 
+	public dispose()
+	{
+		this.clear();
+	}
+
 	/**
 	 * Marks the shader programs for all passes as invalid, so they will be recompiled before the next use.
 	 *
