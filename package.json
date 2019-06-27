@@ -37,7 +37,7 @@
     "url": "https://github.com/awayjs/materials/issues"
   },
   "homepage": "https://github.com/awayjs/materials#readme",
-  "dependencies": {
+  "peerDependencies": {
     "@awayjs/core": "^0.8.0",
     "@awayjs/stage": "^0.10.0",
     "@awayjs/view": "^0.5.0",
@@ -45,6 +45,11 @@
     "tslib": "^1.9.0"
   },
   "devDependencies": {
+    "@awayjs/core": "^0.8.0",
+    "@awayjs/stage": "^0.10.0",
+    "@awayjs/view": "^0.5.0",
+    "@awayjs/renderer": "^0.10.0",
+    "tslib": "^1.9.0",
     "rimraf": "^2.5.2",
     "rollup": "^0.36.4",
     "rollup-plugin-includepaths": "^0.2.1",
