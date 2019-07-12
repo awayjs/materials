@@ -395,7 +395,7 @@ export class MethodMaterial extends MaterialBase
 
 import {BlendMode} from "@awayjs/stage";
 
-import {_Render_MaterialBase, _Render_ElementsBase, DefaultRenderer, DepthRenderer, DistanceRenderer} from "@awayjs/renderer";
+import {_Render_MaterialBase, _Render_ElementsBase, RenderGroup} from "@awayjs/renderer";
 
 import {StaticLightPicker} from "./lightpickers/StaticLightPicker";
 import {MethodPassMode} from "./passes/MethodPassMode";
@@ -728,6 +728,6 @@ export class _Render_MethodMaterial extends _Render_MaterialBase
     }
 }
 
-DefaultRenderer.registerMaterial(_Render_MethodMaterial, MethodMaterial);
-DepthRenderer.registerMaterial(_Render_DepthMaterial, MethodMaterial);
-DistanceRenderer.registerMaterial(_Render_DistanceMaterial, MethodMaterial);
+RenderGroup.registerDefaultMaterial(_Render_MethodMaterial, MethodMaterial);
+RenderGroup.registerDepthMaterial(_Render_DepthMaterial, MethodMaterial);
+RenderGroup.registerDistanceMaterial(_Render_DistanceMaterial, MethodMaterial);

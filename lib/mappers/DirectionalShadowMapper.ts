@@ -2,7 +2,9 @@ import {Matrix3D, Plane3D, Vector3D, ProjectionBase, Transform, OrthographicProj
 
 import {Image2D} from "@awayjs/stage";
 
-import {DefaultRenderer} from "@awayjs/renderer";
+import { PartitionBase } from '@awayjs/view';
+
+import {RenderGroup, DepthRenderer} from "@awayjs/renderer";
 
 import {ShadowTexture2D} from "../textures/ShadowTexture2D";
 import {DirectionalLight} from "../lights/DirectionalLight";
@@ -111,13 +113,14 @@ export class DirectionalShadowMapper extends ShadowMapperBase
     }
 
 	//@override
-	protected _renderMap(rootRenderer:DefaultRenderer):void
+	protected _renderMap(partition:PartitionBase, renderGroup:RenderGroup):void
 	{
-		rootRenderer.getDepthRenderer().cullPlanes = this._cullPlanes;
-		rootRenderer.getDepthRenderer().view.preservePixelRatio = false;
-		rootRenderer.getDepthRenderer().view.target = this._image2D;
-		rootRenderer.getDepthRenderer().view.projection = this._overallDepthProjection;
-        rootRenderer.getDepthRenderer().render();
+		var depthRenderer:DepthRenderer = renderGroup.depthRenderGroup.getRenderer(partition);
+		depthRenderer.cullPlanes = this._cullPlanes;
+		depthRenderer.view.preservePixelRatio = false;
+		depthRenderer.view.target = this._image2D;
+		depthRenderer.view.projection = this._overallDepthProjection;
+        depthRenderer.render();
 	}
 
 	/**

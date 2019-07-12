@@ -83,7 +83,7 @@ export class BasicMaterial extends MaterialBase
     }
 }
 
-import {DefaultRenderer, DepthRenderer, DistanceRenderer, MaterialUtils} from "@awayjs/renderer";
+import {MaterialUtils, RenderGroup} from "@awayjs/renderer";
 
 import {AssetEvent} from "@awayjs/core";
 
@@ -134,8 +134,8 @@ export class _Render_BasicMaterial extends _Render_MaterialBase
     }
 }
 
-DefaultRenderer.registerMaterial(_Render_BasicMaterial, BasicMaterial);
-DepthRenderer.registerMaterial(_Render_DepthMaterial, BasicMaterial);
-DistanceRenderer.registerMaterial(_Render_DistanceMaterial, BasicMaterial);
+RenderGroup.registerDefaultMaterial(_Render_BasicMaterial, BasicMaterial);
+RenderGroup.registerDepthMaterial(_Render_DepthMaterial, BasicMaterial);
+RenderGroup.registerDistanceMaterial(_Render_DistanceMaterial, BasicMaterial);
 
 MaterialUtils.setDefaultMaterialClass(BasicMaterial);

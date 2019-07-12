@@ -2,9 +2,9 @@ import {Matrix3D, Rectangle, AssetEvent, PerspectiveProjection, ProjectionBase} 
 
 import {Image2D} from "@awayjs/stage";
 
-import {View} from "@awayjs/view";
+import {View, PartitionBase} from "@awayjs/view";
 
-import {DefaultRenderer} from "@awayjs/renderer";
+import {RenderGroup} from "@awayjs/renderer";
 
 import {DirectionalShadowMapper, _Shader_DirectionalShadowMapper} from "./DirectionalShadowMapper";
 
@@ -124,12 +124,12 @@ export class CascadeShadowMapper extends DirectionalShadowMapper
 		this.dispatchEvent(new AssetEvent(AssetEvent.INVALIDATE, this));
 	}
 
-	protected _renderMap(rootRenderer:DefaultRenderer):void
+	protected _renderMap(partition:PartitionBase, renderGroup:RenderGroup):void
 	{
 		if (this._scissorRectsInvalid)
 			this.updateScissorRects();
 
-        rootRenderer.getDepthRenderer().cullPlanes = this._cullPlanes;
+		renderGroup.depthRenderGroup.getRenderer(partition).cullPlanes = this._cullPlanes;
         //rootRenderer.getDepthRenderer()._iRenderCascades(this._overallDepthProjection, view, this._image2D, this._numCascades, this._pScissorRects, this._depthProjections);
 	}
 

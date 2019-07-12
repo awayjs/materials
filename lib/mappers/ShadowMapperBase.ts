@@ -1,6 +1,8 @@
 import {AbstractMethodError, ProjectionBase} from "@awayjs/core";
 
-import {IMapper, RendererBase} from "@awayjs/renderer";
+import {View, PartitionBase} from "@awayjs/view";
+
+import {IMapper, RenderGroup} from "@awayjs/renderer";
 
 import {TextureBase} from "../textures/TextureBase";
 import {LightBase} from "../lights/LightBase";
@@ -78,11 +80,11 @@ export class ShadowMapperBase extends MethodBase implements IMapper
         this._updateSize();
     }
 
-    public update(projection:ProjectionBase, rootRenderer:RendererBase):void
+    public update(partition:PartitionBase, renderGroup:RenderGroup):void
     {
-        this._updateProjection(projection);
+        this._updateProjection(renderGroup.view.projection);
 
-        this._renderMap(rootRenderer);
+        this._renderMap(partition, renderGroup);
     }
 
     protected _updateProjection(projection:ProjectionBase):void
@@ -90,7 +92,7 @@ export class ShadowMapperBase extends MethodBase implements IMapper
         throw new AbstractMethodError();
     }
 
-    protected _renderMap(rootRenderer:RendererBase):void
+    protected _renderMap(partition:PartitionBase, renderGroup:RenderGroup):void
     {
         throw new AbstractMethodError();
     }
@@ -109,8 +111,6 @@ export class ShadowMapperBase extends MethodBase implements IMapper
 import {AssetEvent} from "@awayjs/core";
 
 import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
-
-import {View} from "@awayjs/view";
 
 import {_Render_RenderableBase, ShaderBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
 
@@ -162,7 +162,7 @@ export class _Shader_ShadowMapperBase extends _Shader_MethodBase
         this._mapper = mapper;
         this._shader = shader;
 
-        this._shader.renderMaterial.renderGroup.renderer._addMapper(this._mapper);
+        this._shader.renderMaterial.renderGroup._addMapper(this._mapper);
     }
 
     /**
@@ -172,7 +172,7 @@ export class _Shader_ShadowMapperBase extends _Shader_MethodBase
     {
         super.onClear(event);
 
-        this._shader.renderMaterial.renderGroup.renderer._removeMapper(this._mapper);
+        this._shader.renderMaterial.renderGroup._removeMapper(this._mapper);
     }
 
 
