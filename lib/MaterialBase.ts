@@ -407,6 +407,8 @@ export class MaterialBase extends AssetBase implements IMaterial
 	private _onInvalidateProperties(event:StyleEvent):void
 	{
 		this.invalidatePasses();
+
+		this.invalidateTextures();
 	}
 }
 
