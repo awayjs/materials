@@ -1,5 +1,5 @@
 
-console.debug("AwayJS - Materials - 0.5.7");
+console.debug("AwayJS - Materials - 0.5.8");
 
 export {LightEvent} from "./lib/events/LightEvent";
 export {TextureProjectorEvent} from "./lib/events/TextureProjectorEvent";
