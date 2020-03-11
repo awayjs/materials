@@ -205,7 +205,7 @@ export class _Shader_EffectLightMapMethod extends _Shader_MethodBase
     }
 
 
-    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+    public _setRenderState(renderState:_Render_RenderableBase):void
     {
         this._lightMap._setRenderState(renderState);
     }

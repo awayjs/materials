@@ -83,7 +83,7 @@ export interface _IShader_Method extends IEventDispatcher
 	 *
 	 * @internal
 	 */
-	_setRenderState(renderRenderable:_Render_RenderableBase, view:View):void;
+	_setRenderState(renderRenderable:_Render_RenderableBase):void;
 
 	/**
 	 * Clears the render state for this method.

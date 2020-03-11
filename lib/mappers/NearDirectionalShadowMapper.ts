@@ -143,11 +143,11 @@ export class _Shader_NearDirectionalShadowMapper extends _Shader_DirectionalShad
     /**
      * @inheritDoc
      */
-    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+    public _setRenderState(renderState:_Render_RenderableBase):void
     {
         // todo: move this to activate (needs camera)
-        var near:number = view.projection.near;
-        var d:number = view.projection.far - near;
+        var near:number = this._shader.view.projection.near;
+        var d:number = this._shader.view.projection.far - near;
         var maxDistance:number = (<NearDirectionalShadowMapper> this._mapper).coverageRatio;
         var minDistance:number = maxDistance*(1 - (<NearDirectionalShadowMapper> this._mapper).fadeRatio);
 
@@ -159,7 +159,7 @@ export class _Shader_NearDirectionalShadowMapper extends _Shader_DirectionalShad
         fragmentData[index] = minDistance;
         fragmentData[index + 1] = 1/(maxDistance - minDistance);
 
-        super._setRenderState(renderState, view);
+        super._setRenderState(renderState);
     }
 }
 

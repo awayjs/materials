@@ -160,7 +160,7 @@ export class _Shader_EffectAlphaMaskMethod extends _Shader_MethodBase
         this._alphaMask.activate();
     }
 
-    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+    public _setRenderState(renderState:_Render_RenderableBase):void
     {
         this._alphaMask._setRenderState(renderState);
     }

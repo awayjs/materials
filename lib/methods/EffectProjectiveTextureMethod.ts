@@ -276,7 +276,7 @@ export class _Shader_EffectProjectiveTextureMethod extends _Shader_MethodBase
     /**
      * @inheritDoc
      */
-    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+    public _setRenderState(renderState:_Render_RenderableBase):void
     {
         var matrix3D:Matrix3D = Matrix3D.CALCULATION_MATRIX;
         matrix3D.copyFrom(this._method.projector.projection.viewMatrix3D);

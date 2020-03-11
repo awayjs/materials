@@ -418,7 +418,7 @@ export class _Shader_DiffuseBasicMethod extends _Shader_MethodBase implements _I
     /**
      * @inheritDoc
      */
-    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+    public _setRenderState(renderState:_Render_RenderableBase):void
     {
         if (this._texture)
             this._texture._setRenderState(renderState);

@@ -532,9 +532,9 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * @inheritDoc
 	 */
-	public _activate(view:View):void
+	public _activate():void
 	{
-		super._activate(view);
+		super._activate();
 
 		var chunk:_IShader_Method;
 		var len:number = this._chunks.length;
@@ -552,16 +552,16 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * @param stage
 	 * @param camera
 	 */
-	public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+	public _setRenderState(renderState:_Render_RenderableBase):void
 	{
-		super._setRenderState(renderState, view);
+		super._setRenderState(renderState);
 
 		var chunk:_IShader_Method;
 		var len:number = this._chunks.length;
 		for (var i:number = 0; i < len; ++i) {
 			chunk = this._chunks[i];
 			if (chunk.chunkVO.useChunk)
-				chunk._setRenderState(renderState, view);
+				chunk._setRenderState(renderState);
 		}
 	}
 

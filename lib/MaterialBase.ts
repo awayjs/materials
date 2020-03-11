@@ -481,9 +481,9 @@ export class _Render_MaterialPassBase extends _Render_MaterialBase implements IP
      *
      * @internal
      */
-    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+    public _setRenderState(renderState:_Render_RenderableBase):void
     {
-        this._shader._setRenderState(renderState, view.projection);
+        this._shader._setRenderState(renderState);
     }
 
     /**
@@ -493,9 +493,9 @@ export class _Render_MaterialPassBase extends _Render_MaterialBase implements IP
      * @param camera The camera from which the scene is viewed.
      * @private
      */
-    public _activate(view:View):void
+    public _activate():void
     {
-        this._shader._activate(view.projection);
+        this._shader._activate();
     }
 
     /**
@@ -649,9 +649,9 @@ export class _Render_DepthMaterial extends _Render_MaterialPassBase
     /**
      * @inheritDoc
      */
-    public _activate(view:View):void
+    public _activate():void
     {
-        super._activate(view);
+        super._activate();
 
         if (this._shaderTexture && this._shader.alphaThreshold > 0) {
             this._shaderTexture.activate();
@@ -763,11 +763,11 @@ export class _Render_DistanceMaterial extends _Render_MaterialPassBase
     /**
      * @inheritDoc
      */
-    public _activate(view:View):void
+    public _activate():void
     {
-        super._activate(view);
+        super._activate();
 
-        var f:number = view.projection.far;
+        var f:number =  this._shader.view.projection.far;
 
         f = 1/(2*f*f);
         // sqrt(f*f+f*f) is largest possible distance for any frustum, so we need to divide by it. Rarely a tight fit, but with 32 bits precision, it's enough.

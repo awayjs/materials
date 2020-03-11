@@ -285,9 +285,9 @@ export class _Shader_ShadowDitheredMethod extends _Shader_ShadowMethodBase
     /**
      * @inheritDoc
      */
-    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+    public _setRenderState(renderState:_Render_RenderableBase):void
     {
-        super._setRenderState(renderState, view);
+        super._setRenderState(renderState);
 
         this._grainMap._setRenderState(renderState);
     }

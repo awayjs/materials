@@ -247,7 +247,7 @@ export class _Shader_MethodBase extends AbstractionBase implements _IShader_Meth
      *
      * @internal
      */
-    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+    public _setRenderState(renderState:_Render_RenderableBase):void
     {
 
     }

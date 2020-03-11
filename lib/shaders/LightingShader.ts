@@ -138,9 +138,9 @@ export class LightingShader extends ShaderBase
 	 * @param stage
 	 * @param camera
 	 */
-	public _setRenderState(renderable:_Render_RenderableBase, projection:ProjectionBase):void
+	public _setRenderState(renderable:_Render_RenderableBase):void
 	{
-		super._setRenderState(renderable, projection);
+		super._setRenderState(renderable);
 
 		if (this._lightingPass.lightPicker)
 			this._lightingPass.lightPicker.collectLights(renderable.sourceEntity);

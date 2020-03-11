@@ -218,9 +218,9 @@ export class _Shader_DiffuseLightMapMethod extends _Shader_LightingCompositeMeth
     /**
      * @inheritDoc
      */
-    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+    public _setRenderState(renderState:_Render_RenderableBase):void
     {
-        super._setRenderState(renderState, view);
+        super._setRenderState(renderState);
 
         this._lightMap._setRenderState(renderState);
     }

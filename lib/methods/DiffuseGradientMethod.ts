@@ -172,9 +172,9 @@ export class _Shader_DiffuseGradientMethod extends _Shader_DiffuseBasicMethod
     /**
      * @inheritDoc
      */
-    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+    public _setRenderState(renderState:_Render_RenderableBase):void
     {
-        super._setRenderState(renderState, view);
+        super._setRenderState(renderState);
 
         this._gradient._setRenderState(renderState);
     }

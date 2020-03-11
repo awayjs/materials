@@ -115,9 +115,9 @@ export class PassBase extends EventDispatcher implements IPass
 	 *
 	 * @internal
 	 */
-	public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+	public _setRenderState(renderState:_Render_RenderableBase):void
 	{
-		this._shader._setRenderState(renderState, view.projection);
+		this._shader._setRenderState(renderState);
 	}
 
 	/**
@@ -127,9 +127,9 @@ export class PassBase extends EventDispatcher implements IPass
 	 * @param camera The camera from which the scene is viewed.
 	 * @private
 	 */
-	public _activate(view:View):void
+	public _activate():void
 	{
-		this._shader._activate(view.projection);
+		this._shader._activate();
 	}
 
 	/**

@@ -219,9 +219,9 @@ export class _Shader_NormalSimpleWaterMethod extends _Shader_NormalBasicMethod
     /**
      * @inheritDoc
      */
-    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+    public _setRenderState(renderState:_Render_RenderableBase):void
     {
-        super._setRenderState(renderState, view);
+        super._setRenderState(renderState);
 
         if (this._secondaryNormalMap)
             this._secondaryNormalMap._setRenderState(renderState);

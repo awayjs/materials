@@ -187,7 +187,7 @@ export class _Shader_EffectEnvMapMethod extends _Shader_MethodBase
             this._updateProperties();
     }
 
-    public _setRenderState(renderState:_Render_RenderableBase, view:View):void
+    public _setRenderState(renderState:_Render_RenderableBase):void
     {
         this._envMap._setRenderState(renderState);
 
