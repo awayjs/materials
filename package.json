@@ -41,14 +41,14 @@
   "peerDependencies": {
     "@awayjs/core": "^0.9.0",
     "@awayjs/renderer": "^0.11.0",
-    "@awayjs/stage": "^0.12.0",
+    "@awayjs/stage": "^0.11.0",
     "@awayjs/view": "^0.6.0",
     "tslib": "^1.9.0"
   },
   "devDependencies": {
     "@awayjs/core": "^0.9.0",
     "@awayjs/renderer": "^0.11.0",
-    "@awayjs/stage": "^0.12.0",
+    "@awayjs/stage": "^0.11.0",
     "@awayjs/view": "^0.6.0",
     "rimraf": "^2.5.2",
     "rollup": "^0.36.4",
