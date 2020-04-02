@@ -588,8 +588,8 @@ export class MethodPass extends PassBase implements ILightingPass
 		//TODO: fragment animtion should be compatible with lighting pass
 		shader.usesFragmentAnimation = Boolean(this._mode == MethodPassMode.SUPER_SHADER);
 
-		if (shader.useAlphaPremultiplied && shader.usesBlending)
-			shader.usesCommonData = true;
+		// if (shader.useAlphaPremultiplied && shader.usesBlending)
+		// 	shader.usesCommonData = true;
 
 		var i:number;
 		var len:number = this._chunks.length;
@@ -775,14 +775,6 @@ export class MethodPass extends PassBase implements ILightingPass
 	public _getPostAnimationFragmentCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
 	{
 		var code:string = "";
-
-		//if blending with premultiplied alpha, make sure ambient color is correctly multiplied
-		if (this._shader.useAlphaPremultiplied && this._shader.usesBlending) {
-			code += "add " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.commons + ".z\n" +
-				"div " + sharedRegisters.shadedTarget + ".xyz, " + sharedRegisters.shadedTarget + ", " + sharedRegisters.shadedTarget + ".w\n" +
-				"sub " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.shadedTarget + ".w, " + sharedRegisters.commons + ".z\n" +
-				"sat " + sharedRegisters.shadedTarget + ".xyz, " + sharedRegisters.shadedTarget + "\n";
-		}
 
 		///////////////begin lighting shading
 		if (this._shadowChunk)

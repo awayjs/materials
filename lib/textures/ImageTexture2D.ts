@@ -118,6 +118,10 @@ export class _Shader_ImageTexture2D extends _Shader_ImageTexture
 
         code += super._getFragmentCode(targetReg, regCache, sharedReg, inputReg);
 
+        //un-premultiply alpha if is is required
+        if (this._shader.usesPremultipliedAlpha)
+            code += "div " + targetReg + ".xyz, " + targetReg + ", " + targetReg + ".w\n";
+
         return code;
     }
 

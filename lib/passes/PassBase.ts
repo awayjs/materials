@@ -148,7 +148,6 @@ export class PassBase extends EventDispatcher implements IPass
         shader.alphaThreshold = (<MaterialBase> this._renderMaterial.material).alphaThreshold;
         shader.useImageRect = (<MaterialBase> this._renderMaterial.material).imageRect;
         shader.usesCurves = (<MaterialBase> this._renderMaterial.material).curves;
-        shader.useAlphaPremultiplied = (<MaterialBase> this._renderMaterial.material).alphaPremultiplied;
         shader.useBothSides = (<MaterialBase> this._renderMaterial.material).bothSides;
         shader.usesUVTransform = (<MaterialBase> this._renderMaterial.material).animateUVs;
         shader.usesColorTransform = (<MaterialBase> this._renderMaterial.material).useColorTransform;

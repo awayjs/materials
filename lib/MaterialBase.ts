@@ -50,8 +50,6 @@ export class MaterialBase extends AssetBase implements IMaterial
 
 	private _bothSides:boolean = false; // update
 
-	private _alphaPremultiplied:boolean;
-
 	public _pBlendMode:string = BlendMode.NORMAL;
 
 	private _imageRect:boolean = false;
@@ -79,8 +77,6 @@ export class MaterialBase extends AssetBase implements IMaterial
 		this.alpha = alpha;
 
 		this._onTextureInvalidateDelegate = (event:AssetEvent) => this.onTextureInvalidate(event);
-
-		this.alphaPremultiplied = false; //TODO: work out why this is different for WebGL
 	}
 
 	/**
@@ -286,26 +282,6 @@ export class MaterialBase extends AssetBase implements IMaterial
 	}
 
 	/**
-	 * Indicates whether visible textures (or other pixels) used by this material have
-	 * already been premultiplied. Toggle this if you are seeing black halos around your
-	 * blended alpha edges.
-	 */
-	public get alphaPremultiplied():boolean
-	{
-		return this._alphaPremultiplied;
-	}
-
-	public set alphaPremultiplied(value:boolean)
-	{
-		if (this._alphaPremultiplied == value)
-			return;
-
-		this._alphaPremultiplied = value;
-
-		this.invalidatePasses();
-	}
-
-	/**
 	 * The minimum alpha value for which pixels should be drawn. This is used for transparency that is either
 	 * invisible or entirely opaque, often used with textures for foliage, etc.
 	 * Recommended values are 0 to disable alpha, or 0.5 to create smooth edges. Default value is 0 (disabled).
@@ -446,7 +422,6 @@ export class _Render_MaterialPassBase extends _Render_MaterialBase implements IP
         shader.alphaThreshold = (<MaterialBase> this._material).alphaThreshold;
         shader.useImageRect = (<MaterialBase> this._material).imageRect;
         shader.usesCurves = (<MaterialBase> this._material).curves;
-        shader.useAlphaPremultiplied = (<MaterialBase> this._material).alphaPremultiplied;
         shader.useBothSides = (<MaterialBase> this._material).bothSides;
         shader.usesUVTransform = (<MaterialBase> this._material).animateUVs;
         shader.usesColorTransform = (<MaterialBase> this._material).useColorTransform;
