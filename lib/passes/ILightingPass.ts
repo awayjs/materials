@@ -1,10 +1,9 @@
-import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import {IPass} from "@awayjs/renderer";
+import { IPass } from '@awayjs/renderer';
 
-import {LightingShader} from "../shaders/LightingShader";
-import {LightPickerBase} from "../lightpickers/LightPickerBase";
-
+import { LightingShader } from '../shaders/LightingShader';
+import { LightPickerBase } from '../lightpickers/LightPickerBase';
 
 /**
  *
@@ -12,50 +11,50 @@ import {LightPickerBase} from "../lightpickers/LightPickerBase";
  */
 export interface ILightingPass extends IPass
 {
-	enableLightFallOff:boolean;
+	enableLightFallOff: boolean;
 
-	diffuseLightSources:number;
+	diffuseLightSources: number;
 
-	specularLightSources:number;
+	specularLightSources: number;
 
-	numDirectionalLights:number;
+	numDirectionalLights: number;
 
-	numPointLights:number;
+	numPointLights: number;
 
-	numLightProbes:number;
+	numLightProbes: number;
 
-	pointLightsOffset:number;
+	pointLightsOffset: number;
 
-	directionalLightsOffset:number;
+	directionalLightsOffset: number;
 
-	lightProbesOffset:number;
+	lightProbesOffset: number;
 
-	lightPicker:LightPickerBase;
+	lightPicker: LightPickerBase;
 
-	_getPreLightingVertexCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string;
+	_getPreLightingVertexCode(registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 
-	_getPreLightingFragmentCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string;
+	_getPreLightingFragmentCode(registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 
-	_getPerLightDiffuseFragmentCode(lightDirReg:ShaderRegisterElement, diffuseColorReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string;
+	_getPerLightDiffuseFragmentCode(lightDirReg: ShaderRegisterElement, diffuseColorReg: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 
-	_getPerLightSpecularFragmentCode(lightDirReg:ShaderRegisterElement, specularColorReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string;
+	_getPerLightSpecularFragmentCode(lightDirReg: ShaderRegisterElement, specularColorReg: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 
-	_getPerProbeDiffuseFragmentCode(texReg:ShaderRegisterElement, weightReg:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string;
+	_getPerProbeDiffuseFragmentCode(texReg: ShaderRegisterElement, weightReg: string, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 
-	_getPerProbeSpecularFragmentCode(texReg:ShaderRegisterElement, weightReg:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string;
+	_getPerProbeSpecularFragmentCode(texReg: ShaderRegisterElement, weightReg: string, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 
 	/**
 	 * Indicates whether the shader uses any shadows.
 	 */
-	_iUsesShadows(shader:LightingShader):boolean;
+	_iUsesShadows(shader: LightingShader): boolean;
 
 	/**
 	 * Indicates whether the shader uses any specular component.
 	 */
-	_iUsesSpecular(shader:LightingShader):boolean;
+	_iUsesSpecular(shader: LightingShader): boolean;
 
 	/**
 	 * Indicates whether the shader uses any diffuse component.
 	 */
-	_iUsesDiffuse(shader:LightingShader):boolean;
+	_iUsesDiffuse(shader: LightingShader): boolean;
 }

@@ -1,38 +1,36 @@
-import {TextureBase} from "../textures/TextureBase";
+import { TextureBase } from '../textures/TextureBase';
 
-import {DiffuseBasicMethod} from "./DiffuseBasicMethod";
-import {DiffuseCompositeMethod} from "./DiffuseCompositeMethod";
+import { DiffuseBasicMethod } from './DiffuseBasicMethod';
+import { DiffuseCompositeMethod } from './DiffuseCompositeMethod';
 
 /**
  * DiffuseLightMapMethod provides a diffuse shading method that uses a light map to modulate the calculated diffuse
  * lighting. It is different from EffectLightMapMethod in that the latter modulates the entire calculated pixel color, rather
  * than only the diffuse lighting value.
  */
-export class DiffuseLightMapMethod extends DiffuseCompositeMethod
-{
+export class DiffuseLightMapMethod extends DiffuseCompositeMethod {
 	/**
 	 * Indicates the light map should be multiplied with the calculated shading result.
 	 * This can be used to add pre-calculated shadows or occlusion.
 	 */
-	public static MULTIPLY:string = "multiply";
+	public static MULTIPLY: string = 'multiply';
 
 	/**
 	 * Indicates the light map should be added into the calculated shading result.
 	 * This can be used to add pre-calculated lighting or global illumination.
 	 */
-	public static ADD:string = "add";
+	public static ADD: string = 'add';
 
-	private _lightMap:TextureBase;
-	private _blendMode:string;
-	private _useSecondaryUV:boolean;
+	private _lightMap: TextureBase;
+	private _blendMode: string;
+	private _useSecondaryUV: boolean;
 
-	public static assetType:string = "[asset DiffuseLightMapMethod]";
+	public static assetType: string = '[asset DiffuseLightMapMethod]';
 
 	/**
 	 * @inheritDoc
 	 */
-	public get assetType():string
-	{
+	public get assetType(): string {
 		return DiffuseLightMapMethod.assetType;
 	}
 
@@ -42,15 +40,13 @@ export class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	 * @see DiffuseLightMapMethod.ADD
 	 * @see DiffuseLightMapMethod.MULTIPLY
 	 */
-	public get blendMode():string
-	{
+	public get blendMode(): string {
 		return this._blendMode;
 	}
 
-	public set blendMode(value:string)
-	{
+	public set blendMode(value: string) {
 		if (value != DiffuseLightMapMethod.ADD && value != DiffuseLightMapMethod.MULTIPLY)
-			throw new Error("Unknown blendmode!");
+			throw new Error('Unknown blendmode!');
 
 		if (this._blendMode == value)
 			return;
@@ -63,13 +59,11 @@ export class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	/**
 	 * The texture containing the light map data.
 	 */
-	public get lightMap():TextureBase
-	{
+	public get lightMap(): TextureBase {
 		return this._lightMap;
 	}
 
-	public set lightMap(value:TextureBase)
-	{
+	public set lightMap(value: TextureBase) {
 		if (this._lightMap == value)
 			return;
 
@@ -87,13 +81,11 @@ export class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	/**
 	 * Indicates whether the secondary UV set should be used to map the light map.
 	 */
-	public get useSecondaryUV():boolean
-	{
+	public get useSecondaryUV(): boolean {
 		return this._useSecondaryUV;
 	}
 
-	public set useSecondaryUV(value:boolean)
-	{
+	public set useSecondaryUV(value: boolean) {
 		if (this._useSecondaryUV == value)
 			return;
 
@@ -110,8 +102,7 @@ export class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	 * @param useSecondaryUV Indicates whether the secondary UV set should be used to map the light map.
 	 * @param baseMethod The diffuse method used to calculate the regular diffuse-based lighting.
 	 */
-	constructor(lightMap:TextureBase, blendMode:string = "multiply", useSecondaryUV:boolean = false, baseMethod:DiffuseBasicMethod | DiffuseCompositeMethod = null)
-	{
+	constructor(lightMap: TextureBase, blendMode: string = 'multiply', useSecondaryUV: boolean = false, baseMethod: DiffuseBasicMethod | DiffuseCompositeMethod = null) {
 		super(baseMethod);
 
 		this._lightMap = lightMap;
@@ -123,107 +114,99 @@ export class DiffuseLightMapMethod extends DiffuseCompositeMethod
 	}
 }
 
-import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import {View} from "@awayjs/view";
+import { View } from '@awayjs/view';
 
-import {ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO} from "@awayjs/renderer";
+import { ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO } from '@awayjs/renderer';
 
-import {LightingShader} from "../shaders/LightingShader";
-import {ImageTexture2D} from "../textures/ImageTexture2D";
+import { LightingShader } from '../shaders/LightingShader';
+import { ImageTexture2D } from '../textures/ImageTexture2D';
 
-import {_Shader_LightingCompositeMethod} from "./CompositeMethodBase";
+import { _Shader_LightingCompositeMethod } from './CompositeMethodBase';
 
 /**
  * _Shader_DiffuseLightMapMethod provides a diffuse shading method that uses a light map to modulate the calculated diffuse
  * lighting. It is different from EffectLightMapMethod in that the latter modulates the entire calculated pixel color, rather
  * than only the diffuse lighting value.
  */
-export class _Shader_DiffuseLightMapMethod extends _Shader_LightingCompositeMethod
-{
-    private _lightMap:_Shader_TextureBase;
+export class _Shader_DiffuseLightMapMethod extends _Shader_LightingCompositeMethod {
+	private _lightMap: _Shader_TextureBase;
 
-    private _method:DiffuseLightMapMethod;
-    private _shader:LightingShader;
+	private _method: DiffuseLightMapMethod;
+	private _shader: LightingShader;
 
-    /**
+	/**
      * Creates a new _Shader_DiffuseLightMapMethod method.
      */
-    constructor(method:DiffuseLightMapMethod, shader:LightingShader)
-    {
-        super(method, shader);
+	constructor(method: DiffuseLightMapMethod, shader: LightingShader) {
+		super(method, shader);
 
-        this._method = method;
-        this._shader = shader;
-    }
+		this._method = method;
+		this._shader = shader;
+	}
 
-
-    /**
+	/**
      * @inheritDoc
      */
-    public _initVO(chunkVO:ChunkVO):void
-    {
-        this._lightMap = <_Shader_TextureBase> this._shader.getAbstraction(this._method.lightMap || new ImageTexture2D());
+	public _initVO(chunkVO: ChunkVO): void {
+		this._lightMap = <_Shader_TextureBase> this._shader.getAbstraction(this._method.lightMap || new ImageTexture2D());
 
-        this._lightMap._initVO(chunkVO);
+		this._lightMap._initVO(chunkVO);
 
-        if (this._method.useSecondaryUV)
-            this._shader.secondaryUVDependencies++;
-        else
-            this._shader.uvDependencies++;
-    }
+		if (this._method.useSecondaryUV)
+			this._shader.secondaryUVDependencies++;
+		else
+			this._shader.uvDependencies++;
+	}
 
-    /**
+	/**
      * @inheritDoc
      */
-    public _initConstants():void
-    {
-        this._lightMap._initConstants();
-    }
+	public _initConstants(): void {
+		this._lightMap._initConstants();
+	}
 
-    /**
+	/**
      * @inheritDoc
      */
-    public _getFragmentCode(targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-    {
-        var code:string;
-        var temp:ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
+	public _getFragmentCode(targetReg: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string {
+		let code: string;
+		const temp: ShaderRegisterElement = registerCache.getFreeFragmentVectorTemp();
 
-        code = this._lightMap._getFragmentCode(temp, registerCache, sharedRegisters, this._method.useSecondaryUV? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
+		code = this._lightMap._getFragmentCode(temp, registerCache, sharedRegisters, this._method.useSecondaryUV ? sharedRegisters.secondaryUVVarying : sharedRegisters.uvVarying);
 
-        switch (this._method.blendMode) {
-            case DiffuseLightMapMethod.MULTIPLY:
-                code += "mul " + this._totalLightColorReg + ", " + this._totalLightColorReg + ", " + temp + "\n";
-                break;
-            case DiffuseLightMapMethod.ADD:
-                code += "add " + this._totalLightColorReg + ", " + this._totalLightColorReg + ", " + temp + "\n";
-                break;
-        }
+		switch (this._method.blendMode) {
+			case DiffuseLightMapMethod.MULTIPLY:
+				code += 'mul ' + this._totalLightColorReg + ', ' + this._totalLightColorReg + ', ' + temp + '\n';
+				break;
+			case DiffuseLightMapMethod.ADD:
+				code += 'add ' + this._totalLightColorReg + ', ' + this._totalLightColorReg + ', ' + temp + '\n';
+				break;
+		}
 
-        code += super._getFragmentCode(targetReg, registerCache, sharedRegisters);
+		code += super._getFragmentCode(targetReg, registerCache, sharedRegisters);
 
-        return code;
-    }
+		return code;
+	}
 
-    /**
+	/**
      * @inheritDoc
      */
-    public _activate():void
-    {
-        super._activate();
+	public _activate(): void {
+		super._activate();
 
-        this._lightMap.activate();
-    }
+		this._lightMap.activate();
+	}
 
-    /**
+	/**
      * @inheritDoc
      */
-    public _setRenderState(renderState:_Render_RenderableBase):void
-    {
-        super._setRenderState(renderState);
+	public _setRenderState(renderState: _Render_RenderableBase): void {
+		super._setRenderState(renderState);
 
-        this._lightMap._setRenderState(renderState);
-    }
+		this._lightMap._setRenderState(renderState);
+	}
 }
 
 ShaderBase.registerAbstraction(_Shader_DiffuseLightMapMethod, DiffuseLightMapMethod);

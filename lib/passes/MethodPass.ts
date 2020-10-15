@@ -1,89 +1,86 @@
-import {ColorTransform, AssetEvent} from "@awayjs/core";
+import { ColorTransform, AssetEvent } from '@awayjs/core';
 
-import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import {View} from "@awayjs/view";
+import { View } from '@awayjs/view';
 
-import {_Render_RenderableBase, _Render_ElementsBase, ShaderBase, ChunkVO} from "@awayjs/renderer";
+import { _Render_RenderableBase, _Render_ElementsBase, ShaderBase, ChunkVO } from '@awayjs/renderer';
 
-import {LightPickerBase} from "../lightpickers/LightPickerBase";
-import {LightSources} from "../lightpickers/LightSources";
+import { LightPickerBase } from '../lightpickers/LightPickerBase';
+import { LightSources } from '../lightpickers/LightSources';
 
-import {MethodEvent} from "../events/MethodEvent";
-import {_IShader_LightingMethod} from "../methods/_IShader_LightingMethod";
-import {_IShader_Method} from "../methods/_IShader_Method";
-import {MethodBase, _Shader_MethodBase} from "../methods/MethodBase";
-import {EffectColorTransformMethod} from "../methods/EffectColorTransformMethod";
-import {_Shader_LightingCompositeMethod} from "../methods/CompositeMethodBase";
-import {_Shader_DiffuseBasicMethod} from "../methods/DiffuseBasicMethod";
-import {_Shader_SpecularBasicMethod} from "../methods/SpecularBasicMethod";
-import {_Shader_NormalBasicMethod} from "../methods/NormalBasicMethod";
-import {ILightingPass} from "../passes/ILightingPass";
-import {PassBase} from "../passes/PassBase";
-import {LightingShader} from "../shaders/LightingShader";
+import { MethodEvent } from '../events/MethodEvent';
+import { _IShader_LightingMethod } from '../methods/_IShader_LightingMethod';
+import { _IShader_Method } from '../methods/_IShader_Method';
+import { MethodBase, _Shader_MethodBase } from '../methods/MethodBase';
+import { EffectColorTransformMethod } from '../methods/EffectColorTransformMethod';
+import { _Shader_LightingCompositeMethod } from '../methods/CompositeMethodBase';
+import { _Shader_DiffuseBasicMethod } from '../methods/DiffuseBasicMethod';
+import { _Shader_SpecularBasicMethod } from '../methods/SpecularBasicMethod';
+import { _Shader_NormalBasicMethod } from '../methods/NormalBasicMethod';
+import { ILightingPass } from '../passes/ILightingPass';
+import { PassBase } from '../passes/PassBase';
+import { LightingShader } from '../shaders/LightingShader';
 
-import {MethodMaterial, _Render_MethodMaterial} from "../MethodMaterial";
+import { MethodMaterial, _Render_MethodMaterial } from '../MethodMaterial';
 
-import {MethodPassMode} from "./MethodPassMode";
+import { MethodPassMode } from './MethodPassMode';
 
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
  * using material methods to define their appearance.
  */
-export class MethodPass extends PassBase implements ILightingPass
-{
-	private _maxLights:number = 3;
+export class MethodPass extends PassBase implements ILightingPass {
+	private _maxLights: number = 3;
 
-	private _mode:number = 0x03;
-	private _lightPicker:LightPickerBase;
+	private _mode: number = 0x03;
+	private _lightPicker: LightPickerBase;
 
-	private _includeCasters:boolean = true;
+	private _includeCasters: boolean = true;
 
-	public _colorTransformChunk:_IShader_Method;
-	public _colorTransformMethod:EffectColorTransformMethod;
-	public _normalChunk:_IShader_Method;
-	public _normalMethod:MethodBase;
-	public _ambientChunk:_IShader_Method;
-	public _ambientMethod:MethodBase;
-	public _shadowChunk:_IShader_Method;
-	public _shadowMethod:MethodBase;
-	public _diffuseChunk:_IShader_LightingMethod;
-	public _diffuseMethod:MethodBase;
-	public _specularChunk:_IShader_LightingMethod;
-	public _specularMethod:MethodBase;
-	public _chunks:Array<_IShader_Method> = new Array<_IShader_Method>();
-	public _methods:Array<MethodBase> = new Array<MethodBase>();
+	public _colorTransformChunk: _IShader_Method;
+	public _colorTransformMethod: EffectColorTransformMethod;
+	public _normalChunk: _IShader_Method;
+	public _normalMethod: MethodBase;
+	public _ambientChunk: _IShader_Method;
+	public _ambientMethod: MethodBase;
+	public _shadowChunk: _IShader_Method;
+	public _shadowMethod: MethodBase;
+	public _diffuseChunk: _IShader_LightingMethod;
+	public _diffuseMethod: MethodBase;
+	public _specularChunk: _IShader_LightingMethod;
+	public _specularMethod: MethodBase;
+	public _chunks: Array<_IShader_Method> = new Array<_IShader_Method>();
+	public _methods: Array<MethodBase> = new Array<MethodBase>();
 
-	public _numEffectDependencies:number = 0;
+	public _numEffectDependencies: number = 0;
 
-	private _onLightsChangeDelegate:(event:AssetEvent) => void;
-	private _onMethodInvalidatedDelegate:(event:MethodEvent) => void;
+	private _onLightsChangeDelegate: (event: AssetEvent) => void;
+	private _onMethodInvalidatedDelegate: (event: MethodEvent) => void;
 
-	public numDirectionalLights:number = 0;
+	public numDirectionalLights: number = 0;
 
-	public numPointLights:number = 0;
+	public numPointLights: number = 0;
 
-	public numLightProbes:number = 0;
+	public numLightProbes: number = 0;
 
-	public pointLightsOffset:number = 0;
-	
-	public directionalLightsOffset:number= 0;
-	
-	public lightProbesOffset:number = 0;
-	
+	public pointLightsOffset: number = 0;
+
+	public directionalLightsOffset: number= 0;
+
+	public lightProbesOffset: number = 0;
+
 	/**
 	 *
 	 */
-	public get mode():number
-	{
+	public get mode(): number {
 		return this._mode;
 	}
 
-	public set mode(value:number)
-	{
+	public set mode(value: number) {
 		if (this._mode == value)
 			return;
-		
+
 		this._mode = value;
 
 		this._updateLights();
@@ -92,13 +89,11 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * Indicates whether or not shadow casting lights need to be included.
 	 */
-	public get includeCasters():boolean
-	{
+	public get includeCasters(): boolean {
 		return this._includeCasters;
 	}
 
-	public set includeCasters(value:boolean)
-	{
+	public set includeCasters(value: boolean) {
 		if (this._includeCasters == value)
 			return;
 
@@ -108,16 +103,14 @@ export class MethodPass extends PassBase implements ILightingPass
 	}
 
 	/**
-	 * 
+	 *
 	 * @returns {LightPickerBase}
 	 */
-	public get lightPicker():LightPickerBase
-	{
+	public get lightPicker(): LightPickerBase {
 		return this._lightPicker;
 	}
 
-	public set lightPicker(value:LightPickerBase)
-	{
+	public set lightPicker(value: LightPickerBase) {
 		//if (this._lightPicker == value)
 		//	return;
 
@@ -131,13 +124,12 @@ export class MethodPass extends PassBase implements ILightingPass
 
 		this._updateLights();
 	}
-	
+
 	/**
 	 * Whether or not to use fallOff and radius properties for lights. This can be used to improve performance and
 	 * compatibility for constrained mode.
 	 */
-	public get enableLightFallOff():boolean
-	{
+	public get enableLightFallOff(): boolean {
 		return (<_Render_MethodMaterial>  this._renderMaterial).enableLightFallOff;
 	}
 
@@ -147,8 +139,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 *
 	 * @see away3d.materials.LightSources
 	 */
-	public get diffuseLightSources():number
-	{
+	public get diffuseLightSources(): number {
 		return (<_Render_MethodMaterial>  this._renderMaterial).diffuseLightSources;
 	}
 
@@ -158,8 +149,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 *
 	 * @see away3d.materials.LightSources
 	 */
-	public get specularLightSources():number
-	{
+	public get specularLightSources(): number {
 		return (<_Render_MethodMaterial>  this._renderMaterial).specularLightSources;
 	}
 
@@ -168,15 +158,14 @@ export class MethodPass extends PassBase implements ILightingPass
 	 *
 	 * @param material The material to which this pass belongs.
 	 */
-	constructor(mode:number, renderMaterial:_Render_MethodMaterial, renderElements:_Render_ElementsBase)
-	{
+	constructor(mode: number, renderMaterial: _Render_MethodMaterial, renderElements: _Render_ElementsBase) {
 		super(renderMaterial, renderElements);
 
 		this._mode = mode;
 
-		this._onLightsChangeDelegate = (event:AssetEvent) => this.onLightsChange(event);
-		
-		this._onMethodInvalidatedDelegate = (event:MethodEvent) => this.onMethodInvalidated(event);
+		this._onLightsChangeDelegate = (event: AssetEvent) => this.onLightsChange(event);
+
+		this._onMethodInvalidatedDelegate = (event: MethodEvent) => this.onMethodInvalidated(event);
 
 		this.lightPicker = renderMaterial.lightPicker;
 
@@ -184,8 +173,7 @@ export class MethodPass extends PassBase implements ILightingPass
 			this._updateShader();
 	}
 
-	private _updateShader():void
-	{
+	private _updateShader(): void {
 		if ((this.numDirectionalLights || this.numPointLights || this.numLightProbes) && !(this._shader instanceof LightingShader)) {
 			if (this._shader != null) {
 				this._shader.dispose();
@@ -206,24 +194,21 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * Initializes the unchanging constant data for this material.
 	 */
-	public _initConstantData():void
-	{
+	public _initConstantData(): void {
 		//Updates method constants if they have changed.
-		var len:number = this._chunks.length;
-		for (var i:number = 0; i < len; ++i)
+		const len: number = this._chunks.length;
+		for (let i: number = 0; i < len; ++i)
 			this._chunks[i]._initConstants();
 	}
 
 	/**
 	 * The ColorTransform object to transform the colour of the material with. Defaults to null.
 	 */
-	public get colorTransform():ColorTransform
-	{
-		return this.colorTransformMethod? this.colorTransformMethod.colorTransform : null;
+	public get colorTransform(): ColorTransform {
+		return this.colorTransformMethod ? this.colorTransformMethod.colorTransform : null;
 	}
 
-	public set colorTransform(value:ColorTransform)
-	{
+	public set colorTransform(value: ColorTransform) {
 		if (value) {
 			if (this.colorTransformMethod == null)
 				this.colorTransformMethod = new EffectColorTransformMethod();
@@ -239,13 +224,11 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * The EffectColorTransformMethod object to transform the colour of the material with. Defaults to null.
 	 */
-	public get colorTransformMethod():EffectColorTransformMethod
-	{
+	public get colorTransformMethod(): EffectColorTransformMethod {
 		return this._colorTransformMethod;
 	}
 
-	public set colorTransformMethod(value:EffectColorTransformMethod)
-	{
+	public set colorTransformMethod(value: EffectColorTransformMethod) {
 		if (this._colorTransformMethod == value)
 			return;
 
@@ -262,13 +245,12 @@ export class MethodPass extends PassBase implements ILightingPass
 		}
 	}
 
-	private _removeDependency(method:MethodBase, effectsDependency:boolean = false):void
-	{
-		var index:number = this._methods.indexOf(method);
+	private _removeDependency(method: MethodBase, effectsDependency: boolean = false): void {
+		const index: number = this._methods.indexOf(method);
 
 		if (index == -1)
 			return;
-		
+
 		if (!effectsDependency)
 			this._numEffectDependencies--;
 
@@ -280,11 +262,10 @@ export class MethodPass extends PassBase implements ILightingPass
 		this.invalidate();
 	}
 
-	private _addDependency(method:MethodBase, effectsDependency:boolean = false, index:number = -1):void
-	{
+	private _addDependency(method: MethodBase, effectsDependency: boolean = false, index: number = -1): void {
 		method.addEventListener(MethodEvent.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
 
-		var chunk:_IShader_Method = <_Shader_MethodBase> this._shader.getAbstraction(method);
+		const chunk: _IShader_Method = <_Shader_MethodBase> this._shader.getAbstraction(method);
 
 		if (effectsDependency) {
 			if (index != -1) {
@@ -308,16 +289,14 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * but modulate the shaded colour, used for fog, outlines, etc. The method will be applied to the result of the
 	 * methods added prior.
 	 */
-	public addEffectMethod(method:MethodBase):void
-	{
+	public addEffectMethod(method: MethodBase): void {
 		this._addDependency(method, true);
 	}
 
 	/**
 	 * The number of "effect" methods added to the material.
 	 */
-	public get numEffectMethods():number
-	{
+	public get numEffectMethods(): number {
 		return this._numEffectDependencies;
 	}
 
@@ -327,8 +306,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * @param method The method to be queried.
 	 * @return true if the method was added to the material, false otherwise.
 	 */
-	public hasEffectMethod(method:MethodBase):boolean
-	{
+	public hasEffectMethod(method: MethodBase): boolean {
 		return this._methods.indexOf(method) != -1;
 	}
 
@@ -337,8 +315,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * @param index The index of the method to retrieve.
 	 * @return The method at the given index.
 	 */
-	public getEffectMethodAt(index:number):MethodBase
-	{
+	public getEffectMethodAt(index: number): MethodBase {
 		if (index < 0 || index > this._numEffectDependencies - 1)
 			return null;
 
@@ -350,8 +327,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * methods are those that do not influence the lighting but modulate the shaded colour, used for fog, outlines,
 	 * etc. The method will be applied to the result of the methods with a lower index.
 	 */
-	public addEffectMethodAt(method:MethodBase, index:number):void
-	{
+	public addEffectMethodAt(method: MethodBase, index: number): void {
 		this._addDependency(method, true, index);
 	}
 
@@ -359,18 +335,15 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * Removes an effect method from the material.
 	 * @param method The method to be removed.
 	 */
-	public removeEffectMethod(method:MethodBase):void
-	{
+	public removeEffectMethod(method: MethodBase): void {
 		this._removeDependency(method, true);
 	}
-
 
 	/**
 	 * remove an effect method at the specified index from the material.
 	 */
-	public removeEffectMethodAt(index:number):void
-	{
-		var method:MethodBase = this.getEffectMethodAt(index);
+	public removeEffectMethodAt(index: number): void {
+		const method: MethodBase = this.getEffectMethodAt(index);
 
 		if (method != null)
 			this._removeDependency(method, true);
@@ -379,13 +352,11 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * The method used to generate the per-pixel normals. Defaults to NormalBasicMethod.
 	 */
-	public get normalMethod():MethodBase
-	{
+	public get normalMethod(): MethodBase {
 		return this._normalMethod;
 	}
 
-	public set normalMethod(value:MethodBase)
-	{
+	public set normalMethod(value: MethodBase) {
 		if (this._normalMethod == value)
 			return;
 
@@ -405,13 +376,11 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * The method that provides the ambient lighting contribution. Defaults to AmbientBasicMethod.
 	 */
-	public get ambientMethod():MethodBase
-	{
+	public get ambientMethod(): MethodBase {
 		return this._ambientMethod;
 	}
 
-	public set ambientMethod(value:MethodBase)
-	{
+	public set ambientMethod(value: MethodBase) {
 		if (this._ambientMethod == value)
 			return;
 
@@ -431,13 +400,11 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * The method used to render shadows cast on this surface, or null if no shadows are to be rendered. Defaults to null.
 	 */
-	public get shadowMethod():MethodBase
-	{
+	public get shadowMethod(): MethodBase {
 		return this._shadowMethod;
 	}
 
-	public set shadowMethod(value:MethodBase)
-	{
+	public set shadowMethod(value: MethodBase) {
 		if (this._shadowMethod == value)
 			return;
 
@@ -457,13 +424,11 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * The method that provides the diffuse lighting contribution. Defaults to DiffuseBasicMethod.
 	 */
-	public get diffuseMethod():MethodBase
-	{
+	public get diffuseMethod(): MethodBase {
 		return this._diffuseMethod;
 	}
 
-	public set diffuseMethod(value:MethodBase)
-	{
+	public set diffuseMethod(value: MethodBase) {
 		if (this._diffuseMethod == value)
 			return;
 
@@ -481,13 +446,11 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * The method that provides the specular lighting contribution. Defaults to SpecularBasicMethod.
 	 */
-	public get specularMethod():MethodBase
-	{
+	public get specularMethod(): MethodBase {
 		return this._specularMethod;
 	}
 
-	public set specularMethod(value:MethodBase)
-	{
+	public set specularMethod(value: MethodBase) {
 		if (this._specularMethod == value)
 			return;
 
@@ -505,8 +468,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * @inheritDoc
 	 */
-	public dispose():void
-	{
+	public dispose(): void {
 		if (this._lightPicker)
 			this._lightPicker.removeEventListener(AssetEvent.INVALIDATE, this._onLightsChangeDelegate);
 
@@ -522,8 +484,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * Called when any method's shader code is invalidated.
 	 */
-	private onMethodInvalidated(event:MethodEvent):void
-	{
+	private onMethodInvalidated(event: MethodEvent): void {
 		this.invalidate();
 	}
 
@@ -532,13 +493,12 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * @inheritDoc
 	 */
-	public _activate():void
-	{
+	public _activate(): void {
 		super._activate();
 
-		var chunk:_IShader_Method;
-		var len:number = this._chunks.length;
-		for (var i:number = 0; i < len; ++i) {
+		let chunk: _IShader_Method;
+		const len: number = this._chunks.length;
+		for (let i: number = 0; i < len; ++i) {
 			chunk = this._chunks[i];
 			if (chunk.chunkVO.useChunk)
 				chunk._activate();
@@ -552,13 +512,12 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * @param stage
 	 * @param camera
 	 */
-	public _setRenderState(renderState:_Render_RenderableBase):void
-	{
+	public _setRenderState(renderState: _Render_RenderableBase): void {
 		super._setRenderState(renderState);
 
-		var chunk:_IShader_Method;
-		var len:number = this._chunks.length;
-		for (var i:number = 0; i < len; ++i) {
+		let chunk: _IShader_Method;
+		const len: number = this._chunks.length;
+		for (let i: number = 0; i < len; ++i) {
 			chunk = this._chunks[i];
 			if (chunk.chunkVO.useChunk)
 				chunk._setRenderState(renderState);
@@ -568,21 +527,19 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * @inheritDoc
 	 */
-	public _deactivate():void
-	{
+	public _deactivate(): void {
 		super._deactivate();
 
-		var chunk:_IShader_Method;
-		var len:number = this._chunks.length;
-		for (var i:number = 0; i < len; ++i) {
+		let chunk: _IShader_Method;
+		const len: number = this._chunks.length;
+		for (let i: number = 0; i < len; ++i) {
 			chunk = this._chunks[i];
 			if (chunk.chunkVO.useChunk)
 				chunk._deactivate();
 		}
 	}
 
-	public _includeDependencies(shader:LightingShader):void
-	{
+	public _includeDependencies(shader: LightingShader): void {
 		super._includeDependencies(shader);
 
 		//TODO: fragment animtion should be compatible with lighting pass
@@ -591,14 +548,14 @@ export class MethodPass extends PassBase implements ILightingPass
 		// if (shader.useAlphaPremultiplied && shader.usesBlending)
 		// 	shader.usesCommonData = true;
 
-		var i:number;
-		var len:number = this._chunks.length;
+		let i: number;
+		const len: number = this._chunks.length;
 		for (i = 0; i < len; ++i)
 			this.setupAndCountDependencies(shader, this._chunks[i]);
 
-		var usesTangentSpace:boolean = true;
+		let usesTangentSpace: boolean = true;
 
-		var chunk:_IShader_Method;
+		let chunk: _IShader_Method;
 		for (i = 0; i < len; ++i) {
 			chunk = this._chunks[i];
 			if ((chunk.chunkVO.useChunk = chunk._isUsed()) && !chunk._usesTangentSpace())
@@ -614,21 +571,19 @@ export class MethodPass extends PassBase implements ILightingPass
 				shader.globalPosDependencies++;
 			} else if (this.numPointLights > 0 && shader.usesLights) {
 				shader.globalPosDependencies++;
-				if (Boolean(this._mode & MethodPassMode.EFFECTS))
+				if (this._mode & MethodPassMode.EFFECTS)
 					shader.usesGlobalPosFragment = true;
 			}
 		}
 	}
-
 
 	/**
 	 * Counts the dependencies for a given method.
 	 * @param method The method to count the dependencies for.
 	 * @param chunk The method's data for this material.
 	 */
-	private setupAndCountDependencies(shader:ShaderBase, chunk:_IShader_Method):void
-	{
-		var chunkVO:ChunkVO = chunk.chunkVO;
+	private setupAndCountDependencies(shader: ShaderBase, chunk: _IShader_Method): void {
+		const chunkVO: ChunkVO = chunk.chunkVO;
 		chunk._reset(chunkVO);
 
 		chunk._initVO(chunkVO);
@@ -655,16 +610,14 @@ export class MethodPass extends PassBase implements ILightingPass
 			shader.viewDirDependencies++;
 	}
 
-	public _getPreLightingVertexCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string = "";
+	public _getPreLightingVertexCode(registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string {
+		const code: string = '';
 
 		return code;
 	}
 
-	public _getPreLightingFragmentCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string = "";
+	public _getPreLightingFragmentCode(registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string {
+		let code: string = '';
 
 		if (this._diffuseChunk && this._diffuseChunk.chunkVO.useChunk)
 			code += this._diffuseChunk._getFragmentPreLightingCode(registerCache, sharedRegisters);
@@ -675,35 +628,28 @@ export class MethodPass extends PassBase implements ILightingPass
 		return code;
 	}
 
-	public _getPerLightDiffuseFragmentCode(lightDirReg:ShaderRegisterElement, diffuseColorReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
+	public _getPerLightDiffuseFragmentCode(lightDirReg: ShaderRegisterElement, diffuseColorReg: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string {
 		return this._diffuseChunk._getFragmentCodePerLight(lightDirReg, diffuseColorReg, registerCache, sharedRegisters);
 	}
 
-	public _getPerLightSpecularFragmentCode(lightDirReg:ShaderRegisterElement, specularColorReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
+	public _getPerLightSpecularFragmentCode(lightDirReg: ShaderRegisterElement, specularColorReg: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string {
 		return this._specularChunk._getFragmentCodePerLight(lightDirReg, specularColorReg, registerCache, sharedRegisters);
 	}
 
-	public _getPerProbeDiffuseFragmentCode(texReg:ShaderRegisterElement, weightReg:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
+	public _getPerProbeDiffuseFragmentCode(texReg: ShaderRegisterElement, weightReg: string, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string {
 		return this._diffuseChunk._getFragmentCodePerProbe(texReg, weightReg, registerCache, sharedRegisters);
 	}
 
-	public _getPerProbeSpecularFragmentCode(texReg:ShaderRegisterElement, weightReg:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
+	public _getPerProbeSpecularFragmentCode(texReg: ShaderRegisterElement, weightReg: string, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string {
 		return this._specularChunk._getFragmentCodePerProbe(texReg, weightReg, registerCache, sharedRegisters);
 	}
 
-
-	public _getNormalVertexCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
+	public _getNormalVertexCode(registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string {
 		return this._normalChunk._getVertexCode(registerCache, sharedRegisters);
 	}
 
-	public _getNormalFragmentCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string = this._normalChunk._getFragmentCode(sharedRegisters.normalFragment, registerCache, sharedRegisters);
+	public _getNormalFragmentCode(registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string {
+		const code: string = this._normalChunk._getFragmentCode(sharedRegisters.normalFragment, registerCache, sharedRegisters);
 
 		if (this._normalChunk.chunkVO.needsView)
 			registerCache.removeFragmentTempUsage(sharedRegisters.viewDirFragment);
@@ -717,9 +663,8 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * @inheritDoc
 	 */
-	public _getVertexCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string = "";
+	public _getVertexCode(registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string {
+		let code: string = '';
 
 		if (this._ambientChunk && this._ambientChunk.chunkVO.useChunk)
 			code += this._ambientChunk._getVertexCode(registerCache, sharedRegisters);
@@ -733,9 +678,9 @@ export class MethodPass extends PassBase implements ILightingPass
 		if (this._specularChunk && this._specularChunk.chunkVO.useChunk)
 			code += this._specularChunk._getVertexCode(registerCache, sharedRegisters);
 
-		var chunk:_IShader_Method;
-		var len:number = this._chunks.length;
-		for (var i:number = len - this._numEffectDependencies; i < len; i++) {
+		let chunk: _IShader_Method;
+		const len: number = this._chunks.length;
+		for (let i: number = len - this._numEffectDependencies; i < len; i++) {
 			chunk = this._chunks[i];
 			if (chunk.chunkVO.useChunk) {
 				code += chunk._getVertexCode(registerCache, sharedRegisters);
@@ -754,9 +699,8 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * @inheritDoc
 	 */
-	public _getFragmentCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string = "";
+	public _getFragmentCode(registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string {
+		let code: string = '';
 
 		if (this._ambientChunk && this._ambientChunk.chunkVO.useChunk) {
 			code += this._ambientChunk._getFragmentCode(sharedRegisters.shadedTarget, registerCache, sharedRegisters);
@@ -771,10 +715,8 @@ export class MethodPass extends PassBase implements ILightingPass
 		return code;
 	}
 
-
-	public _getPostAnimationFragmentCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string
-	{
-		var code:string = "";
+	public _getPostAnimationFragmentCode(registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string {
+		let code: string = '';
 
 		///////////////begin lighting shading
 		if (this._shadowChunk)
@@ -804,19 +746,19 @@ export class MethodPass extends PassBase implements ILightingPass
 
 		///////////////end lighting shading
 
-		var alphaReg:ShaderRegisterElement;
+		let alphaReg: ShaderRegisterElement;
 
 		//check if alpha is preserved while performing effects shading and store value
 		if (this.preserveAlpha && this._numEffectDependencies > 0) {
 			alphaReg = registerCache.getFreeFragmentSingleTemp();
 			registerCache.addFragmentTempUsages(alphaReg, 1);
-			code += "mov " + alphaReg + ", " + sharedRegisters.shadedTarget + ".w\n";
+			code += 'mov ' + alphaReg + ', ' + sharedRegisters.shadedTarget + '.w\n';
 		}
 
 		//perform effects shading
-		var chunk:_IShader_Method;
-		var len:number = this._chunks.length;
-		for (var i:number = len - this._numEffectDependencies; i < len; i++) {
+		let chunk: _IShader_Method;
+		const len: number = this._chunks.length;
+		for (let i: number = len - this._numEffectDependencies; i < len; i++) {
 			chunk = this._chunks[i];
 			if (chunk.chunkVO.useChunk) {
 				code += chunk._getFragmentCode(sharedRegisters.shadedTarget, registerCache, sharedRegisters);
@@ -832,7 +774,7 @@ export class MethodPass extends PassBase implements ILightingPass
 
 		//check if alpha is preserved while performing effects shading and restore value
 		if (this.preserveAlpha && this._numEffectDependencies > 0) {
-			code += "mov " + sharedRegisters.shadedTarget + ".w, " + alphaReg + "\n";
+			code += 'mov ' + sharedRegisters.shadedTarget + '.w, ' + alphaReg + '\n';
 			registerCache.removeFragmentTempUsage(alphaReg);
 		}
 
@@ -846,38 +788,32 @@ export class MethodPass extends PassBase implements ILightingPass
 	/**
 	 * Indicates whether the shader uses any shadows.
 	 */
-	public _iUsesShadows(shader:ShaderBase):boolean
-	{
+	public _iUsesShadows(shader: ShaderBase): boolean {
 		return Boolean(this._shadowChunk && (this._lightPicker.castingDirectionalLights.length > 0 || this._lightPicker.castingPointLights.length > 0));
 	}
 
 	/**
 	 * Indicates whether the shader uses any specular component.
 	 */
-	public _iUsesSpecular(shader:ShaderBase):boolean
-	{
+	public _iUsesSpecular(shader: ShaderBase): boolean {
 		return Boolean(this._specularChunk);
 	}
 
 	/**
 	 * Indicates whether the shader uses any specular component.
 	 */
-	public _iUsesDiffuse(shader:ShaderBase):boolean
-	{
+	public _iUsesDiffuse(shader: ShaderBase): boolean {
 		return Boolean(this._diffuseChunk);
 	}
 
-
-	private onLightsChange(event:AssetEvent):void
-	{
+	private onLightsChange(event: AssetEvent): void {
 		this._updateLights();
 	}
 
-	private _updateLights():void
-	{
-		var numDirectionalLightsOld:number = this.numDirectionalLights;
-		var numPointLightsOld:number = this.numPointLights;
-		var numLightProbesOld:number = this.numLightProbes;
+	private _updateLights(): void {
+		const numDirectionalLightsOld: number = this.numDirectionalLights;
+		const numPointLightsOld: number = this.numPointLights;
+		const numLightProbesOld: number = this.numLightProbes;
 
 		if (this._lightPicker && (this._mode & MethodPassMode.LIGHTING)) {
 			this.numDirectionalLights = this.calculateNumDirectionalLights(this._lightPicker.numDirectionalLights);
@@ -907,8 +843,7 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * @param numDirectionalLights The maximum amount of directional lights to support.
 	 * @return The amount of directional lights this material will support, bounded by the amount necessary.
 	 */
-	private calculateNumDirectionalLights(numDirectionalLights:number):number
-	{
+	private calculateNumDirectionalLights(numDirectionalLights: number): number {
 		return Math.min(numDirectionalLights - this.directionalLightsOffset, this._maxLights);
 	}
 
@@ -917,9 +852,8 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * @param numDirectionalLights The maximum amount of point lights to support.
 	 * @return The amount of point lights this material will support, bounded by the amount necessary.
 	 */
-	private calculateNumPointLights(numPointLights:number):number
-	{
-		var numFree:number = this._maxLights - this.numDirectionalLights;
+	private calculateNumPointLights(numPointLights: number): number {
+		const numFree: number = this._maxLights - this.numDirectionalLights;
 		return Math.min(numPointLights - this.pointLightsOffset, numFree);
 	}
 
@@ -928,9 +862,8 @@ export class MethodPass extends PassBase implements ILightingPass
 	 * @param numDirectionalLights The maximum amount of light probes to support.
 	 * @return The amount of light probes this material will support, bounded by the amount necessary.
 	 */
-	private calculateNumProbes(numLightProbes:number):number
-	{
-		var numChannels:number = 0;
+	private calculateNumProbes(numLightProbes: number): number {
+		let numChannels: number = 0;
 
 		if (((<_Render_MethodMaterial> this._renderMaterial).specularLightSources & LightSources.PROBES) != 0)
 			++numChannels;
@@ -939,6 +872,6 @@ export class MethodPass extends PassBase implements ILightingPass
 			++numChannels;
 
 		// 4 channels available
-		return Math.min(numLightProbes - this.lightProbesOffset, (4/numChannels) | 0);
+		return Math.min(numLightProbes - this.lightProbesOffset, (4 / numChannels) | 0);
 	}
 }

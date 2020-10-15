@@ -1,11 +1,9 @@
-import {EventBase} from "@awayjs/core";
+import { EventBase } from '@awayjs/core';
 
-export class MethodEvent extends EventBase
-{
-	public static SHADER_INVALIDATED:string = "shaderInvalidated";
+export class MethodEvent extends EventBase {
+	public static SHADER_INVALIDATED: string = 'shaderInvalidated';
 
-	constructor(type:string)
-	{
+	constructor(type: string) {
 		super(type);
 	}
 }

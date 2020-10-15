@@ -1,82 +1,71 @@
-import {TextureBase} from "../textures/TextureBase";
+import { TextureBase } from '../textures/TextureBase';
 
-import {CompositeMethodBase} from "./CompositeMethodBase";
-import {SpecularBasicMethod} from "./SpecularBasicMethod";
+import { CompositeMethodBase } from './CompositeMethodBase';
+import { SpecularBasicMethod } from './SpecularBasicMethod';
 
 /**
  * SpecularCompositeMethod provides a base class for specular methods that wrap a specular method to alter the
  * calculated specular reflection strength.
  */
-export class SpecularCompositeMethod extends CompositeMethodBase
-{
+export class SpecularCompositeMethod extends CompositeMethodBase {
 	/**
 	 * Creates a new <code>SpecularCompositeMethod</code> object.
 	 *
 	 * @param modulateMethod The method which will add the code to alter the base method's strength. It needs to have the signature clampDiffuse(t:ShaderRegisterElement, regCache:ShaderRegisterCache):string, in which t.w will contain the diffuse strength.
 	 * @param baseMethod The base specular method on which this method's shading is based.
 	 */
-	constructor(baseMethod:SpecularBasicMethod | SpecularCompositeMethod = null)
-	{
+	constructor(baseMethod: SpecularBasicMethod | SpecularCompositeMethod = null) {
 		super(baseMethod);
 	}
 
-	public createBaseMethod():SpecularBasicMethod
-	{
+	public createBaseMethod(): SpecularBasicMethod {
 		return new SpecularBasicMethod();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public get gloss():number
-	{
+	public get gloss(): number {
 		return (<SpecularBasicMethod> this._baseMethod).gloss;
 	}
 
-	public set gloss(value:number)
-	{
+	public set gloss(value: number) {
 		(<SpecularBasicMethod> this._baseMethod).gloss = value;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public get strength():number
-	{
+	public get strength(): number {
 		return (<SpecularBasicMethod> this._baseMethod).strength;
 	}
 
-	public set strength(value:number)
-	{
+	public set strength(value: number) {
 		(<SpecularBasicMethod> this._baseMethod).strength = value;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public get color():number
-	{
+	public get color(): number {
 		return (<SpecularBasicMethod> this._baseMethod).color;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public set color(value:number)
-	{
+	public set color(value: number) {
 		(<SpecularBasicMethod> this._baseMethod).color = value;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public get texture():TextureBase
-	{
+	public get texture(): TextureBase {
 		return (<SpecularBasicMethod> this._baseMethod).texture;
 	}
 
-	public set texture(value:TextureBase)
-	{
+	public set texture(value: TextureBase) {
 		(<SpecularBasicMethod> this._baseMethod).texture = value;
 	}
 }

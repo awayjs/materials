@@ -1,6 +1,6 @@
-import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import {_IShader_Method} from "./_IShader_Method";
+import { _IShader_Method } from './_IShader_Method';
 
 /**
  * LightingChunkBase provides an abstract base method for shading methods that uses lights.
@@ -8,12 +8,12 @@ import {_IShader_Method} from "./_IShader_Method";
  */
 export interface _IShader_LightingMethod extends _IShader_Method
 {
-	_totalLightColorReg:ShaderRegisterElement;
-	
+	_totalLightColorReg: ShaderRegisterElement;
+
 	/**
 	 * A function that is exposed to wrappers in case the strength needs to be controlled
 	 */
-	_modulateFunction:(targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData) => string;
+	_modulateFunction: (targetReg: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData) => string;
 
 	/**
 	 * Get the fragment shader code that will be needed before any per-light code is added.
@@ -21,7 +21,7 @@ export interface _IShader_LightingMethod extends _IShader_Method
 	 * @param regCache The register cache used during the compilation.
 	 * @private
 	 */
-	_getFragmentPreLightingCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string;
+	_getFragmentPreLightingCode(registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 
 	/**
 	 * Get the fragment shader code that will generate the code relevant to a single light.
@@ -31,7 +31,7 @@ export interface _IShader_LightingMethod extends _IShader_Method
 	 * @param lightColReg The register containing the light colour.
 	 * @param regCache The register cache used during the compilation.
 	 */
-	_getFragmentCodePerLight(lightDirReg:ShaderRegisterElement, lightColReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string;
+	_getFragmentCodePerLight(lightDirReg: ShaderRegisterElement, lightColReg: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 
 	/**
 	 * Get the fragment shader code that will generate the code relevant to a single light probe object.
@@ -41,5 +41,5 @@ export interface _IShader_LightingMethod extends _IShader_Method
 	 * @param weightRegister A string representation of the register + component containing the current weight
 	 * @param regCache The register cache providing any necessary registers to the shader
 	 */
-	_getFragmentCodePerProbe(cubeMapReg:ShaderRegisterElement, weightRegister:string, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string;
+	_getFragmentCodePerProbe(cubeMapReg: ShaderRegisterElement, weightRegister: string, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 }

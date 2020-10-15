@@ -9,23 +9,22 @@
  * @see away.materials.TextureMaterial.diffuseLightSources
  * @see away.materials.TextureMaterial.specularLightSources
  */
-export class LightSources
-{
+export class LightSources {
 	/**
 	 * Defines normal lights are to be used as the source for the lighting
 	 * component.
 	 */
-	public static LIGHTS:number = 0x01;
+	public static LIGHTS: number = 0x01;
 
 	/**
 	 * Defines that global lighting probes are to be used as the source for the
 	 * lighting component.
 	 */
-	public static PROBES:number = 0x02;
+	public static PROBES: number = 0x02;
 
 	/**
 	 * Defines that both normal and global lighting probes  are to be used as the
 	 * source for the lighting component. This is equivalent to LightSources.LIGHTS | LightSources.PROBES.
 	 */
-	public static ALL:number = 0x03;
+	public static ALL: number = 0x03;
 }

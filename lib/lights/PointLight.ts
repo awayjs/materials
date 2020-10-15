@@ -1,32 +1,28 @@
-import {Vector3D, Transform} from "@awayjs/core";
+import { Vector3D, Transform } from '@awayjs/core';
 
-import {PointShadowMapper} from "../mappers/PointShadowMapper";
+import { PointShadowMapper } from '../mappers/PointShadowMapper';
 
-import {LightBase} from "./LightBase";
+import { LightBase } from './LightBase';
 
-export class PointLight extends LightBase
-{
-	public static assetType:string = "[light PointLight]";
+export class PointLight extends LightBase {
+	public static assetType: string = '[light PointLight]';
 
-	private _radius:number = 90000;
-	private _fallOff:number = 100000;
-    private _fallOffFactor:number;
-	
-	public get assetType():string
-	{
+	private _radius: number = 90000;
+	private _fallOff: number = 100000;
+	private _fallOffFactor: number;
+
+	public get assetType(): string {
 		return PointLight.assetType;
 	}
 
-    /**
+	/**
 	 *
      */
-	public get radius():number
-	{
+	public get radius(): number {
 		return this._radius;
 	}
 
-	public set radius(value:number)
-	{
+	public set radius(value: number) {
 		this._radius = value;
 
 		if (this._radius < 0) {
@@ -35,39 +31,35 @@ export class PointLight extends LightBase
 			this._fallOff = this._radius;
 			//this._pInvalidateBounds();
 		}
-		this._fallOffFactor = 1/( this._fallOff*this._fallOff - this._radius*this._radius );
+		this._fallOffFactor = 1 / (this._fallOff * this._fallOff - this._radius * this._radius);
 	}
 
-    /**
+	/**
 	 *
      */
-    public get fallOff():number
-    {
-        return this._fallOff;
-    }
+	public get fallOff(): number {
+		return this._fallOff;
+	}
 
-    public set fallOff(value:number)
-    {
-        this._fallOff = value;
+	public set fallOff(value: number) {
+		this._fallOff = value;
 
-        if (this._fallOff < 0)
-            this._fallOff = 0;
+		if (this._fallOff < 0)
+			this._fallOff = 0;
 
-        if (this._fallOff < this._radius)
-            this._radius = this._fallOff;
+		if (this._fallOff < this._radius)
+			this._radius = this._fallOff;
 
-        this._fallOffFactor = 1/( this._fallOff*this._fallOff - this._radius*this._radius);
+		this._fallOffFactor = 1 / (this._fallOff * this._fallOff - this._radius * this._radius);
 
-        //this._pInvalidateBounds();
-    }
+		//this._pInvalidateBounds();
+	}
 
-    public get fallOffFactor():number
-    {
-        return this._fallOffFactor;
-    }
+	public get fallOffFactor(): number {
+		return this._fallOffFactor;
+	}
 
-
-    /**
+	/**
      * Indicates the <i>x</i> coordinate of the DisplayObject instance relative
      * to the local coordinates of the parent DisplayObjectContainer. If the
      * object is inside a DisplayObjectContainer that has transformations, it is
@@ -77,22 +69,20 @@ export class PointLight extends LightBase
      * rotated 90° counterclockwise. The object's coordinates refer to the
      * registration point position.
      */
-    public get x():number
-    {
-        return this._transform.position.x;
-    }
+	public get x(): number {
+		return this._transform.position.x;
+	}
 
-    public set x(val:number)
-    {
-        if (this._transform.position.x == val)
-            return;
+	public set x(val: number) {
+		if (this._transform.position.x == val)
+			return;
 
-        this._transform.matrix3D._rawData[12] = val;
+		this._transform.matrix3D._rawData[12] = val;
 
-        this._transform.invalidatePosition();
-    }
+		this._transform.invalidatePosition();
+	}
 
-    /**
+	/**
      * Indicates the <i>y</i> coordinate of the DisplayObject instance relative
      * to the local coordinates of the parent DisplayObjectContainer. If the
      * object is inside a DisplayObjectContainer that has transformations, it is
@@ -102,22 +92,20 @@ export class PointLight extends LightBase
      * rotated 90° counterclockwise. The object's coordinates refer to the
      * registration point position.
      */
-    public get y():number
-    {
-        return this._transform.position.y;
-    }
+	public get y(): number {
+		return this._transform.position.y;
+	}
 
-    public set y(val:number)
-    {
-        if (this._transform.position.y == val)
-            return;
+	public set y(val: number) {
+		if (this._transform.position.y == val)
+			return;
 
-        this._transform.matrix3D._rawData[13] = val;
+		this._transform.matrix3D._rawData[13] = val;
 
-        this._transform.invalidatePosition();
-    }
+		this._transform.invalidatePosition();
+	}
 
-    /**
+	/**
      * Indicates the z coordinate position along the z-axis of the DisplayObject
      * instance relative to the 3D parent container. The z property is used for
      * 3D coordinates, not screen or pixel coordinates.
@@ -136,74 +124,69 @@ export class PointLight extends LightBase
      * <p><code>(x~~cameraFocalLength/cameraRelativeZPosition,
      * y~~cameraFocalLength/cameraRelativeZPosition)</code></p>
      */
-    public get z():number
-    {
-        return this._transform.position.z;
-    }
+	public get z(): number {
+		return this._transform.position.z;
+	}
 
-    public set z(val:number)
-    {
-        if (this._transform.position.z == val)
-            return;
+	public set z(val: number) {
+		if (this._transform.position.z == val)
+			return;
 
-        this._transform.matrix3D._rawData[14] = val;
+		this._transform.matrix3D._rawData[14] = val;
 
-        this._transform.invalidatePosition();
-    }
+		this._transform.invalidatePosition();
+	}
 
-    public get scenePosition():Vector3D
-	{
+	public get scenePosition(): Vector3D {
     	return this._transform.concatenatedMatrix3D.position;
 	}
 
-    /**
-	 * 
+	/**
+	 *
      */
-    constructor(position:Vector3D = null, transform:Transform = null)
-    {
-        super(transform);
+	constructor(position: Vector3D = null, transform: Transform = null) {
+		super(transform);
 
-        if (position) {
-            this._transform.matrix3D._rawData[12] = position.x;
-            this._transform.matrix3D._rawData[13] = position.y;
-            this._transform.matrix3D._rawData[14] = position.z;
+		if (position) {
+			this._transform.matrix3D._rawData[12] = position.x;
+			this._transform.matrix3D._rawData[13] = position.y;
+			this._transform.matrix3D._rawData[14] = position.z;
 
-            this._transform.invalidatePosition();
+			this._transform.invalidatePosition();
 		}
 
-        this._fallOffFactor = 1/(this._fallOff*this._fallOff - this._radius*this._radius);
-    }
+		this._fallOffFactor = 1 / (this._fallOff * this._fallOff - this._radius * this._radius);
+	}
 
-    protected _createShadowMapper():PointShadowMapper
-    {
-        return new PointShadowMapper();
-    }
+	protected _createShadowMapper(): PointShadowMapper {
+		return new PointShadowMapper();
+	}
 
-    //TODO: properly cull pointlight calculations when falloff volume is outside the frustum
+	//TODO: properly cull pointlight calculations when falloff volume is outside the frustum
 	// public _pUpdateSphereBounds():void
 	// {
 	// 	super._pUpdateSphereBounds();
-    //
+	//
 	// 	this._pSphereBounds.radius = this._fallOff;
 	// }
-    
+
 	// public _getEntityProjectionMatrix(entity:IEntity, cameraTransform:Matrix3D, target:Matrix3D = null):Matrix3D
 	// {
 	// 	if (!target)
 	// 		target = new Matrix3D();
 
-    //     var m:Matrix3D = Matrix3D.CALCULATION_MATRIX;
-    //     var pointAtMatrix:Matrix3D = Matrix3D.getPointAtMatrix(new Vector3D(), entity.getRenderSceneTransform(cameraTransform).position.subtract(this.transform.concatenatedMatrix3D.position), Vector3D.Y_AXIS);
-    //     pointAtMatrix.invert();
+	//     var m:Matrix3D = Matrix3D.CALCULATION_MATRIX;
+	//     var pointAtMatrix:Matrix3D = Matrix3D.getPointAtMatrix(new Vector3D(), entity.getRenderSceneTransform(cameraTransform).position.subtract(this.transform.concatenatedMatrix3D.position), Vector3D.Y_AXIS);
+	//     pointAtMatrix.invert();
 
 	// 	m.copyFrom(entity.getRenderSceneTransform(cameraTransform));
-    //     m.append(pointAtMatrix);
+	//     m.append(pointAtMatrix);
 
-    //     var box:Box = entity.getBoxBounds();
+	//     var box:Box = entity.getBoxBounds();
 
-    //     if (box == null)
-    //         box = new Box();
-            
+	//     if (box == null)
+	//         box = new Box();
+
 	// 	var v1:Vector3D = m.deltaTransformVector(new Vector3D(box.left, box.bottom, box.front));
 	// 	var v2:Vector3D = m.deltaTransformVector(new Vector3D(box.right, box.top, box.back));
 	// 	var d1:number = v1.x*v1.x + v1.y*v1.y + v1.z*v1.z;
@@ -223,7 +206,7 @@ export class PointLight extends LightBase
 	// 	targetData[11] = 1;
 	// 	targetData[1] = targetData[2] = targetData[3] = targetData[4] = targetData[6] = targetData[7] = targetData[8] = targetData[9] = targetData[12] = targetData[13] = targetData[15] = 0;
 	// 	targetData[14] = -zMin*targetData[10];
-		
+
 	// 	target.prepend(m);
 
 	// 	return target;

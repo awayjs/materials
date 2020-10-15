@@ -1,17 +1,14 @@
-import {EventBase} from "@awayjs/core";
+import { EventBase } from '@awayjs/core';
 
-export class TextureProjectorEvent extends EventBase
-{
-	public static TEXTURE_CHANGE:string = "textureChange";
+export class TextureProjectorEvent extends EventBase {
+	public static TEXTURE_CHANGE: string = 'textureChange';
 
-	constructor(type:string)
-	{
+	constructor(type: string) {
 		super(type);
 	}
 
 	//@override
-	public clone():TextureProjectorEvent
-	{
+	public clone(): TextureProjectorEvent {
 		return new TextureProjectorEvent(this.type);
 	}
 }

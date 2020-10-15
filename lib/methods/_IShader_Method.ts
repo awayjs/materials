@@ -1,21 +1,21 @@
-import {IEventDispatcher} from "@awayjs/core";
+import { IEventDispatcher } from '@awayjs/core';
 
-import {ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement} from "@awayjs/stage";
+import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import {View} from "@awayjs/view";
+import { View } from '@awayjs/view';
 
-import {_Render_RenderableBase, ChunkVO} from "@awayjs/renderer";
+import { _Render_RenderableBase, ChunkVO } from '@awayjs/renderer';
 
 /**
- * 
+ *
  */
 export interface _IShader_Method extends IEventDispatcher
 {
-	chunkVO:ChunkVO;
+	chunkVO: ChunkVO;
 
-	_isUsed():boolean;
+	_isUsed(): boolean;
 
-	_usesTangentSpace():boolean;
+	_usesTangentSpace(): boolean;
 
 	/**
 	 * Initializes the properties for a MethodVO, including register and texture indices.
@@ -24,7 +24,7 @@ export interface _IShader_Method extends IEventDispatcher
 	 *
 	 * @internal
 	 */
-	_initVO(chunkVO:ChunkVO):void;
+	_initVO(chunkVO: ChunkVO): void;
 
 	/**
 	 * Initializes unchanging shader constants using the data from a MethodVO.
@@ -33,21 +33,21 @@ export interface _IShader_Method extends IEventDispatcher
 	 *
 	 * @internal
 	 */
-	_initConstants():void;
+	_initConstants(): void;
 
 	/**
 	 * Resets the compilation state of the method.
 	 *
 	 * @internal
 	 */
-	_reset(chunkVO:ChunkVO):void;
+	_reset(chunkVO: ChunkVO): void;
 
 	/**
 	 * Resets the method's state for compilation.
 	 *
 	 * @internal
 	 */
-	_cleanCompilationData():void;
+	_cleanCompilationData(): void;
 
 	/**
 	 * Get the vertex shader code for this method.
@@ -56,12 +56,12 @@ export interface _IShader_Method extends IEventDispatcher
 	 *
 	 * @internal
 	 */
-	_getVertexCode(registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string;
+	_getVertexCode(registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 
 	/**
 	 * @inheritDoc
 	 */
-	_getFragmentCode(targetReg:ShaderRegisterElement, registerCache:ShaderRegisterCache, sharedRegisters:ShaderRegisterData):string;
+	_getFragmentCode(targetReg: ShaderRegisterElement, registerCache: ShaderRegisterCache, sharedRegisters: ShaderRegisterData): string;
 
 	/**
 	 * Sets the render state for this method.
@@ -71,7 +71,7 @@ export interface _IShader_Method extends IEventDispatcher
 	 *
 	 * @internal
 	 */
-	_activate():void;
+	_activate(): void;
 
 	/**
 	 * Sets the render state for a single renderable.
@@ -83,7 +83,7 @@ export interface _IShader_Method extends IEventDispatcher
 	 *
 	 * @internal
 	 */
-	_setRenderState(renderRenderable:_Render_RenderableBase):void;
+	_setRenderState(renderRenderable: _Render_RenderableBase): void;
 
 	/**
 	 * Clears the render state for this method.
@@ -92,5 +92,5 @@ export interface _IShader_Method extends IEventDispatcher
 	 *
 	 * @internal
 	 */
-	_deactivate():void;
+	_deactivate(): void;
 }
