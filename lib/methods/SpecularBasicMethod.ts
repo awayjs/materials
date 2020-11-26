@@ -183,7 +183,7 @@ export class _Shader_SpecularBasicMethod extends _Shader_MethodBase implements _
 		chunkVO.needsView = this._shader.numLights > 0;
 
 		if (this._method.texture) {
-			this._texture = <_Shader_TextureBase> this._shader.getAbstraction(this._method.texture);
+			this._texture = <_Shader_TextureBase> this._method.texture.getAbstraction(this._shader, ShaderBase.abstractionClassPool[this._method.texture.assetType]);
 			this._texture._initVO(chunkVO);
 			this._shader.uvDependencies++;
 		} else if (this._texture) {

@@ -144,7 +144,7 @@ export class _Shader_EffectLightMapMethod extends _Shader_MethodBase {
      * @inheritDoc
      */
 	public _initVO(chunkVO: ChunkVO): void {
-		this._lightMap = <_Shader_TextureBase> this._shader.getAbstraction(this._method.lightMap);
+		this._lightMap = <_Shader_TextureBase> this._method.lightMap.getAbstraction(this._shader, ShaderBase.abstractionClassPool[this._method.lightMap.assetType]);
 
 		this._lightMap._initVO(chunkVO);
 

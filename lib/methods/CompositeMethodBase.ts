@@ -85,7 +85,7 @@ import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '
 
 import { View } from '@awayjs/view';
 
-import { _Render_RenderableBase, ChunkVO } from '@awayjs/renderer';
+import { _Render_RenderableBase, ChunkVO, ShaderBase } from '@awayjs/renderer';
 
 import { LightingShader } from '../shaders/LightingShader';
 
@@ -110,7 +110,7 @@ export class _Shader_CompositeMethodBase extends AbstractionBase implements _ISh
 	constructor(method: CompositeMethodBase, shader: LightingShader) {
 		super(method, shader);
 
-		this._baseChunk = <_Shader_MethodBase> shader.getAbstraction(method.baseMethod);
+		this._baseChunk = <_Shader_MethodBase> method.baseMethod.getAbstraction(shader, ShaderBase.abstractionClassPool[method.baseMethod.assetType]);
 	}
 
 	public _isUsed(): boolean {

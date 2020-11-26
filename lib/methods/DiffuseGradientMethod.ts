@@ -86,8 +86,8 @@ export class _Shader_DiffuseGradientMethod extends _Shader_DiffuseBasicMethod {
 
 	public _initVO(chunkVO: ChunkVO): void {
 		super._initVO(chunkVO);
-
-		this._gradient = <_Shader_TextureBase> this._shader.getAbstraction((<DiffuseGradientMethod> this._method).gradient || new ImageTexture2D());
+		let texture:TextureBase = (<DiffuseGradientMethod> this._method).gradient || new ImageTexture2D();
+		this._gradient = <_Shader_TextureBase> texture.getAbstraction(this._shader, ShaderBase.abstractionClassPool[texture.assetType]);
 
 		this._gradient._initVO(chunkVO);
 	}

@@ -2,7 +2,7 @@ import { BitmapImage2D } from '@awayjs/stage';
 
 import { View } from '@awayjs/view';
 
-import { ImageTexture2D } from '../textures/ImageTexture2D';
+import { ImageTexture2D, _Shader_ImageTexture2D } from '../textures/ImageTexture2D';
 import { DirectionalLight } from '../lights/DirectionalLight';
 
 import { ShadowMethodBase, _Shader_ShadowMethodBase } from './ShadowMethodBase';
@@ -136,7 +136,7 @@ import { _Shader_ShadowMapperBase } from '../mappers/ShadowMapperBase';
  * _Shader_ShadowDitheredMethod provides a soft shadowing technique by randomly distributing sample points differently for each fragment.
  */
 export class _Shader_ShadowDitheredMethod extends _Shader_ShadowMethodBase {
-	private _grainMap: _Shader_TextureBase;
+	private _grainMap: _Shader_ImageTexture2D;
 	private _fragmentConstantsIndex: number;
 
 	/**
@@ -154,7 +154,7 @@ export class _Shader_ShadowDitheredMethod extends _Shader_ShadowMethodBase {
 
 		chunkVO.needsProjection = true;
 
-		this._grainMap = <_Shader_TextureBase> this._shader.getAbstraction(ShadowDitheredMethod._grainTexture);
+		this._grainMap = <_Shader_ImageTexture2D> ShadowDitheredMethod._grainTexture.getAbstraction(this._shader, _Shader_ImageTexture2D);
 	}
 
 	/**
