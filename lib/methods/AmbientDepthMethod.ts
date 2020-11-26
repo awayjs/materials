@@ -56,7 +56,7 @@ export class _Shader_AmbientDepthMethod extends _Shader_AmbientBasicMethod {
      */
 	constructor(method: AmbientDepthMethod, shader: ShaderBase) {
 		super(method, shader);
-		let texture:TextureBase = method.castingLight.shadowMapper.textureMap;
+		const texture: TextureBase = method.castingLight.shadowMapper.textureMap;
 		this._shadowTexture = <_Shader_TextureBase> texture.getAbstraction(this._shader, ShaderBase.abstractionClassPool[texture.assetType]);
 	}
 

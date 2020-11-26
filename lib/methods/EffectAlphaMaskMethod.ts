@@ -110,7 +110,7 @@ export class _Shader_EffectAlphaMaskMethod extends _Shader_MethodBase {
      * @inheritDoc
      */
 	public _initVO(chunkVO: ChunkVO): void {
-		let texture: TextureBase = this._method.texture || new ImageTexture2D();
+		const texture: TextureBase = this._method.texture || new ImageTexture2D();
 		this._alphaMask = <_Shader_TextureBase> texture.getAbstraction(this._shader, ShaderBase.abstractionClassPool[texture.assetType]);
 
 		this._alphaMask._initVO(chunkVO);

@@ -161,9 +161,9 @@ export class _Shader_NormalSimpleWaterMethod extends _Shader_NormalBasicMethod {
 	public _initVO(chunkVO: ChunkVO): void {
 		super._initVO(chunkVO);
 
-		let secondaryNormalMap: TextureBase = (<NormalSimpleWaterMethod> this._method).secondaryNormalMap;
+		const secondaryNormalMap: TextureBase = (<NormalSimpleWaterMethod> this._method).secondaryNormalMap;
 		if (secondaryNormalMap) {
-			this._secondaryNormalMap = <_Shader_TextureBase> secondaryNormalMap.getAbstraction(this._shader, ShaderBase.abstractionClassPool[secondaryNormalMap.assetType])
+			this._secondaryNormalMap = <_Shader_TextureBase> secondaryNormalMap.getAbstraction(this._shader, ShaderBase.abstractionClassPool[secondaryNormalMap.assetType]);
 
 			this._shader.uvDependencies++;
 		}

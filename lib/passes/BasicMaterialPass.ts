@@ -41,7 +41,7 @@ export class BasicMaterialPass extends PassBase {
 
 	public invalidate(): void {
 		super.invalidate();
-		let texture: TextureBase = (<MaterialBase> this._renderMaterial.material).getTextureAt(0);
+		const texture: TextureBase = (<MaterialBase> this._renderMaterial.material).getTextureAt(0);
 		this._shaderTexture = texture ? <_Shader_TextureBase> texture.getAbstraction(this._shader, ShaderBase.abstractionClassPool[texture.assetType]) : null;
 	}
 
