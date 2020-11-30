@@ -586,10 +586,10 @@ export class LightingShader extends ShaderBase {
 			probe = lightProbes[ this._lightingPass.lightProbesOffset + i];
 
 			if (addDiff)
-				(<_Stage_ImageBase> probe.diffuseMap.getAbstraction(this, Stage.abstractionClassPool[probe.diffuseMap.assetType])).activate(this.lightProbeDiffuseIndices[i], probe.diffuseSampler);
+				probe.diffuseMap.getAbstraction<_Stage_ImageBase>(this).activate(this.lightProbeDiffuseIndices[i], probe.diffuseSampler);
 
 			if (addSpec)
-				(<_Stage_ImageBase> probe.specularMap.getAbstraction(this, Stage.abstractionClassPool[probe.specularMap.assetType])).activate(this.lightProbeSpecularIndices[i], probe.diffuseSampler);
+				probe.specularMap.getAbstraction<_Stage_ImageBase>(this).activate(this.lightProbeSpecularIndices[i], probe.diffuseSampler);
 		}
 
 		for (i = 0; i < len; ++i)

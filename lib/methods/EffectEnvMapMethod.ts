@@ -131,12 +131,12 @@ export class _Shader_EffectEnvMapMethod extends _Shader_MethodBase {
 		chunkVO.needsNormals = true;
 		chunkVO.needsView = true;
 
-		this._envMap = <_Shader_TextureBase> this._method.envMap.getAbstraction(this._shader, ShaderBase.abstractionClassPool[this._method.envMap.assetType]);
+		this._envMap = this._method.envMap.getAbstraction<_Shader_TextureBase>(this._shader);
 
 		this._envMap._initVO(chunkVO);
 
 		if (this._method.mask) {
-			this._maskMap = <_Shader_TextureBase> this._method.mask.getAbstraction(this._shader, ShaderBase.abstractionClassPool[this._method.mask.assetType]);
+			this._maskMap = this._method.mask.getAbstraction<_Shader_TextureBase>(this._shader);
 			this._shader.uvDependencies++;
 		} else if (this._maskMap) {
 			this._maskMap = null;

@@ -154,7 +154,7 @@ export class _Shader_ShadowDitheredMethod extends _Shader_ShadowMethodBase {
 
 		chunkVO.needsProjection = true;
 
-		this._grainMap = <_Shader_ImageTexture2D> ShadowDitheredMethod._grainTexture.getAbstraction(this._shader, _Shader_ImageTexture2D);
+		this._grainMap = ShadowDitheredMethod._grainTexture.getAbstraction<_Shader_ImageTexture2D>(this._shader);
 	}
 
 	/**

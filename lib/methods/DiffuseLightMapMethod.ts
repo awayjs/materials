@@ -151,7 +151,7 @@ export class _Shader_DiffuseLightMapMethod extends _Shader_LightingCompositeMeth
      */
 	public _initVO(chunkVO: ChunkVO): void {
 		const texture: TextureBase = this._method.lightMap || new ImageTexture2D();
-		this._lightMap = <_Shader_TextureBase> texture.getAbstraction(this._shader, ShaderBase.abstractionClassPool[texture.assetType]);
+		this._lightMap = texture.getAbstraction<_Shader_TextureBase>(this._shader);
 
 		this._lightMap._initVO(chunkVO);
 

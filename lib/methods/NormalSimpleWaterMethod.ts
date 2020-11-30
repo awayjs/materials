@@ -163,7 +163,7 @@ export class _Shader_NormalSimpleWaterMethod extends _Shader_NormalBasicMethod {
 
 		const secondaryNormalMap: TextureBase = (<NormalSimpleWaterMethod> this._method).secondaryNormalMap;
 		if (secondaryNormalMap) {
-			this._secondaryNormalMap = <_Shader_TextureBase> secondaryNormalMap.getAbstraction(this._shader, ShaderBase.abstractionClassPool[secondaryNormalMap.assetType]);
+			this._secondaryNormalMap = secondaryNormalMap.getAbstraction<_Shader_TextureBase>(this._shader);
 
 			this._shader.uvDependencies++;
 		}

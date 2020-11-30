@@ -160,7 +160,7 @@ export class _Shader_EffectProjectiveTextureMethod extends _Shader_MethodBase {
 	}
 
 	public _initVO(chunkVO: ChunkVO): void {
-		this._texture = <_Shader_TextureBase> this._method.projector.texture.getAbstraction(this._shader, ShaderBase.abstractionClassPool[this._method.projector.texture.assetType]);
+		this._texture = this._method.projector.texture.getAbstraction<_Shader_TextureBase>(this._shader);
 
 		this._texture._initVO(chunkVO);
 	}

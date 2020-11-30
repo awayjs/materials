@@ -109,7 +109,7 @@ export class _Shader_NormalBasicMethod extends _Shader_MethodBase {
      */
 	public _initVO(chunkVO: ChunkVO): void {
 		if (this._method.texture) {
-			this._texture = <_Shader_TextureBase> this._method.texture.getAbstraction(this._shader, ShaderBase.abstractionClassPool[this._method.texture.assetType]);
+			this._texture = this._method.texture.getAbstraction<_Shader_TextureBase>(this._shader);
 
 			this._texture._initVO(chunkVO);
 
