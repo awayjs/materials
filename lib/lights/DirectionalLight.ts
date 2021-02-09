@@ -58,7 +58,7 @@ export class DirectionalLight extends LightBase {
 	private _updateSceneDirection(): void {
 		this._sceneDirectionDirty = false;
 
-		this.transform.concatenatedMatrix3D.copyColumnTo(2, this._sceneDirection);
+		this.transform.matrix3D.copyColumnTo(2, this._sceneDirection);
 
 		this._sceneDirection.normalize();
 	}

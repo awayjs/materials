@@ -6,6 +6,7 @@ import { LightBase } from '../lights/LightBase';
 import { DirectionalLight } from '../lights/DirectionalLight';
 import { LightProbe } from '../lights/LightProbe';
 import { PointLight } from '../lights/PointLight';
+import { ContainerNode, EntityNode } from '@awayjs/view';
 
 /**
  * LightPickerBase provides an abstract base clase for light picker classes. These classes are responsible for
@@ -138,7 +139,7 @@ export class LightPickerBase extends AssetBase {
 	/**
 	 * Updates set of lights for a given renderable and EntityCollector. Always call super.collectLights() after custom overridden code.
 	 */
-	public collectLights(entity: IRenderEntity): void {
+	public collectLights(entity: EntityNode): void {
 		this.updateProbeWeights(entity);
 	}
 
@@ -146,9 +147,9 @@ export class LightPickerBase extends AssetBase {
 	 * Updates the weights for the light probes, based on the renderable's position relative to them.
 	 * @param renderable The renderble for which to calculate the light probes' influence.
 	 */
-	private updateProbeWeights(entity: IRenderEntity): void {
+	private updateProbeWeights(entity: EntityNode): void {
 		// todo: this will cause the same calculations to occur per TriangleGraphic. See if this can be improved.
-		const objectPos: Vector3D = entity.scenePosition;
+		const objectPos: Vector3D = entity.parent.getPosition();
 		let lightPos: Vector3D;
 
 		const rx: number = objectPos.x, ry: number = objectPos.y, rz: number = objectPos.z;
@@ -159,7 +160,7 @@ export class LightPickerBase extends AssetBase {
 		// calculates weights for probes
 		for (i = 0; i < this._numLightProbes; ++i) {
 
-			lightPos = this._lightProbes[i].transform.concatenatedMatrix3D.position;
+			lightPos = this._lightProbes[i].transform.matrix3D.position;
 			dx = rx - lightPos.x;
 			dy = ry - lightPos.y;
 			dz = rz - lightPos.z;

@@ -138,7 +138,7 @@ export class PointLight extends LightBase {
 	}
 
 	public get scenePosition(): Vector3D {
-    	return this._transform.concatenatedMatrix3D.position;
+    	return this._transform.matrix3D.position;
 	}
 
 	/**

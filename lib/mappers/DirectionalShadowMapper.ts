@@ -148,15 +148,15 @@ export class DirectionalShadowMapper extends ShadowMapperBase {
 		let maxX: number, maxY: number;
 		let i: number;
 
-		const pos: Vector3D = projection.transform.concatenatedMatrix3D.position;
+		const pos: Vector3D = projection.transform.matrix3D.position;
 		const dir: Vector3D = (<DirectionalLight> this._light).sceneDirection;
-		this._overallDepthProjection.transform.matrix3D = this._light.transform.concatenatedMatrix3D;
+		this._overallDepthProjection.transform.matrix3D = this._light.transform.matrix3D;
 		x = Math.floor((pos.x - dir.x * this._lightOffset) / this._snap) * this._snap;
 		y = Math.floor((pos.y - dir.y * this._lightOffset) / this._snap) * this._snap;
 		z = Math.floor((pos.z - dir.z * this._lightOffset) / this._snap) * this._snap;
 		this._overallDepthProjection.transform.moveTo(x, y, z);
 
-		this._overallDepthProjection.transform.inverseConcatenatedMatrix3D.transformVectors(corners, this._localFrustum);
+		this._overallDepthProjection.transform.inverseMatrix3D.transformVectors(corners, this._localFrustum);
 
 		minX = maxX = this._localFrustum[0];
 		minY = maxY = this._localFrustum[1];

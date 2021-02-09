@@ -79,7 +79,7 @@ export class PointShadowMapper extends ShadowMapperBase {
 	protected _updateProjection(projection: ProjectionBase): void {
 		const light: PointLight = <PointLight>(this._light);
 		const maxDistance: number = light.fallOff;
-		const pos: Vector3D = this._light.transform.concatenatedMatrix3D.position;
+		const pos: Vector3D = this._light.transform.matrix3D.position;
 
 		// todo: faces outside frustum which are pointing away from camera need not be rendered!
 		for (let i: number = 0; i < 6; ++i) {

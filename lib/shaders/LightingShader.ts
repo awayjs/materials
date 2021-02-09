@@ -1,6 +1,6 @@
 import { Matrix3D, Vector3D, ProjectionBase }	 from '@awayjs/core';
 
-import { _Render_ElementsBase, _Render_RenderableBase, ShaderBase, _Render_MaterialBase } from '@awayjs/renderer';
+import { _Render_ElementsBase, _Render_RenderableBase, ShaderBase, _Render_MaterialBase, RenderEntity, IRenderEntity } from '@awayjs/renderer';
 
 import { ContextGLProfile, Stage, _Stage_ImageBase, ShaderRegisterElement } from '@awayjs/stage';
 
@@ -509,7 +509,7 @@ export class LightingShader extends ShaderBase {
 
 			for (i = 0; i < len; ++i) {
 				pointLight = pointLights[offset + i];
-				dirPos = pointLight.transform.concatenatedMatrix3D.position;
+				dirPos = pointLight.transform.matrix3D.position;
 
 				this.ambientR += pointLight._ambientR;
 				this.ambientG += pointLight._ambientG;

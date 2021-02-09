@@ -77,7 +77,7 @@ export class _Shader_ShadowTextureCube extends _Shader_DepthTexture {
 		const fragmentData: Float32Array = this._shader.fragmentConstantData;
 		const index: number = this._positionIndex;
 
-		const pos: Vector3D = (<ShadowTextureCube> this._texture).mapper.light.transform.concatenatedMatrix3D.position;
+		const pos: Vector3D = (<ShadowTextureCube> this._texture).mapper.light.transform.matrix3D.position;
 		const fallOff: number = (<PointLight> (<ShadowTextureCube> this._texture).mapper.light).fallOff; // used to decompress distance
 
 		fragmentData[index] = pos.x;

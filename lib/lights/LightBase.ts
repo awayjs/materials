@@ -41,12 +41,12 @@ export class LightBase extends AssetBase {
 			return;
 
 		if (this._transform)
-			this._transform.removeEventListener(TransformEvent.INVALIDATE_CONCATENATED_MATRIX3D, this._onInvalidateConcatenatedMatrix3DDelegate);
+			this._transform.removeEventListener(TransformEvent.INVALIDATE_MATRIX3D, this._onInvalidateConcatenatedMatrix3DDelegate);
 
 		this._transform = value;
 
 		if (this._transform)
-			this._transform.addEventListener(TransformEvent.INVALIDATE_CONCATENATED_MATRIX3D, this._onInvalidateConcatenatedMatrix3DDelegate);
+			this._transform.addEventListener(TransformEvent.INVALIDATE_MATRIX3D, this._onInvalidateConcatenatedMatrix3DDelegate);
 	}
 
 	public get shadowsEnabled(): boolean {
