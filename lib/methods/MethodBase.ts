@@ -105,8 +105,6 @@ import { AbstractionBase } from '@awayjs/core';
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { View } from '@awayjs/view';
-
 import { _Render_RenderableBase, ShaderBase, ChunkVO } from '@awayjs/renderer';
 
 import { _IShader_Method } from './_IShader_Method';

@@ -3,8 +3,9 @@ import { TextureBase } from '../textures/TextureBase';
 import { MethodBase, _Shader_MethodBase } from './MethodBase';
 
 /**
- * SpecularBasicMethod provides the default shading method for Blinn-Phong specular highlights (an optimized but approximated
- * version of Phong specularity).
+ * SpecularBasicMethod provides the default shading method for Blinn-Phong
+ * specular highlights (an optimized but approximated version of Phong
+ * specularity).
  */
 export class SpecularBasicMethod extends MethodBase {
 	private _texture: TextureBase;
@@ -75,9 +76,11 @@ export class SpecularBasicMethod extends MethodBase {
 	}
 
 	/**
-	 * A texture that defines the strength of specular reflections for each texel in the red channel,
-	 * and the gloss factor (sharpness) in the green channel. You can use Specular2DTexture if you want to easily set
-	 * specular and gloss maps from grayscale images, but correctly authored images are preferred.
+	 * A texture that defines the strength of specular reflections for each
+	 * texel in the red channel, and the gloss factor (sharpness) in the green
+	 * channel. You can use Specular2DTexture if you want to easily set specular
+	 * and gloss maps from grayscale images, but correctly authored images are
+	 * preferred.
 	 */
 	public get texture(): TextureBase {
 		return this._texture;
@@ -117,10 +120,7 @@ export class SpecularBasicMethod extends MethodBase {
 	 */
 	public copyFrom(method: MethodBase): void {
 
-		const m: any = method;
-		const bsm: SpecularBasicMethod = <SpecularBasicMethod> method;
-
-		const spec: SpecularBasicMethod = bsm;//SpecularBasicMethod(method);
+		const spec: SpecularBasicMethod = <SpecularBasicMethod> method;
 		this.texture = spec.texture;
 		this.strength = spec.strength;
 		this.color = spec.color;
@@ -130,8 +130,6 @@ export class SpecularBasicMethod extends MethodBase {
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { View } from '@awayjs/view';
-
 import { ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO } from '@awayjs/renderer';
 
 import { LightingShader } from '../shaders/LightingShader';
@@ -139,8 +137,9 @@ import { LightingShader } from '../shaders/LightingShader';
 import { _IShader_LightingMethod } from './_IShader_LightingMethod';
 
 /**
- * _Shader_SpecularBasicMethod provides the default shading method for Blinn-Phong specular highlights (an optimized but approximated
- * version of Phong specularity).
+ * _Shader_SpecularBasicMethod provides the default shading method for
+ * Blinn-Phong specular highlights (an optimized but approximated version of
+ * Phong specularity).
  */
 export class _Shader_SpecularBasicMethod extends _Shader_MethodBase implements _IShader_LightingMethod {
 	public _totalLightColorReg: ShaderRegisterElement;

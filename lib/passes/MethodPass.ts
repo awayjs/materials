@@ -2,8 +2,6 @@ import { ColorTransform, AssetEvent } from '@awayjs/core';
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { View } from '@awayjs/view';
-
 import { _Render_RenderableBase, _Render_ElementsBase, ShaderBase, ChunkVO } from '@awayjs/renderer';
 
 import { LightPickerBase } from '../lightpickers/LightPickerBase';
@@ -22,7 +20,7 @@ import { ILightingPass } from '../passes/ILightingPass';
 import { PassBase } from '../passes/PassBase';
 import { LightingShader } from '../shaders/LightingShader';
 
-import { MethodMaterial, _Render_MethodMaterial } from '../MethodMaterial';
+import { _Render_MethodMaterial } from '../MethodMaterial';
 
 import { MethodPassMode } from './MethodPassMode';
 

@@ -1,6 +1,6 @@
 ﻿import { ErrorBase } from '@awayjs/core';
 
-import { ImageSampler, Image2D, ImageUtils, ImageCube } from '@awayjs/stage';
+import { ImageSampler, Image2D, ImageUtils } from '@awayjs/stage';
 
 import { MappingMode } from '@awayjs/renderer';
 
@@ -58,8 +58,6 @@ export class ImageTexture2D extends Texture2D {
 		this.image = image;
 	}
 }
-
-import { AssetEvent } from '@awayjs/core';
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 

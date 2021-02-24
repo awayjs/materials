@@ -139,13 +139,13 @@ export class LightBase extends AssetBase {
 	}
 
 	public get shadowMapper(): ShadowMapperBase {
-    	this.shadowsEnabled = true; //ensure shadows are enabled on light
+		this.shadowsEnabled = true; //ensure shadows are enabled on light
 
 		return this._shadowMapper;
 	}
 
 	public set shadowMapper(value: ShadowMapperBase) {
-    	if (this._shadowMapper == value)
+		if (this._shadowMapper == value)
 			return;
 
 		this._shadowMapper = value;

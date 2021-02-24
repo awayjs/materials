@@ -2,8 +2,6 @@ import { IEventDispatcher } from '@awayjs/core';
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { View } from '@awayjs/view';
-
 import { _Render_RenderableBase, ChunkVO } from '@awayjs/renderer';
 
 /**

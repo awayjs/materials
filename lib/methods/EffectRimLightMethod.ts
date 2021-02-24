@@ -1,7 +1,8 @@
 import { MethodBase, _Shader_MethodBase } from './MethodBase';
 
 /**
- * EffectRimLightMethod provides a method to add rim lighting to a material. This adds a glow-like effect to edges of objects.
+ * EffectRimLightMethod provides a method to add rim lighting to a material.
+ * This adds a glow-like effect to edges of objects.
  */
 export class EffectRimLightMethod extends MethodBase {
 	public static ADD: string = 'add';
@@ -25,12 +26,11 @@ export class EffectRimLightMethod extends MethodBase {
 	/**
 	 * The color of the rim light.
 	 */
-	public get color(): number /*uint*/
-	{
+	public get color(): number {
 		return this._color;
 	}
 
-	public set color(value: number /*uint*/) {
+	public set color(value: number) {
 		if (this._power == value)
 			return;
 

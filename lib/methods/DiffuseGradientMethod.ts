@@ -59,8 +59,6 @@ export class DiffuseGradientMethod extends DiffuseBasicMethod {
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { View } from '@awayjs/view';
-
 import { ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO } from '@awayjs/renderer';
 
 import { LightingShader } from '../shaders/LightingShader';

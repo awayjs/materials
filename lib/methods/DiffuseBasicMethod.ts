@@ -113,8 +113,6 @@ import { AssetEvent } from '@awayjs/core';
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { View } from '@awayjs/view';
-
 import { ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO } from '@awayjs/renderer';
 
 import { LightingShader } from '../shaders/LightingShader';
@@ -299,7 +297,6 @@ export class _Shader_DiffuseBasicMethod extends _Shader_MethodBase implements _I
 		let code: string = '';
 
 		let diffuseColor: ShaderRegisterElement;
-		let cutOffReg: ShaderRegisterElement;
 
 		// incorporate input from ambient
 		if (sharedRegisters.shadowTarget)

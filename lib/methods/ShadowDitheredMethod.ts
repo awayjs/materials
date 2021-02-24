@@ -1,7 +1,5 @@
 import { BitmapImage2D } from '@awayjs/stage';
 
-import { View } from '@awayjs/view';
-
 import { ImageTexture2D, _Shader_ImageTexture2D } from '../textures/ImageTexture2D';
 import { DirectionalLight } from '../lights/DirectionalLight';
 
@@ -123,11 +121,9 @@ export class ShadowDitheredMethod extends ShadowMethodBase {
 	}
 }
 
-import { ProjectionBase } from '@awayjs/core';
-
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO } from '@awayjs/renderer';
+import { ShaderBase, _Render_RenderableBase, ChunkVO } from '@awayjs/renderer';
 
 import { LightingShader } from '../shaders/LightingShader';
 import { _Shader_ShadowMapperBase } from '../mappers/ShadowMapperBase';

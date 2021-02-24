@@ -1,6 +1,6 @@
-import { Matrix3D, Vector3D, ProjectionBase }	 from '@awayjs/core';
+import { Vector3D }	 from '@awayjs/core';
 
-import { _Render_ElementsBase, _Render_RenderableBase, ShaderBase, _Render_MaterialBase, RenderEntity, IRenderEntity } from '@awayjs/renderer';
+import { _Render_ElementsBase, _Render_RenderableBase, ShaderBase, _Render_MaterialBase } from '@awayjs/renderer';
 
 import { ContextGLProfile, Stage, _Stage_ImageBase, ShaderRegisterElement } from '@awayjs/stage';
 

@@ -2,7 +2,7 @@ import { Matrix3D, Rectangle, AssetEvent, PerspectiveProjection, ProjectionBase 
 
 import { Image2D } from '@awayjs/stage';
 
-import { View, PartitionBase } from '@awayjs/view';
+import { PartitionBase } from '@awayjs/view';
 
 import { RenderGroup } from '@awayjs/renderer';
 
@@ -97,12 +97,11 @@ export class CascadeShadowMapper extends DirectionalShadowMapper {
 		this._scissorRectsInvalid = true;
 	}
 
-	public get numCascades(): number /*int*/
-	{
+	public get numCascades(): number {
 		return this._numCascades;
 	}
 
-	public set numCascades(value: number /*int*/) {
+	public set numCascades(value: number) {
 		if (value == this._numCascades)
 			return;
 
@@ -240,10 +239,6 @@ export class CascadeShadowMapper extends DirectionalShadowMapper {
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
 import { ShaderBase, _Render_RenderableBase, ChunkVO } from '@awayjs/renderer';
-
-import { DirectionalLight } from '../lights/DirectionalLight';
-import { MethodEvent } from '../events/MethodEvent';
-import { LightingShader } from '../shaders/LightingShader';
 
 /**
  * _Shader_CascadeShadowMapper is a shadow map method to apply cascade shadow mapping on materials.

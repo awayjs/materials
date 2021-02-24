@@ -83,9 +83,7 @@ import { AbstractionBase } from '@awayjs/core';
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { View } from '@awayjs/view';
-
-import { _Render_RenderableBase, ChunkVO, ShaderBase } from '@awayjs/renderer';
+import { _Render_RenderableBase, ChunkVO } from '@awayjs/renderer';
 
 import { LightingShader } from '../shaders/LightingShader';
 

@@ -2,8 +2,6 @@ import { ProjectionBase } from '@awayjs/core';
 
 import { Image2D } from '@awayjs/stage';
 
-import { View } from '@awayjs/view';
-
 import { DirectionalShadowMapper, _Shader_DirectionalShadowMapper } from './DirectionalShadowMapper';
 
 export class NearDirectionalShadowMapper extends DirectionalShadowMapper {
@@ -71,9 +69,6 @@ export class NearDirectionalShadowMapper extends DirectionalShadowMapper {
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
 import { ShaderBase, _Render_RenderableBase, ChunkVO } from '@awayjs/renderer';
-
-import { LightingShader } from '../shaders/LightingShader';
-import { MethodEvent } from '../events/MethodEvent';
 
 // TODO: shadow mappers references in materials should be an interface so that this class should NOT extend ShadowMapMethodBase just for some delegation work
 /**

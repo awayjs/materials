@@ -18,11 +18,9 @@ export class DepthTextureCube extends ImageTextureCube {
 	}
 }
 
-import { AssetEvent } from '@awayjs/core';
+import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, ImageSampler } from '@awayjs/stage';
-
-import { _Shader_TextureBase, ShaderBase, _Render_RenderableBase, ChunkVO } from '@awayjs/renderer';
+import { ShaderBase, ChunkVO } from '@awayjs/renderer';
 
 import { _Shader_ImageTexture } from './ImageTextureCube';
 

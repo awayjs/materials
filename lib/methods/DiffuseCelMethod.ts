@@ -52,8 +52,6 @@ export class DiffuseCelMethod extends DiffuseCompositeMethod {
 	}
 }
 
-import { Stage } from '@awayjs/stage';
-
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
 import { ShaderBase } from '@awayjs/renderer';

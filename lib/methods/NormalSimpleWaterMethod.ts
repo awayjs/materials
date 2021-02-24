@@ -123,8 +123,6 @@ import { AssetEvent } from '@awayjs/core';
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { View } from '@awayjs/view';
-
 import { _Render_RenderableBase, ShaderBase, _Shader_TextureBase, ChunkVO } from '@awayjs/renderer';
 
 /**

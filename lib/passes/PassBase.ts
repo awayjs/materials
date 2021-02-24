@@ -1,10 +1,8 @@
 import { EventDispatcher } from '@awayjs/core';
 
-import { Stage, _Stage_ImageBase, ShaderRegisterCache, ShaderRegisterData } from '@awayjs/stage';
+import { Stage, ShaderRegisterCache, ShaderRegisterData } from '@awayjs/stage';
 
-import { View } from '@awayjs/view';
-
-import { _Render_RenderableBase, _Render_ElementsBase, _Render_MaterialBase, PassEvent, IAnimationSet, IPass, ShaderBase } from '@awayjs/renderer';
+import { _Render_RenderableBase, _Render_ElementsBase, _Render_MaterialBase, PassEvent, IPass, ShaderBase } from '@awayjs/renderer';
 
 import { MaterialBase } from '../MaterialBase';
 

@@ -1,6 +1,6 @@
 import { AbstractMethodError, ProjectionBase } from '@awayjs/core';
 
-import { View, PartitionBase } from '@awayjs/view';
+import { PartitionBase } from '@awayjs/view';
 
 import { IMapper, RenderGroup } from '@awayjs/renderer';
 
@@ -61,8 +61,8 @@ export class ShadowMapperBase extends MethodBase implements IMapper {
 	}
 
 	public set size(value: number) {
-    	if (this._size == value)
-    		return;
+		if (this._size == value)
+			return;
 
 		this._size = value;
 

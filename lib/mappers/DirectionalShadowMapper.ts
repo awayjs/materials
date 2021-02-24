@@ -222,7 +222,7 @@ export class DirectionalShadowMapper extends ShadowMapperBase {
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO } from '@awayjs/renderer';
+import { ShaderBase, ChunkVO } from '@awayjs/renderer';
 
 /**
  * ShadowChunkBase provides an abstract method for simple (non-wrapping) shadow map methods.
@@ -290,7 +290,6 @@ export class _Shader_DirectionalShadowMapper extends _Shader_ShadowMapperBase {
 		super._activate();
 
 		const vertexData: Float32Array = this._shader.vertexConstantData;
-		const index: number = this._vertexScalingIndex;
 
 		vertexData[this._vertexScalingIndex + 3] = -1 / ((<DirectionalShadowMapper> this._mapper).depth * (<DirectionalShadowMapper> this._mapper).epsilon);
 

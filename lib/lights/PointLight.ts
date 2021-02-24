@@ -17,7 +17,7 @@ export class PointLight extends LightBase {
 
 	/**
 	 *
-     */
+	 */
 	public get radius(): number {
 		return this._radius;
 	}
@@ -36,7 +36,7 @@ export class PointLight extends LightBase {
 
 	/**
 	 *
-     */
+	 */
 	public get fallOff(): number {
 		return this._fallOff;
 	}
@@ -138,12 +138,12 @@ export class PointLight extends LightBase {
 	}
 
 	public get scenePosition(): Vector3D {
-    	return this._transform.matrix3D.position;
+		return this._transform.matrix3D.position;
 	}
 
 	/**
 	 *
-     */
+	 */
 	constructor(position: Vector3D = null, transform: Transform = null) {
 		super(transform);
 

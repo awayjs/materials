@@ -5,7 +5,8 @@ import { DirectionalLight } from '../lights/DirectionalLight';
 import { ShadowMethodBase, _Shader_ShadowMethodBase } from './ShadowMethodBase';
 
 /**
- * ShadowSoftMethod provides a soft shadowing technique by randomly distributing sample points.
+ * ShadowSoftMethod provides a soft shadowing technique by randomly distributing
+ * sample points.
  */
 export class ShadowSoftMethod extends ShadowMethodBase {
 	private _range: number;
@@ -26,8 +27,8 @@ export class ShadowSoftMethod extends ShadowMethodBase {
 	}
 
 	/**
-	 * The amount of samples to take for dithering. Minimum 1, maximum 32. The actual maximum may depend on the
-	 * complexity of the shader.
+	 * The amount of samples to take for dithering. Minimum 1, maximum 32. The
+	 * actual maximum may depend on the complexity of the shader.
 	 */
 	public get numSamples(): number {
 		return this._numSamples;
@@ -61,7 +62,8 @@ export class ShadowSoftMethod extends ShadowMethodBase {
 	 * Creates a new DiffuseBasicMethod object.
 	 *
 	 * @param castingLight The light casting the shadows
-	 * @param numSamples The amount of samples to take for dithering. Minimum 1, maximum 32.
+	 * @param numSamples The amount of samples to take for dithering. Minimum 1,
+	 * maximum 32.
 	 */
 	constructor(castingLight: DirectionalLight, numSamples: number = 5, range: number = 1) {
 		super(castingLight);
@@ -79,7 +81,8 @@ import { LightingShader } from '../shaders/LightingShader';
 import { _Shader_ShadowMapperBase } from '../mappers/ShadowMapperBase';
 
 /**
- * _Shader_ShadowSoftMethod provides a soft shadowing technique by randomly distributing sample points.
+ * _Shader_ShadowSoftMethod provides a soft shadowing technique by randomly
+ * distributing sample points.
  */
 export class _Shader_ShadowSoftMethod extends _Shader_ShadowMethodBase {
 	private _fragmentConstantsIndex: number;

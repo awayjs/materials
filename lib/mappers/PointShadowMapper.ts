@@ -109,15 +109,9 @@ export class PointShadowMapper extends ShadowMapperBase {
 	}
 }
 
-import { Matrix3D, AbstractMethodError, AssetEvent } from '@awayjs/core';
+import { ShaderRegisterCache, ShaderRegisterData } from '@awayjs/stage';
 
-import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
-
-import { ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO, IMapper } from '@awayjs/renderer';
-
-import { LightBase } from '../lights/LightBase';
-import { DirectionalShadowMapper } from './DirectionalShadowMapper';
-import { LightingShader } from '../shaders/LightingShader';
+import { ShaderBase, ChunkVO } from '@awayjs/renderer';
 
 /**
  * _Shader_PointShadowMapper provides an abstract method for simple (non-wrapping) shadow map methods.

@@ -88,14 +88,11 @@ export class AmbientBasicMethod extends MethodBase {
 	 * @inheritDoc
 	 */
 	public copyFrom(method: MethodBase): void {
-		const m: any = method;
-		const b: AmbientBasicMethod = <AmbientBasicMethod> m;
+
 	}
 }
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
-
-import { View } from '@awayjs/view';
 
 import { _Render_RenderableBase, ShaderBase, _Shader_TextureBase, ChunkVO } from '@awayjs/renderer';
 

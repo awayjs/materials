@@ -1,6 +1,4 @@
-import { ProjectionEvent, Matrix3D, PerspectiveProjection, AssetBase, Transform, TransformEvent } from '@awayjs/core';
-
-import { Image2D } from '@awayjs/stage';
+import { PerspectiveProjection, AssetBase, Transform } from '@awayjs/core';
 
 import { TextureBase } from '../textures/TextureBase';
 import { TextureProjectorEvent } from '../events/TextureProjectorEvent';
@@ -48,8 +46,8 @@ export class TextureProjector extends AssetBase {
 
 		this._texture = texture;
 
-		const width: number = (<Image2D> texture.getImageAt(0)).width;
-		const height: number = (<Image2D> texture.getImageAt(0)).height;
+		// const width: number = (<Image2D> texture.getImageAt(0)).width;
+		// const height: number = (<Image2D> texture.getImageAt(0)).height;
 	}
 
 	/**
@@ -81,8 +79,8 @@ export class TextureProjector extends AssetBase {
 
 		this._texture = value;
 
-		const width: number = (<Image2D> value.getImageAt(0)).width;
-		const height: number = (<Image2D> value.getImageAt(0)).height;
+		// const width: number = (<Image2D> value.getImageAt(0)).width;
+		// const height: number = (<Image2D> value.getImageAt(0)).height;
 
 		this.dispatchEvent(new TextureProjectorEvent(TextureProjectorEvent.TEXTURE_CHANGE));
 	}

@@ -2,7 +2,8 @@ import { SpecularBasicMethod } from './SpecularBasicMethod';
 import { SpecularCompositeMethod } from './SpecularCompositeMethod';
 
 /**
- * SpecularCelMethod provides a shading method to add specular cel (cartoon) shading.
+ * SpecularCelMethod provides a shading method to add specular cel (cartoon)
+ * shading.
  */
 export class SpecularCelMethod extends SpecularCompositeMethod {
 	private _smoothness: number;
@@ -51,9 +52,11 @@ export class SpecularCelMethod extends SpecularCompositeMethod {
 
 	/**
 	 * Creates a new SpecularCelMethod object.
-	 * @param specularCutOff The threshold at which the specular highlight should be shown.
+	 * @param specularCutOff The threshold at which the specular highlight
+	 * should be shown.
 	 * @param smoothness The smoothness of the highlight edge.
-	 * @param baseMethod An optional specular method on which the cartoon shading is based. If ommitted, SpecularBasicMethod is used.
+	 * @param baseMethod An optional specular method on which the cartoon
+	 * shading is based. If ommitted, SpecularBasicMethod is used.
 	 */
 	constructor(specularCutOff: number = 0.5, smoothness: number = 0.1, baseMethod: SpecularBasicMethod | SpecularCompositeMethod = null) {
 		super(baseMethod);
@@ -73,7 +76,8 @@ import { _Shader_LightingCompositeMethod } from './CompositeMethodBase';
 import { _IShader_LightingMethod } from './_IShader_LightingMethod';
 
 /**
- * _Shader_SpecularCelMethod provides a shading method to add specular cel (cartoon) shading.
+ * _Shader_SpecularCelMethod provides a shading method to add specular cel
+ * (cartoon) shading.
  */
 export class _Shader_SpecularCelMethod extends _Shader_LightingCompositeMethod {
 	private _method: SpecularCelMethod;
@@ -84,7 +88,8 @@ export class _Shader_SpecularCelMethod extends _Shader_LightingCompositeMethod {
 	/**
      * Creates a new DiffuseCelChunk object.
      * @param levels The amount of shadow gradations.
-     * @param baseMethod An optional diffuse method on which the cartoon shading is based. If omitted, DiffuseBasicMethod is used.
+     * @param baseMethod An optional diffuse method on which the cartoon shading
+     * is based. If omitted, DiffuseBasicMethod is used.
      */
 	constructor(method: SpecularCelMethod, shader: LightingShader) {
 		super(method, shader);

@@ -56,7 +56,6 @@ export class NormalBasicMethod extends MethodBase {
 	 * @inheritDoc
 	 */
 	public copyFrom(method: MethodBase): void {
-		const s: any = method;
 		const bnm: NormalBasicMethod = <NormalBasicMethod> method;
 
 		if (bnm.texture != null)
@@ -73,8 +72,6 @@ export class NormalBasicMethod extends MethodBase {
 }
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
-
-import { View } from '@awayjs/view';
 
 import { ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO } from '@awayjs/renderer';
 

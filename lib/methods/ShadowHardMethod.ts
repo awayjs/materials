@@ -18,7 +18,6 @@ import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '
 
 import { ShaderBase } from '@awayjs/renderer';
 
-import { LightBase } from '../lights/LightBase';
 import { LightingShader } from '../shaders/LightingShader';
 import { _Shader_ShadowMapperBase } from '../mappers/ShadowMapperBase';
 

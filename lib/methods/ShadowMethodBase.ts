@@ -1,5 +1,4 @@
 import { LightBase } from '../lights/LightBase';
-import { ShadowMapperBase } from '../mappers/ShadowMapperBase';
 
 import { CompositeMethodBase, _Shader_CompositeMethodBase } from './CompositeMethodBase';
 
@@ -27,15 +26,14 @@ export class ShadowMethodBase extends CompositeMethodBase {
 	}
 }
 
-import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
-
 import { _Shader_TextureBase, ChunkVO } from '@awayjs/renderer';
 
 import { LightingShader } from '../shaders/LightingShader';
 import { _Shader_ShadowMapperBase } from '../mappers/ShadowMapperBase';
 
 /**
- * ShadowHardChunk provides the cheapest shadow map method by using a single tap without any filtering.
+ * ShadowHardChunk provides the cheapest shadow map method by using a single tap
+ * without any filtering.
  */
 export class _Shader_ShadowMethodBase extends _Shader_CompositeMethodBase {
 	protected _method: ShadowMethodBase;

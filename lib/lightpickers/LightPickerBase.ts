@@ -1,12 +1,10 @@
 import { Vector3D, AssetBase } from '@awayjs/core';
 
-import { IRenderEntity } from '@awayjs/renderer';
-
 import { LightBase } from '../lights/LightBase';
 import { DirectionalLight } from '../lights/DirectionalLight';
 import { LightProbe } from '../lights/LightProbe';
 import { PointLight } from '../lights/PointLight';
-import { ContainerNode, EntityNode } from '@awayjs/view';
+import { EntityNode } from '@awayjs/view';
 
 /**
  * LightPickerBase provides an abstract base clase for light picker classes. These classes are responsible for

@@ -2,9 +2,7 @@ import { ColorTransform, AssetEvent, AssetBase } from '@awayjs/core';
 
 import { BlendMode, ImageBase } from '@awayjs/stage';
 
-import { View } from '@awayjs/view';
-
-import { IMaterial, IRenderEntity, IAnimator, IAnimationSet, MaterialEvent, Style, StyleEvent } from '@awayjs/renderer';
+import { IMaterial, MaterialEvent, Style, StyleEvent } from '@awayjs/renderer';
 
 import { TextureBase } from './textures/TextureBase';
 
@@ -227,7 +225,7 @@ export class MaterialBase extends AssetBase implements IMaterial {
 	}
 
 	public set bothSides(value: boolean) {
-		if (this._bothSides = value)
+		if (this._bothSides == value)
 			return;
 
 		this._bothSides = value;
@@ -352,8 +350,6 @@ export class MaterialBase extends AssetBase implements IMaterial {
 		this.invalidateTextures();
 	}
 }
-
-import { ProjectionBase } from '@awayjs/core';
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 

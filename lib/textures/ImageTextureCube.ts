@@ -1,6 +1,4 @@
-﻿import { ErrorBase } from '@awayjs/core';
-
-import { ImageSampler, ImageUtils, ImageCube } from '@awayjs/stage';
+﻿import { ImageSampler, ImageCube } from '@awayjs/stage';
 
 import { TextureCube } from './TextureCube';
 
@@ -53,8 +51,6 @@ export class ImageTextureCube extends TextureCube {
 		this.image = image;
 	}
 }
-
-import { AssetEvent } from '@awayjs/core';
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, _Stage_ImageBase } from '@awayjs/stage';
 

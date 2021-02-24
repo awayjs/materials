@@ -60,8 +60,6 @@ export class EffectFresnelEnvMapMethod extends EffectEnvMapMethod {
 	}
 }
 
-import { ProjectionBase } from '@awayjs/core';
-
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
 import { ShaderBase } from '@awayjs/renderer';

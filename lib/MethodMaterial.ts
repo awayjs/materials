@@ -11,7 +11,6 @@ import { ShadowMethodBase } from './methods/ShadowMethodBase';
 import { SpecularBasicMethod } from './methods/SpecularBasicMethod';
 import { SpecularCompositeMethod } from './methods/SpecularCompositeMethod';
 import { ImageTexture2D } from './textures/ImageTexture2D';
-import { TextureBase } from './textures/TextureBase';
 import { LightPickerBase } from './lightpickers/LightPickerBase';
 
 import { MaterialBase } from './MaterialBase';
