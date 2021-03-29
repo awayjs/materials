@@ -1,4 +1,4 @@
-import { TextureBase } from '../textures/TextureBase';
+import { TextureBase } from '@awayjs/renderer';
 
 import { DiffuseBasicMethod, _Shader_DiffuseBasicMethod } from './DiffuseBasicMethod';
 
@@ -59,10 +59,9 @@ export class DiffuseGradientMethod extends DiffuseBasicMethod {
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO } from '@awayjs/renderer';
+import { ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO, ImageTexture2D } from '@awayjs/renderer';
 
 import { LightingShader } from '../shaders/LightingShader';
-import { ImageTexture2D } from '../textures/ImageTexture2D';
 
 /**
  * _Shader_DiffuseGradientMethod is an alternative to _Shader_DiffuseBasicMethod in which the shading can be modulated with a gradient

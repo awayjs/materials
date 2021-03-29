@@ -1,4 +1,4 @@
-import { TextureBase } from '../textures/TextureBase';
+import { TextureBase } from '@awayjs/renderer';
 
 import { DiffuseBasicMethod } from './DiffuseBasicMethod';
 import { DiffuseCompositeMethod } from './DiffuseCompositeMethod';
@@ -116,10 +116,9 @@ export class DiffuseLightMapMethod extends DiffuseCompositeMethod {
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO } from '@awayjs/renderer';
+import { ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO, ImageTexture2D } from '@awayjs/renderer';
 
 import { LightingShader } from '../shaders/LightingShader';
-import { ImageTexture2D } from '../textures/ImageTexture2D';
 
 import { _Shader_LightingCompositeMethod } from './CompositeMethodBase';
 

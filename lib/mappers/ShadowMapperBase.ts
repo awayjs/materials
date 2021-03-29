@@ -2,9 +2,8 @@ import { AbstractMethodError, ProjectionBase } from '@awayjs/core';
 
 import { PartitionBase } from '@awayjs/view';
 
-import { IMapper, RenderGroup } from '@awayjs/renderer';
+import { IMapper, RenderGroup, TextureBase } from '@awayjs/renderer';
 
-import { TextureBase } from '../textures/TextureBase';
 import { LightBase } from '../lights/LightBase';
 
 import { MethodBase, _Shader_MethodBase } from '../methods/MethodBase';

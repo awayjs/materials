@@ -118,7 +118,7 @@ export class CascadeShadowMapper extends DirectionalShadowMapper {
 		if (this._scissorRectsInvalid)
 			this.updateScissorRects();
 
-		renderGroup.depthRenderGroup.getRenderer(partition).cullPlanes = this._cullPlanes;
+		//renderGroup.depthRenderGroup.getRenderer(partition).cullPlanes = this._cullPlanes;
 		//rootRenderer.getDepthRenderer()._iRenderCascades(this._overallDepthProjection, view, this._image2D, this._numCascades, this._pScissorRects, this._depthProjections);
 	}
 

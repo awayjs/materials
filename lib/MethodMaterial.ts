@@ -2,6 +2,8 @@
 
 import { ContextGLCompareMode, ImageBase } from '@awayjs/stage';
 
+import { DefaultRenderer, DepthRenderer, DistanceRenderer, ImageTexture2D } from '@awayjs/renderer';
+
 import { AmbientBasicMethod } from './methods/AmbientBasicMethod';
 import { DiffuseBasicMethod } from './methods/DiffuseBasicMethod';
 import { DiffuseCompositeMethod } from './methods/DiffuseCompositeMethod';
@@ -10,7 +12,6 @@ import { NormalBasicMethod } from './methods/NormalBasicMethod';
 import { ShadowMethodBase } from './methods/ShadowMethodBase';
 import { SpecularBasicMethod } from './methods/SpecularBasicMethod';
 import { SpecularCompositeMethod } from './methods/SpecularCompositeMethod';
-import { ImageTexture2D } from './textures/ImageTexture2D';
 import { LightPickerBase } from './lightpickers/LightPickerBase';
 
 import { MaterialBase } from './MaterialBase';
@@ -365,6 +366,7 @@ import { StaticLightPicker } from './lightpickers/StaticLightPicker';
 import { MethodPassMode } from './passes/MethodPassMode';
 import { MethodPass } from './passes/MethodPass';
 import { _Render_DepthMaterial, _Render_DistanceMaterial } from './MaterialBase';
+import { CacheRenderer } from '@awayjs/renderer/dist/lib/CacheRenderer';
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
  * using material methods to define their appearance.
@@ -674,6 +676,7 @@ export class _Render_MethodMaterial extends _Render_MaterialBase {
 	}
 }
 
-RenderGroup.registerDefaultMaterial(_Render_MethodMaterial, MethodMaterial);
-RenderGroup.registerDepthMaterial(_Render_DepthMaterial, MethodMaterial);
-RenderGroup.registerDistanceMaterial(_Render_DistanceMaterial, MethodMaterial);
+CacheRenderer.registerMaterial(_Render_MethodMaterial, MethodMaterial);
+DefaultRenderer.registerMaterial(_Render_MethodMaterial, MethodMaterial);
+DepthRenderer.registerMaterial(_Render_DepthMaterial, MethodMaterial);
+DistanceRenderer.registerMaterial(_Render_DistanceMaterial, MethodMaterial);

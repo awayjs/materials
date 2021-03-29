@@ -1,6 +1,6 @@
 ﻿import { Image2D } from '@awayjs/stage';
 
-import { ImageTexture2D } from './ImageTexture2D';
+import { ImageTexture2D } from '@awayjs/renderer';
 
 export class ShadowTexture2D extends ImageTexture2D {
 	public static assetType: string = '[texture ShadowTexture2D]';

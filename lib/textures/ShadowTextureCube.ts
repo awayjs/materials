@@ -3,7 +3,7 @@
 import { PointLight } from '../lights/PointLight';
 import { ShadowMapperBase } from '../mappers/ShadowMapperBase';
 
-import { ImageTextureCube } from './ImageTextureCube';
+import { ImageTextureCube } from '@awayjs/renderer';
 
 export class ShadowTextureCube extends ImageTextureCube {
 	public static assetType: string = '[texture ShadowTextureCube]';

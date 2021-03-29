@@ -1,4 +1,4 @@
-import { TextureBase } from '../textures/TextureBase';
+import { TextureBase } from '@awayjs/renderer';
 
 import { NormalBasicMethod, _Shader_NormalBasicMethod } from './NormalBasicMethod';
 

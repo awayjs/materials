@@ -2,7 +2,7 @@ import { Matrix3D, Plane3D, Vector3D, ProjectionBase, Transform, OrthographicPro
 
 import { Image2D } from '@awayjs/stage';
 
-import { PartitionBase } from '@awayjs/view';
+import { PartitionBase, View } from '@awayjs/view';
 
 import { RenderGroup, DepthRenderer } from '@awayjs/renderer';
 
@@ -101,7 +101,9 @@ export class DirectionalShadowMapper extends ShadowMapperBase {
 
 	//@override
 	protected _renderMap(partition: PartitionBase, renderGroup: RenderGroup): void {
-		const depthRenderer: DepthRenderer = renderGroup.depthRenderGroup.getRenderer(partition);
+		const depthRenderer: DepthRenderer = RenderGroup
+			.getInstance(new View(null, renderGroup.stage), DepthRenderer)
+			.getRenderer(partition);
 		depthRenderer.cullPlanes = this._cullPlanes;
 		depthRenderer.view.preservePixelRatio = false;
 		depthRenderer.view.target = this._image2D;

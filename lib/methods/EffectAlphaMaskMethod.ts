@@ -1,4 +1,4 @@
-import { TextureBase } from '../textures/TextureBase';
+import { TextureBase } from '@awayjs/renderer';
 
 import { MethodBase, _Shader_MethodBase } from './MethodBase';
 
@@ -79,9 +79,7 @@ export class EffectAlphaMaskMethod extends MethodBase {
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO } from '@awayjs/renderer';
-
-import { ImageTexture2D } from '../textures/ImageTexture2D';
+import { ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO, ImageTexture2D } from '@awayjs/renderer';
 
 /**
  * _Shader_EffectAlphaMaskMethod allows the use of an additional texture to specify the alpha value of the material. When used

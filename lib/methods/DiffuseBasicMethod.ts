@@ -1,4 +1,4 @@
-import { TextureBase } from '../textures/TextureBase';
+import { TextureBase } from '@awayjs/renderer';
 
 import { MethodBase, _Shader_MethodBase } from './MethodBase';
 
@@ -113,10 +113,9 @@ import { AssetEvent } from '@awayjs/core';
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO } from '@awayjs/renderer';
+import { ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO, TextureCube } from '@awayjs/renderer';
 
 import { LightingShader } from '../shaders/LightingShader';
-import { TextureCube } from '../textures/TextureCube';
 
 import { _IShader_Method } from './_IShader_Method';
 

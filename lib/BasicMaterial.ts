@@ -1,8 +1,8 @@
 import { ImageBase } from '@awayjs/stage';
 
+import { DefaultRenderer, DepthRenderer, DistanceRenderer, ImageTexture2D, TextureBase } from '@awayjs/renderer';
+
 import { MaterialBase } from './MaterialBase';
-import { ImageTexture2D } from './textures/ImageTexture2D';
-import { TextureBase } from './textures/TextureBase';
 
 /**
  * BasicMaterial forms an abstract base class for the default shaded materials provided by Stage,
@@ -86,6 +86,7 @@ import { _Render_MaterialBase, _Render_ElementsBase } from '@awayjs/renderer';
 
 import { BasicMaterialPass } from './passes/BasicMaterialPass';
 import { _Render_DepthMaterial, _Render_DistanceMaterial } from './MaterialBase';
+import { CacheRenderer } from '@awayjs/renderer/dist/lib/CacheRenderer';
 
 /**
  * RenderMaterialObject forms an abstract base class for the default shaded materials provided by Stage,
@@ -122,8 +123,9 @@ export class _Render_BasicMaterial extends _Render_MaterialBase {
 	}
 }
 
-RenderGroup.registerDefaultMaterial(_Render_BasicMaterial, BasicMaterial);
-RenderGroup.registerDepthMaterial(_Render_DepthMaterial, BasicMaterial);
-RenderGroup.registerDistanceMaterial(_Render_DistanceMaterial, BasicMaterial);
+CacheRenderer.registerMaterial(_Render_BasicMaterial, BasicMaterial);
+DefaultRenderer.registerMaterial(_Render_BasicMaterial, BasicMaterial);
+DepthRenderer.registerMaterial(_Render_DepthMaterial, BasicMaterial);
+DistanceRenderer.registerMaterial(_Render_DistanceMaterial, BasicMaterial);
 
 MaterialUtils.setDefaultMaterialClass(BasicMaterial);

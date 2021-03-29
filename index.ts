@@ -68,16 +68,11 @@ export {LightingShader} from "./lib/shaders/LightingShader";
 
 export {DepthTexture2D} from "./lib/textures/DepthTexture2D";
 export {DepthTextureCube, _Shader_DepthTexture} from "./lib/textures/DepthTextureCube";
-export {ImageTexture2D, _Shader_ImageTexture2D} from "./lib/textures/ImageTexture2D";
-export {ImageTextureCube, _Shader_ImageTexture} from "./lib/textures/ImageTextureCube";
 export {ShadowTexture2D, _Shader_ShadowTexture2D} from "./lib/textures/ShadowTexture2D";
 export {ShadowTextureCube, _Shader_ShadowTextureCube} from "./lib/textures/ShadowTextureCube";
-export {Texture2D} from "./lib/textures/Texture2D";
-export {TextureBase} from "./lib/textures/TextureBase";
-export {TextureCube} from "./lib/textures/TextureCube";
 export {VideoTexture} from "./lib/textures/VideoTexture";
 
 export {BasicMaterial, _Render_BasicMaterial} from "./lib/BasicMaterial";
-export {MaterialBase, _Render_MaterialPassBase,_Render_DepthMaterial, _Render_DistanceMaterial} from "./lib/MaterialBase";
+export {MaterialBase,_Render_DepthMaterial, _Render_DistanceMaterial} from "./lib/MaterialBase";
 export {MethodMaterial, _Render_MethodMaterial} from "./lib/MethodMaterial";
 export {MethodMaterialMode} from "./lib/MethodMaterialMode";

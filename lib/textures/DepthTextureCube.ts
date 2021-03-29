@@ -1,6 +1,6 @@
 ﻿import { ImageCube } from '@awayjs/stage';
 
-import { ImageTextureCube } from './ImageTextureCube';
+import { ImageTextureCube } from '@awayjs/renderer';
 
 export class DepthTextureCube extends ImageTextureCube {
 	public static assetType: string = '[texture DepthTextureCube]';
@@ -20,9 +20,7 @@ export class DepthTextureCube extends ImageTextureCube {
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { ShaderBase, ChunkVO } from '@awayjs/renderer';
-
-import { _Shader_ImageTexture } from './ImageTextureCube';
+import { ShaderBase, ChunkVO, _Shader_ImageTexture } from '@awayjs/renderer';
 
 /**
  *

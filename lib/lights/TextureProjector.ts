@@ -1,6 +1,7 @@
 import { PerspectiveProjection, AssetBase, Transform } from '@awayjs/core';
 
-import { TextureBase } from '../textures/TextureBase';
+import { TextureBase } from '@awayjs/renderer';
+
 import { TextureProjectorEvent } from '../events/TextureProjectorEvent';
 
 /**

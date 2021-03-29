@@ -1,4 +1,5 @@
-﻿import { ImageTexture2D } from './ImageTexture2D';
+﻿import { ImageTexture2D } from "@awayjs/renderer";
+
 
 export class VideoTexture extends ImageTexture2D {
 	public static assetType: string = '[texture VideoTexture]';

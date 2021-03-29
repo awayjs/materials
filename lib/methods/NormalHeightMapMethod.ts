@@ -1,4 +1,4 @@
-import { TextureBase } from '../textures/TextureBase';
+import { TextureBase } from '@awayjs/renderer';
 
 import { NormalBasicMethod, _Shader_NormalBasicMethod } from './NormalBasicMethod';
 import { MethodBase } from './MethodBase';
@@ -56,9 +56,7 @@ export class NormalHeightMapMethod extends NormalBasicMethod {
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement, Image2D } from '@awayjs/stage';
 
-import { ShaderBase } from '@awayjs/renderer';
-
-import { ImageTexture2D } from '../textures/ImageTexture2D';
+import { ShaderBase, ImageTexture2D } from '@awayjs/renderer';
 
 /**
  * _Shader_NormalHeightMapMethod provides a normal map method that uses a height map to calculate the normals.

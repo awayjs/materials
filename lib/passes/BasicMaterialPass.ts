@@ -2,12 +2,11 @@ import { AssetEvent } from '@awayjs/core';
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { _Render_RenderableBase, _Render_MaterialBase, _Render_ElementsBase, ShaderBase, _Shader_TextureBase } from '@awayjs/renderer';
+import { _Render_RenderableBase, _Render_MaterialBase, _Render_ElementsBase, ShaderBase, _Shader_TextureBase, TextureBase } from '@awayjs/renderer';
 
 import { MaterialBase } from '../MaterialBase';
 
 import { PassBase } from './PassBase';
-import { TextureBase } from '../textures/TextureBase';
 
 /**
  * BasicMaterialPass forms an abstract base class for the default shaded materials provided by Stage,

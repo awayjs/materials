@@ -1,6 +1,7 @@
 import { BitmapImage2D } from '@awayjs/stage';
 
-import { ImageTexture2D, _Shader_ImageTexture2D } from '../textures/ImageTexture2D';
+import { ImageTexture2D, _Shader_ImageTexture2D } from '@awayjs/renderer';
+
 import { DirectionalLight } from '../lights/DirectionalLight';
 
 import { ShadowMethodBase, _Shader_ShadowMethodBase } from './ShadowMethodBase';

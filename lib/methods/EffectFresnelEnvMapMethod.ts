@@ -1,4 +1,4 @@
-import { TextureBase } from '../textures/TextureBase';
+import { TextureBase } from '@awayjs/renderer';
 
 import { EffectEnvMapMethod, _Shader_EffectEnvMapMethod } from './EffectEnvMapMethod';
 

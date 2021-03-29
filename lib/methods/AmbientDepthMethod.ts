@@ -41,8 +41,7 @@ export class AmbientDepthMethod extends AmbientBasicMethod {
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { ShaderBase, _Shader_TextureBase, ChunkVO } from '@awayjs/renderer';
-import { TextureBase } from '../textures/TextureBase';
+import { ShaderBase, _Shader_TextureBase, ChunkVO, TextureBase } from '@awayjs/renderer';
 
 /**
  * AmbientDepthChunk provides a debug method to visualise depth maps

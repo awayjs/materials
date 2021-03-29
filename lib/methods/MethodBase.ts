@@ -1,6 +1,7 @@
 import { AssetBase } from '@awayjs/core';
 
-import { TextureBase } from '../textures/TextureBase';
+import { TextureBase } from '@awayjs/renderer';
+
 import { MethodEvent } from '../events/MethodEvent';
 import { MaterialBase } from '../MaterialBase';
 

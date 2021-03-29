@@ -1,6 +1,6 @@
 import { AssetEvent } from '@awayjs/core';
 
-import { TextureBase } from '../textures/TextureBase';
+import { TextureBase } from '@awayjs/renderer';
 
 import { MethodBase, _Shader_MethodBase } from './MethodBase';
 
@@ -94,9 +94,7 @@ export class AmbientBasicMethod extends MethodBase {
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { _Render_RenderableBase, ShaderBase, _Shader_TextureBase, ChunkVO } from '@awayjs/renderer';
-
-import { TextureCube } from '../textures/TextureCube';
+import { _Render_RenderableBase, ShaderBase, _Shader_TextureBase, ChunkVO, TextureCube } from '@awayjs/renderer';
 
 /**
  * _Shader_AmbientBasicMethod provides the default shading method for uniform ambient lighting.
