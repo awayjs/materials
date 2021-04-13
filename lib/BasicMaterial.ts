@@ -86,7 +86,7 @@ import { _Render_MaterialBase, _Render_ElementsBase } from '@awayjs/renderer';
 
 import { BasicMaterialPass } from './passes/BasicMaterialPass';
 import { _Render_DepthMaterial, _Render_DistanceMaterial } from './MaterialBase';
-import { CacheRenderer } from '@awayjs/renderer/dist/lib/CacheRenderer';
+import { CacheRenderer } from '@awayjs/renderer';
 
 /**
  * RenderMaterialObject forms an abstract base class for the default shaded materials provided by Stage,

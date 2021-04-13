@@ -366,7 +366,7 @@ import { StaticLightPicker } from './lightpickers/StaticLightPicker';
 import { MethodPassMode } from './passes/MethodPassMode';
 import { MethodPass } from './passes/MethodPass';
 import { _Render_DepthMaterial, _Render_DistanceMaterial } from './MaterialBase';
-import { CacheRenderer } from '@awayjs/renderer/dist/lib/CacheRenderer';
+import { CacheRenderer } from '@awayjs/renderer';
 /**
  * CompiledPass forms an abstract base class for the default compiled pass materials provided by Away3D,
  * using material methods to define their appearance.
