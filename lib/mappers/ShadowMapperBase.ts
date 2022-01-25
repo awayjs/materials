@@ -68,17 +68,17 @@ export class ShadowMapperBase extends MethodBase implements IMapper {
 		this._updateSize();
 	}
 
-	public update(partition: PartitionBase, renderGroup: RenderGroup): void {
-		this._updateProjection(renderGroup.view.projection);
+	public update(partition: PartitionBase): void {
+		this._updateProjection(partition.rootNode.pool.projection);
 
-		this._renderMap(partition, renderGroup);
+		this._renderMap(partition);
 	}
 
 	protected _updateProjection(projection: ProjectionBase): void {
 		throw new AbstractMethodError();
 	}
 
-	protected _renderMap(partition: PartitionBase, renderGroup: RenderGroup): void {
+	protected _renderMap(partition: PartitionBase): void {
 		throw new AbstractMethodError();
 	}
 

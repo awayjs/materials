@@ -114,7 +114,7 @@ export class CascadeShadowMapper extends DirectionalShadowMapper {
 		this.dispatchEvent(new AssetEvent(AssetEvent.INVALIDATE, this));
 	}
 
-	protected _renderMap(partition: PartitionBase, renderGroup: RenderGroup): void {
+	protected _renderMap(partition: PartitionBase): void {
 		if (this._scissorRectsInvalid)
 			this.updateScissorRects();
 
