@@ -4,8 +4,6 @@ import { Image2D } from '@awayjs/stage';
 
 import { PartitionBase } from '@awayjs/view';
 
-import { RenderGroup } from '@awayjs/renderer';
-
 import { DirectionalShadowMapper, _Shader_DirectionalShadowMapper } from './DirectionalShadowMapper';
 
 export class CascadeShadowMapper extends DirectionalShadowMapper {

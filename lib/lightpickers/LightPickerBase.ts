@@ -4,7 +4,7 @@ import { LightBase } from '../lights/LightBase';
 import { DirectionalLight } from '../lights/DirectionalLight';
 import { LightProbe } from '../lights/LightProbe';
 import { PointLight } from '../lights/PointLight';
-import { ContainerNode, EntityNode } from '@awayjs/view';
+import { ContainerNode } from '@awayjs/view';
 
 /**
  * LightPickerBase provides an abstract base clase for light picker classes. These classes are responsible for
