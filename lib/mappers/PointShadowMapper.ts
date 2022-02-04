@@ -96,15 +96,16 @@ export class PointShadowMapper extends ShadowMapperBase {
 	 * @param renderer
 	 * @private
 	 */
-	protected _renderMap(partition: PartitionBase, renderGroup: RenderGroup): void {
+	protected _renderMap(partition: PartitionBase): void {
+		const view = new View(null, partition.rootNode.view.stage);
 		const distanceRenderer: DistanceRenderer = RenderGroup
-			.getInstance(new View(null, renderGroup.stage), DistanceRenderer)
-			.getRenderer(partition);
+			.getInstance(DistanceRenderer)
+			.getRenderer(view.getNode(partition.rootNode.container).partition);
 
 		for (let i: number = 0; i < 6; ++i) {
 			if (this._needsRender[i]) {
-				distanceRenderer.view.target = this._imageCube;
-				distanceRenderer.view.projection = this._depthProjections[i];
+				view.target = this._imageCube;
+				view.projection = this._depthProjections[i];
 				distanceRenderer.render(null, i);
 			}
 		}

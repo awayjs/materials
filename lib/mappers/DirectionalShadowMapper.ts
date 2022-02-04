@@ -100,14 +100,18 @@ export class DirectionalShadowMapper extends ShadowMapperBase {
 	}
 
 	//@override
-	protected _renderMap(partition: PartitionBase, renderGroup: RenderGroup): void {
+	protected _renderMap(partition: PartitionBase): void {
+		const view = new View(null, partition.rootNode.view.stage);
+
+		view.preservePixelRatio = false;
+		view.target = this._image2D;
+		view.projection = this._overallDepthProjection;
+
 		const depthRenderer: DepthRenderer = RenderGroup
-			.getInstance(new View(null, renderGroup.stage), DepthRenderer)
-			.getRenderer(partition);
+			.getInstance(DepthRenderer)
+			.getRenderer(view.getNode(partition.rootNode.container).partition);
+
 		depthRenderer.cullPlanes = this._cullPlanes;
-		depthRenderer.view.preservePixelRatio = false;
-		depthRenderer.view.target = this._image2D;
-		depthRenderer.view.projection = this._overallDepthProjection;
 		depthRenderer.render();
 	}
 

@@ -351,7 +351,7 @@ export class MaterialBase extends AssetBase implements IMaterial {
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
-import { _Render_MaterialPassBase, _Render_ElementsBase, _Render_RenderableBase, ShaderBase, _Shader_TextureBase, IPass, _Render_MaterialBase, PassEvent } from '@awayjs/renderer';
+import { _Render_MaterialPassBase, _Render_ElementsBase, ShaderBase, _Shader_TextureBase } from '@awayjs/renderer';
 
 /**
  * _Render_DepthMaterial forms an abstract base class for the default shaded materials provided by Stage,

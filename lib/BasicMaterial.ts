@@ -76,7 +76,7 @@ export class BasicMaterial extends MaterialBase {
 	}
 }
 
-import { MaterialUtils, RenderGroup } from '@awayjs/renderer';
+import { MaterialUtils } from '@awayjs/renderer';
 
 import { AssetEvent } from '@awayjs/core';
 

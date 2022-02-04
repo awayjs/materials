@@ -360,7 +360,7 @@ export class MethodMaterial extends MaterialBase {
 
 import { BlendMode } from '@awayjs/stage';
 
-import { _Render_MaterialBase, _Render_ElementsBase, RenderGroup } from '@awayjs/renderer';
+import { _Render_MaterialBase, _Render_ElementsBase } from '@awayjs/renderer';
 
 import { StaticLightPicker } from './lightpickers/StaticLightPicker';
 import { MethodPassMode } from './passes/MethodPassMode';

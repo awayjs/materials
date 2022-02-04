@@ -2,7 +2,7 @@ import { AbstractMethodError, ProjectionBase } from '@awayjs/core';
 
 import { PartitionBase } from '@awayjs/view';
 
-import { IMapper, RenderGroup, TextureBase } from '@awayjs/renderer';
+import { IMapper, TextureBase } from '@awayjs/renderer';
 
 import { LightBase } from '../lights/LightBase';
 
@@ -68,17 +68,17 @@ export class ShadowMapperBase extends MethodBase implements IMapper {
 		this._updateSize();
 	}
 
-	public update(partition: PartitionBase, renderGroup: RenderGroup): void {
-		this._updateProjection(renderGroup.view.projection);
+	public update(partition: PartitionBase): void {
+		this._updateProjection(partition.rootNode.view.projection);
 
-		this._renderMap(partition, renderGroup);
+		this._renderMap(partition);
 	}
 
 	protected _updateProjection(projection: ProjectionBase): void {
 		throw new AbstractMethodError();
 	}
 
-	protected _renderMap(partition: PartitionBase, renderGroup: RenderGroup): void {
+	protected _renderMap(partition: PartitionBase): void {
 		throw new AbstractMethodError();
 	}
 
@@ -141,7 +141,7 @@ export class _Shader_ShadowMapperBase extends _Shader_MethodBase {
 		this._mapper = mapper;
 		this._shader = shader;
 
-		this._shader.renderMaterial.renderGroup._addMapper(this._mapper);
+		this._shader.renderMaterial.renderer._addMapper(this._mapper);
 	}
 
 	/**
@@ -150,7 +150,7 @@ export class _Shader_ShadowMapperBase extends _Shader_MethodBase {
 	public onClear(event: AssetEvent): void {
 		super.onClear(event);
 
-		this._shader.renderMaterial.renderGroup._removeMapper(this._mapper);
+		this._shader.renderMaterial.renderer._removeMapper(this._mapper);
 	}
 
 	/**
