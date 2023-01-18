@@ -25,6 +25,7 @@ export class MaterialBase extends AssetBase implements IMaterial {
 	public _pAlphaThreshold: number = 0;
 	public _pAnimateUVs: boolean = false;
 	private _onInvalidatePropertiesDelegate: (event: StyleEvent) => void;
+	private _onInvalidateImagesDelegate: (event: StyleEvent) => void;
 	private _style: Style = new Style();
 
 	/**
@@ -61,7 +62,9 @@ export class MaterialBase extends AssetBase implements IMaterial {
 		super();
 
 		this._onInvalidatePropertiesDelegate = (event: StyleEvent) => this._onInvalidateProperties(event);
+		this._onInvalidateImagesDelegate = (event: StyleEvent) => this._onInvalidateImages(event);
 		this._style.addEventListener(StyleEvent.INVALIDATE_PROPERTIES, this._onInvalidatePropertiesDelegate);
+		this._style.addEventListener(StyleEvent.INVALIDATE_IMAGES, this._onInvalidateImagesDelegate);
 
 		if (imageColor instanceof ImageBase)
 			this._style.image = <ImageBase> imageColor;
@@ -172,13 +175,17 @@ export class MaterialBase extends AssetBase implements IMaterial {
 		if (this._style == value)
 			return;
 
-		if (this._style)
+		if (this._style) {
 			this._style.removeEventListener(StyleEvent.INVALIDATE_PROPERTIES, this._onInvalidatePropertiesDelegate);
+			this._style.removeEventListener(StyleEvent.INVALIDATE_IMAGES, this._onInvalidateImagesDelegate);
+		}
 
 		this._style = value;
 
-		if (this._style)
+		if (this._style) {
 			this._style.addEventListener(StyleEvent.INVALIDATE_PROPERTIES, this._onInvalidatePropertiesDelegate);
+			this._style.addEventListener(StyleEvent.INVALIDATE_IMAGES, this._onInvalidateImagesDelegate);
+		}
 
 		this.invalidatePasses();
 	}
@@ -346,6 +353,10 @@ export class MaterialBase extends AssetBase implements IMaterial {
 		this.invalidatePasses();
 
 		this.invalidateTextures();
+	}
+
+	private _onInvalidateImages(event: StyleEvent): void {
+		this.invalidate();
 	}
 }
 
