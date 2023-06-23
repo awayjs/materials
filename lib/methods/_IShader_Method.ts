@@ -1,4 +1,4 @@
-import { IEventDispatcher } from '@awayjs/core';
+import { IAbstraction } from '@awayjs/core';
 
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
@@ -7,7 +7,7 @@ import { _Render_RenderableBase, ChunkVO } from '@awayjs/renderer';
 /**
  *
  */
-export interface _IShader_Method extends IEventDispatcher
+export interface _IShader_Method extends IAbstraction
 {
 	chunkVO: ChunkVO;
 
