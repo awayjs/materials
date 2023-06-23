@@ -123,13 +123,13 @@ export class _Shader_AmbientBasicMethod extends _Shader_MethodBase {
 	public onClear(event: AssetEvent): void {
 		super.onClear(event);
 
-		this._method = null;
-		this._shader = null;
-
 		if (this._texture) {
 			this._texture.onClear(new AssetEvent(AssetEvent.CLEAR, this._method.texture));
 			this._texture = null;
 		}
+
+		this._method = null;
+		this._shader = null;
 	}
 
 	/**
