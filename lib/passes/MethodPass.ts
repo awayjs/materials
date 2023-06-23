@@ -437,6 +437,8 @@ export class MethodPass extends PassBase implements ILightingPass {
 			this._diffuseChunk = null;
 		}
 
+		this._diffuseMethod = value;
+
 		if (value) {
 			this._diffuseChunk = value.getAbstraction<_Shader_LightingCompositeMethod | _Shader_DiffuseBasicMethod>(this._shader);
 			this._addDependency(value);
@@ -458,6 +460,8 @@ export class MethodPass extends PassBase implements ILightingPass {
 			this._removeDependency(this._specularMethod);
 			this._specularChunk = null;
 		}
+
+		this._specularMethod = value;
 
 		if (value) {
 			this._specularChunk = value.getAbstraction<_Shader_LightingCompositeMethod | _Shader_SpecularBasicMethod>(this._shader);
