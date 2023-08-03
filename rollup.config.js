@@ -1,34 +1,30 @@
-var includePaths = require('rollup-plugin-includepaths');
+import nodeResolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import terser from '@rollup/plugin-terser';
 
-module.exports = {
-	entry: './dist/index.js',
-	sourceMap: true,
-	format: 'umd',
-	moduleName: 'AwayjsMaterials',
+export default {
+	input: './dist/index.js',
+	output: {
+		name: 'AwayjsMaterials',
+		globals: {
+			'@awayjs/core': 'AwayjsCore',
+			'@awayjs/stage': 'AwayjsStage',
+			'@awayjs/view': 'AwayjsView',
+			'@awayjs/renderer': 'AwayjsRenderer'
+		},
+		sourcemap: true,
+		format: 'umd',
+		file: './bundle/awayjs-materials.umd.js'
+	},
 	external: [
 		'@awayjs/core',
-		'@awayjs/graphics',
-		'@awayjs/scene',
 		'@awayjs/stage',
 		'@awayjs/view',
 		'@awayjs/renderer'
 	],
-	globals: {
-		'@awayjs/core': 'AwayjsCore',
-		'@awayjs/graphics': 'AwayjsGraphics',
-		'@awayjs/scene': 'AwayjsScene',
-		'@awayjs/stage': 'AwayjsStage',
-		'@awayjs/view': 'AwayjsView',
-		'@awayjs/renderer': 'AwayjsRenderer'
-	},
-	targets: [
-		{ dest: './bundle/awayjs-materials.umd.js'}
-	],
 	plugins: [
-		includePaths({
-			include : {
-				"tslib": "./node_modules/tslib/tslib.es6.js"
-			}
-		}) ]
+		nodeResolve(),
+		commonjs(),
+		terser(),
+	]
 };
-
