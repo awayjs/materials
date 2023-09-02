@@ -120,7 +120,7 @@ export class _Shader_AmbientBasicMethod extends _Shader_MethodBase {
 
 	public onInvalidate(event: AssetEvent): void {
 		super.onInvalidate(event);
- 
+
 		const texture = this._method.texture?.getAbstraction<_Shader_TextureBase>(this._shader);
 
 		if (this._texture != texture) {
@@ -128,7 +128,7 @@ export class _Shader_AmbientBasicMethod extends _Shader_MethodBase {
 				this._texture.onClear(null);
 				this._texture = null;
 			}
-			
+
 			this._texture = texture;
 		}
 	}
