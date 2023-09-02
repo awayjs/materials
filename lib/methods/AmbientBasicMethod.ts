@@ -115,6 +115,22 @@ export class _Shader_AmbientBasicMethod extends _Shader_MethodBase {
 
 		this._method = method;
 		this._shader = shader;
+		this._texture = this._method.texture?.getAbstraction<_Shader_TextureBase>(this._shader);
+	}
+
+	public onInvalidate(event: AssetEvent): void {
+		super.onInvalidate(event);
+ 
+		const texture = this._method.texture?.getAbstraction<_Shader_TextureBase>(this._shader);
+
+		if (this._texture != texture) {
+			if (this._texture) {
+				this._texture.onClear(null);
+				this._texture = null;
+			}
+			
+			this._texture = texture;
+		}
 	}
 
 	/**
@@ -136,9 +152,7 @@ export class _Shader_AmbientBasicMethod extends _Shader_MethodBase {
      * @inheritDoc
      */
 	public _initVO(chunkVO: ChunkVO): void {
-		if (this._method.texture) {
-			this._texture = this._method.texture.getAbstraction<_Shader_TextureBase>(this._shader);
-
+		if (this._texture) {
 			this._texture._initVO(chunkVO);
 
 			if (this._method.texture instanceof TextureCube)
@@ -146,8 +160,6 @@ export class _Shader_AmbientBasicMethod extends _Shader_MethodBase {
 			else
 				this._shader.uvDependencies++;
 
-		} else if (this._texture) {
-			this._texture = null;
 		}
 	}
 
