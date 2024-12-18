@@ -32,7 +32,7 @@ export class _Shader_ShadowFilteredMethod extends _Shader_ShadowMethodBase {
 	/**
      * Creates a new _Shader_ShadowFilteredMethod.
      */
-	public init(method: ShadowFilteredMethod, shader: LightingShader): void{
+	public init(method: ShadowFilteredMethod, shader: LightingShader): void {
 		super.init(method, shader);
 	}
 
