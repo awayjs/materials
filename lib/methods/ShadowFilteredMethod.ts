@@ -32,8 +32,8 @@ export class _Shader_ShadowFilteredMethod extends _Shader_ShadowMethodBase {
 	/**
      * Creates a new _Shader_ShadowFilteredMethod.
      */
-	constructor(method: ShadowFilteredMethod, shader: LightingShader) {
-		super(method, shader);
+	public init(method: ShadowFilteredMethod, shader: LightingShader): void{
+		super.init(method, shader);
 	}
 
 	/**

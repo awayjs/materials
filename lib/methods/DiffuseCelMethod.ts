@@ -75,8 +75,8 @@ export class _Shader_DiffuseCelMethod extends _Shader_LightingCompositeMethod {
      * @param levels The amount of shadow gradations.
      * @param baseMethod An optional diffuse method on which the cartoon shading is based. If omitted, DiffuseBasicMethod is used.
      */
-	constructor(method: DiffuseCelMethod, shader: LightingShader) {
-		super(method, shader);
+	public init(method: DiffuseCelMethod, shader: LightingShader): void {
+		super.init(method, shader);
 
 		this._method = method;
 		this._shader = shader;

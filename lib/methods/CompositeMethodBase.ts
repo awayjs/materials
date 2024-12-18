@@ -105,8 +105,8 @@ export class _Shader_CompositeMethodBase extends AbstractionBase implements _ISh
      * @param modulateMethod The method which will add the code to alter the base method's strength. It needs to have the signature clampDiffuse(t:ShaderRegisterElement, regCache:ShaderRegisterCache):string, in which t.w will contain the diffuse strength.
      * @param baseMethod The base diffuse method on which this method's shading is based.
      */
-	constructor(method: CompositeMethodBase, shader: LightingShader) {
-		super(method, shader);
+	public init(method: CompositeMethodBase, shader: LightingShader): void {
+		super.init(method, shader);
 
 		this._baseChunk = method.baseMethod.getAbstraction<_Shader_MethodBase>(shader);
 	}

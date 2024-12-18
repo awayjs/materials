@@ -67,8 +67,8 @@ export class _Shader_NormalHeightMapMethod extends _Shader_NormalBasicMethod {
 	/**
      * Creates a new _Shader_NormalHeightMapMethod.
      */
-	constructor(method: NormalHeightMapMethod, shader: ShaderBase) {
-		super(method, shader);
+	public init(method: NormalHeightMapMethod, shader: ShaderBase): void {
+		super.init(method, shader);
 	}
 
 	/**

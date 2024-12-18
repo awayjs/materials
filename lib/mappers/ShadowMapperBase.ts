@@ -135,8 +135,8 @@ export class _Shader_ShadowMapperBase extends _Shader_MethodBase {
 	/**
      * Creates a new _Shader_ShadowMapperBase object.
      */
-	constructor(mapper: ShadowMapperBase, shader: ShaderBase) {
-		super(mapper, shader);
+	public init(mapper: ShadowMapperBase, shader: ShaderBase): void {
+		super.init(mapper, shader);
 
 		this._mapper = mapper;
 		this._shader = shader;

@@ -58,8 +58,8 @@ export class _Shader_EffectColorTransformMethod extends _Shader_MethodBase {
 	/**
      * Creates a new EffectColorTransformChumk.
      */
-	constructor(method: EffectColorTransformMethod, shader: ShaderBase) {
-		super(method, shader);
+	public init(method: EffectColorTransformMethod, shader: ShaderBase): void {
+		super.init(method, shader);
 
 		this._method = method;
 		this._shader = shader;

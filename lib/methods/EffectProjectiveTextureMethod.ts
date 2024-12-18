@@ -151,8 +151,8 @@ export class _Shader_EffectProjectiveTextureMethod extends _Shader_MethodBase {
 	/**
      * Creates a new EffectEnvMapChunk.
      */
-	constructor(method: EffectProjectiveTextureMethod, shader: ShaderBase) {
-		super(method, shader);
+	public init(method: EffectProjectiveTextureMethod, shader: ShaderBase): void {
+		super.init(method, shader);
 
 		this._method = method;
 		this._shader = shader;

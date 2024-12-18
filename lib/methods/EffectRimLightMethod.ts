@@ -126,8 +126,8 @@ export class _Shader_EffectRimLightMethod extends _Shader_MethodBase {
 	/**
      * Creates a new EffectEnvMapChunk.
      */
-	constructor(method: EffectRimLightMethod, shader: ShaderBase) {
-		super(method, shader);
+	public init(method: EffectRimLightMethod, shader: ShaderBase): void {
+		super.init(method, shader);
 
 		this._method = method;
 		this._shader = shader;

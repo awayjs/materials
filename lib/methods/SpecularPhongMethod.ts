@@ -34,8 +34,8 @@ export class _Shader_SpecularPhongMethod extends _Shader_SpecularBasicMethod {
 	/**
      * Creates a new _Shader_SpecularPhongMethod object.
      */
-	constructor(method: SpecularPhongMethod, shader: LightingShader) {
-		super(method, shader);
+	public init(method: SpecularPhongMethod, shader: LightingShader): void {
+		super.init(method, shader);
 	}
 
 	/**

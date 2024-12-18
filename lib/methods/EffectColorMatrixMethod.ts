@@ -65,8 +65,8 @@ export class _Shader_EffectColorMatrixMethod extends _Shader_MethodBase {
      * @param method
      * @param shader
      */
-	constructor(method: EffectColorMatrixMethod, shader: ShaderBase) {
-		super(method, shader);
+	public init(method: EffectColorMatrixMethod, shader: ShaderBase): void {
+		super.init(method, shader);
 
 		this._method = method;
 		this._shader = shader;

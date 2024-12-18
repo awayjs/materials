@@ -58,8 +58,8 @@ export class _Shader_DiffuseWrapMethod extends _Shader_DiffuseBasicMethod {
 	/**
      * Creates a new _Shader_DiffuseWrapMethod object.
      */
-	constructor(method: DiffuseWrapMethod, shader: LightingShader) {
-		super(method, shader);
+	public init(method: DiffuseWrapMethod, shader: LightingShader): void {
+		super.init(method, shader);
 	}
 
 	/**

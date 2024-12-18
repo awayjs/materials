@@ -43,8 +43,8 @@ export class _Shader_ShadowMethodBase extends _Shader_CompositeMethodBase {
 	/**
      * Creates a new ShadowHardChunk.
      */
-	constructor(method: ShadowMethodBase, shader: LightingShader) {
-		super(method, shader);
+	public init(method: ShadowMethodBase, shader: LightingShader): void {
+		super.init(method, shader);
 
 		this._method = method;
 		this._shader = shader;

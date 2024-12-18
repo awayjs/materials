@@ -41,8 +41,8 @@ export class _Shader_SpecularAnisotropicMethod extends _Shader_SpecularBasicMeth
 	/**
      * Creates a new EffectEnvMapChunk.
      */
-	constructor(method: SpecularAnisotropicMethod, shader: LightingShader) {
-		super(method, shader);
+	public init(method: SpecularAnisotropicMethod, shader: LightingShader): void {
+		super.init(method, shader);
 	}
 
 	/**

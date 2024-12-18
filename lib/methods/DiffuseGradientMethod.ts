@@ -77,8 +77,8 @@ export class _Shader_DiffuseGradientMethod extends _Shader_DiffuseBasicMethod {
      * @param gradient A texture that contains the light colour based on the angle. This can be used to change
      * the light colour due to subsurface scattering when the surface faces away from the light.
      */
-	constructor(method: DiffuseGradientMethod, shader: LightingShader) {
-		super(method, shader);
+	public init(method: DiffuseGradientMethod, shader: LightingShader): void {
+		super.init(method, shader);
 	}
 
 	public _initVO(chunkVO: ChunkVO): void {

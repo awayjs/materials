@@ -109,8 +109,8 @@ export class _Shader_SpecularFresnelMethod extends _Shader_LightingCompositeMeth
 	/**
      * Creates a new _Shader_SpecularFresnelMethod object.
      */
-	constructor(method: SpecularFresnelMethod, shader: LightingShader) {
-		super(method, shader);
+	public init(method: SpecularFresnelMethod, shader: LightingShader): void {
+		super.init(method, shader);
 
 		this._method = method;
 		this._shader = shader;

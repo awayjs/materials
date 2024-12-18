@@ -139,8 +139,8 @@ export class _Shader_ShadowDitheredMethod extends _Shader_ShadowMethodBase {
 	/**
      * Creates a new _Shader_ShadowDitheredMethod.
      */
-	constructor(method: ShadowDitheredMethod, shader: LightingShader) {
-		super(method, shader);
+	public init(method: ShadowDitheredMethod, shader: LightingShader): void {
+		super.init(method, shader);
 	}
 
 	/**

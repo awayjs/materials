@@ -135,8 +135,8 @@ export class _Shader_NormalSimpleWaterMethod extends _Shader_NormalBasicMethod {
 	/**
      * Creates a new NormalHeightMapChunk.
      */
-	constructor(method: NormalSimpleWaterMethod, shader: ShaderBase) {
-		super(method, shader);
+	public init(method: NormalSimpleWaterMethod, shader: ShaderBase): void {
+		super.init(method, shader);
 	}
 
 	/**

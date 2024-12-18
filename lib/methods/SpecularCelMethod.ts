@@ -91,8 +91,8 @@ export class _Shader_SpecularCelMethod extends _Shader_LightingCompositeMethod {
      * @param baseMethod An optional diffuse method on which the cartoon shading
      * is based. If omitted, DiffuseBasicMethod is used.
      */
-	constructor(method: SpecularCelMethod, shader: LightingShader) {
-		super(method, shader);
+	public init(method: SpecularCelMethod, shader: LightingShader): void {
+		super.init(method, shader);
 
 		this._method = method;
 		this._shader = shader;

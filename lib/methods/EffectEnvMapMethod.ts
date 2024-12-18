@@ -115,8 +115,8 @@ export class _Shader_EffectEnvMapMethod extends _Shader_MethodBase {
 	/**
      * Creates a new _Shader_EffectEnvMapMethod.
      */
-	constructor(method: EffectEnvMapMethod, shader: ShaderBase) {
-		super(method, shader);
+	public init(method: EffectEnvMapMethod, shader: ShaderBase): void {
+		super.init(method, shader);
 
 		this._method = method;
 		this._shader = shader;

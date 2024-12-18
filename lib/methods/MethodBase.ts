@@ -120,8 +120,8 @@ export class _Shader_MethodBase extends AbstractionBase implements _IShader_Meth
 	/**
      * Create a new _Shader_MethodBase object.
      */
-	constructor(method: MethodBase, shader: ShaderBase) {
-		super(method, shader);
+	public init(method: MethodBase, shader: ShaderBase): void {
+		super.init(method, shader);
 	}
 
 	public _isUsed(): boolean {

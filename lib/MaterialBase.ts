@@ -379,8 +379,8 @@ export class _Render_DepthMaterial extends _Render_MaterialPassBase {
      * @param elementsClass
      * @param stage
      */
-	constructor(material: MaterialBase, renderElements: _Render_ElementsBase) {
-		super(material, renderElements);
+	public init(material: MaterialBase, renderElements: _Render_ElementsBase): void {
+		super.init(material, renderElements);
 
 		this._shader = new ShaderBase(renderElements, this, this, this._stage);
 
@@ -490,8 +490,8 @@ export class _Render_DistanceMaterial extends _Render_MaterialPassBase {
      *
      * @param material The material to which this pass belongs.
      */
-	constructor(material: MaterialBase, renderElements: _Render_ElementsBase) {
-		super(material, renderElements);
+	public init(material: MaterialBase, renderElements: _Render_ElementsBase): void {
+		super.init(material, renderElements);
 
 		this._shader = new ShaderBase(renderElements, this, this, this._stage);
 

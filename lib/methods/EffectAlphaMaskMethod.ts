@@ -95,8 +95,8 @@ export class _Shader_EffectAlphaMaskMethod extends _Shader_MethodBase {
 	/**
      * Creates a new _Shader_EffectAlphaMaskMethod object.
      */
-	constructor(method: EffectAlphaMaskMethod, shader: ShaderBase) {
-		super(method, shader);
+	public init(method: EffectAlphaMaskMethod, shader: ShaderBase): void {
+		super.init(method, shader);
 
 		this._method = method;
 		this._shader = shader;

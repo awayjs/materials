@@ -87,8 +87,8 @@ export class _Shader_NormalBasicMethod extends _Shader_MethodBase {
 	/**
      * Creates a new EffectEnvMapChunk.
      */
-	constructor(method: NormalBasicMethod, shader: ShaderBase) {
-		super(method, shader);
+	public init(method: NormalBasicMethod, shader: ShaderBase): void {
+		super.init(method, shader);
 
 		this._method = method;
 		this._shader = shader;

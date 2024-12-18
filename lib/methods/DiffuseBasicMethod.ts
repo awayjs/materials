@@ -149,8 +149,8 @@ export class _Shader_DiffuseBasicMethod extends _Shader_MethodBase implements _I
 	/**
      * Creates a new _Shader_DiffuseBasicMethod object.
      */
-	constructor(method: DiffuseBasicMethod, shader: LightingShader) {
-		super(method, shader);
+	public init(method: DiffuseBasicMethod, shader: LightingShader): void {
+		super.init(method, shader);
 
 		this._method = method;
 		this._shader = shader;

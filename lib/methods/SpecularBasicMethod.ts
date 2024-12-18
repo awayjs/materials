@@ -160,8 +160,8 @@ export class _Shader_SpecularBasicMethod extends _Shader_MethodBase implements _
 	/**
      * Creates a new EffectEnvMapChunk.
      */
-	constructor(method: SpecularBasicMethod, shader: LightingShader) {
-		super(method, shader);
+	public init(method: SpecularBasicMethod, shader: LightingShader): void {
+		super.init(method, shader);
 
 		this._method = method;
 		this._shader = shader;

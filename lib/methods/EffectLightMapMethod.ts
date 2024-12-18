@@ -131,8 +131,8 @@ export class _Shader_EffectLightMapMethod extends _Shader_MethodBase {
 	/**
      * Creates a new EffectEnvMapChunk.
      */
-	constructor(method: EffectLightMapMethod, shader: ShaderBase) {
-		super(method, shader);
+	public init(method: EffectLightMapMethod, shader: ShaderBase): void {
+		super.init(method, shader);
 
 		this._method = method;
 		this._shader = shader;

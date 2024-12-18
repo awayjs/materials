@@ -136,8 +136,8 @@ export class _Shader_DiffuseLightMapMethod extends _Shader_LightingCompositeMeth
 	/**
      * Creates a new _Shader_DiffuseLightMapMethod method.
      */
-	constructor(method: DiffuseLightMapMethod, shader: LightingShader) {
-		super(method, shader);
+	public init(method: DiffuseLightMapMethod, shader: LightingShader): void {
+		super.init(method, shader);
 
 		this._method = method;
 		this._shader = shader;

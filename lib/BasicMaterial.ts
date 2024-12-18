@@ -96,8 +96,8 @@ export class _Render_BasicMaterial extends _Render_MaterialBase {
 	private _basicMaterial: BasicMaterial;
 	private _pass: BasicMaterialPass;
 
-	constructor(material: BasicMaterial, renderElements: _Render_ElementsBase) {
-		super(material, renderElements);
+	public init(material: BasicMaterial, renderElements: _Render_ElementsBase): void {
+		super.init(material, renderElements);
 
 		this._basicMaterial = material;
 
@@ -108,6 +108,9 @@ export class _Render_BasicMaterial extends _Render_MaterialBase {
 		super.onClear(event);
 
 		this._basicMaterial = null;
+
+		this._pRemovePass(this._pass);
+		this._pass = null;
 	}
 
 	/**

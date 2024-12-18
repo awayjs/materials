@@ -86,8 +86,8 @@ export class _Shader_EffectFogMethod extends _Shader_MethodBase {
 	/**
      * Creates a new EffectEnvMapChunk.
      */
-	constructor(method: EffectFogMethod, shader: ShaderBase) {
-		super(method, shader);
+	public init(method: EffectFogMethod, shader: ShaderBase): void {
+		super.init(method, shader);
 
 		this._method = method;
 		this._shader = shader;

@@ -110,8 +110,8 @@ export class _Shader_AmbientBasicMethod extends _Shader_MethodBase {
 	/**
      * Creates a new _Shader_AmbientBasicMethod object.
      */
-	constructor(method: AmbientBasicMethod, shader: ShaderBase) {
-		super(method, shader);
+	public init(method: AmbientBasicMethod, shader: ShaderBase): void {
+		super.init(method, shader);
 
 		this._method = method;
 		this._shader = shader;

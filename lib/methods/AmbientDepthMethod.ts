@@ -53,8 +53,8 @@ export class _Shader_AmbientDepthMethod extends _Shader_AmbientBasicMethod {
 	/**
      * Creates a new AmbientBasicChunk object.
      */
-	constructor(method: AmbientDepthMethod, shader: ShaderBase) {
-		super(method, shader);
+	public init(method: AmbientDepthMethod, shader: ShaderBase): void {
+		super.init(method, shader);
 		const texture: TextureBase = method.castingLight.shadowMapper.textureMap;
 		this._shadowTexture = texture.getAbstraction<_Shader_TextureBase>(this._shader);
 	}

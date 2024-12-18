@@ -428,8 +428,8 @@ export class _Render_MethodMaterial extends _Render_MaterialBase {
      *
      * @param material The material to which this pass belongs.
      */
-	constructor(material: MethodMaterial, renderElements: _Render_ElementsBase) {
-		super(material, renderElements);
+	public init(material: MethodMaterial, renderElements: _Render_ElementsBase): void {
+		super.init(material, renderElements);
 
 		this._methodMaterial = material;
 		this._renderElements = renderElements;
@@ -672,7 +672,11 @@ export class _Render_MethodMaterial extends _Render_MaterialBase {
 	public onClear(event: AssetEvent): void {
 		super.onClear(event);
 
-		//TODO
+		this._methodMaterial = null;
+
+		this._pass = null;
+		this._casterLightPass = null;
+		this._nonCasterLightPasses = null;
 	}
 }
 

@@ -28,8 +28,8 @@ export class _Shader_ShadowHardMethod extends _Shader_ShadowMethodBase {
 	/**
      * Creates a new _Shader_ShadowHardMethod.
      */
-	constructor(method: ShadowHardMethod, shader: LightingShader) {
-		super(method, shader);
+	public init(method: ShadowHardMethod, shader: LightingShader): void {
+		super.init(method, shader);
 	}
 
 	/**
