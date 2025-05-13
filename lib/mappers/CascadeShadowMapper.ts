@@ -2,7 +2,7 @@ import { Matrix3D, Rectangle, AssetEvent, PerspectiveProjection, ProjectionBase 
 
 import { Image2D } from '@awayjs/stage';
 
-import { PartitionBase } from '@awayjs/view';
+import { INode } from '@awayjs/view';
 
 import { DirectionalShadowMapper, _Shader_DirectionalShadowMapper } from './DirectionalShadowMapper';
 
@@ -112,7 +112,7 @@ export class CascadeShadowMapper extends DirectionalShadowMapper {
 		this.dispatchEvent(new AssetEvent(AssetEvent.INVALIDATE, this));
 	}
 
-	protected _renderMap(partition: PartitionBase): void {
+	protected _renderMap(node: INode): void {
 		if (this._scissorRectsInvalid)
 			this.updateScissorRects();
 

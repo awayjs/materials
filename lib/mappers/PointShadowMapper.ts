@@ -2,7 +2,7 @@ import { Vector3D, PerspectiveProjection, ProjectionBase, Transform } from '@awa
 
 import { ImageCube } from '@awayjs/stage';
 
-import { PartitionBase, View } from '@awayjs/view';
+import { INode, View } from '@awayjs/view';
 
 import { RenderGroup, DistanceRenderer } from '@awayjs/renderer';
 
@@ -96,11 +96,11 @@ export class PointShadowMapper extends ShadowMapperBase {
 	 * @param renderer
 	 * @private
 	 */
-	protected _renderMap(partition: PartitionBase): void {
-		const view = new View(null, partition.rootNode.view.stage);
+	protected _renderMap(node: INode): void {
+		const view = new View(null, node.view.stage);
 		const distanceRenderer: DistanceRenderer = RenderGroup
 			.getInstance(DistanceRenderer)
-			.getRenderer(view.getNode(partition.rootNode.container).partition);
+			.getRenderer(view.getNode(node.container));
 
 		for (let i: number = 0; i < 6; ++i) {
 			if (this._needsRender[i]) {

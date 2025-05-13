@@ -1,6 +1,6 @@
 import { AbstractMethodError, ProjectionBase } from '@awayjs/core';
 
-import { PartitionBase } from '@awayjs/view';
+import { INode } from '@awayjs/view';
 
 import { IMapper, TextureBase } from '@awayjs/renderer';
 
@@ -68,17 +68,17 @@ export class ShadowMapperBase extends MethodBase implements IMapper {
 		this._updateSize();
 	}
 
-	public update(partition: PartitionBase): void {
-		this._updateProjection(partition.rootNode.view.projection);
+	public update(node: INode): void {
+		this._updateProjection(node.view.projection);
 
-		this._renderMap(partition);
+		this._renderMap(node);
 	}
 
 	protected _updateProjection(projection: ProjectionBase): void {
 		throw new AbstractMethodError();
 	}
 
-	protected _renderMap(partition: PartitionBase): void {
+	protected _renderMap(node: INode): void {
 		throw new AbstractMethodError();
 	}
 
