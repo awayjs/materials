@@ -44,7 +44,7 @@ export class BasicMaterialPass extends PassBase {
 
 	public dispose(): void {
 		if (this._shaderTexture) {
-			this._shaderTexture.onClear(new AssetEvent(AssetEvent.CLEAR, (<MaterialBase> this._renderMaterial.material).getTextureAt(0)));
+			this._shaderTexture.onClear(null);
 			this._shaderTexture = null;
 		}
 
