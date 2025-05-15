@@ -173,8 +173,8 @@ export class _Shader_ShadowDitheredMethod extends _Shader_ShadowMethodBase {
 
 		const data: Float32Array = this._shader.fragmentConstantData;
 		const index: number = this._fragmentConstantsIndex;
-		data[index + 1] = (this._shader.renderMaterial.renderer.view.width - 1) / 63;
-		data[index + 2] = (this._shader.renderMaterial.renderer.view.height - 1) / 63;
+		data[index + 1] = (this._shader.renderMaterial.renderElements.renderer.view.width - 1) / 63;
+		data[index + 2] = (this._shader.renderMaterial.renderElements.renderer.view.height - 1) / 63;
 		data[index + 3] = 2 * (<ShadowDitheredMethod> this._method).range / this._method.castingLight.shadowMapper.size;
 
 		this._grainMap.activate();

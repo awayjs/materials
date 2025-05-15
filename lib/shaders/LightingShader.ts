@@ -138,7 +138,7 @@ export class LightingShader extends ShaderBase {
 		super._setRenderState(renderable);
 
 		if (this._lightingPass.lightPicker)
-			this._lightingPass.lightPicker.collectLights(renderable.node);
+			this._lightingPass.lightPicker.collectLights(renderable.entity.node);
 
 		if (this.usesLights)
 			this.updateLights();

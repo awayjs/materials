@@ -141,7 +141,7 @@ export class _Shader_ShadowMapperBase extends _Shader_MethodBase {
 		this._mapper = mapper;
 		this._shader = shader;
 
-		this._shader.renderMaterial.renderer._addMapper(this._mapper);
+		this._shader.renderMaterial.renderElements.renderer._addMapper(this._mapper);
 	}
 
 	/**
@@ -150,7 +150,7 @@ export class _Shader_ShadowMapperBase extends _Shader_MethodBase {
 	public onClear(event: AssetEvent): void {
 		super.onClear(event);
 
-		this._shader.renderMaterial.renderer._removeMapper(this._mapper);
+		this._shader.renderMaterial.renderElements.renderer._removeMapper(this._mapper);
 	}
 
 	/**
