@@ -147,8 +147,8 @@ export class _Shader_ShadowMapperBase extends _Shader_MethodBase {
 	/**
      *
      */
-	public onClear(event: AssetEvent): void {
-		super.onClear(event);
+	public onClear(): void {
+		super.onClear();
 
 		this._shader.renderMaterial.renderElements.renderer._removeMapper(this._mapper);
 	}

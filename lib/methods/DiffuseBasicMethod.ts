@@ -156,8 +156,8 @@ export class _Shader_DiffuseBasicMethod extends _Shader_MethodBase implements _I
 		this._shader = shader;
 	}
 
-	public onClear(event: AssetEvent): void {
-		super.onClear(event);
+	public onClear(): void {
+		super.onClear();
 
 		this._method = null;
 		this._shader = null;
@@ -166,8 +166,8 @@ export class _Shader_DiffuseBasicMethod extends _Shader_MethodBase implements _I
 	/**
      *
      */
-	public onInvalidate(event: AssetEvent): void {
-		super.onInvalidate(event);
+	public onInvalidate(): void {
+		super.onInvalidate();
 
 		this._updateProperties();
 	}

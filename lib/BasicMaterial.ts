@@ -104,8 +104,8 @@ export class _Render_BasicMaterial extends _Render_MaterialBase {
 		this._pAddPass(this._pass = new BasicMaterialPass(this, renderElements));
 	}
 
-	public onClear(event: AssetEvent): void {
-		super.onClear(event);
+	public onClear(): void {
+		super.onClear();
 
 		this._basicMaterial = null;
 

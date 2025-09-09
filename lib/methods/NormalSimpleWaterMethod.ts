@@ -170,8 +170,8 @@ export class _Shader_NormalSimpleWaterMethod extends _Shader_NormalBasicMethod {
 	/**
      * @inheritDoc
      */
-	public onClear(event: AssetEvent): void {
-		super.onClear(event);
+	public onClear(): void {
+		super.onClear();
 
 		this._secondaryNormalMap = null;
 	}

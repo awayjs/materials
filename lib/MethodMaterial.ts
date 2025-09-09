@@ -667,8 +667,8 @@ export class _Render_MethodMaterial extends _Render_MaterialBase {
 	/**
      * @inheritDoc
      */
-	public onClear(event: AssetEvent): void {
-		super.onClear(event);
+	public onClear(): void {
+		super.onClear();
 
 		this._pass = null;
 		this._casterLightPass = null;

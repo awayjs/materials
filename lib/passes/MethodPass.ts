@@ -254,7 +254,7 @@ export class MethodPass extends PassBase implements ILightingPass {
 
 		method.removeEventListener(MethodEvent.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
 
-		this._chunks[index].onClear(null);
+		this._chunks[index].onClear();
 
 		this._methods.splice(index, 1);
 		this._chunks.splice(index, 1);

@@ -118,14 +118,14 @@ export class _Shader_AmbientBasicMethod extends _Shader_MethodBase {
 		this._texture = this._method.texture?.getAbstraction<_Shader_TextureBase>(this._shader);
 	}
 
-	public onInvalidate(event: AssetEvent): void {
-		super.onInvalidate(event);
+	public onInvalidate(): void {
+		super.onInvalidate();
 
 		const texture = this._method.texture?.getAbstraction<_Shader_TextureBase>(this._shader);
 
 		if (this._texture != texture) {
 			if (this._texture) {
-				this._texture.onClear(null);
+				this._texture.onClear();
 				this._texture = null;
 			}
 
@@ -136,11 +136,11 @@ export class _Shader_AmbientBasicMethod extends _Shader_MethodBase {
 	/**
      *
      */
-	public onClear(event: AssetEvent): void {
-		super.onClear(event);
+	public onClear(): void {
+		super.onClear();
 
 		if (this._texture) {
-			this._texture.onClear(null);
+			this._texture.onClear();
 			this._texture = null;
 		}
 
