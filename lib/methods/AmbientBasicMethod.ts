@@ -1,5 +1,3 @@
-import { AssetEvent } from '@awayjs/core';
-
 import { TextureBase } from '@awayjs/renderer';
 
 import { MethodBase, _Shader_MethodBase } from './MethodBase';

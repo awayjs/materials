@@ -260,7 +260,7 @@ export class _Shader_EffectProjectiveTextureMethod extends _Shader_MethodBase {
 	public _setRenderState(renderState: _Render_RenderableBase): void {
 		const matrix3D: Matrix3D = Matrix3D.CALCULATION_MATRIX;
 		matrix3D.copyFrom(this._method.projector.projection.viewMatrix3D);
-		matrix3D.prepend(renderState.renderSceneTransform);
+		matrix3D.prepend(renderState.entity.renderSceneTransform);
 		this._projectionMatrix.copyFrom(matrix3D, true);
 
 		this._texture._setRenderState(renderState);

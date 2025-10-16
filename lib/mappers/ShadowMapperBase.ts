@@ -91,8 +91,6 @@ export class ShadowMapperBase extends MethodBase implements IMapper {
 	}
 }
 
-import { AssetEvent } from '@awayjs/core';
-
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
 import { _Render_RenderableBase, ShaderBase, _Shader_TextureBase, ChunkVO } from '@awayjs/renderer';
