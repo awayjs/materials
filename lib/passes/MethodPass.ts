@@ -238,7 +238,7 @@ export class MethodPass extends PassBase implements ILightingPass {
 		this._colorTransformMethod = value;
 
 		if (value) {
-			this._colorTransformChunk = value.getAbstraction<_Shader_MethodBase>(this._shader);
+			this._colorTransformChunk = this._shader.abstractions.getAbstraction<_Shader_MethodBase>(value);
 			this._addDependency(value);
 		}
 	}
@@ -265,7 +265,7 @@ export class MethodPass extends PassBase implements ILightingPass {
 	private _addDependency(method: MethodBase, effectsDependency: boolean = false, index: number = -1): void {
 		method.addEventListener(MethodEvent.SHADER_INVALIDATED, this._onMethodInvalidatedDelegate);
 
-		const chunk: _IShader_Method =  method.getAbstraction<_Shader_MethodBase>(this._shader);
+		const chunk: _IShader_Method =  this._shader.abstractions.getAbstraction<_Shader_MethodBase>(method);
 
 		if (effectsDependency) {
 			if (index != -1) {
@@ -368,7 +368,7 @@ export class MethodPass extends PassBase implements ILightingPass {
 		this._normalMethod = value;
 
 		if (value) {
-			this._normalChunk = value.getAbstraction<_Shader_MethodBase>(this._shader);
+			this._normalChunk = this._shader.abstractions.getAbstraction<_Shader_MethodBase>(value);
 			this._addDependency(value);
 		}
 	}
@@ -392,7 +392,7 @@ export class MethodPass extends PassBase implements ILightingPass {
 		this._ambientMethod = value;
 
 		if (value) {
-			this._ambientChunk = value.getAbstraction<_Shader_MethodBase>(this._shader);
+			this._ambientChunk = this._shader.abstractions.getAbstraction<_Shader_MethodBase>(value);
 			this._addDependency(value);
 		}
 	}
@@ -416,7 +416,7 @@ export class MethodPass extends PassBase implements ILightingPass {
 		this._shadowMethod = value;
 
 		if (value) {
-			this._shadowChunk = value.getAbstraction<_Shader_MethodBase>(this._shader);
+			this._shadowChunk = this._shader.abstractions.getAbstraction<_Shader_MethodBase>(value);
 			this._addDependency(value);
 		}
 	}
@@ -440,7 +440,7 @@ export class MethodPass extends PassBase implements ILightingPass {
 		this._diffuseMethod = value;
 
 		if (value) {
-			this._diffuseChunk = value.getAbstraction<_Shader_LightingCompositeMethod | _Shader_DiffuseBasicMethod>(this._shader);
+			this._diffuseChunk = this._shader.abstractions.getAbstraction<_Shader_LightingCompositeMethod | _Shader_DiffuseBasicMethod>(value);
 			this._addDependency(value);
 		}
 	}
@@ -464,7 +464,7 @@ export class MethodPass extends PassBase implements ILightingPass {
 		this._specularMethod = value;
 
 		if (value) {
-			this._specularChunk = value.getAbstraction<_Shader_LightingCompositeMethod | _Shader_SpecularBasicMethod>(this._shader);
+			this._specularChunk = this._shader.abstractions.getAbstraction<_Shader_LightingCompositeMethod | _Shader_SpecularBasicMethod>(value);
 			this._addDependency(value);
 		}
 	}

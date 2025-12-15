@@ -155,7 +155,7 @@ export class _Shader_ShadowMapperBase extends _Shader_MethodBase {
      * @inheritDoc
      */
 	public _initVO(chunkVO: ChunkVO): void {
-		this._texture = this._mapper.textureMap.getAbstraction<_Shader_TextureBase>(this._shader);
+		this._texture = this._shader.abstractions.getAbstraction<_Shader_TextureBase>(this._mapper.textureMap);
 
 		this._texture._initVO(chunkVO);
 	}

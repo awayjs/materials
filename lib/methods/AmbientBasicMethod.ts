@@ -113,13 +113,13 @@ export class _Shader_AmbientBasicMethod extends _Shader_MethodBase {
 
 		this._method = method;
 		this._shader = shader;
-		this._texture = this._method.texture?.getAbstraction<_Shader_TextureBase>(this._shader);
+		this._texture = this._method.texture? this._shader.abstractions.getAbstraction<_Shader_TextureBase>(this._method.texture) : null;
 	}
 
 	public onInvalidate(): void {
 		super.onInvalidate();
 
-		const texture = this._method.texture?.getAbstraction<_Shader_TextureBase>(this._shader);
+		const texture = this._method.texture? this._shader.abstractions.getAbstraction<_Shader_TextureBase>(this._method.texture) : null;
 
 		if (this._texture != texture) {
 			if (this._texture) {
@@ -210,7 +210,7 @@ export class _Shader_AmbientBasicMethod extends _Shader_MethodBase {
 		} else if (this._invalid) {
 			const index: number = this._colorIndex;
 			const data: Float32Array = this._shader.fragmentConstantData;
-			const color: number = this._shader.numLights ? 0xFFFFFF : this._shader.renderMaterial.style.color;
+			const color: number = this._shader.numLights ? 0xFFFFFF : this._shader.renderMaterial.material.style.color;
 
 			data[index] = ((color >> 16) & 0xff) / 0xff * this._method.strength;
 			data[index + 1] = ((color >> 8) & 0xff) / 0xff * this._method.strength;

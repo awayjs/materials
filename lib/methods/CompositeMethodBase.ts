@@ -108,7 +108,7 @@ export class _Shader_CompositeMethodBase extends AbstractionBase implements _ISh
 	public init(method: CompositeMethodBase, shader: LightingShader): void {
 		super.init(method, shader);
 
-		this._baseChunk = method.baseMethod.getAbstraction<_Shader_MethodBase>(shader);
+		this._baseChunk = shader.abstractions.getAbstraction<_Shader_MethodBase>(method.baseMethod);
 	}
 
 	public _isUsed(): boolean {

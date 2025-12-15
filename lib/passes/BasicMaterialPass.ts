@@ -39,7 +39,7 @@ export class BasicMaterialPass extends PassBase {
 	public invalidate(): void {
 		super.invalidate();
 		const texture: TextureBase = (<MaterialBase> this._renderMaterial.material).getTextureAt(0);
-		this._shaderTexture = texture ? texture.getAbstraction<_Shader_TextureBase>(this._shader) : null;
+		this._shaderTexture = texture ? this._shader.abstractions.getAbstraction<_Shader_TextureBase>(texture) : null;
 	}
 
 	public dispose(): void {

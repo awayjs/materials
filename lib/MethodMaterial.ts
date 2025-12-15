@@ -380,18 +380,20 @@ export class _Render_MethodMaterial extends _Render_MaterialBase {
      * The maximum total number of lights provided by the light picker.
      */
 	private get numLights(): number {
-		return (<MethodMaterial> this._asset).lightPicker ? (<MethodMaterial> this._asset).lightPicker.numLightProbes + (<MethodMaterial> this._asset).lightPicker.numDirectionalLights + (<MethodMaterial> this._asset).lightPicker.numPointLights + (<MethodMaterial> this._asset).lightPicker.numCastingDirectionalLights + (<MethodMaterial> this._asset).lightPicker.numCastingPointLights : 0;
+		const material: MethodMaterial = <MethodMaterial> this.material;
+		return material.lightPicker ? material.lightPicker.numLightProbes + material.lightPicker.numDirectionalLights + material.lightPicker.numPointLights + material.lightPicker.numCastingDirectionalLights + material.lightPicker.numCastingPointLights : 0;
 	}
 
 	/**
      * The amount of lights that don't cast shadows.
      */
 	private get numNonCasters(): number {
-		return (<MethodMaterial> this._asset).lightPicker ? (<MethodMaterial> this._asset).lightPicker.numLightProbes + (<MethodMaterial> this._asset).lightPicker.numDirectionalLights + (<MethodMaterial> this._asset).lightPicker.numPointLights : 0;
+		const material: MethodMaterial = <MethodMaterial> this.material;
+		return material.lightPicker ? material.lightPicker.numLightProbes + material.lightPicker.numDirectionalLights + material.lightPicker.numPointLights : 0;
 	}
 
 	public get lightPicker(): LightPickerBase {
-		return (<MethodMaterial> this._asset).lightPicker;
+		return (<MethodMaterial> this.material).lightPicker;
 	}
 
 	/**
@@ -399,7 +401,7 @@ export class _Render_MethodMaterial extends _Render_MaterialBase {
      * compatibility for constrained mode.
      */
 	public get enableLightFallOff(): boolean {
-		return (<MethodMaterial> this._asset).enableLightFallOff;
+		return (<MethodMaterial> this.material).enableLightFallOff;
 	}
 
 	/**
@@ -409,7 +411,7 @@ export class _Render_MethodMaterial extends _Render_MaterialBase {
      * @see away3d.materials.LightSources
      */
 	public get diffuseLightSources(): number {
-		return (<MethodMaterial> this._asset).diffuseLightSources;
+		return (<MethodMaterial> this.material).diffuseLightSources;
 	}
 
 	/**
@@ -419,7 +421,7 @@ export class _Render_MethodMaterial extends _Render_MaterialBase {
      * @see away3d.materials.LightSources
      */
 	public get specularLightSources(): number {
-		return (<MethodMaterial> this._asset).specularLightSources;
+		return (<MethodMaterial> this.material).specularLightSources;
 	}
 
 	/**
@@ -429,8 +431,6 @@ export class _Render_MethodMaterial extends _Render_MaterialBase {
      */
 	public init(material: MethodMaterial, renderElements: _Render_ElementsBase): void {
 		super.init(material, renderElements);
-
-		(<MethodMaterial> this._asset) = material;
 	}
 
 	/**
@@ -445,7 +445,7 @@ export class _Render_MethodMaterial extends _Render_MaterialBase {
 
 		this._pClearPasses();
 
-		if ((<MethodMaterial> this._asset).mode == MethodMaterialMode.MULTI_PASS) {
+		if ((<MethodMaterial> this.material).mode == MethodMaterialMode.MULTI_PASS) {
 			if (this._casterLightPass)
 				this._pAddPass(this._casterLightPass);
 
@@ -462,21 +462,22 @@ export class _Render_MethodMaterial extends _Render_MaterialBase {
      * Initializes all the passes and their dependent passes.
      */
 	private initPasses(): void {
+		const material: MethodMaterial = (<MethodMaterial> this.material);
 		// let the effects pass handle everything if there are no lights, when there are effect methods applied
 		// after shading, or when the material mode is single pass.
-		if (this.numLights == 0 || (<MethodMaterial> this._asset).numEffectMethods > 0 || (<MethodMaterial> this._asset).mode == MethodMaterialMode.SINGLE_PASS)
+		if (this.numLights == 0 || material.numEffectMethods > 0 || material.mode == MethodMaterialMode.SINGLE_PASS)
 			this.initEffectPass();
 		else if (this._pass)
 			this.removeEffectPass();
 
 		// only use a caster light pass if shadows need to be rendered
-		if ((<MethodMaterial> this._asset).shadowMethod && (<MethodMaterial> this._asset).mode == MethodMaterialMode.MULTI_PASS)
+		if (material.shadowMethod && material.mode == MethodMaterialMode.MULTI_PASS)
 			this.initCasterLightPass();
 		else if (this._casterLightPass)
 			this.removeCasterLightPass();
 
 		// only use non caster light passes if there are lights that don't cast
-		if (this.numNonCasters > 0 && (<MethodMaterial> this._asset).mode == MethodMaterialMode.MULTI_PASS)
+		if (this.numNonCasters > 0 && material.mode == MethodMaterialMode.MULTI_PASS)
 			this.initNonCasterLightPasses();
 		else if (this._nonCasterLightPasses)
 			this.removeNonCasterLightPasses();
@@ -486,13 +487,14 @@ export class _Render_MethodMaterial extends _Render_MaterialBase {
      * Sets up the various blending modes for all screen passes, based on whether or not there are previous passes.
      */
 	private setBlendAndCompareModes(): void {
+		const material: MethodMaterial = (<MethodMaterial> this.material);
 		const forceSeparateMVP: boolean = Boolean(this._casterLightPass || this._pass);
 
 		// caster light pass is always first if it exists, hence it uses normal blending
 		if (this._casterLightPass) {
 			this._casterLightPass.forceSeparateMVP = forceSeparateMVP;
 			this._casterLightPass.shader.setBlendMode(BlendMode.NORMAL);
-			this._casterLightPass.shader.depthCompareMode = (<MethodMaterial> this._asset).depthCompareMode;
+			this._casterLightPass.shader.depthCompareMode = material.depthCompareMode;
 		}
 
 		if (this._nonCasterLightPasses) {
@@ -503,7 +505,7 @@ export class _Render_MethodMaterial extends _Render_MaterialBase {
 			if (!this._casterLightPass) {
 				this._nonCasterLightPasses[0].forceSeparateMVP = forceSeparateMVP;
 				this._nonCasterLightPasses[0].shader.setBlendMode(BlendMode.NORMAL);
-				this._nonCasterLightPasses[0].shader.depthCompareMode = (<MethodMaterial> this._asset).depthCompareMode;
+				this._nonCasterLightPasses[0].shader.depthCompareMode = material.depthCompareMode;
 				firstAdditiveIndex = 1;
 			}
 
@@ -528,28 +530,29 @@ export class _Render_MethodMaterial extends _Render_MaterialBase {
 			}
 
 		} else if (this._pass) {
-			this.requiresBlending = ((<MethodMaterial> this._asset).blendMode != BlendMode.NORMAL || (<MethodMaterial> this._asset).alphaBlending || ((<MethodMaterial> this._asset).colorTransform && (<MethodMaterial> this._asset).colorTransform.alphaMultiplier < 1));
+			this.requiresBlending = (material.blendMode != BlendMode.NORMAL || material.alphaBlending || (material.colorTransform && material.colorTransform.alphaMultiplier < 1));
 			// effects pass is the only pass, so it should just blend normally
 			this._pass.mode = MethodPassMode.SUPER_SHADER;
 			this._pass.preserveAlpha = this.requiresBlending;
 			this._pass.forceSeparateMVP = false;
-			this._pass.colorTransform = (<MethodMaterial> this._asset).colorTransform;
-			this._pass.shader.setBlendMode(((<MethodMaterial> this._asset).blendMode == BlendMode.NORMAL && this.requiresBlending) ? BlendMode.LAYER : (<MethodMaterial> this._asset).blendMode);
-			this._pass.shader.depthCompareMode = (<MethodMaterial> this._asset).depthCompareMode;
+			this._pass.colorTransform = material.colorTransform;
+			this._pass.shader.setBlendMode((material.blendMode == BlendMode.NORMAL && this.requiresBlending) ? BlendMode.LAYER : material.blendMode);
+			this._pass.shader.depthCompareMode = material.depthCompareMode;
 		}
 	}
 
 	private initCasterLightPass(): void {
+		const material: MethodMaterial = (<MethodMaterial> this.material);
 
 		if (this._casterLightPass == null)
 			this._casterLightPass = new MethodPass(MethodPassMode.LIGHTING, this, this.renderElements);
 
-		this._casterLightPass.lightPicker = new StaticLightPicker([(<MethodMaterial> this._asset).shadowMethod.castingLight]);
-		this._casterLightPass.shadowMethod = (<MethodMaterial> this._asset).shadowMethod;
-		this._casterLightPass.diffuseMethod = (<MethodMaterial> this._asset).diffuseMethod;
-		this._casterLightPass.ambientMethod = (<MethodMaterial> this._asset).ambientMethod;
-		this._casterLightPass.normalMethod = (<MethodMaterial> this._asset).normalMethod;
-		this._casterLightPass.specularMethod = (<MethodMaterial> this._asset).specularMethod;
+		this._casterLightPass.lightPicker = new StaticLightPicker([material.shadowMethod.castingLight]);
+		this._casterLightPass.shadowMethod = material.shadowMethod;
+		this._casterLightPass.diffuseMethod = material.diffuseMethod;
+		this._casterLightPass.ambientMethod = material.ambientMethod;
+		this._casterLightPass.normalMethod = material.normalMethod;
+		this._casterLightPass.specularMethod = material.specularMethod;
 	}
 
 	private removeCasterLightPass(): void {
@@ -559,33 +562,35 @@ export class _Render_MethodMaterial extends _Render_MaterialBase {
 	}
 
 	private initNonCasterLightPasses(): void {
+		const material: MethodMaterial = (<MethodMaterial> this.material);
+
 		this.removeNonCasterLightPasses();
 		let pass: MethodPass;
-		let numDirLights: number = (<MethodMaterial> this._asset).lightPicker.numDirectionalLights;
-		let numPointLights: number = (<MethodMaterial> this._asset).lightPicker.numPointLights;
-		const numLightProbes: number = (<MethodMaterial> this._asset).lightPicker.numLightProbes;
+		let numDirLights: number = material.lightPicker.numDirectionalLights;
+		let numPointLights: number = material.lightPicker.numPointLights;
+		const numLightProbes: number = material.lightPicker.numLightProbes;
 		let dirLightOffset: number = 0;
 		let pointLightOffset: number = 0;
 		let probeOffset: number = 0;
 
 		if (!this._casterLightPass) {
-			numDirLights += (<MethodMaterial> this._asset).lightPicker.numCastingDirectionalLights;
-			numPointLights += (<MethodMaterial> this._asset).lightPicker.numCastingPointLights;
+			numDirLights += material.lightPicker.numCastingDirectionalLights;
+			numPointLights += material.lightPicker.numCastingPointLights;
 		}
 
 		this._nonCasterLightPasses = new Array<MethodPass>();
 
 		while (dirLightOffset < numDirLights || pointLightOffset < numPointLights || probeOffset < numLightProbes) {
 			pass = new MethodPass(MethodPassMode.LIGHTING, this, this.renderElements);
-			pass.includeCasters = (<MethodMaterial> this._asset).shadowMethod == null;
+			pass.includeCasters = material.shadowMethod == null;
 			pass.directionalLightsOffset = dirLightOffset;
 			pass.pointLightsOffset = pointLightOffset;
 			pass.lightProbesOffset = probeOffset;
-			pass.lightPicker = (<MethodMaterial> this._asset).lightPicker;
-			pass.diffuseMethod = (<MethodMaterial> this._asset).diffuseMethod;
-			pass.ambientMethod = (<MethodMaterial> this._asset).ambientMethod;
-			pass.normalMethod = (<MethodMaterial> this._asset).normalMethod;
-			pass.specularMethod = (<MethodMaterial> this._asset).specularMethod;
+			pass.lightPicker = material.lightPicker;
+			pass.diffuseMethod = material.diffuseMethod;
+			pass.ambientMethod = material.ambientMethod;
+			pass.normalMethod = material.normalMethod;
+			pass.specularMethod = material.specularMethod;
 			this._nonCasterLightPasses.push(pass);
 
 			dirLightOffset += pass.numDirectionalLights;
@@ -605,16 +610,18 @@ export class _Render_MethodMaterial extends _Render_MaterialBase {
 	}
 
 	private removeEffectPass(): void {
-		if (this._pass.ambientMethod != (<MethodMaterial> this._asset).ambientMethod)
+		const material: MethodMaterial = (<MethodMaterial> this.material);
+
+		if (this._pass.ambientMethod != material.ambientMethod)
 			this._pass.ambientMethod.dispose();
 
-		if (this._pass.diffuseMethod != (<MethodMaterial> this._asset).diffuseMethod)
+		if (this._pass.diffuseMethod != material.diffuseMethod)
 			this._pass.diffuseMethod.dispose();
 
-		if (this._pass.specularMethod != (<MethodMaterial> this._asset).specularMethod)
+		if (this._pass.specularMethod != material.specularMethod)
 			this._pass.specularMethod.dispose();
 
-		if (this._pass.normalMethod != (<MethodMaterial> this._asset).normalMethod)
+		if (this._pass.normalMethod != material.normalMethod)
 			this._pass.normalMethod.dispose();
 
 		this._pRemovePass(this._pass);
@@ -622,33 +629,35 @@ export class _Render_MethodMaterial extends _Render_MaterialBase {
 	}
 
 	private initEffectPass(): void {
+		const material: MethodMaterial = (<MethodMaterial> this.material);
+
 		if (this._pass == null)
 			this._pass = new MethodPass(MethodPassMode.SUPER_SHADER, this, this.renderElements);
 
-		if ((<MethodMaterial> this._asset).mode == MethodMaterialMode.SINGLE_PASS) {
-			this._pass.ambientMethod = (<MethodMaterial> this._asset).ambientMethod;
-			this._pass.diffuseMethod = (<MethodMaterial> this._asset).diffuseMethod;
-			this._pass.specularMethod = (<MethodMaterial> this._asset).specularMethod;
-			this._pass.normalMethod = (<MethodMaterial> this._asset).normalMethod;
-			this._pass.shadowMethod = (<MethodMaterial> this._asset).shadowMethod;
-		} else if ((<MethodMaterial> this._asset).mode == MethodMaterialMode.MULTI_PASS) {
+		if (material.mode == MethodMaterialMode.SINGLE_PASS) {
+			this._pass.ambientMethod = material.ambientMethod;
+			this._pass.diffuseMethod = material.diffuseMethod;
+			this._pass.specularMethod = material.specularMethod;
+			this._pass.normalMethod = material.normalMethod;
+			this._pass.shadowMethod = material.shadowMethod;
+		} else if (material.mode == MethodMaterialMode.MULTI_PASS) {
 			if (this.numLights == 0) {
-				this._pass.ambientMethod = (<MethodMaterial> this._asset).ambientMethod;
+				this._pass.ambientMethod = material.ambientMethod;
 			} else {
 				this._pass.ambientMethod = null;
 			}
 
 			this._pass.preserveAlpha = false;
-			this._pass.normalMethod = (<MethodMaterial> this._asset).normalMethod;
+			this._pass.normalMethod = material.normalMethod;
 		}
 
 		//update effect methods
 		let i: number = 0;
 		let effectMethod: MethodBase;
-		const len: number = Math.max((<MethodMaterial> this._asset).numEffectMethods, this._pass.numEffectMethods);
+		const len: number = Math.max(material.numEffectMethods, this._pass.numEffectMethods);
 
 		while (i < len) {
-			effectMethod = (<MethodMaterial> this._asset).getEffectMethodAt(i);
+			effectMethod = material.getEffectMethodAt(i);
 			if (effectMethod != this._pass.getEffectMethodAt(i)) {
 				this._pass.removeEffectMethodAt(i);
 

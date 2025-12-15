@@ -178,7 +178,7 @@ export class _Shader_DiffuseBasicMethod extends _Shader_MethodBase implements _I
 
 	public _initVO(chunkVO: ChunkVO): void {
 		if (this._method.texture) {
-			this._texture = this._method.texture.getAbstraction<_Shader_TextureBase>(this._shader);
+			this._texture = this._shader.abstractions.getAbstraction<_Shader_TextureBase>(this._method.texture);
 
 			this._texture._initVO(chunkVO);
 
@@ -381,7 +381,7 @@ export class _Shader_DiffuseBasicMethod extends _Shader_MethodBase implements _I
      * Updates the diffuse and ambient color data used by the render state.
      */
 	private _updateProperties(): void {
-		this._ambientColor = this._shader.renderMaterial.style.color;
+		this._ambientColor = this._shader.renderMaterial.material.style.color;
 		this._ambientColorR = ((this._ambientColor >> 16) & 0xff) / 0xff;
 		this._ambientColorG = ((this._ambientColor >> 8) & 0xff) / 0xff;
 		this._ambientColorB = (this._ambientColor & 0xff) / 0xff;

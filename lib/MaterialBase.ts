@@ -391,8 +391,8 @@ export class _Render_DepthMaterial extends _Render_MaterialPassBase {
 
 	public invalidate(): void {
 		super.invalidate();
-		const texture: TextureBase = (<MaterialBase> this._asset).getTextureAt(0);
-		this._shaderTexture = texture ? texture.getAbstraction<_Shader_TextureBase>(this._shader) : null;
+		const texture: TextureBase = (<MaterialBase> this.material).getTextureAt(0);
+		this._shaderTexture = texture ? this._shader.abstractions.getAbstraction<_Shader_TextureBase>(texture) : null;
 	}
 
 	public _includeDependencies(shader: ShaderBase): void {
@@ -502,8 +502,8 @@ export class _Render_DistanceMaterial extends _Render_MaterialPassBase {
 
 	public invalidate(): void {
 		super.invalidate();
-		const texture: TextureBase = (<MaterialBase> this._asset).getTextureAt(0);
-		this._shaderTexture = texture ? texture.getAbstraction<_Shader_TextureBase>(this._shader) : null;
+		const texture: TextureBase = (<MaterialBase> this.material).getTextureAt(0);
+		this._shaderTexture = texture ? this._shader.abstractions.getAbstraction<_Shader_TextureBase>(texture) : null;
 	}
 
 	/**

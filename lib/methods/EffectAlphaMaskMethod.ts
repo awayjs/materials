@@ -107,7 +107,7 @@ export class _Shader_EffectAlphaMaskMethod extends _Shader_MethodBase {
      */
 	public _initVO(chunkVO: ChunkVO): void {
 		const texture: TextureBase = this._method.texture || new ImageTexture2D();
-		this._alphaMask = texture.getAbstraction<_Shader_TextureBase>(this._shader);
+		this._alphaMask = this._shader.abstractions.getAbstraction<_Shader_TextureBase>(texture);
 
 		this._alphaMask._initVO(chunkVO);
 
