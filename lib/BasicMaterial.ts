@@ -97,7 +97,6 @@ export class _Render_BasicMaterial extends _Render_MaterialBase {
 		return this._useWeak ? (<WeakRef<BasicMaterial>> this._asset).deref() : <BasicMaterial> this._asset;
 	}
 
-
 	public init(material: BasicMaterial, renderElements: _Render_ElementsBase): void {
 		super.init(material, renderElements);
 
