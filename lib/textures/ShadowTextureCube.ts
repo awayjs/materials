@@ -3,7 +3,7 @@
 import { PointLight } from '../lights/PointLight';
 import { ShadowMapperBase } from '../mappers/ShadowMapperBase';
 
-import { ImageTextureCube } from '@awayjs/renderer';
+import { ImageTextureCube, ITexture } from '@awayjs/renderer';
 
 export class ShadowTextureCube extends ImageTextureCube {
 	public static assetType: string = '[texture ShadowTextureCube]';
@@ -74,11 +74,12 @@ export class _Shader_ShadowTextureCube extends _Shader_DepthTexture {
 	public _activate(): void {
 		super.activate();
 
+		const texture: ShadowTextureCube = <ShadowTextureCube> this.texture;
 		const fragmentData: Float32Array = this._shader.fragmentConstantData;
 		const index: number = this._positionIndex;
 
-		const pos: Vector3D = (<ShadowTextureCube> this._texture).mapper.light.transform.matrix3D.position;
-		const fallOff: number = (<PointLight> (<ShadowTextureCube> this._texture).mapper.light).fallOff; // used to decompress distance
+		const pos: Vector3D = texture.mapper.light.transform.matrix3D.position;
+		const fallOff: number = (<PointLight> texture.mapper.light).fallOff; // used to decompress distance
 
 		fragmentData[index] = pos.x;
 		fragmentData[index + 1] = pos.y;
@@ -86,7 +87,7 @@ export class _Shader_ShadowTextureCube extends _Shader_DepthTexture {
 		fragmentData[index + 3] = 1 / (2 * fallOff * fallOff); //TODO: do we need the 2?
 
 		//epsilon
-		fragmentData[index + 4] = -Math.pow(1 / (fallOff * (<ShadowTextureCube> this._texture).mapper.epsilon), 2);
+		fragmentData[index + 4] = -Math.pow(1 / (fallOff * texture.mapper.epsilon), 2);
 	}
 }
 
