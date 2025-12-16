@@ -109,8 +109,6 @@ export class DiffuseBasicMethod extends MethodBase {
 	}
 }
 
-import { AssetEvent } from '@awayjs/core';
-
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
 import { ShaderBase, _Render_RenderableBase, _Shader_TextureBase, ChunkVO, TextureCube } from '@awayjs/renderer';

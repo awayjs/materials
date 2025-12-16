@@ -1,5 +1,3 @@
-import { AssetEvent } from '@awayjs/core';
-
 import { ShaderRegisterCache, ShaderRegisterData, ShaderRegisterElement } from '@awayjs/stage';
 
 import { _Render_RenderableBase, _Render_MaterialBase, _Render_ElementsBase, ShaderBase, _Shader_TextureBase, TextureBase } from '@awayjs/renderer';
