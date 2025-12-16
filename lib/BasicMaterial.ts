@@ -78,8 +78,6 @@ export class BasicMaterial extends MaterialBase {
 
 import { MaterialUtils } from '@awayjs/renderer';
 
-import { AssetEvent } from '@awayjs/core';
-
 import { BlendMode } from '@awayjs/stage';
 
 import { _Render_MaterialBase, _Render_ElementsBase } from '@awayjs/renderer';
@@ -93,21 +91,21 @@ import { CacheRenderer } from '@awayjs/renderer';
  * using material methods to define their appearance.
  */
 export class _Render_BasicMaterial extends _Render_MaterialBase {
-	private _basicMaterial: BasicMaterial;
 	private _pass: BasicMaterialPass;
+
+	public get material(): BasicMaterial {
+		return this._useWeak ? (<WeakRef<BasicMaterial>> this._asset).deref() : <BasicMaterial> this._asset;
+	}
+
 
 	public init(material: BasicMaterial, renderElements: _Render_ElementsBase): void {
 		super.init(material, renderElements);
-
-		this._basicMaterial = material;
 
 		this._pAddPass(this._pass = new BasicMaterialPass(this, renderElements));
 	}
 
 	public onClear(): void {
 		super.onClear();
-
-		this._basicMaterial = null;
 
 		this._pRemovePass(this._pass);
 		this._pass = null;
@@ -119,9 +117,11 @@ export class _Render_BasicMaterial extends _Render_MaterialBase {
 	public _pUpdateRender(): void {
 		super._pUpdateRender();
 
-		this.requiresBlending = (this._basicMaterial.blendMode != BlendMode.NORMAL || this._basicMaterial.alphaBlending || (this._basicMaterial.colorTransform && this._basicMaterial.colorTransform.alphaMultiplier < 1));
-		this._pass.preserveAlpha = this._basicMaterial.preserveAlpha;//this._pRequiresBlending;
-		this._pass.shader.setBlendMode((this._basicMaterial.blendMode == BlendMode.NORMAL && this.requiresBlending) ? BlendMode.LAYER : this._basicMaterial.blendMode);
+		const material: BasicMaterial = this.material;
+
+		this.requiresBlending = (material.blendMode != BlendMode.NORMAL || material.alphaBlending || (material.colorTransform && material.colorTransform.alphaMultiplier < 1));
+		this._pass.preserveAlpha = material.preserveAlpha;//this._pRequiresBlending;
+		this._pass.shader.setBlendMode((material.blendMode == BlendMode.NORMAL && this.requiresBlending) ? BlendMode.LAYER : material.blendMode);
 		//this._pass.forceSeparateMVP = false;
 	}
 }
